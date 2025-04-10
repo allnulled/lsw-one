@@ -11,6 +11,8 @@
     "bundle:lsw": "npm run bundle:lsw-framework && npm run bundle:lsw-app",
     "up": "npm run build:all && npm run push:all && bash up.sh",
     "install:all": "mpp --install --list projects.list.js",
+    "dev": "npx nodemon -x 'npm run build' $(cat devfiles.txt | xargs -n1 echo -w)",
+    "build": "node dev/bundlers/lsw-framework/bundler.js && node dev/bundlers/distribution/bundler.js",
     "build:all": "mpp --fileval dev/injections/buildAndTest.js --list projects.list.js && npm run build:framework && npm run build:dist",
     "build-only:all": "mpp --fileval dev/injections/build.js --list projects.list.js && npm run build:framework && npm run build:dist",
     "build:framework": "node dev/bundlers/lsw-framework/bundler.js",

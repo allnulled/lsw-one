@@ -1,4 +1,13 @@
-// 1. Bundle js:
+// 1. Bundle components:
+require(__dirname + "/../core/vuebundler.js").bundle({
+  list: __dirname + "/../lsw-framework/bundlelist.components.js",
+  module: true,
+  id: "Litestarter_app",
+  output: __dirname + "/../../../src/assets/components-distribution.js",
+  ignore: [],
+});
+
+// 2. Bundle js:
 require(__dirname + "/../core/htmlbundler.js").bundle({
   list: __dirname + "/../distribution/bundlelist.js.js",
   module: true,
@@ -8,7 +17,7 @@ require(__dirname + "/../core/htmlbundler.js").bundle({
   wrap: false,
 });
 
-// 2. Bundle css:
+// 3. Bundle css:
 require(__dirname + "/../core/htmlbundler.js").bundle({
   list: __dirname + "/../distribution/bundlelist.css.js",
   module: false,

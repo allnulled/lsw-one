@@ -1,0 +1,4 @@
+src/lsw-framework/src/directives/v-descriptor/v-descriptor.js
+-w src/boot.js
+-w src/preboot.js
+-w src/runner.js

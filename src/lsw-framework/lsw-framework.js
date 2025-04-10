@@ -17951,7 +17951,11 @@ return Store;
     padding-top: 4px;
   }
 `;
-  document.body.appendChild(styleTag);
+
+  window.addEventListener("load", function() {
+    console.log(document);
+    document.body.appendChild(styleTag);
+  });
 
   window.stylingDescriptor = {
     "agenda.calendar.buttons_panel_1": "calendar_main_panel calendar_buttons_panel_1",
@@ -20522,7 +20526,11 @@ $lswTyper.define("org.allnulled.lsw/type/moment.js", function(input) {
     padding-top: 4px;
   }
 `;
-  document.body.appendChild(styleTag);
+
+  window.addEventListener("load", function() {
+    console.log(document);
+    document.body.appendChild(styleTag);
+  });
 
   window.stylingDescriptor = {
     "agenda.calendar.buttons_panel_1": "calendar_main_panel calendar_buttons_panel_1",

@@ -1,0 +1,26 @@
+<div class="lsw_error_viewer">
+    <div class="box_error_container error_is_affecting_field position_relative" v-if="currentError">
+        <div class="position_absolute top_0" style="right: 20px;">
+            <div class="pad_1">
+                <button v-on:click="() => setError()">❎</button>
+            </div>
+        </div>
+        <div class="box_error_content">
+            <div class="errorMessage">
+                <template v-if="currentError.location">
+                    <span>{{ currentError.name }}</span>
+                    <span>{{ currentError.location.start.offset }}-{{ currentError.location.end.offset }}</span>
+                    <span> | </span>
+                    <span></span>
+                    <span>{{ currentError.location.start.line }}:{{ currentError.location.start.column }}-{{ currentError.location.end.line }}:{{ currentError.location.end.column }}</span>
+                    <span>{{ currentError.found }}</span>
+                    <span>{{ currentError.message }}</span>
+                    <pre style="font-size:10px;">  - {{ currentError.expected.map(it => JSON.stringify(it.text)).join("\n  - ") }}</pre>
+                </template>
+                <template v-else>
+                    {{ currentError.name }}: {{ currentError.message }}
+                </template>
+            </div>
+        </div>
+    </div>
+</div>

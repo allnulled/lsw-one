@@ -1,0 +1,31 @@
+.lsw_windows_pivot_button {
+    position: fixed;
+    top: auto;
+    bottom: 9px;
+    left: 9px;
+    right: auto;
+    background-color: transparent;
+    padding: 0px;
+    border: 1px solid #000;
+    border-radius: 3pt;
+    background-color: #AFFF00;
+    box-shadow: 0 0 4px black;
+    cursor: pointer;
+}
+.lsw_windows_pivot_button:hover {
+}
+
+.lsw_windows_pivot_button > button {
+    max-height: 22px;
+    min-width: 22px;
+    vertical-align: middle;
+    border: none;
+    background-color: transparent;
+}
+
+.lsw_windows_pivot_button > button:hover {
+    background-color: transparent;
+}
+.lsw_windows_pivot_button:hover > button {
+    
+}

@@ -1,0 +1,32 @@
+<div class="lsw_windows_main_tab">
+        <div class="dialog_window" v-bind:key="'main_dialog'" :style="{ zIndex: 501 }">
+            <div class="dialog_topbar">
+                <div class="dialog_title">
+                    <div>Process manager</div>
+                </div>
+                <div class="dialog_topbar_buttons">
+                    <button v-if="$consoleHooker?.is_shown === false" class="mini" style="white-space: nowrap;flex: 1; margin-right: 4px;" v-on:click="() => $consoleHooker?.show()">💻</button
+                    ><button class="mini" v-on:click="viewer.toggleState">💡</button>
+                </div>
+            </div>
+            <div class="dialog_body">
+                <div class="main_tab_topbar">
+                    <button class="main_tab_topbar_button" v-on:click="openAgenda">📓 Agenda</button>
+                    <button class="main_tab_topbar_button" v-on:click="openWiki">🔬 Wiki</button>
+                    <button class="main_tab_topbar_button" v-on:click="openRest">📦 Data</button>
+                    <button class="main_tab_topbar_button" v-on:click="openFilesystem">📂 Files</button>
+                </div>
+                <div class="pad_normal" v-if="!Object.keys($lsw.dialogs.opened).length">
+                    <span>No processes found right now.</span>
+                </div>
+                <div class="pad_normal" v-else>
+                    <div v-for="dialog, dialogIndex, dialogCounter in $lsw.dialogs.opened" v-bind:key="'dialog-' + dialogIndex">
+                        <a href="javascript:void(0)" v-on:click="() => viewer.selectDialog(dialogIndex)">{{ dialogCounter + 1 }}. {{ dialog.title }} [{{ dialog.id }}]</a>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog_footer">
+                <button class="" v-on:click="viewer.toggleState">Minimize</button>
+            </div>
+        </div>
+</div>

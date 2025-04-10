@@ -1,0 +1,26 @@
+.lsw_windows_main_tab {
+    position: fixed;
+    top: 5px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    background-color: white;
+    color: black;
+}
+.lsw_windows_main_tab .main_tab_topbar {
+    border-bottom: 1px solid black;
+    padding: 4px;
+    padding-bottom: 3px;
+    background-color: #DFDFDF;
+    text-align: right;
+}
+.main_tab_topbar_button {
+    
+}
+.pad_normal {
+    padding: 4px;
+}
+
+.dialog_title {
+    
+}

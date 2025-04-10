@@ -1,11 +1,11 @@
-# LSW
+# lsw-one
 
 Lite Starter Webkit. Boilerplate for front-end web-dev.
 
 ## Installation
 
 ```sh
-git clone https://github.com/allnulled/lsw.git .
+git clone https://github.com/allnulled/lsw-one.git .
 ```
 
 ## Default subprojects

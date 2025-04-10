@@ -1,0 +1,18 @@
+<div class="page_tables page">
+    <h3>Tablas de {{ args.database }}</h3>
+    <lsw-database-breadcrumb :breadcrumb="breadcrumb"
+        :database-explorer="databaseExplorer" />
+    <lsw-table v-if="tablesAsList && tablesAsList.length"
+        :initial-input="tablesAsList"
+        :initial-settings="{
+            title: 'Tablas de ' + args.database,
+            itemsPerPage: 50,
+            columnsAsList: ['indexes'],
+            columnsOrder: ['name', 'indexes', 'keyPath']
+        }"
+        :row-buttons="[{
+            header: '',
+            text: '↗️',
+            event: (row, i) => openTable(row.name)
+        }]"></lsw-table>
+</div>

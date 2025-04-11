@@ -1627,8 +1627,11 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 input[type="text"] {
-    min-height: 26px;
+    min-height: 40px;
     outline: none;
+}
+select {
+    min-height: 40px;
 }
 select,
 select > option {
@@ -3525,8 +3528,11 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 input[type="text"] {
-    min-height: 26px;
+    min-height: 40px;
     outline: none;
+}
+select {
+    min-height: 40px;
 }
 select,
 select > option {

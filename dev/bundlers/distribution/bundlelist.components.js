@@ -1,5 +1,6 @@
 const basepath = require("path").resolve(__dirname + "/../../../src");
 
 module.exports = [
-  `${basepath}/lsw-framework/src/modules/org.allnulled.lsw-conductometria/components/lsw-protolang-editor/lsw-protolang-editor`,
+  `${basepath}/modules/org.allnulled.lsw-conductometria/components/lsw-current-accion-viewer/lsw-current-accion-viewer`,
+  `${basepath}/modules/org.allnulled.lsw-conductometria/components/lsw-protolang-editor/lsw-protolang-editor`,
 ];

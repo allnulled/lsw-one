@@ -50,6 +50,7 @@ input.entrada_de_calendario {
     font-size: 10px;
     font-family: Arial;
     text-align: center;
+    vertical-align: midle;
 }
 table.tabla_para_horas {
     width: 100%;

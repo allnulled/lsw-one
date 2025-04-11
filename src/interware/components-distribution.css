@@ -50,6 +50,7 @@ input.entrada_de_calendario {
     font-size: 10px;
     font-family: Arial;
     text-align: center;
+    vertical-align: midle;
 }
 table.tabla_para_horas {
     width: 100%;
@@ -840,9 +841,14 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
 .lsw_agenda {}
 
 .calendar_viewer {
-    padding: 6px;
+    padding: 0px;
     padding-top: 2px;
     padding-bottom: 0px;
+}
+
+.lsw_agenda .visor_de_calendario > table.tabla_de_calendario {
+    border-collapse: collapse;
+    margin-left: -1px;
 }
 
 .no_tasks_message {
@@ -1269,7 +1275,7 @@ bajar(B) 100
 }
 
 .tasks_viewer {
-    padding: 8px;
+    padding: 0px;
     padding-top: 4px;
     padding-bottom: 4px;
 }
@@ -1505,6 +1511,39 @@ select.form_control {
 .lsw_ref_object_control {}
 .lsw_ref_list_control {}
 .lsw_ref_relation_control {}
+.tarjetas_de_accion {
+    border-top: 1px solid #222;
+    border-right: 0px solid #222;
+}
+.tarjeta_de_accion {
+    display: flex;
+    flex-direction: row;
+    border-top: 0px solid #222;
+    border-right: 1px solid #222;
+}
+.tarjeta_de_accion > div {
+    white-space: no-wrap;
+    padding: 8px;
+    border: 1px solid #222;
+    border-right: 0px solid #222;
+    border-top: 0px solid #222;
+}
+.tarjeta_de_accion > .cell_en_concepto {
+    
+}
+.tarjeta_de_accion > .cell_en_estado {
+    cursor: pointer;
+}
+.tarjeta_de_accion > .cell_en_estado.estado_pendiente {
+    background-color: yellow;
+}
+.tarjeta_de_accion > .cell_en_estado.estado_completada {
+    background-color: rgb(30, 255, 0);
+}
+.tarjeta_de_accion > .cell_en_estado.estado_fallida {
+    background-color: red;
+}
+
 .lsw_notes {}
 .lsw-schema-based-form {}
 
@@ -1827,6 +1866,9 @@ table.tabla_de_conductometria .minibutton {
 .position_absolute {
     position: absolute;
 }
+.position_fixed {
+    position: fixed;
+}
 .top_auto {
     top: auto;
 }
@@ -1900,4 +1942,9 @@ table.tabla_de_conductometria .minibutton {
 .danger_button {
     background-color: rgb(49, 9, 9);
     border-color: red;
+}
+.as_card {
+    border: 1px solid #333;
+    border-radius: 2pt;
+    background-color: #a39d9d;
 }

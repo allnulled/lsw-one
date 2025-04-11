@@ -1,9 +1,14 @@
 .lsw_agenda {}
 
 .calendar_viewer {
-    padding: 6px;
+    padding: 0px;
     padding-top: 2px;
     padding-bottom: 0px;
+}
+
+.lsw_agenda .visor_de_calendario > table.tabla_de_calendario {
+    border-collapse: collapse;
+    margin-left: -1px;
 }
 
 .no_tasks_message {
@@ -430,7 +435,7 @@ bajar(B) 100
 }
 
 .tasks_viewer {
-    padding: 8px;
+    padding: 0px;
     padding-top: 4px;
     padding-bottom: 4px;
 }

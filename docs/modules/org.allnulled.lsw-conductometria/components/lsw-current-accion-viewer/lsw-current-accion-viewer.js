@@ -1,0 +1,77 @@
+Vue.component("LswCurrentAccionViewer", {
+  template: $template,
+  props: {
+    
+  },
+  data() {
+    this.$trace("lsw-current-accion-viewer.data");
+    return {
+      currentDate: new Date(),
+      selectedSection: 'despues', // 'antes', 'despues'
+      accionesAntes: false,
+      accionesDespues: false,
+    };
+  },
+  methods: {
+    selectSection(section) {
+      this.$trace("lsw-current-accion-viewer.selectSection");
+      if(this.selectedSection === section) {
+        this.selectedSection = "none";
+      } else {
+        this.selectedSection = section;
+      }
+      if(["antes", "despues"].indexOf(section) !== -1) {
+        this.loadAcciones();
+      } else {
+        this.$forceUpdate(true);
+      }
+    },
+    async loadAcciones() {
+      this.$trace("lsw-current-accion-viewer.loadAcciones");
+      const output = await this.$lsw.database.selectMany("Accion");
+      const estaHora = (() => {
+        const d = new Date();
+        d.setHours(0);
+        return d;
+      })();
+      const accionesAntes = [];
+      const accionesDespues = [];
+      output.forEach(accion => {
+        console.log(accion.tiene_inicio);
+        try {
+          const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
+          console.log(dateAccion);
+          if(dateAccion >= estaHora) {
+            accionesDespues.push(accion);
+          } else {
+            accionesAntes.push(accion);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+      this.accionesAntes = accionesAntes;
+      this.accionesDespues = accionesDespues;
+      this.$forceUpdate(true);
+    },
+    async alternarEstado(accion) {
+      this.$trace("lsw-current-accion-viewer.methods.alternarEstado");
+      const nextEstado = accion.tiene_estado === "pendiente" ? "completada" : 
+        accion.tiene_estado === "completada" ? "fallida" : "pendiente";
+      await this.$lsw.database.update("Accion", accion.id, {
+        ...accion,
+        tiene_estado: nextEstado
+      });
+      await this.loadAcciones();
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-current-accion-viewer.mounted");
+      await this.loadAcciones();
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});

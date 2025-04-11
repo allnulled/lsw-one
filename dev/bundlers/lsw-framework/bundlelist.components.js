@@ -70,6 +70,7 @@ module.exports = [
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control`,
+  `${basepath}/modules/org.allnulled.lsw-conductometria/components/lsw-current-accion-viewer/lsw-current-accion-viewer`,
   
   `${basepath}/lsw-framework/src/components/lsw-notes/lsw-notes`,
 

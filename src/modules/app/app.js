@@ -1,5 +1,4 @@
 (() => {
-  console.log("CARGANDO APP COMO COMPONENTEEEEEE");
   let isFirstTime = true;
   const initialCode = `
 inc /wherever/you/choose.proto
@@ -45,6 +44,8 @@ rel correr
     methods: {
       goToDocs() {
         this.$trace("App.methods.goToDocs");
+        const confirmation = this.$window.confirm("Saldrás de la aplicación con una pestaña nueva, y es un poco incómodo. ¿Estás seguro?");
+        if(!confirmation) return;
         this.$window.open("reference/index.html");
       },
       async resetDatabase() {

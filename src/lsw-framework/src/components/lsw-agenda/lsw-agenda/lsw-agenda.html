@@ -203,7 +203,7 @@
     </div>
     <div v-if="selectedContext === 'agenda'">
         <div class="breadcrumb_box"
-            style="padding-left: 8px; padding-right: 8px;">
+            style="">
             <lsw-agenda-breadcrumb :agenda="this"
                 :path-items="[{label:'Día ' + $lsw.timer.utils.formatDatestringFromDate(selectedDate, true),noop:true}]" />
         </div>

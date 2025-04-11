@@ -48,13 +48,13 @@ $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
             type: "selector",
             available: ["pendiente", "completada", "fallida"],
             selectable: 1, // could be: number or "*" to all options
-            defaultValue: "pendiente",
           },
           hasValidator(v) {
             if(v === "fallida") {
               throw new Error("No losers, por favor");
             }
           },
+          hasDefaultValue: "pendiente",
           hasFormatter: false,
           hasLabel: "Tiene estado:",
           hasDescription: "Estado en el que se encuentra la acción. Puede ser «pendiente», «completada» o «fallida»",
@@ -83,6 +83,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
           isFormType: "duration",
           isIndexed: false,
           hasFormtypeParameters: {},
+          hasDefaultValue: "1h",
           hasValidator(v) {
             LswTimer.utils.isDurationOrThrow(v);
           },

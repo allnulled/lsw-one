@@ -10,9 +10,10 @@ Vue.component("LswLongTextControl", {
   data() {
     this.$trace("lsw-long-text-control.data");
     this.validateSettings();
+    const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
     return {
       uuid: LswRandomizer.getRandomString(5),
-      value: this.settings?.initialValue || "",
+      value,
       isEditable: true,
     };
   },

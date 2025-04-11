@@ -8,7 +8,7 @@
               v-on:click="ir_a_mes_anterior"> ◀ </button>
           </td>
           <td colspan="5"
-            style="width:auto; vertical-align: top;">
+            style="width:auto; vertical-align: middle;">
             <div class="chivato_de_fecha">{{ obtener_fecha_formateada(fecha_seleccionada) }}</div>
             <div class="chivato_de_fecha"
               v-if="(!es_solo_fecha) && fecha_seleccionada">a las {{ obtener_expresion_de_hora(fecha_seleccionada) }}

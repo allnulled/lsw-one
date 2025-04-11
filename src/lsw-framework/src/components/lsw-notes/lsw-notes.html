@@ -13,6 +13,10 @@
         </div>
     </div>
     <div class="pad_1" v-if="isLoaded">
-        <lsw-database-explorer :show-breadcrumb="false" initial-page="lsw-page-rows" :initial-args="{database:'lsw_default_database',table:'Nota'}" />
+        <div class="flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
+            <div class="flex_1 nowrap">{{ note.tiene_inicio }}</div>
+            <div class="flex_1 nowrap">{{ note.tiene_duracion }}</div>
+            <div class="flex_100 nowrap">{{ note.en_concepto }}</div>
+        </div>
     </div>
 </div>

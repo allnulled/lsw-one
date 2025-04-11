@@ -22,7 +22,7 @@ Vue.component("LswCalendario", {
               v-on:click="ir_a_mes_anterior"> ◀ </button>
           </td>
           <td colspan="5"
-            style="width:auto; vertical-align: top;">
+            style="width:auto; vertical-align: middle;">
             <div class="chivato_de_fecha">{{ obtener_fecha_formateada(fecha_seleccionada) }}</div>
             <div class="chivato_de_fecha"
               v-if="(!es_solo_fecha) && fecha_seleccionada">a las {{ obtener_expresion_de_hora(fecha_seleccionada) }}
@@ -3590,7 +3590,7 @@ Vue.component("LswAgenda", {
     </div>
     <div v-if="selectedContext === 'agenda'">
         <div class="breadcrumb_box"
-            style="padding-left: 8px; padding-right: 8px;">
+            style="">
             <lsw-agenda-breadcrumb :agenda="this"
                 :path-items="[{label:'Día ' + \$lsw.timer.utils.formatDatestringFromDate(selectedDate, true),noop:true}]" />
         </div>
@@ -4027,7 +4027,7 @@ Vue.component("LswAgendaBreadcrumb", {
         <div class="right_padded_1">
             <button v-on:click="() => goToSection('agenda')">📆</button>
         </div>
-        <div class="agenda_breadcrumb flex_100">
+        <div class="agenda_breadcrumb flex_100" style="align-self: stretch;padding-top: 10px;">
             <div class="agenda_bradcrumb_item"
                 v-for="pathItem, pathIndex in pathItems"
                 v-bind:key="'agenda-breadcrumb-path-item-' + pathIndex">
@@ -4975,9 +4975,10 @@ Vue.component("LswTextControl", {
   data() {
     this.$trace("lsw-text-control.data");
     this.validateSettings();
+    const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
     return {
       uuid: LswRandomizer.getRandomString(5),
-      value: this.settings?.initialValue || "",
+      value,
       isEditable: true,
     };
   },
@@ -5042,9 +5043,10 @@ Vue.component("LswLongTextControl", {
   data() {
     this.$trace("lsw-long-text-control.data");
     this.validateSettings();
+    const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
     return {
       uuid: LswRandomizer.getRandomString(5),
-      value: this.settings?.initialValue || "",
+      value,
       isEditable: true,
     };
   },
@@ -5221,9 +5223,10 @@ Vue.component("LswDurationControl", {
   data() {
     this.$trace("lsw-duration-control.data");
     this.validateSettings();
+    const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
     return {
       uuid: LswRandomizer.getRandomString(5),
-      value: this.settings?.initialValue || "",
+      value,
       isEditable: true,
       isShowingDetails: false,
       submitError: false,
@@ -5338,9 +5341,10 @@ Vue.component("LswOptionsControl", {
   data() {
     this.$trace("lsw-options-control.data");
     this.validateSettings();
+    const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
     return {
       uuid: LswRandomizer.getRandomString(5),
-      value: this.settings?.initialValue || "",
+      value,
       isEditable: true,
       parameters: this.settings?.hasFormtypeParameters || {}
     };
@@ -5661,6 +5665,159 @@ Vue.component("LswRefRelationControl", {
   }
 });
 // @code.end: LswRefRelationControl API
+Vue.component("LswCurrentAccionViewer", {
+  template: `<div class="lsw_current_accion_viewer">
+    <div class="flex_row centered pad_left_1 pad_top_2">
+        <div class="pad_left_1">
+            <button :class="{activated: selectedSection === 'antes'}"
+                v-on:click="() => selectSection('antes')">⏪</button>
+        </div>
+        <div class="pad_left_1">
+            <button :class="{activated: selectedSection === 'despues'}"
+                v-on:click="() => selectSection('despues')">⏩</button>
+        </div>
+        <div class="pad_left_1">
+            <button :class="{activated: selectedSection === 'calendario'}"
+                v-on:click="() => selectSection('calendario')">📆</button>
+        </div>
+        <div class="pad_left_1 flex_100">
+            {{ LswTimer.utils.formatDatestringFromDate(currentDate) }}
+        </div>
+        <div class="pad_left_1">
+            <lsw-notes />
+        </div>
+    </div>
+    <div class="pad_2"
+        v-if="selectedSection === 'antes'">
+        <template v-if="accionesAntes && accionesAntes.length">
+            <div>Acciones anteriores:</div>
+            <div class="tarjetas_de_accion">
+                <div class="tarjeta_de_accion nowrap"
+                    v-for="accion, accionIndex in accionesAntes"
+                    v-bind:key="'accion_antes_' + accionIndex">
+                    <div>{{ accion.tiene_inicio }}</div>
+                    <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                    <div>{{ accion.tiene_duracion }}</div>
+                    <div class="cell_en_estado"
+                        :class="'estado_' + accion.tiene_estado"
+                        v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                    <!--div>{{ accion.tiene_parametros }}</div>
+                <div>{{ accion.tiene_resultados }}</div>
+                <div>{{ accion.tiene_comentarios }}</div-->
+                </div>
+            </div>
+        </template>
+        <div v-else
+            class="pad_2">No hay acciones anteriores.</div>
+    </div>
+    <div class="pad_2"
+        v-if="selectedSection === 'despues'">
+        <template v-if="accionesDespues && accionesDespues.length">
+            <div>Acciones posteriores:</div>
+            <div class="tarjetas_de_accion">
+                <div class="tarjeta_de_accion nowrap"
+                    v-for="accion, accionIndex in accionesDespues"
+                    v-bind:key="'accion_despues_' + accionIndex">
+                    <div>{{ accion.tiene_inicio }}</div>
+                    <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                    <div>{{ accion.tiene_duracion }}</div>
+                    <div class="cell_en_estado cursor_pointer"
+                        :class="'estado_' + accion.tiene_estado"
+                        v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                    <div>{{ accion.tiene_parametros }}</div>
+                    <div>{{ accion.tiene_resultados }}</div>
+                    <div>{{ accion.tiene_comentarios }}</div>
+                </div>
+            </div>
+        </template>
+        <div v-else
+            class="pad_2">No hay acciones posteriores.</div>
+    </div>
+
+    <div class="pad_1"
+        v-if="selectedSection === 'calendario'">
+        <div class="as_card">
+            <div class="pad_1 pad_bottom_0">
+                <lsw-agenda />
+            </div>
+        </div>
+    </div>
+</div>`,
+  props: {
+    
+  },
+  data() {
+    this.$trace("lsw-current-accion-viewer.data");
+    return {
+      currentDate: new Date(),
+      selectedSection: 'despues', // 'antes', 'despues'
+      accionesAntes: false,
+      accionesDespues: false,
+    };
+  },
+  methods: {
+    selectSection(section) {
+      this.$trace("lsw-current-accion-viewer.selectSection");
+      if(this.selectedSection === section) {
+        this.selectedSection = "none";
+      } else {
+        this.selectedSection = section;
+      }
+      if(["antes", "despues"].indexOf(section) !== -1) {
+        this.loadAcciones();
+      } else {
+        this.$forceUpdate(true);
+      }
+    },
+    async loadAcciones() {
+      this.$trace("lsw-current-accion-viewer.loadAcciones");
+      const output = await this.$lsw.database.selectMany("Accion");
+      const estaHora = (() => {
+        const d = new Date();
+        d.setHours(0);
+        return d;
+      })();
+      const accionesAntes = [];
+      const accionesDespues = [];
+      output.forEach(accion => {
+        console.log(accion.tiene_inicio);
+        try {
+          const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
+          console.log(dateAccion);
+          if(dateAccion >= estaHora) {
+            accionesDespues.push(accion);
+          } else {
+            accionesAntes.push(accion);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+      this.accionesAntes = accionesAntes;
+      this.accionesDespues = accionesDespues;
+      this.$forceUpdate(true);
+    },
+    async alternarEstado(accion) {
+      this.$trace("lsw-current-accion-viewer.methods.alternarEstado");
+      const nextEstado = accion.tiene_estado === "pendiente" ? "completada" : 
+        accion.tiene_estado === "completada" ? "fallida" : "pendiente";
+      await this.$lsw.database.update("Accion", accion.id, {
+        ...accion,
+        tiene_estado: nextEstado
+      });
+      await this.loadAcciones();
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-current-accion-viewer.mounted");
+      await this.loadAcciones();
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
 // @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component
 Vue.component("LswNotes", {
   template: `<div class="lsw_notes">
@@ -5678,7 +5835,11 @@ Vue.component("LswNotes", {
         </div>
     </div>
     <div class="pad_1" v-if="isLoaded">
-        <lsw-database-explorer :show-breadcrumb="false" initial-page="lsw-page-rows" :initial-args="{database:'lsw_default_database',table:'Nota'}" />
+        <div class="flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
+            <div class="flex_1 nowrap">{{ note.tiene_inicio }}</div>
+            <div class="flex_1 nowrap">{{ note.tiene_duracion }}</div>
+            <div class="flex_100 nowrap">{{ note.en_concepto }}</div>
+        </div>
     </div>
 </div>`,
   props: {
@@ -5704,6 +5865,7 @@ Vue.component("LswNotes", {
       const notes = await this.$lsw.database.selectMany("Nota");
       this.allNotes = notes;
       this.isLoaded = true;
+      this.$forceUpdate(true);
     },
     async openAddNoteDialog() {
       this.$trace("lsw-notes.methods.openAddNoteDialog");
@@ -6206,7 +6368,6 @@ Vue.component("LswSchemaBasedForm", {
 });
 // @code.end: LswSchemaBasedForm API
 (() => {
-  console.log("CARGANDO APP COMO COMPONENTEEEEEE");
   let isFirstTime = true;
   const initialCode = `
 inc /wherever/you/choose.proto
@@ -6235,14 +6396,14 @@ rel correr
 
 
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
-    <lsw-notes />
-    <div class="pad_1">
-        <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
-        <button class="danger_button" v-on:click="goToDocs">📘</button>
-    </div>
+    <lsw-current-accion-viewer />
     <lsw-console-hooker />
     <lsw-windows-viewer />
     <lsw-toasts />
+    <div class="position_fixed top_auto left_auto" style="right: 8px; bottom: 8px;">
+        <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
+        <button class="danger_button" v-on:click="goToDocs">📘</button>
+    </div>
     <!--
     <button v-on:click="uploadConductometria" v-if="!conductometria.registros">Abrir conductometría</button>
     <button v-on:click="clearConductometria" v-else>Cerrar</button>
@@ -6300,6 +6461,8 @@ rel correr
     methods: {
       goToDocs() {
         this.$trace("App.methods.goToDocs");
+        const confirmation = this.$window.confirm("Saldrás de la aplicación con una pestaña nueva, y es un poco incómodo. ¿Estás seguro?");
+        if(!confirmation) return;
         this.$window.open("reference/index.html");
       },
       async resetDatabase() {

@@ -16239,6 +16239,7 @@ return Store;
       $lswSchema.loadSchemaByProxies("SchemaEntity");
       const databaseSchema = await $lswSchema.getDatabaseSchemaForLsw();
       console.log("[*] Creating database from schema by proxies:", Object.keys(databaseSchema).join(", "));
+      await LswDatabase.createDatabase("lsw_default_database", databaseSchema);
       return await this.hooks.emit("app:load_schema");
     },
     onSchemaLoaded: function () {
@@ -20131,14 +20132,14 @@ $lswTyper.define("org.allnulled.lsw/type/moment.js", function(input) {
     padding-bottom: 4px;
   }
   .calendar_main_panel {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 0px;
+    padding-right: 0px;
     padding-top: 0px;
-    padding-bottom: 0px;
+    padding-bottom: 4px;
   }
   .calendar_buttons_panel_1 {
-    padding-bottom: 4px;
-    padding-top: 4px;
+    padding-bottom: 0px;
+    padding-top: 0px;
   }
 `;
 

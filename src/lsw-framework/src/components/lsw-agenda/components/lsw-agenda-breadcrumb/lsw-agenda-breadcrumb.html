@@ -3,7 +3,7 @@
         <div class="right_padded_1">
             <button v-on:click="() => goToSection('agenda')">📆</button>
         </div>
-        <div class="agenda_breadcrumb flex_100">
+        <div class="agenda_breadcrumb flex_100" style="align-self: stretch;padding-top: 10px;">
             <div class="agenda_bradcrumb_item"
                 v-for="pathItem, pathIndex in pathItems"
                 v-bind:key="'agenda-breadcrumb-path-item-' + pathIndex">

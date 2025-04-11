@@ -24,7 +24,6 @@ Vue.component("LswNotes", {
       const notes = await this.$lsw.database.selectMany("Nota");
       this.allNotes = notes;
       this.isLoaded = true;
-      this.$forceUpdate(true);
     },
     async openAddNoteDialog() {
       this.$trace("lsw-notes.methods.openAddNoteDialog");

@@ -6,7 +6,22 @@
         <button class="danger_button" v-on:click="goToDocs">📘</button>
     </div>
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
-    <lsw-current-accion-viewer />
+    <lsw-current-accion-viewer>
+        <div class="pad_1 float_right">
+            <div class="flex_row">
+                <div class="flex_100"></div>
+                <div class="flex_1 pad_right_1">
+                    <button class="danger_button"
+                        v-on:click="$ref.notes.loadNotes">♻️</button>
+                </div>
+                <div class="flex_1">
+                    <button class="danger_button"
+                        v-on:click="$ref.notes.openAddNoteDialog">+</button>
+                </div>
+            </div>
+        </div>
+    </lsw-current-accion-viewer>
+    <lsw-notes />
     <lsw-console-hooker />
     <lsw-windows-viewer />
     <lsw-toasts />

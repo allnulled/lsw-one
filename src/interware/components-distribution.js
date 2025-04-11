@@ -5836,9 +5836,9 @@ Vue.component("LswNotes", {
     </div>
     <div class="pad_1" v-if="isLoaded">
         <div class="flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
-            <div class="flex_1 nowrap">{{ note.tiene_inicio }}</div>
-            <div class="flex_1 nowrap">{{ note.tiene_duracion }}</div>
-            <div class="flex_100 nowrap">{{ note.en_concepto }}</div>
+            <div class="flex_1 nowrap">{{ note.tiene_titulo }}</div>
+            <div class="flex_1 nowrap">{{ note.tiene_categorias }}</div>
+            <div class="flex_100 nowrap">{{ note.tiene_contenido }}</div>
         </div>
     </div>
 </div>`,
@@ -5865,7 +5865,6 @@ Vue.component("LswNotes", {
       const notes = await this.$lsw.database.selectMany("Nota");
       this.allNotes = notes;
       this.isLoaded = true;
-      this.$forceUpdate(true);
     },
     async openAddNoteDialog() {
       this.$trace("lsw-notes.methods.openAddNoteDialog");

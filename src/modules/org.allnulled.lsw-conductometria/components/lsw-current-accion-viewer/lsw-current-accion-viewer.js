@@ -7,7 +7,7 @@ Vue.component("LswCurrentAccionViewer", {
     this.$trace("lsw-current-accion-viewer.data");
     return {
       currentDate: new Date(),
-      selectedSection: 'despues', // 'antes', 'despues'
+      selectedSection: 'none', // 'antes', 'despues'
       accionesAntes: false,
       accionesDespues: false,
     };

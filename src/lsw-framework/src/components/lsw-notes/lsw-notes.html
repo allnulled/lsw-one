@@ -1,9 +1,10 @@
-<div class="lsw_notes">
-    <div class="pad_1" v-if="isLoaded">
-        <div class="flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
+<div class="lsw_notes pad_2 pad_top_0">
+    <div class="titulo_de_notas">Últimas notas:</div>
+    <div class="pad_2 pad_left_0 pad_right_0" v-if="isLoaded">
+        <div class="note_card flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
+            <div class="flex_100 nowrap">{{ note.tiene_contenido }}</div>
             <div class="flex_1 nowrap">{{ note.tiene_titulo }}</div>
             <div class="flex_1 nowrap">{{ note.tiene_categorias }}</div>
-            <div class="flex_100 nowrap">{{ note.tiene_contenido }}</div>
         </div>
     </div>
 </div>

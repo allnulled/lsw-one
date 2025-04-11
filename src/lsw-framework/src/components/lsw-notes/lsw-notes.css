@@ -1,1 +1,18 @@
 .lsw_notes {}
+
+.lsw_notes .titulo_de_notas {
+    border: 1px solid #CCC;
+    box-shadow: 0 0 3px black;
+    background-color: #111;
+    color: white;
+    padding: 12px;
+}
+
+.note_card {
+    border: 1px solid #CCC;
+    box-shadow: 0 0 3px black;
+    background-color: #111;
+    color: white;
+    padding: 4px;
+    margin-bottom:2px;
+}

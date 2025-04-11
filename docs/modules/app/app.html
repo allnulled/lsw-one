@@ -1,12 +1,34 @@
 <div>
 
 
-    <div class="position_fixed top_auto left_auto" style="right: 8px; bottom: 8px;">
-        <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
-        <button class="danger_button" v-on:click="goToDocs">📘</button>
+    <div class="position_fixed top_auto left_auto"
+        style="right: 8px; bottom: 8px;">
+        <button class="danger_button"
+            v-on:click="resetDatabase">Reset database</button>
+        <button class="danger_button"
+            v-on:click="goToDocs">📘</button>
     </div>
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
-    <lsw-current-accion-viewer />
+    <template v-if="isMounted">
+        <lsw-current-accion-viewer>
+            <div class="pad_1 float_right">
+                <div class="flex_row">
+                    <div class="flex_100"></div>
+                    <div class="flex_1 pad_right_1">
+                        <button class="danger_button"
+                            v-on:click="$refs.notes.loadNotes">♻️</button>
+                    </div>
+                    <div class="flex_1">
+                        <button class="danger_button"
+                            v-on:click="$refs.notes.openAddNoteDialog">+</button>
+                    </div>
+                </div>
+            </div>
+        </lsw-current-accion-viewer>
+    </template>
+    <div class="pad_top_2">
+        <lsw-notes ref="notes" />
+    </div>
     <lsw-console-hooker />
     <lsw-windows-viewer />
     <lsw-toasts />

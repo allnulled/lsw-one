@@ -1,12 +1,12 @@
 <div class="lsw_current_accion_viewer">
     <div class="flex_row centered pad_left_1 pad_top_2">
         <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'antes'}"
-                v-on:click="() => selectSection('antes')">⏪</button>
+            <button :class="{activated: selectedSection === 'despues'}"
+                v-on:click="() => selectSection('despues')">🕐⏩</button>
         </div>
         <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'despues'}"
-                v-on:click="() => selectSection('despues')">⏩</button>
+            <button :class="{activated: selectedSection === 'antes'}"
+                v-on:click="() => selectSection('antes')">🕐⏪</button>
         </div>
         <div class="pad_left_1">
             <button :class="{activated: selectedSection === 'calendario'}"
@@ -16,61 +16,65 @@
             {{ LswTimer.utils.formatDatestringFromDate(currentDate) }}
         </div>
         <div class="pad_left_1">
-            <lsw-notes />
+            <slot />
         </div>
     </div>
-    <div class="pad_2"
-        v-if="selectedSection === 'antes'">
-        <template v-if="accionesAntes && accionesAntes.length">
-            <div>Acciones anteriores:</div>
-            <div class="tarjetas_de_accion">
-                <div class="tarjeta_de_accion nowrap"
-                    v-for="accion, accionIndex in accionesAntes"
-                    v-bind:key="'accion_antes_' + accionIndex">
-                    <div>{{ accion.tiene_inicio }}</div>
-                    <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                    <div>{{ accion.tiene_duracion }}</div>
-                    <div class="cell_en_estado"
-                        :class="'estado_' + accion.tiene_estado"
-                        v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                    <!--div>{{ accion.tiene_parametros }}</div>
+    <div class="scrollable_panel_viewer pad_2" v-if="selectedSection !== 'none'">
+        <div class="as_card">
+            <div class="pad_2"
+                v-if="selectedSection === 'antes'">
+                <template v-if="accionesAntes && accionesAntes.length">
+                    <div>Acciones anteriores:</div>
+                    <div class="tarjetas_de_accion">
+                        <div class="tarjeta_de_accion nowrap"
+                            v-for="accion, accionIndex in accionesAntes"
+                            v-bind:key="'accion_antes_' + accionIndex">
+                            <div>{{ accion.tiene_inicio }}</div>
+                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                            <div>{{ accion.tiene_duracion }}</div>
+                            <div class="cell_en_estado"
+                                :class="'estado_' + accion.tiene_estado"
+                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                            <!--div>{{ accion.tiene_parametros }}</div>
                 <div>{{ accion.tiene_resultados }}</div>
                 <div>{{ accion.tiene_comentarios }}</div-->
-                </div>
+                        </div>
+                    </div>
+                </template>
+                <div v-else
+                    class="pad_2">No hay acciones anteriores.</div>
             </div>
-        </template>
-        <div v-else
-            class="pad_2">No hay acciones anteriores.</div>
-    </div>
-    <div class="pad_2"
-        v-if="selectedSection === 'despues'">
-        <template v-if="accionesDespues && accionesDespues.length">
-            <div>Acciones posteriores:</div>
-            <div class="tarjetas_de_accion">
-                <div class="tarjeta_de_accion nowrap"
-                    v-for="accion, accionIndex in accionesDespues"
-                    v-bind:key="'accion_despues_' + accionIndex">
-                    <div>{{ accion.tiene_inicio }}</div>
-                    <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                    <div>{{ accion.tiene_duracion }}</div>
-                    <div class="cell_en_estado cursor_pointer"
-                        :class="'estado_' + accion.tiene_estado"
-                        v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                    <div>{{ accion.tiene_parametros }}</div>
-                    <div>{{ accion.tiene_resultados }}</div>
-                    <div>{{ accion.tiene_comentarios }}</div>
-                </div>
+            <div class="pad_2"
+                v-if="selectedSection === 'despues'">
+                <template v-if="accionesDespues && accionesDespues.length">
+                    <div>Acciones posteriores:</div>
+                    <div class="tarjetas_de_accion">
+                        <div class="tarjeta_de_accion nowrap"
+                            v-for="accion, accionIndex in accionesDespues"
+                            v-bind:key="'accion_despues_' + accionIndex">
+                            <div>{{ accion.tiene_inicio }}</div>
+                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                            <div>{{ accion.tiene_duracion }}</div>
+                            <div class="cell_en_estado cursor_pointer"
+                                :class="'estado_' + accion.tiene_estado"
+                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                            <div>{{ accion.tiene_parametros }}</div>
+                            <div>{{ accion.tiene_resultados }}</div>
+                            <div>{{ accion.tiene_comentarios }}</div>
+                        </div>
+                    </div>
+                </template>
+                <div v-else
+                    class="pad_2">No hay acciones posteriores.</div>
             </div>
-        </template>
-        <div v-else
-            class="pad_2">No hay acciones posteriores.</div>
-    </div>
 
-    <div class="pad_1"
-        v-if="selectedSection === 'calendario'">
-        <div class="as_card">
-            <div class="pad_1 pad_bottom_0">
-                <lsw-agenda />
+            <div class="pad_1"
+                v-if="selectedSection === 'calendario'">
+                <div class="">
+                    <div class="pad_1 pad_bottom_0">
+                        <lsw-agenda />
+                    </div>
+                </div>
             </div>
         </div>
     </div>

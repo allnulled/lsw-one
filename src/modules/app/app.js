@@ -34,6 +34,7 @@ rel correr
     },
     data() {
       return {
+        isMounted: false,
         formScope: {},
         userScope: {},
         conductometria: [],
@@ -73,6 +74,7 @@ rel correr
     },
     mounted() {
       console.log("[*] Application mounted.");
+      this.isMounted = true;
       if (isFirstTime) {
         Vue.prototype.$app = this;
         isFirstTime = false;

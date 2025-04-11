@@ -1511,6 +1511,16 @@ select.form_control {
 .lsw_ref_object_control {}
 .lsw_ref_list_control {}
 .lsw_ref_relation_control {}
+.lsw_current_accion_viewer {
+
+}
+.scrollable_panel_viewer {
+    min-height: 3px;
+    max-height: 320px;
+    overflow: scroll;
+    border-top: 3px double #333;
+    border-bottom: 3px double #333;
+}
 .tarjetas_de_accion {
     border-top: 1px solid #222;
     border-right: 0px solid #222;
@@ -1545,6 +1555,23 @@ select.form_control {
 }
 
 .lsw_notes {}
+
+.lsw_notes .titulo_de_notas {
+    border: 1px solid #CCC;
+    box-shadow: 0 0 3px black;
+    background-color: #111;
+    color: white;
+    padding: 12px;
+}
+
+.note_card {
+    border: 1px solid #CCC;
+    box-shadow: 0 0 3px black;
+    background-color: #111;
+    color: white;
+    padding: 4px;
+    margin-bottom:2px;
+}
 .lsw-schema-based-form {}
 
 .schema_form_top_panel {

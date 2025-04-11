@@ -5669,12 +5669,12 @@ Vue.component("LswCurrentAccionViewer", {
   template: `<div class="lsw_current_accion_viewer">
     <div class="flex_row centered pad_left_1 pad_top_2">
         <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'antes'}"
-                v-on:click="() => selectSection('antes')">⏪</button>
+            <button :class="{activated: selectedSection === 'despues'}"
+                v-on:click="() => selectSection('despues')">🕐⏩</button>
         </div>
         <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'despues'}"
-                v-on:click="() => selectSection('despues')">⏩</button>
+            <button :class="{activated: selectedSection === 'antes'}"
+                v-on:click="() => selectSection('antes')">🕐⏪</button>
         </div>
         <div class="pad_left_1">
             <button :class="{activated: selectedSection === 'calendario'}"
@@ -5684,61 +5684,65 @@ Vue.component("LswCurrentAccionViewer", {
             {{ LswTimer.utils.formatDatestringFromDate(currentDate) }}
         </div>
         <div class="pad_left_1">
-            <lsw-notes />
+            <slot />
         </div>
     </div>
-    <div class="pad_2"
-        v-if="selectedSection === 'antes'">
-        <template v-if="accionesAntes && accionesAntes.length">
-            <div>Acciones anteriores:</div>
-            <div class="tarjetas_de_accion">
-                <div class="tarjeta_de_accion nowrap"
-                    v-for="accion, accionIndex in accionesAntes"
-                    v-bind:key="'accion_antes_' + accionIndex">
-                    <div>{{ accion.tiene_inicio }}</div>
-                    <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                    <div>{{ accion.tiene_duracion }}</div>
-                    <div class="cell_en_estado"
-                        :class="'estado_' + accion.tiene_estado"
-                        v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                    <!--div>{{ accion.tiene_parametros }}</div>
+    <div class="scrollable_panel_viewer pad_2" v-if="selectedSection !== 'none'">
+        <div class="as_card">
+            <div class="pad_2"
+                v-if="selectedSection === 'antes'">
+                <template v-if="accionesAntes && accionesAntes.length">
+                    <div>Acciones anteriores:</div>
+                    <div class="tarjetas_de_accion">
+                        <div class="tarjeta_de_accion nowrap"
+                            v-for="accion, accionIndex in accionesAntes"
+                            v-bind:key="'accion_antes_' + accionIndex">
+                            <div>{{ accion.tiene_inicio }}</div>
+                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                            <div>{{ accion.tiene_duracion }}</div>
+                            <div class="cell_en_estado"
+                                :class="'estado_' + accion.tiene_estado"
+                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                            <!--div>{{ accion.tiene_parametros }}</div>
                 <div>{{ accion.tiene_resultados }}</div>
                 <div>{{ accion.tiene_comentarios }}</div-->
-                </div>
+                        </div>
+                    </div>
+                </template>
+                <div v-else
+                    class="pad_2">No hay acciones anteriores.</div>
             </div>
-        </template>
-        <div v-else
-            class="pad_2">No hay acciones anteriores.</div>
-    </div>
-    <div class="pad_2"
-        v-if="selectedSection === 'despues'">
-        <template v-if="accionesDespues && accionesDespues.length">
-            <div>Acciones posteriores:</div>
-            <div class="tarjetas_de_accion">
-                <div class="tarjeta_de_accion nowrap"
-                    v-for="accion, accionIndex in accionesDespues"
-                    v-bind:key="'accion_despues_' + accionIndex">
-                    <div>{{ accion.tiene_inicio }}</div>
-                    <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                    <div>{{ accion.tiene_duracion }}</div>
-                    <div class="cell_en_estado cursor_pointer"
-                        :class="'estado_' + accion.tiene_estado"
-                        v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                    <div>{{ accion.tiene_parametros }}</div>
-                    <div>{{ accion.tiene_resultados }}</div>
-                    <div>{{ accion.tiene_comentarios }}</div>
-                </div>
+            <div class="pad_2"
+                v-if="selectedSection === 'despues'">
+                <template v-if="accionesDespues && accionesDespues.length">
+                    <div>Acciones posteriores:</div>
+                    <div class="tarjetas_de_accion">
+                        <div class="tarjeta_de_accion nowrap"
+                            v-for="accion, accionIndex in accionesDespues"
+                            v-bind:key="'accion_despues_' + accionIndex">
+                            <div>{{ accion.tiene_inicio }}</div>
+                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                            <div>{{ accion.tiene_duracion }}</div>
+                            <div class="cell_en_estado cursor_pointer"
+                                :class="'estado_' + accion.tiene_estado"
+                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                            <div>{{ accion.tiene_parametros }}</div>
+                            <div>{{ accion.tiene_resultados }}</div>
+                            <div>{{ accion.tiene_comentarios }}</div>
+                        </div>
+                    </div>
+                </template>
+                <div v-else
+                    class="pad_2">No hay acciones posteriores.</div>
             </div>
-        </template>
-        <div v-else
-            class="pad_2">No hay acciones posteriores.</div>
-    </div>
 
-    <div class="pad_1"
-        v-if="selectedSection === 'calendario'">
-        <div class="as_card">
-            <div class="pad_1 pad_bottom_0">
-                <lsw-agenda />
+            <div class="pad_1"
+                v-if="selectedSection === 'calendario'">
+                <div class="">
+                    <div class="pad_1 pad_bottom_0">
+                        <lsw-agenda />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -5750,7 +5754,7 @@ Vue.component("LswCurrentAccionViewer", {
     this.$trace("lsw-current-accion-viewer.data");
     return {
       currentDate: new Date(),
-      selectedSection: 'despues', // 'antes', 'despues'
+      selectedSection: 'none', // 'antes', 'despues'
       accionesAntes: false,
       accionesDespues: false,
     };
@@ -5820,25 +5824,13 @@ Vue.component("LswCurrentAccionViewer", {
 });
 // @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component
 Vue.component("LswNotes", {
-  template: `<div class="lsw_notes">
-    <div class="pad_1 float_right">
-        <div class="flex_row">
-            <div class="flex_100"></div>
-            <div class="flex_1 pad_right_1">
-                <button class="danger_button"
-                    v-on:click="loadNotes">♻️</button>
-            </div>
-            <div class="flex_1">
-                <button class="danger_button"
-                    v-on:click="openAddNoteDialog">+</button>
-            </div>
-        </div>
-    </div>
-    <div class="pad_1" v-if="isLoaded">
-        <div class="flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
+  template: `<div class="lsw_notes pad_2 pad_top_0">
+    <div class="titulo_de_notas">Últimas notas:</div>
+    <div class="pad_2 pad_left_0 pad_right_0" v-if="isLoaded">
+        <div class="note_card flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
+            <div class="flex_100 nowrap">{{ note.tiene_contenido }}</div>
             <div class="flex_1 nowrap">{{ note.tiene_titulo }}</div>
             <div class="flex_1 nowrap">{{ note.tiene_categorias }}</div>
-            <div class="flex_100 nowrap">{{ note.tiene_contenido }}</div>
         </div>
     </div>
 </div>`,
@@ -6394,12 +6386,34 @@ rel correr
     template: `<div>
 
 
-    <div class="position_fixed top_auto left_auto" style="right: 8px; bottom: 8px;">
-        <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
-        <button class="danger_button" v-on:click="goToDocs">📘</button>
+    <div class="position_fixed top_auto left_auto"
+        style="right: 8px; bottom: 8px;">
+        <button class="danger_button"
+            v-on:click="resetDatabase">Reset database</button>
+        <button class="danger_button"
+            v-on:click="goToDocs">📘</button>
     </div>
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
-    <lsw-current-accion-viewer />
+    <template v-if="isMounted">
+        <lsw-current-accion-viewer>
+            <div class="pad_1 float_right">
+                <div class="flex_row">
+                    <div class="flex_100"></div>
+                    <div class="flex_1 pad_right_1">
+                        <button class="danger_button"
+                            v-on:click="\$refs.notes.loadNotes">♻️</button>
+                    </div>
+                    <div class="flex_1">
+                        <button class="danger_button"
+                            v-on:click="\$refs.notes.openAddNoteDialog">+</button>
+                    </div>
+                </div>
+            </div>
+        </lsw-current-accion-viewer>
+    </template>
+    <div class="pad_top_2">
+        <lsw-notes ref="notes" />
+    </div>
     <lsw-console-hooker />
     <lsw-windows-viewer />
     <lsw-toasts />
@@ -6450,6 +6464,7 @@ rel correr
     },
     data() {
       return {
+        isMounted: false,
         formScope: {},
         userScope: {},
         conductometria: [],
@@ -6489,6 +6504,7 @@ rel correr
     },
     mounted() {
       console.log("[*] Application mounted.");
+      this.isMounted = true;
       if (isFirstTime) {
         Vue.prototype.$app = this;
         isFirstTime = false;

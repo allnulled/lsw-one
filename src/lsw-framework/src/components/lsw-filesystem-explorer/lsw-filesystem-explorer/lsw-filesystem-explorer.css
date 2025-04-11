@@ -22,6 +22,7 @@
     padding: 4px;
     align-self: stretch;
     height: 42px;
+    padding-top: 12px;
 }
 .current_node_box > .current_node_filename {
     flex: 1;

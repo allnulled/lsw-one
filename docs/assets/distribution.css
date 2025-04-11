@@ -657,6 +657,9 @@ table.top_aligned > tbody > tr > td {
 .current_node_box > .current_node_path {
     display: inline-block;
     padding: 4px;
+    align-self: stretch;
+    height: 42px;
+    padding-top: 12px;
 }
 .current_node_box > .current_node_filename {
     flex: 1;
@@ -2558,6 +2561,9 @@ table.top_aligned > tbody > tr > td {
 .current_node_box > .current_node_path {
     display: inline-block;
     padding: 4px;
+    align-self: stretch;
+    height: 42px;
+    padding-top: 12px;
 }
 .current_node_box > .current_node_filename {
     flex: 1;

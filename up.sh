@@ -1,6 +1,6 @@
 #!/bin/bash
 
-npm run build:all
+npm run build
 
 # Pregunta por el mensaje de commit
 read -p "Enter your commit message: " commit_message

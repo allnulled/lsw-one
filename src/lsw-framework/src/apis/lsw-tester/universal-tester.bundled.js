@@ -10,6 +10,8 @@
     module.exports = mod;
   }
 })(function () {
+
+  // @code.start: Ensure API | @$section: LswTester API » Ensure API » Ensure classes and functions
   const ensure = function (source) {
     return new Ensurement(source);
   };
@@ -106,6 +108,8 @@
     }
   }
   return ensure;
+  // @code.end: Ensure API
+
 });
 
 
@@ -124,6 +128,8 @@
     }
 })(function () {
 
+    // @code.start: Tester API | @$section: LswTester API » Tester API » Tester classes and functions
+    // exported to: UniversalTester & describe
     const runQueue = async function (queue, errorHandler, it) {
         Iterating_tests:
         for (const test of queue) {
@@ -328,5 +334,6 @@
     describe.SilencedError = class extends Error {};
 
     return { describe };
+    // @code.end: Tester API
 });
 

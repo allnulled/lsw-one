@@ -12,6 +12,7 @@ input,
 textarea {
     font-family: Arial;
     font-size: 13px;
+    min-height: 40px;
 }
 
 .like_button,

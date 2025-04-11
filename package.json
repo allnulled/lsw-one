@@ -9,7 +9,7 @@
     "bundle:lsw-framework": "node dev/bundlers/lsw-framework/bundler.js",
     "bundle:lsw-app": "node dev/bundlers/distribution/bundler.js",
     "bundle:lsw": "npm run bundle:lsw-framework && npm run bundle:lsw-app",
-    "up": "npm run build:all && npm run push:all && bash up.sh",
+    "up": "bash up.sh",
     "install:all": "mpp --install --list projects.list.js",
     "dev": "npx nodemon -x 'npm run build' $(cat devfiles.txt | xargs -n1 echo -w)",
     "build": "npm run build:docs && node dev/bundlers/lsw-framework/bundler.js && node dev/bundlers/distribution/bundler.js",

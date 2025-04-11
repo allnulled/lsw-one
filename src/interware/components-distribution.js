@@ -6395,15 +6395,15 @@ rel correr
     template: `<div>
 
 
+    <div class="position_fixed top_auto left_auto" style="right: 8px; bottom: 8px;">
+        <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
+        <button class="danger_button" v-on:click="goToDocs">📘</button>
+    </div>
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
     <lsw-current-accion-viewer />
     <lsw-console-hooker />
     <lsw-windows-viewer />
     <lsw-toasts />
-    <div class="position_fixed top_auto left_auto" style="right: 8px; bottom: 8px;">
-        <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
-        <button class="danger_button" v-on:click="goToDocs">📘</button>
-    </div>
     <!--
     <button v-on:click="uploadConductometria" v-if="!conductometria.registros">Abrir conductometría</button>
     <button v-on:click="clearConductometria" v-else>Cerrar</button>

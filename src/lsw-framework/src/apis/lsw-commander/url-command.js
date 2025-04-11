@@ -31,7 +31,7 @@
   /**
    * 
    * 
-   * @$section: Lsw Framework » Lsw Commander API » LswCommander class
+   * @$section: Lsw Commander API » LswCommander class
 
    * @type: class
    * @extends: Object
@@ -40,7 +40,7 @@
    * @source code: La clase está definida así:
    * 
    */
-  // @code.start: LswCommander class | @$section: Lsw Framework » Lsw Commander API » LswCommander class
+  // @code.start: LswCommander class | @$section: Lsw Commander API » LswCommander class
   const LswCommander = class {
 
     static from(...args) {

@@ -11,7 +11,7 @@ Vue.component("LswAgendaAccionAdd", {
     async insertAccion(v) {
       this.$trace("lsw-agenda-accion-add.methods.insertAccion");
       await this.$lsw.database.insert("Accion", v);
-      // @TODO: should redirect
+      // *@TODO: should redirect
     }
   },
   watch: {},

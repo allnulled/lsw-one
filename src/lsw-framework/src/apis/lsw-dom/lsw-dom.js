@@ -11,6 +11,19 @@
   }
 })(function () {
   
+
+  /**
+   * 
+   * 
+   * @$section: Lsw Dom API » LswDom class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswDom
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswDom class | @section: Lsw Dom API » LswDom class
   const LswDom = class {
 
     static collectLeaves(originalCollection, selectorSequence = []) {
@@ -50,6 +63,7 @@
     }
 
   };
+  // @code.end: LswDom class
 
   return LswDom;
 

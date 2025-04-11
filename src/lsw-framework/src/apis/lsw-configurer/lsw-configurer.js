@@ -11,7 +11,18 @@
   }
 })(function () {
   
-  // @TODO...
+  /**
+   * 
+   * 
+   * @$section: Lsw Configurer API » LswConfigurer class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswConfigurer
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswConfigurer class | @section: Lsw Configurer API » LswConfigurer class
   const LswConfigurer = class {
 
     constructor(parentConfigurer = null) {
@@ -36,5 +47,6 @@
     }
 
   }
+  // @code.end: LswConfigurer class
 
 });

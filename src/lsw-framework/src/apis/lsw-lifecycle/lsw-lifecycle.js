@@ -11,6 +11,18 @@
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw LswCycler API » LswCycler class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswCycler
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswCycler class | @section: Lsw LswCycler API » LswCycler class
   const cycle = LswCycler.from({
 
     steps: [
@@ -162,6 +174,7 @@
     },
 
   }, "*");
+  // @code.end: LswCycler class
 
   return cycle;
 

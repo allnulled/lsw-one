@@ -11,6 +11,19 @@
   }
 })(function () {
 
+
+  /**
+   * 
+   * 
+   * @$section: LswRandomizer API » LswRandomizer class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswRandomizer
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswRandomizer class | @$section: LswRandomizer API » LswRandomizer class
   const LswRandomizer = class {
 
     static $defaultAlphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -59,5 +72,6 @@
   }
 
   return LswRandomizer;
+  // @code.end: LswRandomizer class
 
 });

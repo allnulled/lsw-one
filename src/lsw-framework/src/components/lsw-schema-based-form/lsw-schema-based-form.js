@@ -95,7 +95,7 @@ Vue.component("LswSchemaBasedForm", {
     saveField(field, value) {
       this.$trace("lsw-schema-based-form.methods.saveField");
       console.log("Should save field:", field, value);
-      // @TODO: use $lsw.database.overwrite to send the field only
+      // *@TODO: use $lsw.database.overwrite to send the field only
 
     },
     validateModel(model) {

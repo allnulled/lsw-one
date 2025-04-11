@@ -11,7 +11,7 @@ Vue.component("LswAgendaConceptoAdd", {
     async insertConcepto(v) {
       this.$trace("lsw-agenda-concepto-add.methods.insertConcepto");
       await this.$lsw.database.insert("Concepto", v);
-      // @TODO: should redirect
+      // *@TODO: should redirect
     }
   },
   watch: {},

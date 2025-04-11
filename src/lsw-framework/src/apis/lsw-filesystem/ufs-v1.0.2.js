@@ -6,6 +6,7 @@
   @version:      1.0.0
   @description:  Can manage a filesystem-like API on any: nodejs, browser (localStorage and IndexedDB)
 */
+// @code.start: UFS_manager class | @section: UFS Manager API » UFS_manager class
 (function (factory) {
   const name = "UFS_manager";
   const modulo = factory();
@@ -719,4 +720,5 @@
   };
 
   return api;
+  // @code.end: UFS_manager class
 });

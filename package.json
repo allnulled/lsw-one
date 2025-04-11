@@ -4,7 +4,7 @@
   "description": "Boilerplate for web applications",
   "main": "src/index.html",
   "scripts": {
-    "serve": "npx http-server -c-1 src -o index.html",
+    "serve": "npx http-server -c-1 docs -o index.html",
     "serve:dist": "npx http-server -c-1 docs -o index.html",
     "bundle:lsw-framework": "node dev/bundlers/lsw-framework/bundler.js",
     "bundle:lsw-app": "node dev/bundlers/distribution/bundler.js",
@@ -12,7 +12,8 @@
     "up": "npm run build:all && npm run push:all && bash up.sh",
     "install:all": "mpp --install --list projects.list.js",
     "dev": "npx nodemon -x 'npm run build' $(cat devfiles.txt | xargs -n1 echo -w)",
-    "build": "node dev/bundlers/lsw-framework/bundler.js && node dev/bundlers/distribution/bundler.js",
+    "build": "npm run build:docs && node dev/bundlers/lsw-framework/bundler.js && node dev/bundlers/distribution/bundler.js",
+    "build:docs": "node dev/documentation/documentation.js",
     "build:all": "mpp --fileval dev/injections/buildAndTest.js --list projects.list.js && npm run build:framework && npm run build:dist",
     "build-only:all": "mpp --fileval dev/injections/build.js --list projects.list.js && npm run build:framework && npm run build:dist",
     "build:framework": "node dev/bundlers/lsw-framework/bundler.js",

@@ -11,6 +11,18 @@
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Vue2 API » LswVue2 class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswVue2
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswVue2 class | @section: Lsw Vue2 API » LswVue2 class
   const LswVue2 = class {
 
     static getClosestParent(component, filterCallback) {
@@ -37,6 +49,7 @@
     }
 
   }
+  // @code.end: LswVue2 class
 
   return LswVue2;
 

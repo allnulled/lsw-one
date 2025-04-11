@@ -11,6 +11,18 @@
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Importer API » Importer class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: Importer
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: Importer class | @section: Lsw Importer API » Importer class
   const Importer = class {
 
     static create(...args) {
@@ -342,6 +354,7 @@
   window.importer.options.update_ui = true;
 
   return Importer;
+  // @code.end: Importer class
 
 });
 /*!
@@ -11000,6 +11013,21 @@ if (typeof window !== "undefined" && "Vue" in window) {
 }));
 
 
+
+
+/**
+ * 
+ * 
+ * @$section: Lsw ErrorManager API » LswErrorManager class
+ * @type: class
+ * @extends: Object
+ * @vendor: lsw
+ * @namespace: LswErrorManager
+ * @source code: La clase está definida así:
+ * 
+ */
+// @code.start: LswErrorManager class | @section: Lsw ErrorManager API » LswErrorManager class
+
 globalThis.ErrorSummary = class {
   constructor(data) {
     Object.assign(this, data);
@@ -11024,13 +11052,13 @@ globalThis.Error = class AccumulableError extends Error {
       stack: this.stack ? this.stack.split("\n    at ") : "",
       ...this,
     };
-    if(this.$accumulatedErrors && this.$accumulatedErrors.length) {
+    if (this.$accumulatedErrors && this.$accumulatedErrors.length) {
       data.$accumulatedErrors = this.$accumulatedErrors;
     }
     return data;
   }
   unified() {
-    this.message = this.message + "\n" + this.$accumulatedErrors.map((e,i) => (i+1) + ': ' + e.name + ': ' + e.message).join("\n");
+    this.message = this.message + "\n" + this.$accumulatedErrors.map((e, i) => (i + 1) + ': ' + e.name + ': ' + e.message).join("\n");
     this.$accumulatedErrors = [];
     return this;
   }
@@ -11094,9 +11122,12 @@ globalThis.Error = class AccumulableError extends Error {
       commonTraces: commonTraces,
     });
   }
-  
+
 }
 
+// @code.end: LswErrorManager class
+
+// @code.start: LswReloadable injection | @$section: LswReloader API » LswReloadable injection
 const serverUrl = 'http://127.0.0.1';
 const serverPort = 3000;
 
@@ -11107,6 +11138,7 @@ if (process?.env?.NODE_ENV === "test") {
     location.reload();
   });
 }
+// @code.end: LswReloadable injection
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -11120,6 +11152,18 @@ if (process?.env?.NODE_ENV === "test") {
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Ensurer API » LswEnsurer class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswEnsurer
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswEnsurer class | @section: Lsw Ensurer API » LswEnsurer class
   class AssertionError extends Error {
 
     constructor(...args) {
@@ -11663,8 +11707,10 @@ if (process?.env?.NODE_ENV === "test") {
     // globalThis.AssertionError = AssertionError;
     globalThis.$ensure.$or = EnsurementV1.$or;
   }
-
+  
   return EnsurementV1;
+  // @code.end: LswEnsurer class
+
 });
 (function (factory) {
     const mod = factory();
@@ -11900,6 +11946,19 @@ if (process?.env?.NODE_ENV === "test") {
   }
 })(function () {
   
+
+  /**
+   * 
+   * 
+   * @$section: Lsw Dom API » LswDom class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswDom
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswDom class | @section: Lsw Dom API » LswDom class
   const LswDom = class {
 
     static collectLeaves(originalCollection, selectorSequence = []) {
@@ -11939,6 +11998,7 @@ if (process?.env?.NODE_ENV === "test") {
     }
 
   };
+  // @code.end: LswDom class
 
   return LswDom;
 
@@ -11956,6 +12016,18 @@ if (process?.env?.NODE_ENV === "test") {
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Vue2 API » LswVue2 class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswVue2
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswVue2 class | @section: Lsw Vue2 API » LswVue2 class
   const LswVue2 = class {
 
     static getClosestParent(component, filterCallback) {
@@ -11982,6 +12054,7 @@ if (process?.env?.NODE_ENV === "test") {
     }
 
   }
+  // @code.end: LswVue2 class
 
   return LswVue2;
 
@@ -11999,6 +12072,18 @@ if (process?.env?.NODE_ENV === "test") {
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: LswProxifier API » LswProxifier class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswProxifier
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswProxifier class | @$section: LswProxifier API » LswProxifier class
   class BaseClass {
     initialize(...args) {
       const promise = this.onInitialize(...args);
@@ -12213,6 +12298,7 @@ if (process?.env?.NODE_ENV === "test") {
   LswProxifier.default = LswProxifier;
 
   globalThis.$proxifier = LswProxifier.create();
+  // @code.end: LswProxifier class
 
   return LswProxifier;
 
@@ -12230,6 +12316,19 @@ if (process?.env?.NODE_ENV === "test") {
   }
 })(function () {
 
+
+  /**
+   * 
+   * 
+   * @$section: LswRandomizer API » LswRandomizer class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswRandomizer
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswRandomizer class | @$section: LswRandomizer API » LswRandomizer class
   const LswRandomizer = class {
 
     static $defaultAlphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -12278,6 +12377,7 @@ if (process?.env?.NODE_ENV === "test") {
   }
 
   return LswRandomizer;
+  // @code.end: LswRandomizer class
 
 });
 (function (factory) {
@@ -12296,7 +12396,7 @@ if (process?.env?.NODE_ENV === "test") {
   /**
    * 
    * 
-   * @$section: Lsw Framework » Lsw Circuiter API » LswCircuiter class
+   * @$section: Lsw Circuiter API » LswCircuiter class
 
    * @type: class
    * @extends: Object
@@ -12305,7 +12405,7 @@ if (process?.env?.NODE_ENV === "test") {
    * @source code: La clase está definida así:
    * 
    */
-  // @code.start: AsyncCircuit class | @$section: Lsw Framework » Lsw Circuiter API » LswCircuiter class
+  // @code.start: LswCircuiter class | @$section: Lsw Circuiter API » LswCircuiter class
   class AsyncCircuit {
 
     static create(...args) {
@@ -12385,7 +12485,7 @@ if (process?.env?.NODE_ENV === "test") {
       return await asyncFunction(...argValues); // Ejecutamos el código generado con eval
     }
   }
-  // @code.end: AsyncCircuit class
+  // @code.end: LswCircuiter class
 
   return AsyncCircuit;
 });
@@ -12423,7 +12523,7 @@ if (process?.env?.NODE_ENV === "test") {
   /**
    * 
    * 
-   * @$section: Lsw Framework » Lsw Commander API » LswCommander class
+   * @$section: Lsw Commander API » LswCommander class
 
    * @type: class
    * @extends: Object
@@ -12432,7 +12532,7 @@ if (process?.env?.NODE_ENV === "test") {
    * @source code: La clase está definida así:
    * 
    */
-  // @code.start: LswCommander class | @$section: Lsw Framework » Lsw Commander API » LswCommander class
+  // @code.start: LswCommander class | @$section: Lsw Commander API » LswCommander class
   const LswCommander = class {
 
     static from(...args) {
@@ -12641,6 +12741,19 @@ if (process?.env?.NODE_ENV === "test") {
   }
 })(function () {
 
+
+  /**
+   * 
+   * 
+   * @$section: Lsw Database API » LswDatabase class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswDatabase
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswDatabase class | @section: Lsw Database API » LswDatabase class
   class BrowsieCheckersAPI {
 
     static mustBeString(obj, method = "Browsie.mustBeString", id = "?") {
@@ -13762,6 +13875,7 @@ if (process?.env?.NODE_ENV === "test") {
 
   LswDatabase.default = LswDatabase;
   window.LswDatabase = LswDatabase;
+  // @code.end: LswDatabase class
 
   return LswDatabase;
 
@@ -13781,7 +13895,19 @@ if (process?.env?.NODE_ENV === "test") {
     module.exports = mod;
   }
 })(function () {
-
+  
+  /**
+   * 
+   * 
+   * @$section: Superlogger API » Superlogger class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: Superlogger
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: Superlogger class | @$section: Superlogger API » Superlogger class
   const Superlogger = class {
 
     static create(id, options) {
@@ -13969,6 +14095,7 @@ if (process?.env?.NODE_ENV === "test") {
     }
 
   };
+  // @code.end: Superlogger class
 
   return Superlogger;
 });
@@ -13984,6 +14111,8 @@ if (process?.env?.NODE_ENV === "test") {
     module.exports = mod;
   }
 })(function () {
+
+  // @code.start: ControlledFunction global | @$section: ControlledFunction API » ControlledFunction classes
 
   const ReturnControl = class {
     constructor(value) {
@@ -14115,6 +14244,8 @@ if (process?.env?.NODE_ENV === "test") {
   ControlledFunction.default = ControlledFunction;
 
   return ControlledFunction;
+  // @code.end: ControlledFunction global
+
 });
 
 (function (factory) {
@@ -15897,6 +16028,19 @@ return Store;
 
   const noop = () => { };
 
+
+  /**
+   * 
+   * 
+   * @$section: Lsw Cycler API » LswCycler class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswCycler
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswCycler class | @section: Lsw Cycler API » LswCycler class
   class LswCyclerSet {
     constructor(value) {
       this.value = value;
@@ -15980,6 +16124,7 @@ return Store;
     }
 
   }
+  // @code.end: LswCycler class
 
   return LswCycler;
 
@@ -15997,6 +16142,18 @@ return Store;
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw LswCycler API » LswCycler class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswCycler
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswCycler class | @section: Lsw LswCycler API » LswCycler class
   const cycle = LswCycler.from({
 
     steps: [
@@ -16148,6 +16305,7 @@ return Store;
     },
 
   }, "*");
+  // @code.end: LswCycler class
 
   return cycle;
 
@@ -16165,13 +16323,39 @@ return Store;
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw ClassRegister API » LswClassRegister class
+
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswClassRegister
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswClassRegister class | @section: Lsw ClassRegister API » LswClassRegister class
   Promise_extensions: {
     
     globalThis.Promise.prototype.chain = function (nextPromise) {
       return this.then(() => nextPromise);
     };
   }
+  // @code.end: LswClassRegister class
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Compromiser API » LswCompromiser class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswCompromiser
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswCompromiser class | @section: Lsw Compromiser API » LswCompromiser class
   class PromiseMap {
 
     constructor(keys) {
@@ -16237,6 +16421,7 @@ return Store;
     }
 
   }
+  // @code.end: LswCompromiser class
 
   globalThis.PromiseMap = PromiseMap;
 
@@ -16256,6 +16441,7 @@ return Store;
   }
 })(function () {
 
+  // @code.start: LswUtils | @section: Lsw Utils API » Lsw Utils global
   const LswUtils = {};
 
   LswUtils.hello = () => console.log("Hello!");
@@ -16493,13 +16679,6 @@ return Store;
     });
   };
 
-  /**
-   * 
-   * @returns: Array[
-   *   String:beforeToken,
-   *   String:afterToken
-   * ]
-   */
   LswUtils.splitStringOnce = function(text, splitter) {
     if(typeof text !== "string") {
       throw new Error("Required parameter «text» to be a string on «LswUtils.splitStringOnce»");
@@ -16524,8 +16703,10 @@ return Store;
   LswUtils.startThread = function(callback) {
     setTimeout(callback, 0);
   };
+  // @code.end: LswUtils
 
   return LswUtils;
+
 });
 /*
   @artifact:     Independent artifact
@@ -16535,6 +16716,7 @@ return Store;
   @version:      1.0.0
   @description:  Can manage a filesystem-like API on any: nodejs, browser (localStorage and IndexedDB)
 */
+// @code.start: UFS_manager class | @section: UFS Manager API » UFS_manager class
 (function (factory) {
   const name = "UFS_manager";
   const modulo = factory();
@@ -17248,7 +17430,9 @@ return Store;
   };
 
   return api;
+  // @code.end: UFS_manager class
 });
+
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -17280,14 +17464,14 @@ return Store;
 
   /**
    * 
-   * @$section: Lsw Framework » Lsw Schema API » LswSchema class
+   * @$section: Lsw Schema API » LswSchema class
    * @type: Class
    * @vendor: lsw
    * @namespace: LswSchema
    * @source code: La clase está definida así:
    * 
    */
-  // @code.start: LswSchema class
+  // @code.start: LswSchema class | @section: Lsw Schema API » LswSchema class
   const LswSchema = class {
 
     $trace(methodId, argsList) {
@@ -17371,24 +17555,12 @@ return Store;
       return schemaForLsw;
     }
 
-    /**
-     * 
-     * @$section: Lsw Framework » Lsw Schema API « LswSchema class » loadSchemaByProxies method
-     * @description: Este método se encarga de pasar los PROXIES a SCHEMA para el LswDatabase. Sí los registra en la instancia actual: no solo devuelve el schema.
-     * @returns: the general adaptation of SchemaEntity class to Schema Definition Object for LswDatabase.
-     */
     loadSchemaByProxies(aspectId = "SchemaEntity") {
       this.$trace("loadSchemaByProxies", arguments);
       const schema = this.getSchemaByProxies(aspectId);
       return this.registerSchema(schema);
     }
 
-    /**
-     * 
-     * @$section: Lsw Framework » Lsw Schema API « LswSchema class » getSchemaByProxies method
-     * @description: Este método se encarga de pasar los PROXIES a SCHEMA para el LswDatabase. Sí los registra en la instancia actual: no solo devuelve el schema.
-     * @returns: the general adaptation of SchemaEntity class to Schema Definition Object for LswDatabase.
-     */
     getSchemaByProxies(aspectId = "SchemaEntity") {
       this.$trace("getSchemaByProxies", arguments);
       const allSchemaEntities = Object.values($proxifier.$definitions).filter(d => d[aspectId]).map(d => d[aspectId]);
@@ -17401,12 +17573,6 @@ return Store;
       return schemaTemp.$schema;
     }
 
-    /**
-     * 
-     * @$section: Lsw Framework » Lsw Schema API « LswSchema class » adaptSchemaEntityToDatabaseSchema method
-     * @description: Este método se encarga de pasar los PROXIES a SCHEMA para el LswDatabase. No los registra: devuelve el schema resultante solamente.
-     * @returns: the general adaptation of SchemaEntity class to Schema Definition Object for LswDatabase.
-     */
     adaptSchemaEntityToDatabaseSchema(SchemaEntityClass) {
       this.$trace("adaptSchemaEntityToDatabaseSchema", arguments);
       const schema = { hasTables: {} };
@@ -17601,6 +17767,19 @@ return Store;
   }
 })(function () {
   
+  /**
+   * 
+   * 
+   * @$section: Lsw ClassRegister API » LswClassRegister class
+
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswClassRegister
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswClassRegister class | @$section: Lsw ClassRegister API » LswClassRegister class
   class LswClassRegister {
 
     constructor() {
@@ -17643,6 +17822,7 @@ return Store;
     }
 
   }
+  // @code.end: LswClassRegister class
 
   window.$lswClassRegistry = new LswClassRegister();
 
@@ -17661,6 +17841,7 @@ return Store;
   }
 })(function () {
   
+  // @code.start: LswDatabaseVirtualizer class | @section: Lsw DatabaseVirtualizer API » LswDatabaseVirtualizer class
   const LswDatabaseVirtualizer = class {
 
     static create(...args) {
@@ -17748,110 +17929,111 @@ return Store;
 
     async onStart() {
       this.$trace("onStart", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onStartValidation() {
       this.$trace("onStartValidation", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onValidateConnection() {
       this.$trace("onValidateConnection", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onValidateSchema() {
       this.$trace("onValidateSchema", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFinishValidation() {
       this.$trace("onFinishValidation", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onDeleteVirtualDatabase() {
       this.$trace("onDeleteVirtualDatabase", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onStartClonation() {
       this.$trace("onStartClonation", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onCloneDatabase() {
       this.$trace("onCloneDatabase", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFinishClonation() {
       this.$trace("onFinishClonation", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onStartVirtualization() {
       this.$trace("onStartVirtualization", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onVirtualizeSchema() {
       this.$trace("onVirtualizeSchema", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onVirtualizeTables() {
       this.$trace("onVirtualizeTables", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onVirtualizeColumns() {
       this.$trace("onVirtualizeColumns", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFinishVirtualization() {
       this.$trace("onFinishVirtualization", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onStartFormalization() {
       this.$trace("onStartFormalization", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFormalizeColumns() {
       this.$trace("onFormalizeColumns", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFormalizeTables() {
       this.$trace("onFormalizeTables", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFormalizeSchema() {
       this.$trace("onFormalizeSchema", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFinishFormalization() {
       this.$trace("onFinishFormalization", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onReport() {
       this.$trace("onReport", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFinish() {
       this.$trace("onFinish", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
   }
+  // @code.end: LswDatabaseVirtualizer class
 
   return LswDatabaseVirtualizer;
 
@@ -17869,6 +18051,18 @@ return Store;
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Depender API » LswDepender class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswDepender
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswDepender class | @section: Lsw Depender API » LswDepender class
   const Definition = class {
     constructor({ id, dependencies = [] }) {
       this.id = id;
@@ -17993,6 +18187,7 @@ return Store;
   }
 
   LswDepender.default = LswDepender;
+  // @code.end: LswDepender class
 
   return LswDepender;
 
@@ -18010,6 +18205,18 @@ return Store;
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Depender API » LswDepender class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswDepender
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswDepender class | @section: Lsw Depender API » LswDepender class
   const Definition = class {
     constructor({ id, dependencies = [] }) {
       this.id = id;
@@ -18134,6 +18341,7 @@ return Store;
   }
 
   LswDepender.default = LswDepender;
+  // @code.end: LswDepender class
 
   return LswDepender;
 

@@ -13,6 +13,19 @@
 
   const noop = () => { };
 
+
+  /**
+   * 
+   * 
+   * @$section: Lsw Cycler API » LswCycler class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswCycler
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswCycler class | @section: Lsw Cycler API » LswCycler class
   class LswCyclerSet {
     constructor(value) {
       this.value = value;
@@ -96,6 +109,7 @@
     }
 
   }
+  // @code.end: LswCycler class
 
   return LswCycler;
 

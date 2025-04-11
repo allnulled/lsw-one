@@ -18,7 +18,7 @@ Vue.component("LswNotes", {
     },
     async loadNotes() {
       this.$trace("lsw-notes.methods.loadNotes");
-      // @TODO: seleccionar e importar notes.
+      // *@TODO: seleccionar e importar notes.
       this.isLoaded = false;
       const notes = await this.$lsw.database.selectMany("Nota");
       this.allNotes = notes;

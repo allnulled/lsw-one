@@ -1,6 +1,6 @@
 /**
  * @output: index.html
- * @section: 1. Introducción
+ * @$section: 1. Introducción
  * @code.start: Estructura 001
  */
 class Una_clase {

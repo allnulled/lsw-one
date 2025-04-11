@@ -11,6 +11,7 @@
   }
 })(function () {
 
+  // @code.start: LswUtils | @section: Lsw Utils API » Lsw Utils global
   const LswUtils = {};
 
   LswUtils.hello = () => console.log("Hello!");
@@ -248,13 +249,6 @@
     });
   };
 
-  /**
-   * 
-   * @returns: Array[
-   *   String:beforeToken,
-   *   String:afterToken
-   * ]
-   */
   LswUtils.splitStringOnce = function(text, splitter) {
     if(typeof text !== "string") {
       throw new Error("Required parameter «text» to be a string on «LswUtils.splitStringOnce»");
@@ -279,6 +273,8 @@
   LswUtils.startThread = function(callback) {
     setTimeout(callback, 0);
   };
+  // @code.end: LswUtils
 
   return LswUtils;
+
 });

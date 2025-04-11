@@ -11,6 +11,8 @@
   }
 })(function () {
 
+  // @code.start: ControlledFunction global | @$section: ControlledFunction API » ControlledFunction classes
+
   const ReturnControl = class {
     constructor(value) {
       this.value = value;
@@ -141,4 +143,6 @@
   ControlledFunction.default = ControlledFunction;
 
   return ControlledFunction;
+  // @code.end: ControlledFunction global
+
 });

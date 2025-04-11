@@ -13,7 +13,19 @@
     module.exports = mod;
   }
 })(function () {
-
+  
+  /**
+   * 
+   * 
+   * @$section: Superlogger API » Superlogger class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: Superlogger
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: Superlogger class | @$section: Superlogger API » Superlogger class
   const Superlogger = class {
 
     static create(id, options) {
@@ -201,6 +213,7 @@
     }
 
   };
+  // @code.end: Superlogger class
 
   return Superlogger;
 });

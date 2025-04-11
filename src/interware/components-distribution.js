@@ -1168,7 +1168,7 @@ Vue.component('LswDataExplorer', {
       this.isShowingRelatedDocuments = !this.isShowingRelatedDocuments;
     },
     openDocument(docIndex) {
-      // @TODO:
+      // *@TODO:
       const doc = this.relatedDocuments[docIndex];
       this.documentTitle = doc.title;
       this.documentContent = doc.text;
@@ -1178,7 +1178,7 @@ Vue.component('LswDataExplorer', {
 
     },
     async applyFastFilter(textFilter = this.textFilter) {
-      // @TODO:
+      // *@TODO:
       try {
         this.hasLoadedInnerValue = false;
         this.$forceUpdate(true);
@@ -3825,11 +3825,11 @@ Vue.component("LswAgenda", {
     },
     async openInsertTaskDialog() {
       this.$trace("lsw-agenda.methods.openInsertTaskDialog");
-      // @TODO: 
+      // *@TODO: 
     },
     async openUpdateTaskDialog(tarea) {
       this.$trace("lsw-agenda.methods.openUpdateTaskDialog");
-      // @TODO: 
+      // *@TODO: 
       this.selectHour(tarea.id);
     },
     async openDeleteTaskDialog(tarea, e) {
@@ -3929,7 +3929,7 @@ Vue.component("LswAgendaAccionAdd", {
     async insertAccion(v) {
       this.$trace("lsw-agenda-accion-add.methods.insertAccion");
       await this.$lsw.database.insert("Accion", v);
-      // @TODO: should redirect
+      // *@TODO: should redirect
     }
   },
   watch: {},
@@ -4061,7 +4061,7 @@ Vue.component("LswAgendaConceptoAdd", {
     async insertConcepto(v) {
       this.$trace("lsw-agenda-concepto-add.methods.insertConcepto");
       await this.$lsw.database.insert("Concepto", v);
-      // @TODO: should redirect
+      // *@TODO: should redirect
     }
   },
   watch: {},
@@ -4259,7 +4259,7 @@ Vue.component("LswAgendaLimitadorAdd", {
     async insertLimitador(v) {
       this.$trace("lsw-agenda-limitador-add.methods.insertLimitador");
       await this.$lsw.database.insert("Limitador", v);
-      // @TODO: should redirect
+      // *@TODO: should redirect
     }
   },
   watch: {},
@@ -5594,7 +5594,7 @@ Vue.component("LswNotes", {
     },
     async loadNotes() {
       this.$trace("lsw-notes.methods.loadNotes");
-      // @TODO: seleccionar e importar notes.
+      // *@TODO: seleccionar e importar notes.
       this.isLoaded = false;
       const notes = await this.$lsw.database.selectMany("Nota");
       this.allNotes = notes;
@@ -5938,7 +5938,7 @@ Vue.component("LswSchemaBasedForm", {
     saveField(field, value) {
       this.$trace("lsw-schema-based-form.methods.saveField");
       console.log("Should save field:", field, value);
-      // @TODO: use $lsw.database.overwrite to send the field only
+      // *@TODO: use $lsw.database.overwrite to send the field only
 
     },
     validateModel(model) {
@@ -6129,6 +6129,7 @@ rel correr
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
     <div class="pad_1 float_left">
         <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
+        <button class="danger_button" v-on:click="goToDocs">📘</button>
     </div>
     <lsw-notes />
     <lsw-console-hooker />
@@ -6189,6 +6190,10 @@ rel correr
       };
     },
     methods: {
+      goToDocs() {
+        this.$trace("App.methods.goToDocs");
+        this.$window.open("reference/index.html");
+      },
       async resetDatabase() {
         this.$trace("App.methods.resetDatabase");
         const confirmacion = this.$window.confirm("Estás seguro que quieres resetear la base de datos?");

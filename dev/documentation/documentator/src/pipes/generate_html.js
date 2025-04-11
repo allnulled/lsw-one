@@ -32,6 +32,15 @@ const unescape_html_attribute = function (str) {
     .replace(/&amp;/g, "&");
 };
 
+const to_internal_markdown_link = function(text) {
+  const anchor = text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // elimina puntuación
+    .trim()
+    .replace(/\s+/g, '-');    // reemplaza espacios por guiones
+  return `[${text}](#${anchor})`;
+};
+
 const inject_html_attribute_string = function (text) {
   // @TOREVIEW: comprobar si esta es la forma correcta de escapar los tags en un string attr html:
   return escape_html_attribute(text);
@@ -201,6 +210,9 @@ const inject_scripts = function (options) {
   }, {
     type: "module",
     file: "marked.js"
+  }, {
+    type: "module",
+    file: "functions.js"
   }, "highlight.js/autoinject.js"].concat(scripts || []);
   for (let index_script = 0; index_script < final_scripts.length; index_script++) {
     const script_item = final_scripts[index_script];
@@ -223,7 +235,7 @@ const file_to_schema = function(section_ids) {
   for(let index=0; index<section_ids.length; index++) {
     const section_id = section_ids[index];
     code += "<li>";
-    code += "<a href='#'>";
+    code += `<a href="javascript:void(0)" onclick='find_documentation_section(${JSON.stringify(section_id)})'>`;
     code += section_id;
     code += "</a>";
     code += "</li>";

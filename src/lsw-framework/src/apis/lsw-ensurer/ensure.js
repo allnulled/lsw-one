@@ -11,6 +11,18 @@
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Ensurer API » LswEnsurer class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswEnsurer
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswEnsurer class | @section: Lsw Ensurer API » LswEnsurer class
   class AssertionError extends Error {
 
     constructor(...args) {
@@ -554,6 +566,8 @@
     // globalThis.AssertionError = AssertionError;
     globalThis.$ensure.$or = EnsurementV1.$or;
   }
-
+  
   return EnsurementV1;
+  // @code.end: LswEnsurer class
+
 });

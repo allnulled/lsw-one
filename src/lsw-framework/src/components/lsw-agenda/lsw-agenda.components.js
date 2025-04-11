@@ -495,11 +495,11 @@ Vue.component("LswAgenda", {
     },
     async openInsertTaskDialog() {
       this.$trace("lsw-agenda.methods.openInsertTaskDialog");
-      // @TODO: 
+      // *@TODO: 
     },
     async openUpdateTaskDialog(tarea) {
       this.$trace("lsw-agenda.methods.openUpdateTaskDialog");
-      // @TODO: 
+      // *@TODO: 
       this.selectHour(tarea.id);
     },
     async openDeleteTaskDialog(tarea, e) {
@@ -599,7 +599,7 @@ Vue.component("LswAgendaAccionAdd", {
     async insertAccion(v) {
       this.$trace("lsw-agenda-accion-add.methods.insertAccion");
       await this.$lsw.database.insert("Accion", v);
-      // @TODO: should redirect
+      // *@TODO: should redirect
     }
   },
   watch: {},
@@ -731,7 +731,7 @@ Vue.component("LswAgendaConceptoAdd", {
     async insertConcepto(v) {
       this.$trace("lsw-agenda-concepto-add.methods.insertConcepto");
       await this.$lsw.database.insert("Concepto", v);
-      // @TODO: should redirect
+      // *@TODO: should redirect
     }
   },
   watch: {},
@@ -929,7 +929,7 @@ Vue.component("LswAgendaLimitadorAdd", {
     async insertLimitador(v) {
       this.$trace("lsw-agenda-limitador-add.methods.insertLimitador");
       await this.$lsw.database.insert("Limitador", v);
-      // @TODO: should redirect
+      // *@TODO: should redirect
     }
   },
   watch: {},

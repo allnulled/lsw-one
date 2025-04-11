@@ -11,13 +11,39 @@
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw ClassRegister API » LswClassRegister class
+
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswClassRegister
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswClassRegister class | @section: Lsw ClassRegister API » LswClassRegister class
   Promise_extensions: {
     
     globalThis.Promise.prototype.chain = function (nextPromise) {
       return this.then(() => nextPromise);
     };
   }
+  // @code.end: LswClassRegister class
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Compromiser API » LswCompromiser class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswCompromiser
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswCompromiser class | @section: Lsw Compromiser API » LswCompromiser class
   class PromiseMap {
 
     constructor(keys) {
@@ -83,6 +109,7 @@
     }
 
   }
+  // @code.end: LswCompromiser class
 
   globalThis.PromiseMap = PromiseMap;
 

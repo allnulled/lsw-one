@@ -29,14 +29,14 @@
 
   /**
    * 
-   * @$section: Lsw Framework » Lsw Schema API » LswSchema class
+   * @$section: Lsw Schema API » LswSchema class
    * @type: Class
    * @vendor: lsw
    * @namespace: LswSchema
    * @source code: La clase está definida así:
    * 
    */
-  // @code.start: LswSchema class
+  // @code.start: LswSchema class | @section: Lsw Schema API » LswSchema class
   const LswSchema = class {
 
     $trace(methodId, argsList) {
@@ -120,24 +120,12 @@
       return schemaForLsw;
     }
 
-    /**
-     * 
-     * @$section: Lsw Framework » Lsw Schema API « LswSchema class » loadSchemaByProxies method
-     * @description: Este método se encarga de pasar los PROXIES a SCHEMA para el LswDatabase. Sí los registra en la instancia actual: no solo devuelve el schema.
-     * @returns: the general adaptation of SchemaEntity class to Schema Definition Object for LswDatabase.
-     */
     loadSchemaByProxies(aspectId = "SchemaEntity") {
       this.$trace("loadSchemaByProxies", arguments);
       const schema = this.getSchemaByProxies(aspectId);
       return this.registerSchema(schema);
     }
 
-    /**
-     * 
-     * @$section: Lsw Framework » Lsw Schema API « LswSchema class » getSchemaByProxies method
-     * @description: Este método se encarga de pasar los PROXIES a SCHEMA para el LswDatabase. Sí los registra en la instancia actual: no solo devuelve el schema.
-     * @returns: the general adaptation of SchemaEntity class to Schema Definition Object for LswDatabase.
-     */
     getSchemaByProxies(aspectId = "SchemaEntity") {
       this.$trace("getSchemaByProxies", arguments);
       const allSchemaEntities = Object.values($proxifier.$definitions).filter(d => d[aspectId]).map(d => d[aspectId]);
@@ -150,12 +138,6 @@
       return schemaTemp.$schema;
     }
 
-    /**
-     * 
-     * @$section: Lsw Framework » Lsw Schema API « LswSchema class » adaptSchemaEntityToDatabaseSchema method
-     * @description: Este método se encarga de pasar los PROXIES a SCHEMA para el LswDatabase. No los registra: devuelve el schema resultante solamente.
-     * @returns: the general adaptation of SchemaEntity class to Schema Definition Object for LswDatabase.
-     */
     adaptSchemaEntityToDatabaseSchema(SchemaEntityClass) {
       this.$trace("adaptSchemaEntityToDatabaseSchema", arguments);
       const schema = { hasTables: {} };

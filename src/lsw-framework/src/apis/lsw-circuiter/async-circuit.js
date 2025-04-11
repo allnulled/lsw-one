@@ -14,7 +14,7 @@
   /**
    * 
    * 
-   * @$section: Lsw Framework » Lsw Circuiter API » LswCircuiter class
+   * @$section: Lsw Circuiter API » LswCircuiter class
 
    * @type: class
    * @extends: Object
@@ -23,7 +23,7 @@
    * @source code: La clase está definida así:
    * 
    */
-  // @code.start: AsyncCircuit class | @$section: Lsw Framework » Lsw Circuiter API » LswCircuiter class
+  // @code.start: LswCircuiter class | @$section: Lsw Circuiter API » LswCircuiter class
   class AsyncCircuit {
 
     static create(...args) {
@@ -103,7 +103,7 @@
       return await asyncFunction(...argValues); // Ejecutamos el código generado con eval
     }
   }
-  // @code.end: AsyncCircuit class
+  // @code.end: LswCircuiter class
 
   return AsyncCircuit;
 });

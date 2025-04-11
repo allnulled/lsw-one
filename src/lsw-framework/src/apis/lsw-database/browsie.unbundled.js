@@ -11,6 +11,19 @@
   }
 })(function () {
 
+
+  /**
+   * 
+   * 
+   * @$section: Lsw Database API » LswDatabase class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswDatabase
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswDatabase class | @section: Lsw Database API » LswDatabase class
   class BrowsieCheckersAPI {
 
     static mustBeString(obj, method = "Browsie.mustBeString", id = "?") {
@@ -1132,6 +1145,7 @@
 
   LswDatabase.default = LswDatabase;
   window.LswDatabase = LswDatabase;
+  // @code.end: LswDatabase class
 
   return LswDatabase;
 

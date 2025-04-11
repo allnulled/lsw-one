@@ -11,6 +11,18 @@
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Importer API » Importer class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: Importer
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: Importer class | @section: Lsw Importer API » Importer class
   const Importer = class {
 
     static create(...args) {
@@ -342,5 +354,6 @@
   window.importer.options.update_ui = true;
 
   return Importer;
+  // @code.end: Importer class
 
 });

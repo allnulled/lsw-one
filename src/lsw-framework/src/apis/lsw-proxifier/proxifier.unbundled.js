@@ -11,6 +11,18 @@
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: LswProxifier API » LswProxifier class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswProxifier
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswProxifier class | @$section: LswProxifier API » LswProxifier class
   class BaseClass {
     initialize(...args) {
       const promise = this.onInitialize(...args);
@@ -225,6 +237,7 @@
   LswProxifier.default = LswProxifier;
 
   globalThis.$proxifier = LswProxifier.create();
+  // @code.end: LswProxifier class
 
   return LswProxifier;
 

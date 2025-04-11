@@ -134,11 +134,11 @@ Vue.component("LswAgenda", {
     },
     async openInsertTaskDialog() {
       this.$trace("lsw-agenda.methods.openInsertTaskDialog");
-      // @TODO: 
+      // *@TODO: 
     },
     async openUpdateTaskDialog(tarea) {
       this.$trace("lsw-agenda.methods.openUpdateTaskDialog");
-      // @TODO: 
+      // *@TODO: 
       this.selectHour(tarea.id);
     },
     async openDeleteTaskDialog(tarea, e) {

@@ -11,6 +11,18 @@
   }
 })(function () {
 
+  /**
+   * 
+   * 
+   * @$section: Lsw Depender API » LswDepender class
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswDepender
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswDepender class | @section: Lsw Depender API » LswDepender class
   const Definition = class {
     constructor({ id, dependencies = [] }) {
       this.id = id;
@@ -135,6 +147,7 @@
   }
 
   LswDepender.default = LswDepender;
+  // @code.end: LswDepender class
 
   return LswDepender;
 

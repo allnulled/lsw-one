@@ -1,3 +1,18 @@
+
+
+/**
+ * 
+ * 
+ * @$section: Lsw ErrorManager API » LswErrorManager class
+ * @type: class
+ * @extends: Object
+ * @vendor: lsw
+ * @namespace: LswErrorManager
+ * @source code: La clase está definida así:
+ * 
+ */
+// @code.start: LswErrorManager class | @section: Lsw ErrorManager API » LswErrorManager class
+
 globalThis.ErrorSummary = class {
   constructor(data) {
     Object.assign(this, data);
@@ -22,13 +37,13 @@ globalThis.Error = class AccumulableError extends Error {
       stack: this.stack ? this.stack.split("\n    at ") : "",
       ...this,
     };
-    if(this.$accumulatedErrors && this.$accumulatedErrors.length) {
+    if (this.$accumulatedErrors && this.$accumulatedErrors.length) {
       data.$accumulatedErrors = this.$accumulatedErrors;
     }
     return data;
   }
   unified() {
-    this.message = this.message + "\n" + this.$accumulatedErrors.map((e,i) => (i+1) + ': ' + e.name + ': ' + e.message).join("\n");
+    this.message = this.message + "\n" + this.$accumulatedErrors.map((e, i) => (i + 1) + ': ' + e.name + ': ' + e.message).join("\n");
     this.$accumulatedErrors = [];
     return this;
   }
@@ -92,5 +107,7 @@ globalThis.Error = class AccumulableError extends Error {
       commonTraces: commonTraces,
     });
   }
-  
+
 }
+
+// @code.end: LswErrorManager class

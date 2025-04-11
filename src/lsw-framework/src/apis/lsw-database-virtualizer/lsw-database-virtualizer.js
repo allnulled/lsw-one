@@ -11,6 +11,7 @@
   }
 })(function () {
   
+  // @code.start: LswDatabaseVirtualizer class | @section: Lsw DatabaseVirtualizer API » LswDatabaseVirtualizer class
   const LswDatabaseVirtualizer = class {
 
     static create(...args) {
@@ -98,110 +99,111 @@
 
     async onStart() {
       this.$trace("onStart", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onStartValidation() {
       this.$trace("onStartValidation", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onValidateConnection() {
       this.$trace("onValidateConnection", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onValidateSchema() {
       this.$trace("onValidateSchema", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFinishValidation() {
       this.$trace("onFinishValidation", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onDeleteVirtualDatabase() {
       this.$trace("onDeleteVirtualDatabase", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onStartClonation() {
       this.$trace("onStartClonation", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onCloneDatabase() {
       this.$trace("onCloneDatabase", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFinishClonation() {
       this.$trace("onFinishClonation", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onStartVirtualization() {
       this.$trace("onStartVirtualization", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onVirtualizeSchema() {
       this.$trace("onVirtualizeSchema", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onVirtualizeTables() {
       this.$trace("onVirtualizeTables", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onVirtualizeColumns() {
       this.$trace("onVirtualizeColumns", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFinishVirtualization() {
       this.$trace("onFinishVirtualization", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onStartFormalization() {
       this.$trace("onStartFormalization", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFormalizeColumns() {
       this.$trace("onFormalizeColumns", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFormalizeTables() {
       this.$trace("onFormalizeTables", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFormalizeSchema() {
       this.$trace("onFormalizeSchema", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFinishFormalization() {
       this.$trace("onFinishFormalization", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onReport() {
       this.$trace("onReport", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
     async onFinish() {
       this.$trace("onFinish", arguments);
-      // @TODO:
+      // *@TODO:
     }
 
   }
+  // @code.end: LswDatabaseVirtualizer class
 
   return LswDatabaseVirtualizer;
 

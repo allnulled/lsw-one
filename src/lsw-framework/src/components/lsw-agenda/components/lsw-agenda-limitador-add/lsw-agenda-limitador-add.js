@@ -11,7 +11,7 @@ Vue.component("LswAgendaLimitadorAdd", {
     async insertLimitador(v) {
       this.$trace("lsw-agenda-limitador-add.methods.insertLimitador");
       await this.$lsw.database.insert("Limitador", v);
-      // @TODO: should redirect
+      // *@TODO: should redirect
     }
   },
   watch: {},

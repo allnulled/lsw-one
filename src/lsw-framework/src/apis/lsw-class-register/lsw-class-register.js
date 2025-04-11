@@ -11,6 +11,19 @@
   }
 })(function () {
   
+  /**
+   * 
+   * 
+   * @$section: Lsw ClassRegister API » LswClassRegister class
+
+   * @type: class
+   * @extends: Object
+   * @vendor: lsw
+   * @namespace: LswClassRegister
+   * @source code: La clase está definida así:
+   * 
+   */
+  // @code.start: LswClassRegister class | @$section: Lsw ClassRegister API » LswClassRegister class
   class LswClassRegister {
 
     constructor() {
@@ -53,6 +66,7 @@
     }
 
   }
+  // @code.end: LswClassRegister class
 
   window.$lswClassRegistry = new LswClassRegister();
 

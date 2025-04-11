@@ -51,7 +51,7 @@ Vue.component('LswDataExplorer', {
       this.isShowingRelatedDocuments = !this.isShowingRelatedDocuments;
     },
     openDocument(docIndex) {
-      // @TODO:
+      // *@TODO:
       const doc = this.relatedDocuments[docIndex];
       this.documentTitle = doc.title;
       this.documentContent = doc.text;
@@ -61,7 +61,7 @@ Vue.component('LswDataExplorer', {
 
     },
     async applyFastFilter(textFilter = this.textFilter) {
-      // @TODO:
+      // *@TODO:
       try {
         this.hasLoadedInnerValue = false;
         this.$forceUpdate(true);

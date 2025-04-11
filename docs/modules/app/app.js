@@ -43,6 +43,10 @@ rel correr
       };
     },
     methods: {
+      goToDocs() {
+        this.$trace("App.methods.goToDocs");
+        this.$window.open("reference/index.html");
+      },
       async resetDatabase() {
         this.$trace("App.methods.resetDatabase");
         const confirmacion = this.$window.confirm("Estás seguro que quieres resetear la base de datos?");

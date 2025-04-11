@@ -1586,12 +1586,13 @@ button {
     border-radius: 3pt;
     padding: 4px;
     font-family: Arial;
-    font-size: 13px;
+    font-size: 20px;
     cursor: pointer;
     background-color: black;
     color: white;
     margin-bottom: 0px;
-    min-width: 25px;
+    min-width: 40px;
+    min-height: 40px;
     overflow: hidden;
 }
 .like_button:hover,
@@ -3482,12 +3483,13 @@ button {
     border-radius: 3pt;
     padding: 4px;
     font-family: Arial;
-    font-size: 13px;
+    font-size: 20px;
     cursor: pointer;
     background-color: black;
     color: white;
     margin-bottom: 0px;
-    min-width: 25px;
+    min-width: 40px;
+    min-height: 40px;
     overflow: hidden;
 }
 .like_button:hover,

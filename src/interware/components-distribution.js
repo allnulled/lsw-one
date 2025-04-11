@@ -6236,11 +6236,11 @@ rel correr
 
 
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
-    <div class="pad_1 float_left">
+    <lsw-notes />
+    <div class="pad_1">
         <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
         <button class="danger_button" v-on:click="goToDocs">📘</button>
     </div>
-    <lsw-notes />
     <lsw-console-hooker />
     <lsw-windows-viewer />
     <lsw-toasts />

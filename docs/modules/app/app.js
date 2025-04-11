@@ -1,4 +1,5 @@
 (() => {
+  console.log("CARGANDO APP COMO COMPONENTEEEEEE");
   let isFirstTime = true;
   const initialCode = `
 inc /wherever/you/choose.proto

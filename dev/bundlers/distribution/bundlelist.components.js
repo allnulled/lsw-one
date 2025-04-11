@@ -61,4 +61,6 @@ module.exports = [
   `${basepath}/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control`,
   `${basepath}/src/components/lsw-notes/lsw-notes`,
   `${basepath}/src/components/lsw-schema-based-form/lsw-schema-based-form`,
+  `${basepath}/src/modules/org.allnulled.lsw-conductometria/components/lsw-protolang-editor/lsw-protolang-editor`,
+  `${basepath}/src/modules/app/app`,
 ];

@@ -20102,7 +20102,6 @@ if (typeof window !== "undefined" && "Vue" in window) {
 
 /******/ })["default"];
 });
-//# sourceMappingURL=vuedraggable.umd.js.map
 /**!
  * Sortable
  * @author	RubaXa   <trash@rubaxa.org>
@@ -22637,7 +22636,7 @@ if (typeof window !== "undefined" && "Vue" in window) {
         id_loader_bar: "#intersitial_loader_bar",
         trace: false,
         update_ui: false,
-        update_ui_minimum_milliseconds: 1200,
+        update_ui_minimum_milliseconds: 200,
       }, options_input);
       this.options = options;
       Duplicated_options: {
@@ -22775,7 +22774,11 @@ if (typeof window !== "undefined" && "Vue" in window) {
           }, this.options.update_ui_minimum_milliseconds);
         } else {
           const intersitial = document.querySelector(this.id);
-          intersitial.remove();
+          if (intersitial) {
+            intersitial.remove();
+          } else {
+            console.log("Cannot remove intersitial. Insert «" + this.id + "» to skip this warning");
+          }
         }
       } catch (error) {
         console.log(error);
@@ -29029,7 +29032,6 @@ if (typeof window !== "undefined" && "Vue" in window) {
 
 /******/ })["default"];
 });
-//# sourceMappingURL=vuedraggable.umd.js.map
 /*!
  * Socket.IO v4.8.1
  * (c) 2014-2024 Guillermo Rauch
@@ -51028,349 +51030,139 @@ Vue.component("LswSchemaBasedForm", {
     }
   }
 });
+(() => {
+  console.log("CARGANDO APP COMO COMPONENTEEEEEE");
+  let isFirstTime = true;
+  const initialCode = `
+inc /wherever/you/choose.proto
+
+def correr {
+  "definicion": @definicion "Correr es tal"
+}
+
+add 2025/01/01
+  00:00 correr * 1h
+  00:00 saltar * 5min
+  00:00 comer * @alimentos [["leche","0.3L"],["cacao","2g"]]
+
+fun yo.correr {
+  // Nolose, aquí JS.
+}
+
+rel correr
+  > cardio * 2
+  >> yo.correr
+
+`.trim();
+  // Change this component at your convenience:
+  Vue.component("App", {
+    template: `<div>
+
+
+    <!--lsw-protolang-editor :initial-contents="initialContents" /-->
+    <div class="pad_1 float_left">
+        <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
+    </div>
+    <lsw-notes />
+    <lsw-console-hooker />
+    <lsw-windows-viewer />
+    <lsw-toasts />
+    <!--
+    <button v-on:click="uploadConductometria" v-if="!conductometria.registros">Abrir conductometría</button>
+    <button v-on:click="clearConductometria" v-else>Cerrar</button>
+    <button v-on:click="openDialog">Abrir diálogo</button>
+    <button v-on:click="openDialogSequence">Abrir secuencia de diálogos</button>
+    <div style="height: 4px;"></div>
+    <pre class="conductometria_viewer_1" style="display: none;">{{ conductometria }}</pre>
+    <hr/>
+    <lsw-schema-based-form :on-submit="(v) => console.log(v)" :model="{
+        databaseId: 'lsw_default_database',
+        tableId: 'Accion',
+        rowId: 1
+    }"/>
+    <hr/>
+    <div>
+        <div class="control_form" v-xform.form="{
+            onSubmit: v => console.log(v)
+        }" ref="form">
+            <button v-on:click="() => \$refs.form.\$xform.validate()">validate</button>
+            <div class="control_user" v-xform.control="{
+                name:'user',
+                debug:1,
+                onValidate: v => {
+                    if(v === '') {
+                        throw new Error('taloco');
+                    }
+                }
+            }">
+                <input class="control_user_name" v-xform.input="{
+                    name:'*'
+                }" type="text" />
+                <div v-xform.error="{}"></div>
+            </div>
+        </div>
+    </div>
+    -->
+</div>`,
+    props: {
+      uuid: {
+        type: String,
+        default: () => {
+          return Vue.prototype.$lsw.utils.getRandomString(10);
+        }
+      }
+    },
+    data() {
+      return {
+        formScope: {},
+        userScope: {},
+        conductometria: [],
+        conductometria_minified_days: [],
+        initialContents: initialCode
+      };
+    },
+    methods: {
+      async resetDatabase() {
+        this.$trace("App.methods.resetDatabase");
+        const confirmacion = this.$window.confirm("Estás seguro que quieres resetear la base de datos?");
+        if(!confirmacion) return;
+        const reconfirmacion = this.$window.confirm("Seguro, eh?");
+        if(!reconfirmacion) return;
+        try {
+          await this.$lsw.database.close();
+        } catch (error) {
+          console.log(error);
+        }
+        try {
+          await LswDatabase.deleteDatabase();
+        } catch (error) {
+          console.log(error);
+        }
+        try {
+          this.$lsw.database = await LswDatabase.open("lsw_default_database");
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    mounted() {
+      console.log("[*] Application mounted.");
+      if (isFirstTime) {
+        Vue.prototype.$app = this;
+        isFirstTime = false;
+        window.dispatchEvent(new CustomEvent("lsw_app_mounted", {
+          applicationUuid: this.uuid,
+          $lsw: this.$lsw,
+          appComponent: this,
+        }));
+      }
+    }
+  });
+})();
 });
 
 
 
-const boot = async function () {
-  try {
-    Step_1_import_logic: {
-      if (window.process.NODE_ENV === "production") {
-        Download_sources_on_production: {
-          importer.setTotal(1);
-          importer.setTimeout(1000 * 1);
-          await Promise.all([
-            importer.scriptSrc("assets/distribution.js"),
-            importer.linkStylesheet("assets/distribution.css"),
-          ]);
-        }
-      } else if (window.process.NODE_ENV === "test") {
-        Download_sources_on_test: {
-          importer.setTotal(252);
-          importer.setTimeout(500 * 1);
-          /*BUILDER DE DISTRIBUTION:////
-          const basepath = require("path").resolve(__dirname + "/../../../src/lsw-framework");
-          module.exports = [
-            `${basepath}/src/others/vue/vue2.min.js`,
-            `${basepath}/src/apis/lsw-ensurer/ensure.js`,
-            `${basepath}/src/apis/lsw-tester/universal-tester.js`,
-            `${basepath}/src/apis/lsw-circuiter/async-circuit.js`,
-            `${basepath}/src/apis/lsw-commander/url-command.js`,
-            `${basepath}/src/apis/lsw-trigger/triggers-class.js`,
-            `${basepath}/src/apis/lsw-database/browsie.unbundled.js`,
-            // `${basepath}/src/apis/lsw-importer/importer.js`,
-            `${basepath}/src/apis/lsw-logger/superlogger.unbundled.js`,
-            `${basepath}/src/apis/lsw-returner/controlled-function.js`,
-            `${basepath}/src/apis/lsw-store/dist/store.unbundled.js`,
-            `${basepath}/src/apis/lsw-timer/timeformat.js`,
-            `${basepath}/src/apis/lsw-cycler/lsw-cycler.js`,
-            `${basepath}/src/apis/lsw-compromiser/lsw-compromiser.js`,
-            `${basepath}/src/apis/lsw-utils/lsw-utils.js`,
-            `${basepath}/src/apis/lsw-filesystem/ufs-v1.0.2.js`,
-            `${basepath}/src/others/socket.io-client/socket.io-client.js`,
-            `${basepath}/src/directives/v-descriptor/v-descriptor.js`,
-            `${basepath}/src/directives/v-focus/v-focus.js`,
-            `${basepath}/src/components/lsw-form-controls/api/api.js`,
-            `${basepath}/src/others/vue.draggable/sortable.js`,
-            `${basepath}/src/others/vue.draggable/vue.draggable.js`,
-            `${basepath}/src/apis/lsw-filesystem/lsw-filesystem.unbundled.js`,
-            `${basepath}/src/apis/lsw-reloader/reloadable.js`,
-            `${basepath}/src/lsw-components.js`,
-            `${basepath}/src/lsw-api.js`,
-          ];
-          ////////////////////////////*/
-          Preset_wave: {
-            await Promise.all([
-              // Vue@2:
-              importer.scriptSrc(`lsw-framework/src/others/vue/vue2.${process.env.NODE_ENV === 'test' ? 'dev' : 'min'}.js`),
-              // Socket.io:
-              importer.scriptSrc("lsw-framework/src/others/socket.io-client/socket.io-client.js"),
-              // LSW Error Manager:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-error-manager/lsw-error-manager.js"),
-            ]);
-          }
-          First_wave: {
-            // Low-level APIs:
-            await Promise.all([
-              // Importer is already imported:
-              // importer.scriptSrc("lsw-framework/src/apis/lsw-importer/importer.js"),
-              // LSW Reloadable script:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-reloader/reloadable.js"),
-              // LSW Asserter:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-ensurer/ensure.js"),
-              // LSW Tester:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-tester/universal-tester.js"),
-              // LSW DOM:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-dom/lsw-dom.js"),
-              importer.scriptSrc("lsw-framework/src/apis/lsw-dom/lsw-vue2.js"),
-              // LSW Proxifier:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-proxifier/proxifier.unbundled.js"),
-              // LSW Randomizer:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-randomizer/lsw-randomizer.js"),
-              // LSW Circuiter:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-circuiter/async-circuit.js"),
-              // LSW Commander:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-commander/url-command.js"),
-              // LSW Trigger:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-trigger/triggers-class.js").then(() => {
-                // LSW Database:
-                return importer.scriptSrc("lsw-framework/src/apis/lsw-database/browsie.unbundled.js");
-              }),
-              // LSW Logger:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-logger/superlogger.unbundled.js"),
-              // LSW Returner:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-returner/controlled-function.js"),
-              // LSW Store:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-store/dist/store.unbundled.js"),
-              // LSW Timer Parser (not API):
-              importer.scriptSrc("lsw-framework/src/apis/lsw-timer/timeformat.js"),
-              // LSW Cycler:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-cycler/lsw-cycler.js").then(() => {
-                // LSW App Lifecycle:
-                return importer.scriptSrc("lsw-framework/src/apis/lsw-lifecycle/lsw-lifecycle.js");
-              }),
-              // LSW Compromiser:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-compromiser/lsw-compromiser.js"),
-              // LSW Utilities:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-utils/lsw-utils.js"),
-              // UFS:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-filesystem/ufs-v1.0.2.js"),
-              // JSON typer:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-typer/lsw-typer.js").then(() => {
-                // JSON typer API:
-                return importer.scriptSrc("lsw-framework/src/apis/lsw-typer/lsw-typer.api.js");
-              }).then(() => {
-                // JSON typer default types:
-                return Promise.all([
-                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/org.allnulled.lsw/type/duration.js"),
-                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/org.allnulled.lsw/type/day.js"),
-                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/org.allnulled.lsw/type/moment.js"),
-                ]).then(() => Promise.all([
-                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/duration.js"),
-                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/day.js"),
-                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/moment.js"),
-                ]));
-              }),
-              // LSW ConsoleHooker API (not component):
-              importer.scriptSrc("lsw-framework/src/components/lsw-console-hooker/console-hooker-api.js"),
-              // LSW Formtypes:
-              importer.scriptSrc("lsw-framework/src/components/lsw-formtypes/api/api.js"),
-              importer.linkStylesheet("lsw-framework/src/components/lsw-formtypes/api/api.css"),
-            ]);
-          }
-          Interlude_for_dependencies_to_load_1: {
-            await waitForConditions({
-              timeout: 1000 * 3,
-              timeoutError: new Error("[!] Could not load all dependencies on «boot.js» (interlude 1)"),
-              intervalsOf: 10,
-              conditions: [
-                ["Vue is loaded", () => typeof Vue !== "undefined"],
-                ["LswDatabase is loaded", () => typeof LswDatabase !== "undefined"],
-                ["LswCycler is loaded", () => typeof LswCycler !== "undefined"],
-              ]
-            });
-          }
-          Second_wave: {
-            await Promise.all([
-              // LSW SchemaBuilder:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-schema/lsw-schema.js"),
-              // LSW Class Register & Registry:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-class-register/lsw-class-register.js"),
-              // LSW Formtypes » FormBuilder:
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-error-viewer/lsw-error-viewer"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control"),
-              // LSW Database Virtualizer:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-database-virtualizer/lsw-database-virtualizer.js"),
-              // LSW Database Adapter:
-              importer.scriptSrc("lsw-framework/src/components/lsw-database-ui/database-adapter/LswDatabaseAdapter.js"),
-              // LSW Directives for Vue.js:
-              importer.scriptSrc("lsw-framework/src/directives/v-descriptor/v-descriptor.js"),
-              importer.scriptSrc("lsw-framework/src/directives/v-focus/v-focus.js"),
-              importer.scriptSrc("lsw-framework/src/directives/v-xform/v-xform.js"),
-              // LSW Timeformat API (not Parser):
-              importer.scriptSrc("lsw-framework/src/apis/lsw-timer/timeformat.api.js"),
-              // LSW Depender:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-depender/lsw-depender.js"),
-              // LSW Schema Form Vue component:
-              importer.importVueComponent("lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form"),
-              // LSW Sortable and draggable 3rd parties:
-              importer.scriptSrc("lsw-framework/src/others/vue.draggable/sortable.js"),
-              importer.scriptSrc("lsw-framework/src/others/vue.draggable/vue.draggable.js"),
-              // LSW Filesystem Vue component:
-              importer.scriptSrc("lsw-framework/src/apis/lsw-filesystem/lsw-filesystem.unbundled.js"),
-              /////////////////////////////////////////////////////////////////////
-              // COMPONENTS::START ////////////////////////////////////////////////
-              /////////////////////////////////////////////////////////////////////
-              // LSW Form controls API & components:
-              // Ahora:
-              importer.scriptSrc("lsw-framework/src/directives/v-form/v-form.js"),
-              // LSW Table component:
-              importer.scriptSrc("lsw-framework/src/components/lsw-table/lsw-table/lsw-table-interface.js")
-                .then(() => Promise.all([
-                  importer.importVueComponent("lsw-framework/src/components/lsw-table/lsw-table/lsw-table"),
-                  importer.importVueComponent("lsw-framework/src/components/lsw-table/lsw-database-table/lsw-database-table")
-                ])),
-              // LSW Dialogs API & components:
-              importer.importVueComponent("lsw-framework/src/components/lsw-dialogs/lsw-dialogs"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-windows/lsw-windows-pivot-button/lsw-windows-pivot-button"),
-              // LSW Toast components:
-              importer.importVueComponent("lsw-framework/src/components/lsw-toasts/lsw-toasts"),
-              // LSW ConsoleHooker Component (not API):
-              importer.importVueComponent("lsw-framework/src/components/lsw-console-hooker/console-hooker"),
-              // LSW Database adapter API & components:
-              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/page-databases/page-databases"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/page-rows/page-rows"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/page-row/page-row"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/page-schema/page-schema"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/page-tables/page-tables"),
-              /////////////////////////////////////////////////////////////////////
-              // COMPONENTS::END //////////////////////////////////////////////////
-              /////////////////////////////////////////////////////////////////////
-            ]);
-
-          }
-          Third_wave: {
-            // Specific styles of the UI toolkit of the framework:
-            await importer.linkStylesheet("lsw-framework/src/styles/lsw-styling-structure.css");
-            await importer.linkStylesheet("lsw-framework/src/styles/lsw-styling-theme.css");
-            await importer.linkStylesheet("lsw-framework/src/styles/lsw-styling-framework.css");
-          }
-          Fourth_wave_for_extra_apis: {
-            // XLSX for external Excel loads: (most of the time unneeded)
-            // await importer.scriptSrc("assets/lib/sheetjs/xlsx.full.min.js");
-          }
-          Domain_specific_wave: {
-            await Promise.all([
-              // LSW Filesystem explorer components:
-              importer.importVueComponent("lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer"),
-              // LSW Wiki components:
-              importer.importVueComponent("lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki"),
-              // LSW Notes component:
-              importer.importVueComponent("lsw-framework/src/components/lsw-notes/lsw-notes"),
-              // LSW Agenda components:
-              importer.importVueComponent("lsw-framework/src/components/lsw-calendario/lsw-calendario"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search"),
-              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search"),
-            ]);
-          }
-        }
-      }
-    } // End of Step 1: import logic
-    Import_application_now: {
-      await Promise.all([
-        // LSW Application component:
-        importer.importVueComponent("modules/app/app"),
-      ]);
-    }
-    Step_2_wait_for_dependencies_to_be_loaded_or_fail: {
-      await waitForConditions({
-        timeout: 1000 * 3,
-        timeoutError: new Error("[!] Could not load all dependencies on «boot.js»"),
-        intervalsOf: 10,
-        conditions: [
-          ["Superlogger is loaded", () => typeof Superlogger !== "undefined"],
-          ["Browsie is loaded", () => typeof Browsie !== "undefined"],
-          ["LswDatabase is loaded", () => typeof LswDatabase !== "undefined"],
-          ["LswCycler is loaded", () => typeof LswCycler !== "undefined"],
-        ]
-      });
-    }
-    Step_3_organize_api: {
-      Vue.prototype.$noop = () => { };
-      Vue.prototype.$window = window;
-      Vue.prototype.$console = console;
-      Vue.prototype.$vue = Vue;
-      Vue.prototype.$lsw = {};
-      Inject_global_api: {
-        Vue.prototype.$lsw.importer = importer;
-        Vue.prototype.$lsw.logger = Superlogger.create("lsw");
-        Vue.prototype.$trace = (...args) => Vue.prototype.$lsw.logger.trace(...args);
-        Vue.prototype.$lsw.utils = LswUtils;
-        Vue.prototype.$lsw.timer = LswTimer;
-        Vue.prototype.$lsw.windows = null;
-        Vue.prototype.$lsw.dialogs = null;
-        Vue.prototype.$lsw.toasts = null;
-        Vue.prototype.$lsw.proxifier = $proxifier;
-        Vue.prototype.$lsw.fs = null;
-        Vue.prototype.$lsw.wiki = null;
-        Vue.prototype.$lsw.agenda = null;
-      }
-      Vue.prototype.$lsw.classes = {};
-      Inject_classes_api: {
-        Vue.prototype.$lsw.classes.Logger = Superlogger;
-        Vue.prototype.$lsw.classes.Proxifier = LswProxifier;
-        Vue.prototype.$lsw.classes.Ensurer = LswEnsurer;
-        Vue.prototype.$lsw.classes.Randomizer = LswRandomizer;
-        Vue.prototype.$lsw.classes.Proxifier = LswProxifier;
-        Vue.prototype.$lsw.classes.DatabaseMigration = LswDatabaseMigration;
-        Vue.prototype.$lsw.classes.Database = LswDatabase;
-        Vue.prototype.$lsw.classes.Cycler = LswCycler;
-        Vue.prototype.$lsw.classes.Compromiser = LswCompromiser;
-        Vue.prototype.$lsw.classes.Utils = LswUtils;
-        Vue.prototype.$lsw.classes.Formtypes = LswFormtypes;
-        Vue.prototype.$lsw.classes.Schema = LswSchema;
-        Vue.prototype.$lsw.classes.Lifecycle = LswLifecycle;
-        Vue.prototype.$lsw.classes.DatabaseVirtualizer = LswDatabaseVirtualizer;
-        // Vue.prototype.$lsw.classes.DatabaseAdapter = LswDatabaseAdapter;
-        Vue.prototype.$lsw.classes.Timer = LswTimer;
-        Vue.prototype.$lsw.classes.Depender = LswDepender;
-        Vue.prototype.$lsw.classes.Filesystem = LswFilesystem;
-        Vue.prototype.$lsw.classes.ConsoleHooker = ConsoleHooker;
-        Vue.prototype.$lsw.classes.ClassRegister = LswClassRegister;
-        // Vue.prototype.$lsw.classes.Dialogs = LswDialogs;
-        // Vue.prototype.$lsw.classes.Windows = LswWindows;
-        // Vue.prototype.$lsw.classes.Toasts = LswToasts;
-      }
-    }
-    Step_4_export_framework: {
-      window.lsw = Vue.prototype.$lsw;
-    }
-    Step_5_import_modules_runner: {
-      await importer.scriptSrc("runner.js");
-    }
-
-  } catch (error) {
-    console.error(error);
-    console.log("[!] Boot failed");
-  }
-};
-
-window.addEventListener("load", boot);
 (function(factory) {
   const mod = factory();
   if(typeof window !== 'undefined') {
@@ -58025,6 +57817,135 @@ Vue.component("LswSchemaBasedForm", {
     }
   }
 });
+(() => {
+  console.log("CARGANDO APP COMO COMPONENTEEEEEE");
+  let isFirstTime = true;
+  const initialCode = `
+inc /wherever/you/choose.proto
+
+def correr {
+  "definicion": @definicion "Correr es tal"
+}
+
+add 2025/01/01
+  00:00 correr * 1h
+  00:00 saltar * 5min
+  00:00 comer * @alimentos [["leche","0.3L"],["cacao","2g"]]
+
+fun yo.correr {
+  // Nolose, aquí JS.
+}
+
+rel correr
+  > cardio * 2
+  >> yo.correr
+
+`.trim();
+  // Change this component at your convenience:
+  Vue.component("App", {
+    template: `<div>
+
+
+    <!--lsw-protolang-editor :initial-contents="initialContents" /-->
+    <div class="pad_1 float_left">
+        <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
+    </div>
+    <lsw-notes />
+    <lsw-console-hooker />
+    <lsw-windows-viewer />
+    <lsw-toasts />
+    <!--
+    <button v-on:click="uploadConductometria" v-if="!conductometria.registros">Abrir conductometría</button>
+    <button v-on:click="clearConductometria" v-else>Cerrar</button>
+    <button v-on:click="openDialog">Abrir diálogo</button>
+    <button v-on:click="openDialogSequence">Abrir secuencia de diálogos</button>
+    <div style="height: 4px;"></div>
+    <pre class="conductometria_viewer_1" style="display: none;">{{ conductometria }}</pre>
+    <hr/>
+    <lsw-schema-based-form :on-submit="(v) => console.log(v)" :model="{
+        databaseId: 'lsw_default_database',
+        tableId: 'Accion',
+        rowId: 1
+    }"/>
+    <hr/>
+    <div>
+        <div class="control_form" v-xform.form="{
+            onSubmit: v => console.log(v)
+        }" ref="form">
+            <button v-on:click="() => \$refs.form.\$xform.validate()">validate</button>
+            <div class="control_user" v-xform.control="{
+                name:'user',
+                debug:1,
+                onValidate: v => {
+                    if(v === '') {
+                        throw new Error('taloco');
+                    }
+                }
+            }">
+                <input class="control_user_name" v-xform.input="{
+                    name:'*'
+                }" type="text" />
+                <div v-xform.error="{}"></div>
+            </div>
+        </div>
+    </div>
+    -->
+</div>`,
+    props: {
+      uuid: {
+        type: String,
+        default: () => {
+          return Vue.prototype.$lsw.utils.getRandomString(10);
+        }
+      }
+    },
+    data() {
+      return {
+        formScope: {},
+        userScope: {},
+        conductometria: [],
+        conductometria_minified_days: [],
+        initialContents: initialCode
+      };
+    },
+    methods: {
+      async resetDatabase() {
+        this.$trace("App.methods.resetDatabase");
+        const confirmacion = this.$window.confirm("Estás seguro que quieres resetear la base de datos?");
+        if(!confirmacion) return;
+        const reconfirmacion = this.$window.confirm("Seguro, eh?");
+        if(!reconfirmacion) return;
+        try {
+          await this.$lsw.database.close();
+        } catch (error) {
+          console.log(error);
+        }
+        try {
+          await LswDatabase.deleteDatabase();
+        } catch (error) {
+          console.log(error);
+        }
+        try {
+          this.$lsw.database = await LswDatabase.open("lsw_default_database");
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    mounted() {
+      console.log("[*] Application mounted.");
+      if (isFirstTime) {
+        Vue.prototype.$app = this;
+        isFirstTime = false;
+        window.dispatchEvent(new CustomEvent("lsw_app_mounted", {
+          applicationUuid: this.uuid,
+          $lsw: this.$lsw,
+          appComponent: this,
+        }));
+      }
+    }
+  });
+})();
 });
 
 /*!
@@ -71331,5 +71252,1330 @@ return jQuery;
   exports.walkTokens = walkTokens;
 
 });
-//# sourceMappingURL=marked.umd.js.map
 
+LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled.lsw.wiki", function() {
+  console.log("[*] Installing wiki");
+  return LswUtils.waitForMilliseconds(1);
+});
+LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled.lsw.fs", function() {
+  console.log("[*] Installing fs");
+  return LswUtils.waitForMilliseconds(1);
+});
+LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled.lsw.db", function() {
+  console.log("[*] Installing db");
+  return LswUtils.waitForMilliseconds(1);
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Accion", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Accion@SchemaEntity";
+    }
+    static getName() {
+      return "Accion";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        en_concepto: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "En concepto de:",
+          hasDescription: "Nombre del concepto al que se atribuye la impresión",
+          hasPlaceholder: "Ej: Correr",
+          hasExtraAttributes: {},
+        },
+        tiene_estado: {
+          isType: "text",
+          isFormType: "options",
+          isIndexed: true,
+          hasFormtypeParameters: {
+            type: "selector",
+            available: ["pendiente", "completada", "fallida"],
+            selectable: 1, // could be: number or "*" to all options
+            defaultValue: "pendiente",
+          },
+          hasValidator(v) {
+            if(v === "fallida") {
+              throw new Error("No losers, por favor");
+            }
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene estado:",
+          hasDescription: "Estado en el que se encuentra la acción. Puede ser «pendiente», «completada» o «fallida»",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_inicio: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasLabel: "Tiene inicio:",
+          hasDescription: "Momento en que empieza la acción",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_duracion: {
+          isType: "text",
+          isFormType: "duration",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            LswTimer.utils.isDurationOrThrow(v);
+          },
+          hasFormatter(v) {
+            return LswTimer.parser.parse(v)[0];
+          },
+          hasLabel: "Tiene duración:",
+          hasDescription: "Cantidad de tiempo que dura la acción",
+          hasPlaceholder: "Ej: 1h 20min",
+          hasExtraAttributes: {},
+        },
+        tiene_parametros: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene parámetros:",
+          hasDescription: "",
+          hasPlaceholder: "Ej: leche, trigo, arroz",
+          hasExtraAttributes: {},
+        },
+        tiene_resultados: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene resultados:",
+          hasDescription: "Resultados notorios asociados a esta acción",
+          hasPlaceholder: "Ej:\n- Cogí fuerzas hasta el almuerzo\n- Disfruté de un buen desayuno",
+          hasExtraAttributes: {},
+        },
+        tiene_comentarios: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene comentarios:",
+          hasDescription: "Comentarios asociados a esta acción",
+          hasPlaceholder: "Esta acción me tomó varios intentos porque...",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Accion@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "acción"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Concepto", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Concepto@SchemaEntity";
+    }
+    static getName() {
+      return "Concepto";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_nombre: {
+          refersTo: false,
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          isUnique: true,
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Nombre único del concepto:",
+          hasDescription: "Nombre del concepto en sí",
+          hasPlaceholder: "Ej: Desayunar",
+          hasExtraAttributes: {}
+        },
+        tiene_comentarios: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene comentarios:",
+          hasDescription: "Comentarios asociados a este concepto",
+          hasPlaceholder: "Ej: este concepto puede ser ambiguo porque...",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getExternalProperties() {
+      return {
+        tiene_limitadores: {
+          isType: "ref-list",
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Limitador@SchemaEntity",
+            table: "Limitador",
+            property: "id",
+          },
+          hasLabel: "Tiene limitadores",
+          hasDescription: "Limitadores asociados a este concepto",
+          hasPlaceholder: ""
+        }
+      };
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Concepto@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "concepto"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Categoria_de_concepto", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Categoria_de_concepto@SchemaEntity";
+    }
+    static getName() {
+      return "Categoria_de_concepto";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_nombre: {
+          refersTo: false,
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          isUnique: true,
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Nombre de la categoría de concepto:",
+          hasDescription: "Una categoría es una agrupación de conceptos desde una perspectiva de área o campo de conocimiento.",
+          hasPlaceholder: "Ej: Programación",
+          hasExtraAttributes: {}
+        },
+        tiene_descripcion: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene descripción:",
+          hasDescription: "Descripción de la categoría de conceptos con más detalle.",
+          hasPlaceholder: "La programación es el campo de...",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Categoria_de_concepto@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "concepto"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Propagador_prototipo", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Propagador_prototipo@SchemaEntity";
+    }
+    static getName() {
+      return "Propagador_prototipo";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_nombre: {
+          refersTo: false,
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          isUnique: true,
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Nombre único del propagador prototipo:",
+          hasDescription: "Nombre del propagador prototipo en sí",
+          hasPlaceholder: "Ej: al desayunar",
+          hasExtraAttributes: {}
+        },
+        tiene_funcion: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene función:",
+          hasDescription: "Código JavaScript asociado al propagador prototipo",
+          hasPlaceholder: "...",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Propagador_prototipo@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "propagador prototipo"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Propagador_de_concepto", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Propagador_de_concepto@SchemaEntity";
+    }
+    static getName() {
+      return "Propagador_de_concepto";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_propagador_prototipo: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Propagador_prototipo@SchemaEntity",
+            table: "Propagador_prototipo",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Propagador prototipo:",
+          hasDescription: "Nombre del propagador prototipo que tiene la función propagativa correspondiente a esta propagación de concepto concreta",
+          hasPlaceholder: "Ej: al desayunar",
+          hasExtraAttributes: {},
+        },
+        tiene_concepto_origen: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene concepto origen:",
+          hasDescription: "Nombre del concepto origen en esta relación propagativa",
+          hasPlaceholder: "Ej: Desayunar",
+          hasExtraAttributes: {},
+        },
+        tiene_concepto_destino: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene concepto destino:",
+          hasDescription: "Nombre del concepto destino en esta relación propagativa",
+          hasPlaceholder: "Ej: Recuperar energía",
+          hasExtraAttributes: {},
+        },
+        tiene_parametros_extra: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene parámetros extra:",
+          hasDescription: "JSON con los parámetros extra",
+          hasPlaceholder: "{}",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Propagador_de_concepto@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "Propagador de concepto"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Limitador", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Limitador@SchemaEntity";
+    }
+    static getName() {
+      return "Limitador";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        en_concepto: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "En concepto de:",
+          hasDescription: "Nombre del concepto al que se atribuye el limitador",
+          hasPlaceholder: "Ej: Dormir",
+          hasExtraAttributes: {},
+        },
+        tiene_funcion: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene función:",
+          hasDescription: "Código JavaScript asociado al limitador",
+          hasPlaceholder: "...",
+          hasExtraAttributes: {},
+        },
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Limitador@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "limitador"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Impresion_de_concepto", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Impresion_de_concepto@SchemaEntity";
+    }
+    static getName() {
+      return "Impresion_de_concepto";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        en_concepto: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "En concepto de:",
+          hasDescription: "Nombre del concepto al que se atribuye la impresión",
+          hasPlaceholder: "Ej: Correr",
+          hasExtraAttributes: {},
+        },
+        tiene_valores: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene valores:",
+          hasDescription: "Valores asociados a esta impresión",
+          hasPlaceholder: "Ej: 1000p, 50h",
+          hasExtraAttributes: {},
+        },
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Impresion_de_concepto@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "impresión de concepto"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Nota", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Nota@SchemaEntity";
+    }
+    static getName() {
+      return "Nota";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_titulo: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene título:",
+          hasDescription: "El título que se asociará a la nota",
+          hasPlaceholder: "Título de la nota",
+          hasExtraAttributes: {},
+        },
+        tiene_fecha: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasLabel: "Tiene fecha:",
+          hasDescription: "Momento en que se creó la nota",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_categorias: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene categorias:",
+          hasDescription: "El categorías de esta nota, separadas por «;» entre sí.",
+          hasPlaceholder: "Categoría 1; categoría 2; categoría 3",
+          hasExtraAttributes: {},
+        },
+        tiene_estado: {
+          isType: "text",
+          isFormType: "options",
+          isIndexed: true,
+          hasFormtypeParameters: {
+            type: "selector",
+            available: ["creada", "procesada", "dudosa", "desestimada"],
+            selectable: 1, // could be: number or "*" to all options
+            defaultValue: "creada",
+          },
+          hasValidator(v) {
+            
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene estado:",
+          hasDescription: "Estado de la nota. Puede ser «creada», «procesada», «dudosa» o «desestimada»",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_contenido: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene contenido:",
+          hasDescription: "El contenido de esta nota. Permite markdown.",
+          hasPlaceholder: "El **contenido** de tu nota o artículo.",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Nota@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "nota"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+const boot = async function () {
+  try {
+
+    Step_0_organize_api: {
+      Vue.prototype.$noop = () => { };
+      Vue.prototype.$window = window;
+      Vue.prototype.$console = console;
+      Vue.prototype.$vue = Vue;
+      Vue.prototype.$lsw = {};
+      Inject_global_api: {
+        Vue.prototype.$lsw.importer = importer;
+        Vue.prototype.$lsw.logger = Superlogger.create("lsw");
+        Vue.prototype.$trace = (...args) => Vue.prototype.$lsw.logger.trace(...args);
+        Vue.prototype.$lsw.utils = LswUtils;
+        Vue.prototype.$lsw.timer = LswTimer;
+        Vue.prototype.$lsw.windows = null;
+        Vue.prototype.$lsw.dialogs = null;
+        Vue.prototype.$lsw.toasts = null;
+        Vue.prototype.$lsw.proxifier = $proxifier;
+        Vue.prototype.$lsw.fs = null;
+        Vue.prototype.$lsw.wiki = null;
+        Vue.prototype.$lsw.agenda = null;
+      }
+      Vue.prototype.$lsw.classes = {};
+      Inject_classes_api: {
+        Vue.prototype.$lsw.classes.Logger = Superlogger;
+        Vue.prototype.$lsw.classes.Proxifier = LswProxifier;
+        Vue.prototype.$lsw.classes.Ensurer = LswEnsurer;
+        Vue.prototype.$lsw.classes.Randomizer = LswRandomizer;
+        Vue.prototype.$lsw.classes.Proxifier = LswProxifier;
+        Vue.prototype.$lsw.classes.DatabaseMigration = LswDatabaseMigration;
+        Vue.prototype.$lsw.classes.Database = LswDatabase;
+        Vue.prototype.$lsw.classes.Cycler = LswCycler;
+        Vue.prototype.$lsw.classes.Compromiser = LswCompromiser;
+        Vue.prototype.$lsw.classes.Utils = LswUtils;
+        Vue.prototype.$lsw.classes.Formtypes = LswFormtypes;
+        Vue.prototype.$lsw.classes.Schema = LswSchema;
+        Vue.prototype.$lsw.classes.Lifecycle = LswLifecycle;
+        Vue.prototype.$lsw.classes.DatabaseVirtualizer = LswDatabaseVirtualizer;
+        // Vue.prototype.$lsw.classes.DatabaseAdapter = LswDatabaseAdapter;
+        Vue.prototype.$lsw.classes.Timer = LswTimer;
+        Vue.prototype.$lsw.classes.Depender = LswDepender;
+        Vue.prototype.$lsw.classes.Filesystem = LswFilesystem;
+        Vue.prototype.$lsw.classes.ConsoleHooker = ConsoleHooker;
+        Vue.prototype.$lsw.classes.ClassRegister = LswClassRegister;
+        // Vue.prototype.$lsw.classes.Dialogs = LswDialogs;
+        // Vue.prototype.$lsw.classes.Windows = LswWindows;
+        // Vue.prototype.$lsw.classes.Toasts = LswToasts;
+      }
+    }
+
+    Step_1_import_logic: {
+      if (window.process.NODE_ENV === "production") {
+        Download_sources_on_production: {
+          importer.setTotal(0);
+          Promise.all([
+            // Estamos ya en el distribution, así que no lo cargamos:
+            // importer.scriptSrc("assets/distribution.js"),
+            // importer.linkStylesheet("assets/distribution.css"),
+          ]);
+        }
+      } else if (window.process.NODE_ENV === "test") {
+        Download_sources_on_test: {
+          importer.setTotal(252);
+          importer.setTimeout(500 * 1);
+          /*BUILDER DE DISTRIBUTION:////
+          const basepath = require("path").resolve(__dirname + "/../../../src/lsw-framework");
+          module.exports = [
+            `${basepath}/src/others/vue/vue2.min.js`,
+            `${basepath}/src/apis/lsw-ensurer/ensure.js`,
+            `${basepath}/src/apis/lsw-tester/universal-tester.js`,
+            `${basepath}/src/apis/lsw-circuiter/async-circuit.js`,
+            `${basepath}/src/apis/lsw-commander/url-command.js`,
+            `${basepath}/src/apis/lsw-trigger/triggers-class.js`,
+            `${basepath}/src/apis/lsw-database/browsie.unbundled.js`,
+            // `${basepath}/src/apis/lsw-importer/importer.js`,
+            `${basepath}/src/apis/lsw-logger/superlogger.unbundled.js`,
+            `${basepath}/src/apis/lsw-returner/controlled-function.js`,
+            `${basepath}/src/apis/lsw-store/dist/store.unbundled.js`,
+            `${basepath}/src/apis/lsw-timer/timeformat.js`,
+            `${basepath}/src/apis/lsw-cycler/lsw-cycler.js`,
+            `${basepath}/src/apis/lsw-compromiser/lsw-compromiser.js`,
+            `${basepath}/src/apis/lsw-utils/lsw-utils.js`,
+            `${basepath}/src/apis/lsw-filesystem/ufs-v1.0.2.js`,
+            `${basepath}/src/others/socket.io-client/socket.io-client.js`,
+            `${basepath}/src/directives/v-descriptor/v-descriptor.js`,
+            `${basepath}/src/directives/v-focus/v-focus.js`,
+            `${basepath}/src/components/lsw-form-controls/api/api.js`,
+            `${basepath}/src/others/vue.draggable/sortable.js`,
+            `${basepath}/src/others/vue.draggable/vue.draggable.js`,
+            `${basepath}/src/apis/lsw-filesystem/lsw-filesystem.unbundled.js`,
+            `${basepath}/src/apis/lsw-reloader/reloadable.js`,
+            `${basepath}/src/lsw-components.js`,
+            `${basepath}/src/lsw-api.js`,
+          ];
+          ////////////////////////////*/
+          Preset_wave: {
+            await Promise.all([
+              // Vue@2:
+              importer.scriptSrc(`lsw-framework/src/others/vue/vue2.${process.env.NODE_ENV === 'test' ? 'dev' : 'min'}.js`),
+              // Socket.io:
+              importer.scriptSrc("lsw-framework/src/others/socket.io-client/socket.io-client.js"),
+              // LSW Error Manager:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-error-manager/lsw-error-manager.js"),
+            ]);
+          }
+          First_wave: {
+            // Low-level APIs:
+            await Promise.all([
+              // Importer is already imported:
+              // importer.scriptSrc("lsw-framework/src/apis/lsw-importer/importer.js"),
+              // LSW Reloadable script:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-reloader/reloadable.js"),
+              // LSW Asserter:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-ensurer/ensure.js"),
+              // LSW Tester:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-tester/universal-tester.js"),
+              // LSW DOM:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-dom/lsw-dom.js"),
+              importer.scriptSrc("lsw-framework/src/apis/lsw-dom/lsw-vue2.js"),
+              // LSW Proxifier:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-proxifier/proxifier.unbundled.js"),
+              // LSW Randomizer:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-randomizer/lsw-randomizer.js"),
+              // LSW Circuiter:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-circuiter/async-circuit.js"),
+              // LSW Commander:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-commander/url-command.js"),
+              // LSW Trigger:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-trigger/triggers-class.js").then(() => {
+                // LSW Database:
+                return importer.scriptSrc("lsw-framework/src/apis/lsw-database/browsie.unbundled.js");
+              }),
+              // LSW Logger:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-logger/superlogger.unbundled.js"),
+              // LSW Returner:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-returner/controlled-function.js"),
+              // LSW Store:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-store/dist/store.unbundled.js"),
+              // LSW Timer Parser (not API):
+              importer.scriptSrc("lsw-framework/src/apis/lsw-timer/timeformat.js"),
+              // LSW Cycler:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-cycler/lsw-cycler.js").then(() => {
+                // LSW App Lifecycle:
+                return importer.scriptSrc("lsw-framework/src/apis/lsw-lifecycle/lsw-lifecycle.js");
+              }),
+              // LSW Compromiser:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-compromiser/lsw-compromiser.js"),
+              // LSW Utilities:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-utils/lsw-utils.js"),
+              // UFS:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-filesystem/ufs-v1.0.2.js"),
+              // JSON typer:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-typer/lsw-typer.js").then(() => {
+                // JSON typer API:
+                return importer.scriptSrc("lsw-framework/src/apis/lsw-typer/lsw-typer.api.js");
+              }).then(() => {
+                // JSON typer default types:
+                return Promise.all([
+                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/org.allnulled.lsw/type/duration.js"),
+                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/org.allnulled.lsw/type/day.js"),
+                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/org.allnulled.lsw/type/moment.js"),
+                ]).then(() => Promise.all([
+                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/duration.js"),
+                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/day.js"),
+                  importer.scriptSrc("lsw-framework/src/apis/lsw-typer/default/moment.js"),
+                ]));
+              }),
+              // LSW ConsoleHooker API (not component):
+              importer.scriptSrc("lsw-framework/src/components/lsw-console-hooker/console-hooker-api.js"),
+              // LSW Formtypes:
+              importer.scriptSrc("lsw-framework/src/components/lsw-formtypes/api/api.js"),
+              importer.linkStylesheet("lsw-framework/src/components/lsw-formtypes/api/api.css"),
+            ]);
+          }
+          Interlude_for_dependencies_to_load_1: {
+            await waitForConditions({
+              timeout: 1000 * 3,
+              timeoutError: new Error("[!] Could not load all dependencies on «boot.js» (interlude 1)"),
+              intervalsOf: 10,
+              conditions: [
+                ["Vue is loaded", () => typeof Vue !== "undefined"],
+                ["LswDatabase is loaded", () => typeof LswDatabase !== "undefined"],
+                ["LswCycler is loaded", () => typeof LswCycler !== "undefined"],
+              ]
+            });
+          }
+          Second_wave: {
+            await Promise.all([
+              // LSW SchemaBuilder:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-schema/lsw-schema.js"),
+              // LSW Class Register & Registry:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-class-register/lsw-class-register.js"),
+              // LSW Formtypes » FormBuilder:
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-error-viewer/lsw-error-viewer"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control"),
+              // LSW Database Virtualizer:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-database-virtualizer/lsw-database-virtualizer.js"),
+              // LSW Database Adapter:
+              importer.scriptSrc("lsw-framework/src/components/lsw-database-ui/database-adapter/LswDatabaseAdapter.js"),
+              // LSW Directives for Vue.js:
+              importer.scriptSrc("lsw-framework/src/directives/v-descriptor/v-descriptor.js"),
+              importer.scriptSrc("lsw-framework/src/directives/v-focus/v-focus.js"),
+              importer.scriptSrc("lsw-framework/src/directives/v-xform/v-xform.js"),
+              // LSW Timeformat API (not Parser):
+              importer.scriptSrc("lsw-framework/src/apis/lsw-timer/timeformat.api.js"),
+              // LSW Depender:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-depender/lsw-depender.js"),
+              // LSW Schema Form Vue component:
+              importer.importVueComponent("lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form"),
+              // LSW Sortable and draggable 3rd parties:
+              importer.scriptSrc("lsw-framework/src/others/vue.draggable/sortable.js"),
+              importer.scriptSrc("lsw-framework/src/others/vue.draggable/vue.draggable.js"),
+              // LSW Filesystem Vue component:
+              importer.scriptSrc("lsw-framework/src/apis/lsw-filesystem/lsw-filesystem.unbundled.js"),
+              /////////////////////////////////////////////////////////////////////
+              // COMPONENTS::START ////////////////////////////////////////////////
+              /////////////////////////////////////////////////////////////////////
+              // LSW Form controls API & components:
+              // Ahora:
+              importer.scriptSrc("lsw-framework/src/directives/v-form/v-form.js"),
+              // LSW Table component:
+              importer.scriptSrc("lsw-framework/src/components/lsw-table/lsw-table/lsw-table-interface.js")
+                .then(() => Promise.all([
+                  importer.importVueComponent("lsw-framework/src/components/lsw-table/lsw-table/lsw-table"),
+                  importer.importVueComponent("lsw-framework/src/components/lsw-table/lsw-database-table/lsw-database-table")
+                ])),
+              // LSW Dialogs API & components:
+              importer.importVueComponent("lsw-framework/src/components/lsw-dialogs/lsw-dialogs"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-windows/lsw-windows-pivot-button/lsw-windows-pivot-button"),
+              // LSW Toast components:
+              importer.importVueComponent("lsw-framework/src/components/lsw-toasts/lsw-toasts"),
+              // LSW ConsoleHooker Component (not API):
+              importer.importVueComponent("lsw-framework/src/components/lsw-console-hooker/console-hooker"),
+              // LSW Database adapter API & components:
+              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/page-databases/page-databases"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/page-rows/page-rows"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/page-row/page-row"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/page-schema/page-schema"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-database-ui/page-tables/page-tables"),
+              /////////////////////////////////////////////////////////////////////
+              // COMPONENTS::END //////////////////////////////////////////////////
+              /////////////////////////////////////////////////////////////////////
+            ]);
+
+          }
+          Third_wave: {
+            // Specific styles of the UI toolkit of the framework:
+            await importer.linkStylesheet("lsw-framework/src/styles/lsw-styling-structure.css");
+            await importer.linkStylesheet("lsw-framework/src/styles/lsw-styling-theme.css");
+            await importer.linkStylesheet("lsw-framework/src/styles/lsw-styling-framework.css");
+          }
+          Fourth_wave_for_extra_apis: {
+            // XLSX for external Excel loads: (most of the time unneeded)
+            // await importer.scriptSrc("assets/lib/sheetjs/xlsx.full.min.js");
+          }
+          Domain_specific_wave: {
+            await Promise.all([
+              // LSW Filesystem explorer components:
+              importer.importVueComponent("lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer"),
+              // LSW Wiki components:
+              importer.importVueComponent("lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki"),
+              // LSW Notes component:
+              importer.importVueComponent("lsw-framework/src/components/lsw-notes/lsw-notes"),
+              // LSW Agenda components:
+              importer.importVueComponent("lsw-framework/src/components/lsw-calendario/lsw-calendario"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search"),
+              importer.importVueComponent("lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search"),
+            ]);
+          }
+        }
+      }
+    } // End of Step 1: import logic
+    Import_application_now: {
+      await Promise.all([
+        // LSW Application component:
+        // importer.importVueComponent("modules/app/app"),
+      ]);
+    }
+    Step_2_wait_for_dependencies_to_be_loaded_or_fail: {
+      await waitForConditions({
+        timeout: 1000 * 3,
+        timeoutError: new Error("[!] Could not load all dependencies on «boot.js»"),
+        intervalsOf: 10,
+        conditions: [
+          ["Superlogger is loaded", () => typeof Superlogger !== "undefined"],
+          ["Browsie is loaded", () => typeof Browsie !== "undefined"],
+          ["LswDatabase is loaded", () => typeof LswDatabase !== "undefined"],
+          ["LswCycler is loaded", () => typeof LswCycler !== "undefined"],
+        ]
+      });
+    }
+    Step_4_export_framework: {
+      window.lsw = Vue.prototype.$lsw;
+      importer.$removeIntersitial();
+    }
+    Step_5_import_modules_runner: {
+      // await importer.scriptSrc("runner.js");
+    }
+
+  } catch (error) {
+    console.error(error);
+    console.log("[!] Boot failed");
+  }
+};
+
+window.addEventListener("load", boot);
+LswLifecycle.hooks.register("app:load_modules", "load_all_modules", async () => {
+  try {
+    Step_1_inject_modules: {
+      // await LswLifecycle.loadModule("app");
+      // await importer.scriptSrc("assets/lib/jquery/jquery-v3.7.1.js");
+      // await importer.scriptSrc("assets/lib/marked/marked.js");
+      // await LswLifecycle.loadModule("org.allnulled.lsw-agenda-ui");
+      // await LswLifecycle.loadModule("org.allnulled.lsw-conductometria");
+      // await LswLifecycle.loadModule("org.allnulled.lsw.db");
+      // await LswLifecycle.loadModule("org.allnulled.lsw.fs");
+      // await LswLifecycle.loadModule("org.allnulled.lsw.wiki");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+LswLifecycle.hooks.register("app:all_loaded", "inject_development_point", async () => {
+  Step_2_inject_development_point: {
+    try {
+      console.log("[*] Application is ready here!");
+      // @TOUNCOMMENT:
+      // return;
+      Load_e2e_utils: {
+        window.filterDomElements = function (selector, filterCallback, base = document) {
+          return Array.from(base.querySelectorAll(selector)).filter(filterCallback);
+        };
+        window.getButtonFromLswTableCellText = function (text, buttonIndex = 0, context = undefined, selector = ".lsw_database_ui table td.data_cell") {
+          return jQuery(selector, context).filter((i, cell) => {
+            return cell.textContent.trim() === text
+          }).eq(0).closest("tr").find("button").eq(buttonIndex);
+        };
+      }
+
+      Working_on_filesystem: {
+        break Working_on_filesystem;
+        document.querySelector("#windows_pivot_button").click();
+        await waitForMilliseconds(100);
+        filterDomElements(".main_tab_topbar > button", button => button.textContent.trim() === "📂 Files")[0].click();
+        await waitForMilliseconds(100);
+      }
+
+      Fill_database_with_limitadores_fake: {
+        if(process.env.NODE_ENV === "production") {
+          break Fill_database_with_limitadores_fake
+        };
+        await Vue.prototype.$lsw.database.deleteMany("Limitador", it => true);
+        await Vue.prototype.$lsw.database.insertMany("Limitador", [{
+          en_concepto: "Ejercicio físico * 1 al día",
+          tiene_funcion: (async function() {
+            const hoy = new Date();
+            const fechaDeHoy = `${hoy.getFullYear()}/${((hoy.getMonth() +1) + "").padStart(2, "0")}/${(hoy.getDate() + "").padStart(2, "0")}`;
+            const acciones = await this.$lsw.database.selectMany("Accion", accion => {
+              return accion.tiene_inicio.startsWith(fechaDeHoy);
+            });
+            const ejerciciosFisicos = [];
+            for(let index=0; index<acciones.length; index++) {
+              const accion = acciones[index];
+              const isAccepted = accion.en_concepto === "Ejercicio físico";
+              if(isAccepted) {
+                ejerciciosFisicos.push(accion);
+              }
+            }
+            if(!ejerciciosFisicos.length) {
+              throw new Error("Debes hacer ejercicio físico 1 vez al día");
+            }
+          }).toString()
+        }]);
+      }
+
+      break Step_2_inject_development_point;
+      // Vue.prototype.$consoleHooker.instance.restoreConsole();
+      Fill_database: {
+        await Vue.prototype.$lsw.database.insert("Accion", {
+          en_concepto: "Desayunar",
+          tiene_detalles: "ajo, cacao, leche, tostada, miel, mermelada",
+          tiene_inicio: "2025/03/16 08:00",
+          tiene_estado: "completada",
+          tiene_duracion: "50min",
+          tiene_descripcion: "",
+          tiene_aprendizaje: "",
+          tiene_aprendizajes: "",
+        });
+        await Vue.prototype.$lsw.database.insert("Accion", {
+          en_concepto: "Comer",
+          tiene_detalles: "comida en general",
+          tiene_inicio: "2025/03/16 14:00",
+          tiene_estado: "pendiente",
+          tiene_duracion: "50min",
+          tiene_descripcion: "",
+          tiene_aprendizaje: "",
+        });
+        await Vue.prototype.$lsw.database.insert("Accion", {
+          en_concepto: "Cenar",
+          tiene_detalles: "sopa, tortilla",
+          tiene_inicio: "2025/03/16 21:00",
+          tiene_estado: "fallida",
+          tiene_duracion: "50min",
+          tiene_descripcion: "",
+          tiene_aprendizaje: "",
+        });
+        await Vue.prototype.$lsw.database.insert("Accion", {
+          en_concepto: "Cenar",
+          tiene_detalles: "sopa, tortilla",
+          tiene_inicio: "2025/03/16 14:00",
+          tiene_estado: "pendiente",
+          tiene_duracion: "50min",
+          tiene_descripcion: "",
+          tiene_aprendizaje: "",
+          tiene_aprendizajes: "",
+        });
+        await Vue.prototype.$lsw.database.insert("Concepto", {
+          tiene_nombre: "Desayunar",
+          tiene_detalles: "No especificados",
+          tiene_descripcion: "No especificada",
+          tiene_aprendizaje: "No todavía",
+          tiene_aprendizajes: "No todavía",
+        });
+        await Vue.prototype.$lsw.database.insert("Concepto", {
+          tiene_nombre: "Comer",
+          tiene_detalles: "No especificados",
+          tiene_descripcion: "No especificada",
+          tiene_aprendizaje: "No todavía",
+          tiene_aprendizajes: "No todavía",
+        });
+        await Vue.prototype.$lsw.database.insert("Concepto", {
+          tiene_nombre: "Cenar",
+          tiene_detalles: "No especificados",
+          tiene_descripcion: "No especificada",
+          tiene_aprendizaje: "No todavía",
+          tiene_aprendizajes: "No todavía",
+        });
+        await Vue.prototype.$lsw.database.insert("Concepto", {
+          tiene_nombre: "Merendar",
+          tiene_detalles: "No especificados",
+          tiene_descripcion: "No especificada",
+          tiene_aprendizaje: "No todavía",
+          tiene_aprendizajes: "No todavía",
+        });
+        await Vue.prototype.$lsw.database.insert("Concepto", {
+          tiene_nombre: "Almorzar",
+          tiene_detalles: "No especificados",
+          tiene_descripcion: "No especificada",
+          tiene_aprendizaje: "No todavía",
+          tiene_aprendizajes: "No todavía",
+        });
+        await Vue.prototype.$lsw.database.insert("Concepto", {
+          tiene_nombre: "Tomar un tentempié",
+          tiene_detalles: "No especificados",
+          tiene_descripcion: "No especificada",
+          tiene_aprendizaje: "No todavía",
+          tiene_aprendizajes: "No todavía",
+        });
+        await Vue.prototype.$lsw.database.insert("Limitador", {
+          en_concepto: "Dormir",
+          tiene_funcion: "console.log('ok')",
+        });
+      }
+
+      // return;
+
+      Working_on_database_ui: {
+        break Working_on_database_ui;
+        document.querySelector("#windows_pivot_button").click();
+        await waitForMilliseconds(100);
+        filterDomElements(".main_tab_topbar > button", button => button.textContent.trim() === "Data")[0].click();
+        await waitForMilliseconds(100);
+        Working_on_insert_task_form: {
+          getButtonFromLswTableCellText("lsw_default_database", 1).click();
+          await waitForMilliseconds(100);
+          getButtonFromLswTableCellText("Concepto", 1).click();
+          await waitForMilliseconds(100);
+          getButtonFromLswTableCellText("Desayunar", 1).click();
+          break Working_on_database_ui;
+        }
+        Working_on_insert_task_form: {
+          break Working_on_database_ui;
+          getButtonFromLswTableCellText("lsw_default_database", 1).click();
+          await waitForMilliseconds(100);
+          getButtonFromLswTableCellText("Accion", 1).click();
+          await waitForMilliseconds(100);
+          getButtonFromLswTableCellText("Desayunar", 1).click();
+          break Working_on_database_ui;
+          await waitForMilliseconds(100);
+          getButtonFromLswTableCellText("Impresion_de_concepto", 1).click();
+          await waitForMilliseconds(100);
+          filterDomElements("button", button => button.textContent.trim() === "➕")[0].click();
+          await waitForMilliseconds(100);
+
+        }
+      }
+      Working_on_agenda: {
+        // break Working_on_agenda;
+        // document.querySelector("#windows_pivot_button").click();
+        // await waitForMilliseconds(100);
+        // filterDomElements(".main_tab_topbar > button", button => button.textContent.trim() === "Agenda")[0].click();
+        // await waitForMilliseconds(100);
+        Working_on_insert_task_form: {
+          // break Working_on_insert_task_form;
+          filterDomElements(".dia_de_calendario_texto", button => button.textContent.trim() === "16")[0].click();
+          await waitForMilliseconds(100);
+          break Working_on_insert_task_form;
+          filterDomElements(".lsw_agenda", el => true)[0].__vue__.selectContext("accion.add");
+          await waitForMilliseconds(100);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+
+LswLifecycle.hooks.register("app:load_application", "inject_vue_app_on_dom", async () => {
+  Step_3_deploy_application: {
+    const vueInstance = new Vue({
+      render: h => h(Vue.options.components.App),
+    }).$mount("#app");
+  }
+});
+
+LswLifecycle.start();

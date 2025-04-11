@@ -3260,4 +3260,3 @@ if (typeof window !== "undefined" && "Vue" in window) {
 
 /******/ })["default"];
 });
-//# sourceMappingURL=vuedraggable.umd.js.map

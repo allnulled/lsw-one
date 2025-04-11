@@ -2585,4 +2585,3 @@
   exports.walkTokens = walkTokens;
 
 });
-//# sourceMappingURL=marked.umd.js.map

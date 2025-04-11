@@ -6652,4 +6652,133 @@ Vue.component("LswSchemaBasedForm", {
     }
   }
 });
+(() => {
+  console.log("CARGANDO APP COMO COMPONENTEEEEEE");
+  let isFirstTime = true;
+  const initialCode = `
+inc /wherever/you/choose.proto
+
+def correr {
+  "definicion": @definicion "Correr es tal"
+}
+
+add 2025/01/01
+  00:00 correr * 1h
+  00:00 saltar * 5min
+  00:00 comer * @alimentos [["leche","0.3L"],["cacao","2g"]]
+
+fun yo.correr {
+  // Nolose, aquí JS.
+}
+
+rel correr
+  > cardio * 2
+  >> yo.correr
+
+`.trim();
+  // Change this component at your convenience:
+  Vue.component("App", {
+    template: `<div>
+
+
+    <!--lsw-protolang-editor :initial-contents="initialContents" /-->
+    <div class="pad_1 float_left">
+        <button class="danger_button" v-on:click="resetDatabase">Reset database</button>
+    </div>
+    <lsw-notes />
+    <lsw-console-hooker />
+    <lsw-windows-viewer />
+    <lsw-toasts />
+    <!--
+    <button v-on:click="uploadConductometria" v-if="!conductometria.registros">Abrir conductometría</button>
+    <button v-on:click="clearConductometria" v-else>Cerrar</button>
+    <button v-on:click="openDialog">Abrir diálogo</button>
+    <button v-on:click="openDialogSequence">Abrir secuencia de diálogos</button>
+    <div style="height: 4px;"></div>
+    <pre class="conductometria_viewer_1" style="display: none;">{{ conductometria }}</pre>
+    <hr/>
+    <lsw-schema-based-form :on-submit="(v) => console.log(v)" :model="{
+        databaseId: 'lsw_default_database',
+        tableId: 'Accion',
+        rowId: 1
+    }"/>
+    <hr/>
+    <div>
+        <div class="control_form" v-xform.form="{
+            onSubmit: v => console.log(v)
+        }" ref="form">
+            <button v-on:click="() => \$refs.form.\$xform.validate()">validate</button>
+            <div class="control_user" v-xform.control="{
+                name:'user',
+                debug:1,
+                onValidate: v => {
+                    if(v === '') {
+                        throw new Error('taloco');
+                    }
+                }
+            }">
+                <input class="control_user_name" v-xform.input="{
+                    name:'*'
+                }" type="text" />
+                <div v-xform.error="{}"></div>
+            </div>
+        </div>
+    </div>
+    -->
+</div>`,
+    props: {
+      uuid: {
+        type: String,
+        default: () => {
+          return Vue.prototype.$lsw.utils.getRandomString(10);
+        }
+      }
+    },
+    data() {
+      return {
+        formScope: {},
+        userScope: {},
+        conductometria: [],
+        conductometria_minified_days: [],
+        initialContents: initialCode
+      };
+    },
+    methods: {
+      async resetDatabase() {
+        this.$trace("App.methods.resetDatabase");
+        const confirmacion = this.$window.confirm("Estás seguro que quieres resetear la base de datos?");
+        if(!confirmacion) return;
+        const reconfirmacion = this.$window.confirm("Seguro, eh?");
+        if(!reconfirmacion) return;
+        try {
+          await this.$lsw.database.close();
+        } catch (error) {
+          console.log(error);
+        }
+        try {
+          await LswDatabase.deleteDatabase();
+        } catch (error) {
+          console.log(error);
+        }
+        try {
+          this.$lsw.database = await LswDatabase.open("lsw_default_database");
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    mounted() {
+      console.log("[*] Application mounted.");
+      if (isFirstTime) {
+        Vue.prototype.$app = this;
+        isFirstTime = false;
+        window.dispatchEvent(new CustomEvent("lsw_app_mounted", {
+          applicationUuid: this.uuid,
+          $lsw: this.$lsw,
+          appComponent: this,
+        }));
+      }
+    }
+  });
+})();
 });

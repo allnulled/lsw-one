@@ -58,7 +58,7 @@
         id_loader_bar: "#intersitial_loader_bar",
         trace: false,
         update_ui: false,
-        update_ui_minimum_milliseconds: 1200,
+        update_ui_minimum_milliseconds: 200,
       }, options_input);
       this.options = options;
       Duplicated_options: {
@@ -196,7 +196,11 @@
           }, this.options.update_ui_minimum_milliseconds);
         } else {
           const intersitial = document.querySelector(this.id);
-          intersitial.remove();
+          if (intersitial) {
+            intersitial.remove();
+          } else {
+            console.log("Cannot remove intersitial. Insert «" + this.id + "» to skip this warning");
+          }
         }
       } catch (error) {
         console.log(error);

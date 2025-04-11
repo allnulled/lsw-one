@@ -11,6 +11,7 @@
   }
 })(function () {
 
+  // @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker API
   class ConsoleHooker {
     constructor(outputElementId) {
       this.originalConsole = { ...console }; // Guardar los métodos originales
@@ -101,5 +102,6 @@
   ConsoleHooker.default = ConsoleHooker;
 
   return ConsoleHooker;
+  // @code.end: LswConsoleHooker API
 
 });

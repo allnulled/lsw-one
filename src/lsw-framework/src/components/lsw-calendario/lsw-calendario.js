@@ -1,3 +1,4 @@
+// @code.start: LswCalendario API | @$section: Vue.js (v2) Components » LswCalendario API » LswCalendario component
 Vue.component("LswCalendario", {
   template: $template,
   props: {
@@ -394,3 +395,4 @@ Vue.component("LswCalendario", {
     }
   }
 });
+// @code.end: LswCalendario API

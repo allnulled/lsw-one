@@ -1,3 +1,4 @@
+// @code.start: LswLongTextControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswLongTextControl component
 Vue.component("LswLongTextControl", {
   template: $template,
   props: {
@@ -39,3 +40,4 @@ Vue.component("LswLongTextControl", {
     }
   }
 });
+// @code.end: LswLongTextControl API

@@ -1,3 +1,4 @@
+// @code.start: LswFilesystemButtonsPanel API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemButtonsPanel component
 Vue.component("LswFilesystemButtonsPanel", {
   name: "LswFilesystemButtonsPanel",
   template: $template,
@@ -37,3 +38,4 @@ Vue.component("LswFilesystemButtonsPanel", {
 
   }
 });
+// @code.end: LswFilesystemButtonsPanel API

@@ -1,3 +1,4 @@
+// @code.start: LswWindowsViewer API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsViewer classes and functions
 // Change this component at your convenience:
 Vue.component("LswWindowsViewer", {
   template: $template,
@@ -28,3 +29,4 @@ Vue.component("LswWindowsViewer", {
     this.$lsw.windows = this;
   }
 });
+// @code.end: LswWindowsViewer API

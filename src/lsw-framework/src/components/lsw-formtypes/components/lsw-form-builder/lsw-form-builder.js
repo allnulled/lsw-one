@@ -1,3 +1,4 @@
+// @code.start: LswFormBuilder API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswFormBuilder component
 Vue.component("LswFormBuilder", {
   template: $template,
   props: {
@@ -131,3 +132,4 @@ Vue.component("LswFormBuilder", {
     }
   }
 });
+// @code.end: LswFormBuilder API

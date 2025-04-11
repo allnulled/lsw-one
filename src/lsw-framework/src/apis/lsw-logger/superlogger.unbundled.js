@@ -17,7 +17,7 @@
   /**
    * 
    * 
-   * @$section: Superlogger API » Superlogger class
+   * @$section: LswLogger API » Superlogger API »  Superlogger class
    * @type: class
    * @extends: Object
    * @vendor: lsw
@@ -25,7 +25,7 @@
    * @source code: La clase está definida así:
    * 
    */
-  // @code.start: Superlogger class | @$section: Superlogger API » Superlogger class
+  // @code.start: Superlogger class | @$section: LswLogger API » Superlogger API »  Superlogger class
   const Superlogger = class {
 
     static create(id, options) {

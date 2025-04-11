@@ -1,3 +1,4 @@
+// @code.start: LswXForm API | @$section: Lsw Directives » v-xform directive
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -477,3 +478,4 @@
   return XFormPublicAPI;
 
 });
+// @code.end: LswXForm API

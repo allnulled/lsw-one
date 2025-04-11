@@ -1,5 +1,6 @@
 (function () {
 
+  // @code.start: LswDialogs API | @$section: Vue.js (v2) Components » LswDialogs API » LswDialogs classes and functions
   const defaultDialogFactory = () => {
     return {
       props: {},
@@ -137,10 +138,10 @@
             throw new Error("Required parameter «data» returned by «factory» to be an object, a function or empty on «LswDialogs.methods.open»");
           }
         })();
-        const scopifyMethods = function(obj, scope) {
+        const scopifyMethods = function (obj, scope) {
           return Object.keys(obj).reduce((out, k) => {
             const v = obj[k];
-            if(typeof v !== "function") {
+            if (typeof v !== "function") {
               out[k] = v;
             } else {
               out[k] = v.bind(scope);
@@ -347,5 +348,6 @@
       console.log("[*] LswDialogs mounted.");
     }
   });
+  // @code.end: LswDialogs API
 
 })();

@@ -1,3 +1,4 @@
+// @code.start: LswDateControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswDateControl component
 Vue.component("LswDateControl", {
   template: $template,
   props: {
@@ -74,3 +75,4 @@ Vue.component("LswDateControl", {
     }
   }
 });
+// @code.end: LswDateControl API

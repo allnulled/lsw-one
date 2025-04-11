@@ -1,3 +1,4 @@
+// @code.start: LswRefObjectControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefObjectControl component
 Vue.component("LswRefObjectControl", {
   template: $template,
   props: {
@@ -62,3 +63,4 @@ Vue.component("LswRefObjectControl", {
     }
   }
 });
+// @code.end: LswRefObjectControl API

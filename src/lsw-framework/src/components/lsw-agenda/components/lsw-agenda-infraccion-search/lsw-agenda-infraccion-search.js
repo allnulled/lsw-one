@@ -1,3 +1,4 @@
+// @code.start: LswAgendaInfraccionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaInfraccionSearch API » LswAgendaInfraccionSearch component
 Vue.component("LswAgendaInfraccionSearch", {
   template: $template,
   props: {},
@@ -15,3 +16,4 @@ Vue.component("LswAgendaInfraccionSearch", {
     }
   }
 });
+// @code.end: LswAgendaInfraccionSearch API

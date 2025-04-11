@@ -1,3 +1,4 @@
+/* // @code.start: Lsw Styling Framework | @$section: Lsw Styles » Lsw Styling Framework */
 /* RESET STYLES */
 h3 {
     margin: 0;
@@ -70,3 +71,4 @@ table.basic_table > thead > tr > th:last-child {
 .width_100 { width: 100%; }
 .width_1 { width: 1%; }
 .width_auto { width: auto; }
+/* // @code.end: Lsw Styling Framework */

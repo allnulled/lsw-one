@@ -1,3 +1,4 @@
+// @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component
 Vue.component("LswNotes", {
   template: $template,
   props: {
@@ -89,3 +90,4 @@ Vue.component("LswNotes", {
     }
   }
 });
+// @code.end: LswNotes API

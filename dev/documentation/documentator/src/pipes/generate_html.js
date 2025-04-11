@@ -2,7 +2,7 @@ const { styles } = require("ansi-colors");
 
 const section_title_to_text = function (section_id) {
   let text = "";
-  if (section_id === "0. Prelude") {
+  if (section_id === "Index of document") {
     return text;
   }
   text += "<h3 class='documentator_section_title'>";
@@ -230,7 +230,7 @@ const inject_scripts = function (options) {
 const file_to_schema = function(section_ids) {
   let code = "";
   code += "<div class='documentator_section'>"
-  code += "<h3 class='documentator_section_title'>0. Prelude</h3>";
+  code += "<h3 class='documentator_section_title'>Index of document</h3>";
   code += "<ul>";
   for(let index=0; index<section_ids.length; index++) {
     const section_id = section_ids[index];

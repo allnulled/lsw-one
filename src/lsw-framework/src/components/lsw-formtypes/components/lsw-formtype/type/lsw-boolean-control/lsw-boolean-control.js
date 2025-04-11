@@ -1,3 +1,4 @@
+// @code.start: LswBooleanControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswBooleanControl component
 Vue.component("LswBooleanControl", {
   template: $template,
   props: {
@@ -20,3 +21,4 @@ Vue.component("LswBooleanControl", {
     }
   }
 });
+// @code.end: LswBooleanControl API

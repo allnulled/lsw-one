@@ -1,3 +1,4 @@
+// @code.start: LswAgendaConceptoSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaConceptoSearch API » LswAgendaConceptoSearch component
 Vue.component("LswAgendaConceptoSearch", {
   template: $template,
   props: {},
@@ -24,3 +25,4 @@ Vue.component("LswAgendaConceptoSearch", {
     }
   }
 });
+// @code.end: LswAgendaConceptoSearch API

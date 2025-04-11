@@ -1,3 +1,4 @@
+// @code.start: LswSchemaBasedForm API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswSchemaBasedForm component
 Vue.component("LswSchemaBasedForm", {
   template: $template,
   props: {
@@ -254,3 +255,4 @@ Vue.component("LswSchemaBasedForm", {
     }
   }
 });
+// @code.end: LswSchemaBasedForm API

@@ -1,3 +1,4 @@
+// @code.start: LswDataExplorer API | @$section: Vue.js (v2) Components » LswDataExplorer API » LswDataExplorer API
 Vue.component('LswDataExplorer', {
   template: $template,
   props: {
@@ -110,3 +111,4 @@ Vue.component('LswDataExplorer', {
     }
   }
 });
+// @code.end: LswDataExplorer API

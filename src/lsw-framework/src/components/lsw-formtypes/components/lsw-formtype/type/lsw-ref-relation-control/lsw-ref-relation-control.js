@@ -1,3 +1,4 @@
+// @code.start: LswRefRelationControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefRelationControl component
 Vue.component("LswRefRelationControl", {
   template: $template,
   props: {
@@ -39,3 +40,4 @@ Vue.component("LswRefRelationControl", {
     }
   }
 });
+// @code.end: LswRefRelationControl API

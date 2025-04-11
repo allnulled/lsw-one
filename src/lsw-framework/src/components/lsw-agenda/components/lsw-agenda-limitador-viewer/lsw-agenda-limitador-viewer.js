@@ -1,3 +1,4 @@
+// @code.start: LswAgendaLimitadorViewer API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorViewer API » LswAgendaLimitadorViewer component
 Vue.component("LswAgendaLimitadorViewer", {
   template: $template,
   props: {},
@@ -50,3 +51,4 @@ Vue.component("LswAgendaLimitadorViewer", {
     }
   }
 });
+// @code.end: LswAgendaLimitadorViewer API

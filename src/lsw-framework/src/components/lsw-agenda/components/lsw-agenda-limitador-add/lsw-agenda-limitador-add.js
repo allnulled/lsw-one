@@ -1,3 +1,4 @@
+// @code.start: LswAgendaLimitadorAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorAdd API » LswAgendaLimitadorAdd component
 Vue.component("LswAgendaLimitadorAdd", {
   template: $template,
   props: {},
@@ -23,3 +24,4 @@ Vue.component("LswAgendaLimitadorAdd", {
     }
   }
 });
+// @code.end: LswAgendaLimitadorAdd API

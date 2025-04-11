@@ -3790,8 +3790,11 @@ table.tabla_de_conductometria .minibutton {
     border-color: red;
 }
 
-
-
+/* // @code.start: Lsw Styling Structure | @$section: Lsw Styles » Lsw Styling Structure */
+/* // @code.end: Lsw Styling Structure */
+/* // @code.start: Lsw Styling Theme | @$section: Lsw Styles » Lsw Styling Theme */
+/* // @code.end: Lsw Styling Theme */
+/* // @code.start: Lsw Styling Framework | @$section: Lsw Styles » Lsw Styling Framework */
 /* RESET STYLES */
 h3 {
     margin: 0;
@@ -3864,4 +3867,5 @@ table.basic_table > thead > tr > th:last-child {
 .width_100 { width: 100%; }
 .width_1 { width: 1%; }
 .width_auto { width: auto; }
+/* // @code.end: Lsw Styling Framework */
 

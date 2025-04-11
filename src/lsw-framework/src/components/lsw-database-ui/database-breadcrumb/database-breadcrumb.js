@@ -1,3 +1,4 @@
+// @code.start: LswDatabaseBreadcrumb API | @$section: Vue.js (v2) Components » LswDatabaseBreadcrumb API » LswDatabaseBreadcrumb API
 Vue.component("LswDatabaseBreadcrumb", {
   template: $template,
   props: {
@@ -27,3 +28,4 @@ Vue.component("LswDatabaseBreadcrumb", {
 
   }
 });
+// @code.end: LswDatabaseBreadcrumb API

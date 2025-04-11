@@ -1,3 +1,4 @@
+// @code.start: LswToasts API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswToasts component
 Vue.component("LswToasts", {
   template: $template,
   props: {},
@@ -59,3 +60,4 @@ Vue.component("LswToasts", {
     }
   }
 });
+// @code.end: LswToasts API

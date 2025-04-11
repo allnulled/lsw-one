@@ -1,3 +1,4 @@
+// @code.start: LswFilesystemTreeviewer API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemTreeviewer component
 Vue.component("LswFilesystemTreeviewer", {
   name: "LswFilesystemTreeviewer",
   template: $template,
@@ -50,9 +51,9 @@ Vue.component("LswFilesystemTreeviewer", {
           }
         }
       });
-      if(!confirmation) return;
+      if (!confirmation) return;
       try {
-        if(isDirectory) {
+        if (isDirectory) {
           await this.$lsw.fs.delete_directory(fullpath);
         } else {
           await this.$lsw.fs.delete_file(fullpath);
@@ -111,8 +112,8 @@ Vue.component("LswFilesystemTreeviewer", {
           }
         }
       });
-      if(typeof newName !== "string") return;
-      if(newName.trim() === "") return;
+      if (typeof newName !== "string") return;
+      if (newName.trim() === "") return;
       await this.$lsw.fs.rename(subnodeIndex, newName.replace(/^\/+/g, ""));
       this.explorer.refresh();
     }
@@ -130,3 +131,4 @@ Vue.component("LswFilesystemTreeviewer", {
     this.$trace("lsw-filesystem-treeviewer.unmounted");
   }
 });
+// @code.end: LswFilesystemTreeviewer API

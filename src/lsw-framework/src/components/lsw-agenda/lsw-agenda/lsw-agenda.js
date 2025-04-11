@@ -1,3 +1,4 @@
+// @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
 Vue.component("LswAgenda", {
   name: "LswAgenda",
   template: $template,
@@ -214,3 +215,4 @@ Vue.component("LswAgenda", {
     }
   }
 });
+// @code.end: LswAgenda API

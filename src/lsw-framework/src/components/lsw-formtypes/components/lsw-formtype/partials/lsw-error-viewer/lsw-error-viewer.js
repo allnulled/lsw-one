@@ -1,3 +1,4 @@
+// @code.start: LswErrorViewer API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswErrorViewer component
 Vue.component("LswErrorViewer", {
   template: $template,
   props: {
@@ -34,3 +35,4 @@ Vue.component("LswErrorViewer", {
     }
   }
 });
+// @code.end: LswErrorViewer API

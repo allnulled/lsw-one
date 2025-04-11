@@ -1,3 +1,4 @@
+// @code.start: v-descriptor API | @$section: Lsw Directives » v-descriptor directive
 (() => {
 
   const getDescriptorKeys = function (el, binding) {
@@ -115,3 +116,4 @@
   }
 
 })();
+// @code.end: v-descriptor API

@@ -1,3 +1,4 @@
+// @code.start: LswPageTables API | @$section: Vue.js (v2) Components » LswPageTables API » LswPageTables API
 Vue.component("LswPageTables", {
   template: $template,
   props: {
@@ -64,3 +65,4 @@ Vue.component("LswPageTables", {
 
   }
 });
+// @code.end: LswPageTables API

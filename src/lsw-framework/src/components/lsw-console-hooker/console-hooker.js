@@ -1,3 +1,4 @@
+// @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker component
 Vue.component("LswConsoleHooker", {
   template: $template,
   props: {},
@@ -28,3 +29,4 @@ Vue.component("LswConsoleHooker", {
 
   }
 });
+// @code.end: LswConsoleHooker API

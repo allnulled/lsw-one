@@ -1,3 +1,4 @@
+// @code.start: LswRefListControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefListControl component
 Vue.component("LswRefListControl", {
   template: $template,
   props: {
@@ -62,3 +63,4 @@ Vue.component("LswRefListControl", {
     }
   }
 });
+// @code.end: LswRefListControl API

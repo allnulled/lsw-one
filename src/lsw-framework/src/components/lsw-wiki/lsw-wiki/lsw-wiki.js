@@ -1,3 +1,4 @@
+// @code.start: LswWiki API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWiki component
 Vue.component("LswWiki", {
   name: "LswWiki",
   template: $template,
@@ -25,3 +26,4 @@ Vue.component("LswWiki", {
     }
   }
 });
+// @code.end: LswWiki API

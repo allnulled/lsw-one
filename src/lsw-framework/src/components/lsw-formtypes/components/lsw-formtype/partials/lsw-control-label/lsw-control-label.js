@@ -1,3 +1,4 @@
+// @code.start: LswControlLabel API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswControlLabel component
 Vue.component("LswControlLabel", {
   template: $template,
   props: {
@@ -73,3 +74,4 @@ Vue.component("LswControlLabel", {
     }
   }
 });
+// @code.end: LswControlLabel API

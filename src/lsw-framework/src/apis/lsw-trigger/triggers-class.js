@@ -11,6 +11,8 @@
   }
 })(function () {
 
+  // @code.start: LswTriggers API | @$section: LswTriggers API » LswTriggers classes and functions
+  // exported to TriggersClass
   class TriggersClass {
 
     static globMatch(patterns, list) {
@@ -93,5 +95,6 @@
   TriggersClass.default = TriggersClass;
 
   return TriggersClass;
+  // @code.end: LswTriggers API
 
 });

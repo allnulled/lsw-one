@@ -10,6 +10,7 @@
     module.exports = mod;
   }
 })(function() {
+// @code.start: LswCalendario API | @$section: Vue.js (v2) Components » LswCalendario API » LswCalendario component
 Vue.component("LswCalendario", {
   template: `<div class="Component LswCalendario">
   <div class="visor_de_calendario">
@@ -560,6 +561,8 @@ Vue.component("LswCalendario", {
     }
   }
 });
+// @code.end: LswCalendario API
+// @code.start: LswTable API | @$section: Vue.js (v2) Components » Lsw Table API » LswTable component
 Vue.component("LswTable", {
   template: `<div class="lsw_table"
     style="padding-top: 4px;">
@@ -1033,6 +1036,7 @@ Vue.component("LswTable", {
     this.digestOutput();
   }
 });
+// @code.end: LswTable API
 Vue.component("LswTableTransformers", {
   template: `<div class="lsw_table_transformers">
     Transformers here.
@@ -1068,6 +1072,7 @@ Vue.component("LswTableTransformers", {
 
   }
 });
+// @code.start: LswDataExplorer API | @$section: Vue.js (v2) Components » LswDataExplorer API » LswDataExplorer API
 Vue.component('LswDataExplorer', {
   template: `<div class="data-explorer">
     <div class="top_panel flex_row centered" style="padding: 1px;">
@@ -1227,7 +1232,8 @@ Vue.component('LswDataExplorer', {
     }
   }
 });
-
+// @code.end: LswDataExplorer API
+// @code.start: LswDataImplorer API | @$section: Vue.js (v2) Components » LswDataImplorer API » LswDataImplorer API
 Vue.component('LswDataImplorer', {
   template: `<div class="lsw_data_implorer" :class="{ paginated: isPaginated || isRoot }">
     <div class="paginator flex_row centered" v-if="isPaginated" style="padding-left: 1px; padding-top: 1px;">
@@ -1372,9 +1378,10 @@ Vue.component('LswDataImplorer', {
     this.loadEntries();
   }
 });
-
+// @code.end: LswDataImplorer API
 (function () {
 
+  // @code.start: LswDialogs API | @$section: Vue.js (v2) Components » LswDialogs API » LswDialogs classes and functions
   const defaultDialogFactory = () => {
     return {
       props: {},
@@ -1556,10 +1563,10 @@ Vue.component('LswDataImplorer', {
             throw new Error("Required parameter «data» returned by «factory» to be an object, a function or empty on «LswDialogs.methods.open»");
           }
         })();
-        const scopifyMethods = function(obj, scope) {
+        const scopifyMethods = function (obj, scope) {
           return Object.keys(obj).reduce((out, k) => {
             const v = obj[k];
-            if(typeof v !== "function") {
+            if (typeof v !== "function") {
               out[k] = v;
             } else {
               out[k] = v.bind(scope);
@@ -1766,8 +1773,10 @@ Vue.component('LswDataImplorer', {
       console.log("[*] LswDialogs mounted.");
     }
   });
+  // @code.end: LswDialogs API
 
 })();
+// @code.start: LswWindowsMainTab API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsMainTab component
 // Change this component at your convenience:
 Vue.component("LswWindowsMainTab", {
   template: `<div class="lsw_windows_main_tab">
@@ -1859,6 +1868,8 @@ Vue.component("LswWindowsMainTab", {
     
   }
 });
+// @code.end: LswWindowsMainTab API
+// @code.start: LswWindowsViewer API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsViewer classes and functions
 // Change this component at your convenience:
 Vue.component("LswWindowsViewer", {
   template: `<div class="lsw-windows-viewer">
@@ -1895,6 +1906,9 @@ Vue.component("LswWindowsViewer", {
     this.$lsw.windows = this;
   }
 });
+// @code.end: LswWindowsViewer API
+
+// @code.start: LswWindowsPivotButton API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsPivotButton component
 // Change this component at your convenience:
 Vue.component("LswWindowsPivotButton", {
   template: `<div class="lsw_windows_pivot_button" v-on:click="onClick">
@@ -1920,6 +1934,8 @@ Vue.component("LswWindowsPivotButton", {
     
   }
 });
+// @code.end: LswWindowsPivotButton API
+// @code.start: LswToasts API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswToasts component
 Vue.component("LswToasts", {
   template: `<div class="lsw_toasts">
     <div class="toasts_box">
@@ -2005,6 +2021,8 @@ Vue.component("LswToasts", {
     }
   }
 });
+// @code.end: LswToasts API
+// @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker component
 Vue.component("LswConsoleHooker", {
   template: `<div class="console-hooker" :class="{hide:!is_shown}">
     <div class="console_viewer">
@@ -2049,6 +2067,8 @@ Vue.component("LswConsoleHooker", {
 
   }
 });
+// @code.end: LswConsoleHooker API
+// @code.start: LswDatabaseExplorer API | @$section: Vue.js (v2) Components » LswDatabaseExplorer API » LswDatabaseExplorer API
 Vue.component("LswDatabaseExplorer", {
   template: `<div class="lsw_database_ui database_explorer" :class="{hideBreadcrumb: !showBreadcrumb}">
     <template v-if="!isLoading">
@@ -2102,6 +2122,8 @@ Vue.component("LswDatabaseExplorer", {
     this.$trace("lsw-database-explorer.methods.unmounted", arguments);
   }
 });
+// @code.end: LswDatabaseExplorer API
+// @code.start: LswDatabaseBreadcrumb API | @$section: Vue.js (v2) Components » LswDatabaseBreadcrumb API » LswDatabaseBreadcrumb API
 Vue.component("LswDatabaseBreadcrumb", {
   template: `<div class="database_breadcrumb">
     <span>Estás en: </span>
@@ -2142,6 +2164,8 @@ Vue.component("LswDatabaseBreadcrumb", {
 
   }
 });
+// @code.end: LswDatabaseBreadcrumb API
+// @code.start: LswPageDatabases API | @$section: Vue.js (v2) Components » LswPageDatabases API » LswPageDatabases API
 Vue.component("LswPageDatabases", {
   template: `<div>
     <h3>Todas las bases de datos</h3>
@@ -2205,6 +2229,8 @@ Vue.component("LswPageDatabases", {
 
   }
 });
+// @code.end: LswPageDatabases API
+// @code.start: LswPageRows API | @$section: Vue.js (v2) Components » LswPageRows API » LswPageRows API
 Vue.component("LswPageRows", {
   template: `<div>
     <h3>
@@ -2318,6 +2344,8 @@ Vue.component("LswPageRows", {
     this.connection.close();
   }
 });
+// @code.end: LswPageRows API
+// @code.start: LswPageRow API | @$section: Vue.js (v2) Components » LswPageRow API » LswPageRow API
 Vue.component("LswPageRow", {
   template: `<div>
     <h3>
@@ -2468,6 +2496,8 @@ Vue.component("LswPageRow", {
     this.connection.close();
   }
 });
+// @code.end: LswPageRow API
+// @code.start: LswPageSchema API | @$section: Vue.js (v2) Components » LswPageSchema API » LswPageSchema API
 Vue.component("LswPageSchema", {
   template: `<div></div>`,
   props: {},
@@ -2486,6 +2516,8 @@ Vue.component("LswPageSchema", {
 
   }
 });
+// @code.end: LswPageSchema API
+// @code.start: LswPageTables API | @$section: Vue.js (v2) Components » LswPageTables API » LswPageTables API
 Vue.component("LswPageTables", {
   template: `<div class="page_tables page">
     <h3>Tablas de {{ args.database }}</h3>
@@ -2569,6 +2601,8 @@ Vue.component("LswPageTables", {
 
   }
 });
+// @code.end: LswPageTables API
+// @code.start: LswFilesystemExplorer API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemExplorer component
 Vue.component("LswFilesystemExplorer", {
   name: "LswFilesystemExplorer",
   template: `<div class="lsw_filesystem_explorer">
@@ -3041,6 +3075,8 @@ Vue.component("LswFilesystemExplorer", {
     }
   }
 });
+// @code.end: LswFilesystemExplorer API
+// @code.start: LswFilesystemButtonsPanel API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemButtonsPanel component
 Vue.component("LswFilesystemButtonsPanel", {
   name: "LswFilesystemButtonsPanel",
   template: `<div class="lsw_filesystem_buttons_panel">
@@ -3087,6 +3123,8 @@ Vue.component("LswFilesystemButtonsPanel", {
 
   }
 });
+// @code.end: LswFilesystemButtonsPanel API
+// @code.start: LswFilesystemEditor API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemEditor component
 Vue.component("LswFilesystemEditor", {
   name: "LswFilesystemEditor",
   template: `<div class="lsw_filesystem_editor" style="padding-bottom:1px;">
@@ -3123,6 +3161,8 @@ Vue.component("LswFilesystemEditor", {
 
   }
 });
+// @code.end: LswFilesystemEditor API
+// @code.start: LswFilesystemTreeviewer API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemTreeviewer component
 Vue.component("LswFilesystemTreeviewer", {
   name: "LswFilesystemTreeviewer",
   template: `<div class="lsw_filesystem_treeviewer">
@@ -3223,9 +3263,9 @@ Vue.component("LswFilesystemTreeviewer", {
           }
         }
       });
-      if(!confirmation) return;
+      if (!confirmation) return;
       try {
-        if(isDirectory) {
+        if (isDirectory) {
           await this.$lsw.fs.delete_directory(fullpath);
         } else {
           await this.$lsw.fs.delete_file(fullpath);
@@ -3284,8 +3324,8 @@ Vue.component("LswFilesystemTreeviewer", {
           }
         }
       });
-      if(typeof newName !== "string") return;
-      if(newName.trim() === "") return;
+      if (typeof newName !== "string") return;
+      if (newName.trim() === "") return;
       await this.$lsw.fs.rename(subnodeIndex, newName.replace(/^\/+/g, ""));
       this.explorer.refresh();
     }
@@ -3303,6 +3343,8 @@ Vue.component("LswFilesystemTreeviewer", {
     this.$trace("lsw-filesystem-treeviewer.unmounted");
   }
 });
+// @code.end: LswFilesystemTreeviewer API
+// @code.start: LswWiki API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWiki component
 Vue.component("LswWiki", {
   name: "LswWiki",
   template: `<div class="lsw_wiki">
@@ -3340,6 +3382,8 @@ Vue.component("LswWiki", {
     }
   }
 });
+// @code.end: LswWiki API
+// @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
 Vue.component("LswAgenda", {
   name: "LswAgenda",
   template: `<div class="lsw_agenda">
@@ -3905,6 +3949,9 @@ Vue.component("LswAgenda", {
     }
   }
 });
+// @code.end: LswAgenda API
+
+// @code.start: LswAgendaAccionAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaAccionAdd API » LswAgendaAccionAdd component
 Vue.component("LswAgendaAccionAdd", {
   template: `<div class="LswAgendaAccionAdd" style="padding-top: 4px;">
   <template>
@@ -3941,6 +3988,8 @@ Vue.component("LswAgendaAccionAdd", {
     }
   }
 });
+// @code.end: LswAgendaAccionAdd API
+// @code.start: LswAgendaAccionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaAccionSearch API » LswAgendaAccionSearch component
 Vue.component("LswAgendaAccionSearch", {
   template: `<div class="LswAgendaAccionSearch">
   <lsw-table v-if="isLoaded"
@@ -3970,6 +4019,8 @@ Vue.component("LswAgendaAccionSearch", {
     }
   }
 });
+// @code.end: LswAgendaAccionSearch API
+// @code.start: LswAgendaBreadcrumb API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaBreadcrumb API » LswAgendaBreadcrumb component
 Vue.component("LswAgendaBreadcrumb", {
   name: "LswAgendaBreadcrumb",
   template: `<div class="lsw_agenda_breadcrumb">
@@ -4037,6 +4088,8 @@ Vue.component("LswAgendaBreadcrumb", {
     }
   }
 });
+// @code.end: LswAgendaBreadcrumb API
+// @code.start: LswAgendaConceptoAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaConceptoAdd API » LswAgendaConceptoAdd component
 Vue.component("LswAgendaConceptoAdd", {
   template: `<div class="LswAgendaConceptoAdd">
   <template>
@@ -4073,6 +4126,8 @@ Vue.component("LswAgendaConceptoAdd", {
     }
   }
 });
+// @code.end: LswAgendaConceptoAdd API
+// @code.start: LswAgendaConceptoSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaConceptoSearch API » LswAgendaConceptoSearch component
 Vue.component("LswAgendaConceptoSearch", {
   template: `<div class="LswAgendaConceptoSearch">
   <lsw-table v-if="isLoaded"
@@ -4102,6 +4157,8 @@ Vue.component("LswAgendaConceptoSearch", {
     }
   }
 });
+// @code.end: LswAgendaConceptoSearch API
+// @code.start: LswAgendaEventoSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaEventoSearch API » LswAgendaEventoSearch component
 Vue.component("LswAgendaEventoSearch", {
   template: `<div class="LswAgendaEventoSearch">
   LswAgendaEventoSearch
@@ -4121,7 +4178,8 @@ Vue.component("LswAgendaEventoSearch", {
     }
   }
 });
-
+// @code.end: LswAgendaEventoSearch API
+// @code.start: LswAgendaForm API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaForm API » LswAgendaForm component
 Vue.component("LswAgendaForm", {
   template: `<div>
     
@@ -4178,6 +4236,8 @@ Vue.component("LswAgendaForm", {
     }
   }
 });
+// @code.end: LswAgendaForm API
+// @code.start: LswAgendaImpresionAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaImpresionAdd API » LswAgendaImpresionAdd component
 Vue.component("LswAgendaImpresionAdd", {
   template: `<div class="LswAgendaImpresionAdd">
   LswAgendaImpresionAdd
@@ -4197,6 +4257,8 @@ Vue.component("LswAgendaImpresionAdd", {
     }
   }
 });
+// @code.end: LswAgendaImpresionAdd API
+// @code.start: LswAgendaImpresionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaImpresionSearch API » LswAgendaImpresionSearch component
 Vue.component("LswAgendaImpresionSearch", {
   template: `<div class="LswAgendaImpresionSearch">
   LswAgendaImpresionSearch
@@ -4216,6 +4278,8 @@ Vue.component("LswAgendaImpresionSearch", {
     }
   }
 });
+// @code.end: LswAgendaImpresionSearch API
+// @code.start: LswAgendaInfraccionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaInfraccionSearch API » LswAgendaInfraccionSearch component
 Vue.component("LswAgendaInfraccionSearch", {
   template: `<div class="LswAgendaInfraccionSearch">
   LswAgendaInfraccionSearch
@@ -4235,6 +4299,8 @@ Vue.component("LswAgendaInfraccionSearch", {
     }
   }
 });
+// @code.end: LswAgendaInfraccionSearch API
+// @code.start: LswAgendaLimitadorAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorAdd API » LswAgendaLimitadorAdd component
 Vue.component("LswAgendaLimitadorAdd", {
   template: `<div class="LswAgendaLimitadorAdd">
   <template>
@@ -4271,6 +4337,8 @@ Vue.component("LswAgendaLimitadorAdd", {
     }
   }
 });
+// @code.end: LswAgendaLimitadorAdd API
+// @code.start: LswAgendaLimitadorSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorSearch API » LswAgendaLimitadorSearch component
 Vue.component("LswAgendaLimitadorSearch", {
   template: `<div class="LswAgendaLimitadorSearch">
   <lsw-table v-if="isLoaded"
@@ -4300,6 +4368,8 @@ Vue.component("LswAgendaLimitadorSearch", {
     }
   }
 });
+// @code.end: LswAgendaLimitadorSearch API
+// @code.start: LswAgendaLimitadorViewer API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorViewer API » LswAgendaLimitadorViewer component
 Vue.component("LswAgendaLimitadorViewer", {
   template: `<div class="LswAgendaLimitadorViewer">
     <div v-if="isLoaded">
@@ -4362,6 +4432,8 @@ Vue.component("LswAgendaLimitadorViewer", {
     }
   }
 });
+// @code.end: LswAgendaLimitadorViewer API
+// @code.start: LswAgendaPostimpresionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaPostimpresionSearch API » LswAgendaPostimpresionSearch component
 Vue.component("LswAgendaPostimpresionSearch", {
   template: `<div class="LswAgendaPostimpresionSearch">
   LswAgendaPostimpresionSearch
@@ -4381,6 +4453,8 @@ Vue.component("LswAgendaPostimpresionSearch", {
     }
   }
 });
+// @code.end: LswAgendaPostimpresionSearch API
+// @code.start: LswAgendaPropagacionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaPropagacionSearch API » LswAgendaPropagacionSearch component
 Vue.component("LswAgendaPropagacionSearch", {
   template: `<div class="LswAgendaPropagacionSearch">
   LswAgendaPropagacionSearch
@@ -4400,6 +4474,8 @@ Vue.component("LswAgendaPropagacionSearch", {
     }
   }
 });
+// @code.end: LswAgendaPropagacionSearch API
+// @code.start: LswAgendaPropagadorSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaPropagadorSearch API » LswAgendaPropagadorSearch component
 Vue.component("LswAgendaPropagadorSearch", {
   template: `<div class="LswAgendaPropagadorSearch">
   LswAgendaPropagadorSearch
@@ -4419,6 +4495,8 @@ Vue.component("LswAgendaPropagadorSearch", {
     }
   }
 });
+// @code.end: LswAgendaPropagadorSearch API
+// @code.start: LswFormBuilder API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswFormBuilder component
 Vue.component("LswFormBuilder", {
   template: `<div class="lsw-form-builder">
     <div v-if="formMetadata">
@@ -4605,6 +4683,7 @@ Vue.component("LswFormBuilder", {
     }
   }
 });
+// @code.end: LswFormBuilder API
 Vue.component("LswFormtype", {
   template: `<div class="lsw-formtype">
     <component
@@ -4651,6 +4730,7 @@ Vue.component("LswFormtype", {
     }
   }
 });
+// @code.start: LswControlLabel API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswControlLabel component
 Vue.component("LswControlLabel", {
   template: `<div class="lsw_control_label">
     <div class="flex_row centered"
@@ -4757,6 +4837,8 @@ Vue.component("LswControlLabel", {
     }
   }
 });
+// @code.end: LswControlLabel API
+// @code.start: LswControlError API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswControlError component
 Vue.component("LswControlError", {
   template: `<div class="lsw_control_error">
     <div class="box_error_container position_relative"
@@ -4796,6 +4878,8 @@ Vue.component("LswControlError", {
     }
   }
 });
+// @code.end: LswControlError API
+// @code.start: LswErrorViewer API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswErrorViewer component
 Vue.component("LswErrorViewer", {
   template: `<div class="lsw_error_viewer">
     <div class="box_error_container error_is_affecting_field position_relative" v-if="currentError">
@@ -4857,6 +4941,8 @@ Vue.component("LswErrorViewer", {
     }
   }
 });
+// @code.end: LswErrorViewer API
+// @code.start: LswTextControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswTextControl component
 Vue.component("LswTextControl", {
   template: `<div class="lsw_text_control lsw_formtype lsw_form_control">
     <lsw-control-label :settings="settings" :parent-formtype="this" />
@@ -4920,6 +5006,8 @@ Vue.component("LswTextControl", {
     }
   }
 });
+// @code.end: LswTextControl API
+// @code.start: LswLongTextControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswLongTextControl component
 Vue.component("LswLongTextControl", {
   template: `<div class="lsw_long_text_control lsw_formtype lsw_form_control">
     <lsw-control-label :settings="settings"
@@ -4985,6 +5073,8 @@ Vue.component("LswLongTextControl", {
     }
   }
 });
+// @code.end: LswLongTextControl API
+// @code.start: LswDateControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswDateControl component
 Vue.component("LswDateControl", {
   template: `<div class="lsw_date_control lsw_formtype lsw_form_control">
     <lsw-control-label :settings="settings"
@@ -5089,6 +5179,8 @@ Vue.component("LswDateControl", {
     }
   }
 });
+// @code.end: LswDateControl API
+// @code.start: LswDurationControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswDurationControl component
 Vue.component("LswDurationControl", {
   template: `<div class="lsw_duration_control lsw_formtype lsw_form_control">
     <lsw-control-label :settings="settings"
@@ -5184,6 +5276,8 @@ Vue.component("LswDurationControl", {
     }
   }
 });
+// @code.end: LswDurationControl API
+// @code.start: LswNumberControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswNumberControl component
 Vue.component("LswNumberControl", {
   template: `<div class="lsw_number_control">
     number control
@@ -5208,6 +5302,8 @@ Vue.component("LswNumberControl", {
     }
   }
 });
+// @code.end: LswNumberControl API
+// @code.start: LswOptionsControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswOptionsControl component
 Vue.component("LswOptionsControl", {
   template: `<div class="lsw_options_control lsw_formtype lsw_form_control" keep-alive="true">
     <lsw-control-label :settings="settings"
@@ -5273,6 +5369,8 @@ Vue.component("LswOptionsControl", {
     }
   }
 });
+// @code.end: LswOptionsControl API
+// @code.start: LswSourceCodeControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswSourceCodeControl component
 Vue.component("LswSourceCodeControl", {
   template: `<div class="lsw_source_code_control">
     source code control
@@ -5297,6 +5395,8 @@ Vue.component("LswSourceCodeControl", {
     }
   }
 });
+// @code.end: LswSourceCodeControl API
+// @code.start: LswRefObjectControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefObjectControl component
 Vue.component("LswRefObjectControl", {
   template: `<div class="lsw_ref_object_control lsw_formtype lsw_form_control">
     <lsw-control-label :settings="settings"
@@ -5405,6 +5505,8 @@ Vue.component("LswRefObjectControl", {
     }
   }
 });
+// @code.end: LswRefObjectControl API
+// @code.start: LswRefListControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefListControl component
 Vue.component("LswRefListControl", {
   template: `<div class="lsw_ref_list_control lsw_formtype lsw_form_control">
     <lsw-control-label :settings="settings"
@@ -5514,6 +5616,8 @@ Vue.component("LswRefListControl", {
     }
   }
 });
+// @code.end: LswRefListControl API
+// @code.start: LswRefRelationControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefRelationControl component
 Vue.component("LswRefRelationControl", {
   template: `<div class="lsw_ref_relation_control">
     Ref relation control
@@ -5557,6 +5661,8 @@ Vue.component("LswRefRelationControl", {
     }
   }
 });
+// @code.end: LswRefRelationControl API
+// @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component
 Vue.component("LswNotes", {
   template: `<div class="lsw_notes">
     <div class="pad_1 float_right">
@@ -5665,6 +5771,8 @@ Vue.component("LswNotes", {
     }
   }
 });
+// @code.end: LswNotes API
+// @code.start: LswSchemaBasedForm API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswSchemaBasedForm component
 Vue.component("LswSchemaBasedForm", {
   template: `<div class="lsw_schema_form">
     <div class="lsw_schema_form_container">
@@ -6097,6 +6205,7 @@ Vue.component("LswSchemaBasedForm", {
     }
   }
 });
+// @code.end: LswSchemaBasedForm API
 (() => {
   console.log("CARGANDO APP COMO COMPONENTEEEEEE");
   let isFirstTime = true;

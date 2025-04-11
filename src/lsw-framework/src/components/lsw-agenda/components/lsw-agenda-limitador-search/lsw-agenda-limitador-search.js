@@ -1,3 +1,4 @@
+// @code.start: LswAgendaLimitadorSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorSearch API » LswAgendaLimitadorSearch component
 Vue.component("LswAgendaLimitadorSearch", {
   template: $template,
   props: {},
@@ -24,3 +25,4 @@ Vue.component("LswAgendaLimitadorSearch", {
     }
   }
 });
+// @code.end: LswAgendaLimitadorSearch API

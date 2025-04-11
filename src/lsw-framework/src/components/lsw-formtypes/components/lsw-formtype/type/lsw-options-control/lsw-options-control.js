@@ -1,3 +1,4 @@
+// @code.start: LswOptionsControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswOptionsControl component
 Vue.component("LswOptionsControl", {
   template: $template,
   props: {
@@ -39,3 +40,4 @@ Vue.component("LswOptionsControl", {
     }
   }
 });
+// @code.end: LswOptionsControl API

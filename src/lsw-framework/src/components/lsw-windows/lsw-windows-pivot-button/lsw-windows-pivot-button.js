@@ -1,3 +1,4 @@
+// @code.start: LswWindowsPivotButton API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsPivotButton component
 // Change this component at your convenience:
 Vue.component("LswWindowsPivotButton", {
   template: $template,
@@ -21,3 +22,4 @@ Vue.component("LswWindowsPivotButton", {
     
   }
 });
+// @code.end: LswWindowsPivotButton API

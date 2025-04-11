@@ -1,3 +1,4 @@
+// @code.start: LswFilesystemEditor API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemEditor component
 Vue.component("LswFilesystemEditor", {
   name: "LswFilesystemEditor",
   template: $template,
@@ -31,3 +32,4 @@ Vue.component("LswFilesystemEditor", {
 
   }
 });
+// @code.end: LswFilesystemEditor API

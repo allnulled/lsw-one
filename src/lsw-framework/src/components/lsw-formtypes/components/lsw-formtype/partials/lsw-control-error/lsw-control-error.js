@@ -1,3 +1,4 @@
+// @code.start: LswControlError API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswControlError component
 Vue.component("LswControlError", {
   template: $template,
   props: {
@@ -24,3 +25,4 @@ Vue.component("LswControlError", {
     }
   }
 });
+// @code.end: LswControlError API

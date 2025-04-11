@@ -1,3 +1,4 @@
+// @code.start: LswAgendaImpresionAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaImpresionAdd API » LswAgendaImpresionAdd component
 Vue.component("LswAgendaImpresionAdd", {
   template: $template,
   props: {},
@@ -15,3 +16,4 @@ Vue.component("LswAgendaImpresionAdd", {
     }
   }
 });
+// @code.end: LswAgendaImpresionAdd API

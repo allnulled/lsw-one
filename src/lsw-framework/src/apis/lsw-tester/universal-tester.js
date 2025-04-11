@@ -13,6 +13,8 @@
     }
 })(function () {
 
+    // @code.start: Tester API | @$section: LswTester API » Tester API » Tester classes and functions
+    // exported to: UniversalTester & describe
     const runQueue = async function (queue, errorHandler, it) {
         Iterating_tests:
         for (const test of queue) {
@@ -217,4 +219,5 @@
     describe.SilencedError = class extends Error {};
 
     return { describe };
+    // @code.end: Tester API
 });

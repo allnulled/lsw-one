@@ -1,3 +1,4 @@
+// @code.start: LswWindowsMainTab API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsMainTab component
 // Change this component at your convenience:
 Vue.component("LswWindowsMainTab", {
   template: $template,
@@ -58,3 +59,4 @@ Vue.component("LswWindowsMainTab", {
     
   }
 });
+// @code.end: LswWindowsMainTab API

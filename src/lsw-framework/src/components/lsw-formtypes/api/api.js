@@ -11,12 +11,13 @@
   }
 })(function () {
 
+  // @code.start: LswFormtypesUtils API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswFormtypesUtils component
   class LswFormtypesUtils {
 
     static class = this;
 
     static async submitControl() {
-      if(this.settings.parentSchemaForm) {
+      if (this.settings.parentSchemaForm) {
         await this.validate();
       }
 
@@ -44,10 +45,10 @@
         "formtypeParameters",
         "formtypeSettings"
       ]);
-      if(checkSettings.to.have.key("initialValue")) {
+      if (checkSettings.to.have.key("initialValue")) {
         const ensureInitialValue = ensureSettings.its("initialValue").type("string");
       }
-      if(checkSettings.to.have.key("label")) {
+      if (checkSettings.to.have.key("label")) {
         const ensureHasLabel = ensureSettings.its("label").type(["string", "undefined", "boolean"]);
       }
     }
@@ -67,7 +68,8 @@
   }
 
   window.commonFormtypes = new LswFormtypes();
-  
+
   return LswFormtypes;
+  // @code.end: LswFormtypesUtils API
 
 });

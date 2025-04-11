@@ -3,7 +3,7 @@ module.exports = function(ast, dir, parser, options) {
   const path = require("path");
   const comments = ast.comments;
   const default_file = options.default_file ?? "index.html";
-  const default_section = options.default_section ?? "0. Prelude";
+  const default_section = options.default_section ?? "Index of document";
   const book = {
     files: {
       [default_file]: {

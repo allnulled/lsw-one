@@ -11727,6 +11727,8 @@ if (process?.env?.NODE_ENV === "test") {
     }
 })(function () {
 
+    // @code.start: Tester API | @$section: LswTester API » Tester API » Tester classes and functions
+    // exported to: UniversalTester & describe
     const runQueue = async function (queue, errorHandler, it) {
         Iterating_tests:
         for (const test of queue) {
@@ -11931,6 +11933,7 @@ if (process?.env?.NODE_ENV === "test") {
     describe.SilencedError = class extends Error {};
 
     return { describe };
+    // @code.end: Tester API
 });
 
 (function (factory) {
@@ -12644,6 +12647,8 @@ if (process?.env?.NODE_ENV === "test") {
   }
 })(function () {
 
+  // @code.start: LswTriggers API | @$section: LswTriggers API » LswTriggers classes and functions
+  // exported to TriggersClass
   class TriggersClass {
 
     static globMatch(patterns, list) {
@@ -12726,6 +12731,7 @@ if (process?.env?.NODE_ENV === "test") {
   TriggersClass.default = TriggersClass;
 
   return TriggersClass;
+  // @code.end: LswTriggers API
 
 });
 (function (factory) {
@@ -13899,7 +13905,7 @@ if (process?.env?.NODE_ENV === "test") {
   /**
    * 
    * 
-   * @$section: Superlogger API » Superlogger class
+   * @$section: LswLogger API » Superlogger API »  Superlogger class
    * @type: class
    * @extends: Object
    * @vendor: lsw
@@ -13907,7 +13913,7 @@ if (process?.env?.NODE_ENV === "test") {
    * @source code: La clase está definida así:
    * 
    */
-  // @code.start: Superlogger class | @$section: Superlogger API » Superlogger class
+  // @code.start: Superlogger class | @$section: LswLogger API » Superlogger API »  Superlogger class
   const Superlogger = class {
 
     static create(id, options) {
@@ -14112,8 +14118,7 @@ if (process?.env?.NODE_ENV === "test") {
   }
 })(function () {
 
-  // @code.start: ControlledFunction global | @$section: ControlledFunction API » ControlledFunction classes
-
+  // @code.start: ControlledFunction global | @$section: LswControlledFunction API » ControlledFunction API » ControlledFunction classes
   const ReturnControl = class {
     constructor(value) {
       this.value = value;
@@ -20038,6 +20043,7 @@ $lswTyper.define("org.allnulled.lsw/type/moment.js", function(input) {
 
   return LswDatabaseAdapter;
 });
+// @code.start: v-descriptor API | @$section: Lsw Directives » v-descriptor directive
 (() => {
 
   const getDescriptorKeys = function (el, binding) {
@@ -20155,11 +20161,14 @@ $lswTyper.define("org.allnulled.lsw/type/moment.js", function(input) {
   }
 
 })();
+// @code.end: v-descriptor API
+// @code.start: v-focus API | @$section: Lsw Directives » v-focus directive
 Vue.directive("focus", {
   inserted: function(el) {
     el.focus();
   }
 });
+// @code.end: v-focus API
 (() => {
   const registerIdInScope = function (id, scope, element) {
     console.log("[trace][v-form] registerIdInScope");
@@ -20867,6 +20876,7 @@ Vue.directive("focus", {
     }
   });
 })();
+// @code.start: LswXForm API | @$section: Lsw Directives » v-xform directive
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -21346,6 +21356,7 @@ Vue.directive("focus", {
   return XFormPublicAPI;
 
 });
+// @code.end: LswXForm API
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -21359,12 +21370,13 @@ Vue.directive("focus", {
   }
 })(function () {
 
+  // @code.start: LswFormtypesUtils API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswFormtypesUtils component
   class LswFormtypesUtils {
 
     static class = this;
 
     static async submitControl() {
-      if(this.settings.parentSchemaForm) {
+      if (this.settings.parentSchemaForm) {
         await this.validate();
       }
 
@@ -21392,10 +21404,10 @@ Vue.directive("focus", {
         "formtypeParameters",
         "formtypeSettings"
       ]);
-      if(checkSettings.to.have.key("initialValue")) {
+      if (checkSettings.to.have.key("initialValue")) {
         const ensureInitialValue = ensureSettings.its("initialValue").type("string");
       }
-      if(checkSettings.to.have.key("label")) {
+      if (checkSettings.to.have.key("label")) {
         const ensureHasLabel = ensureSettings.its("label").type(["string", "undefined", "boolean"]);
       }
     }
@@ -21415,8 +21427,9 @@ Vue.directive("focus", {
   }
 
   window.commonFormtypes = new LswFormtypes();
-  
+
   return LswFormtypes;
+  // @code.end: LswFormtypesUtils API
 
 });
 (function (factory) {
@@ -21432,6 +21445,7 @@ Vue.directive("focus", {
   }
 })(function () {
 
+  // @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker API
   class ConsoleHooker {
     constructor(outputElementId) {
       this.originalConsole = { ...console }; // Guardar los métodos originales
@@ -21522,6 +21536,7 @@ Vue.directive("focus", {
   ConsoleHooker.default = ConsoleHooker;
 
   return ConsoleHooker;
+  // @code.end: LswConsoleHooker API
 
 });
 

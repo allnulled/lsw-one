@@ -1,4 +1,4 @@
-
+// @code.start: LswAgendaForm API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaForm API » LswAgendaForm component
 Vue.component("LswAgendaForm", {
   template: $template,
   props: {
@@ -53,3 +53,4 @@ Vue.component("LswAgendaForm", {
     }
   }
 });
+// @code.end: LswAgendaForm API

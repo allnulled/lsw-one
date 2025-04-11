@@ -1,3 +1,4 @@
+// @code.start: LswTextControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswTextControl component
 Vue.component("LswTextControl", {
   template: $template,
   props: {
@@ -39,3 +40,4 @@ Vue.component("LswTextControl", {
     }
   }
 });
+// @code.end: LswTextControl API

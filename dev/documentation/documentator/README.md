@@ -95,7 +95,7 @@ This type of comment requires to start by one property, so `// @something: somet
 The are some special properties.
 
 - `$output`: specifies the file to push this comment into. By default `index.html`.
-- `$section`: specifies the section to push this comment into. It is a lower category of `$output` (file) in the book. By default `0. Prelude`.
+- `$section`: specifies the section to push this comment into. It is a lower category of `$output` (file) in the book. By default `Index of document`.
   - Sections are sorted alphabetically: name and prefix-numerate them consequently.
 - `$priority`: specifies the importance of this comment in the section. The higher, the sooner it will appear in the section. By default `0`.
 - `$reference`: with this property you can write the documentation out of the code, and the `documentator` will take care to inject it again later.

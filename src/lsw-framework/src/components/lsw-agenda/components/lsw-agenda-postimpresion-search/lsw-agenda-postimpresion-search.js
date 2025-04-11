@@ -1,3 +1,4 @@
+// @code.start: LswAgendaPostimpresionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaPostimpresionSearch API » LswAgendaPostimpresionSearch component
 Vue.component("LswAgendaPostimpresionSearch", {
   template: $template,
   props: {},
@@ -15,3 +16,4 @@ Vue.component("LswAgendaPostimpresionSearch", {
     }
   }
 });
+// @code.end: LswAgendaPostimpresionSearch API

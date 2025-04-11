@@ -11,6 +11,7 @@
   }
 })(function () {
   
+  // @code.start: LswTyper API | @$section: LswTyper API » LswTyper class
   class LswTyper {
 
     static parse(jsontypedText) {
@@ -73,5 +74,6 @@
   globalThis.$lswTyper = new LswTyper();
 
   return LswTyper;
+  // @code.end: LswTyper API
 
 });

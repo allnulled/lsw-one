@@ -11,6 +11,8 @@
   }
 })(function () {
 
+    // @code.start: LswTimer API | @$section: LswTimer API » LswTimer classes and functions
+    // exported to LswTimer
   const Timeformat_utils = {};
 
   Timeformat_utils.formatHour = function (horaInput, minutoInput) {
@@ -232,5 +234,6 @@
     parser: Timeformat_parser,
     utils: Timeformat_utils
   };
+  // @code.end: LswTimer API
 
 });

@@ -1,3 +1,4 @@
+// @code.start: LswDatabaseExplorer API | @$section: Vue.js (v2) Components » LswDatabaseExplorer API » LswDatabaseExplorer API
 Vue.component("LswDatabaseExplorer", {
   template: $template,
   props: {
@@ -47,3 +48,4 @@ Vue.component("LswDatabaseExplorer", {
     this.$trace("lsw-database-explorer.methods.unmounted", arguments);
   }
 });
+// @code.end: LswDatabaseExplorer API

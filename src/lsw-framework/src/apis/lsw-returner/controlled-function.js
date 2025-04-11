@@ -11,8 +11,7 @@
   }
 })(function () {
 
-  // @code.start: ControlledFunction global | @$section: ControlledFunction API » ControlledFunction classes
-
+  // @code.start: ControlledFunction global | @$section: LswControlledFunction API » ControlledFunction API » ControlledFunction classes
   const ReturnControl = class {
     constructor(value) {
       this.value = value;

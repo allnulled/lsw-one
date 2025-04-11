@@ -1,3 +1,4 @@
+// @code.start: LswDurationControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswDurationControl component
 Vue.component("LswDurationControl", {
   template: $template,
   props: {
@@ -63,3 +64,4 @@ Vue.component("LswDurationControl", {
     }
   }
 });
+// @code.end: LswDurationControl API

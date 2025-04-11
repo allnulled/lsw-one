@@ -1,3 +1,4 @@
+// @code.start: LswTable API | @$section: Vue.js (v2) Components » Lsw Table API » LswTable component
 Vue.component("LswTable", {
   template: $template,
   props: {
@@ -256,3 +257,4 @@ Vue.component("LswTable", {
     this.digestOutput();
   }
 });
+// @code.end: LswTable API

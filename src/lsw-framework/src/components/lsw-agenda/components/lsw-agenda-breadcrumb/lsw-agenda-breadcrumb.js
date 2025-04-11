@@ -1,3 +1,4 @@
+// @code.start: LswAgendaBreadcrumb API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaBreadcrumb API » LswAgendaBreadcrumb component
 Vue.component("LswAgendaBreadcrumb", {
   name: "LswAgendaBreadcrumb",
   template: $template,
@@ -36,3 +37,4 @@ Vue.component("LswAgendaBreadcrumb", {
     }
   }
 });
+// @code.end: LswAgendaBreadcrumb API

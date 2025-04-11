@@ -1,3 +1,4 @@
+// @code.start: LswSourceCodeControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswSourceCodeControl component
 Vue.component("LswSourceCodeControl", {
   template: $template,
   props: {
@@ -20,3 +21,4 @@ Vue.component("LswSourceCodeControl", {
     }
   }
 });
+// @code.end: LswSourceCodeControl API

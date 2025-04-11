@@ -1,3 +1,4 @@
+// @code.start: LswPageDatabases API | @$section: Vue.js (v2) Components » LswPageDatabases API » LswPageDatabases API
 Vue.component("LswPageDatabases", {
   template: $template,
   props: {
@@ -53,3 +54,4 @@ Vue.component("LswPageDatabases", {
 
   }
 });
+// @code.end: LswPageDatabases API

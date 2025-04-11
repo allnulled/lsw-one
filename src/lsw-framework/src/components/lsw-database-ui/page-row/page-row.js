@@ -1,3 +1,4 @@
+// @code.start: LswPageRow API | @$section: Vue.js (v2) Components » LswPageRow API » LswPageRow API
 Vue.component("LswPageRow", {
   template: $template,
   props: {
@@ -113,3 +114,4 @@ Vue.component("LswPageRow", {
     this.connection.close();
   }
 });
+// @code.end: LswPageRow API

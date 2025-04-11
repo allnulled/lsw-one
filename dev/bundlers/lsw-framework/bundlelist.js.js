@@ -31,9 +31,6 @@ module.exports = [
   `${basepath}/src/apis/lsw-class-register/lsw-class-register.js`,
   `${basepath}/src/apis/lsw-database-virtualizer/lsw-database-virtualizer.js`,
   // `${basepath}/src/apis/lsw-database-adapter/LswDatabaseAdapter.js`,
-  `${basepath}/src/directives/v-descriptor/v-descriptor.js`,
-  `${basepath}/src/directives/v-focus/v-focus.js`,
-  `${basepath}/src/directives/v-xform/v-xform.js`,
   `${basepath}/src/apis/lsw-depender/lsw-depender.js`,
   `${basepath}/src/apis/lsw-depender/lsw-depender.js`,
   `${basepath}/src/apis/lsw-filesystem/lsw-filesystem.unbundled.js`,
@@ -42,10 +39,12 @@ module.exports = [
   `${basepath}/src/directives/v-descriptor/v-descriptor.js`,
   `${basepath}/src/directives/v-focus/v-focus.js`,
   `${basepath}/src/directives/v-form/v-form.js`,
+  `${basepath}/src/directives/v-xform/v-xform.js`,
   // APIs Pre-Componente:
   `${basepath}/src/components/lsw-formtypes/api/api.js`,
   `${basepath}/src/components/lsw-console-hooker/console-hooker-api.js`,
   // APIs Componente:
-  `${basepath}/src/lsw-components.js`,
   `${basepath}/src/lsw-api.js`,
+  // Parte de componentes:
+  // `${basepath}/src/lsw-components.js`,
 ];

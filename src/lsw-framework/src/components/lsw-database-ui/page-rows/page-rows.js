@@ -11,7 +11,7 @@ Vue.component("LswPageRows", {
     },
   },
   data() {
-    this.$trace("lsw-page-rows.data", arguments);
+    this.$trace("lsw-page-rows.data", []);
     $ensure(this.args).type("object");
     $ensure(this.args.database).type("string");
     $ensure(this.args.table).type("string");

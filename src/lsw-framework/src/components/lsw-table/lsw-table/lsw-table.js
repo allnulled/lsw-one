@@ -191,16 +191,11 @@ Vue.component("LswTable", {
     },
     digestPagination() {
       this.$trace("lsw-table.methods.digestPagination");
-      console.log(1);
       const page = this.currentPage;
-      console.log(2);
       const items = this.itemsPerPage;
-      console.log(3);
       const firstPosition = items * (page);
       this.selectedRows = [];
-      console.log(4);
       this.paginatedOutput = [].concat(this.output).splice(firstPosition, items);
-      console.log(5);
     },
     saveCurrentTransformer() {
       this.$trace("lsw-table.methods.saveCurrentTransformer");

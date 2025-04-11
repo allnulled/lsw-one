@@ -46,7 +46,7 @@
 
     static trace(methodName, args = []) {
       if (this._trace) {
-        console.log("[TRACE][" + methodName + "]", args.length + " args: " + Array.from(args).map(arg => typeof (arg)).join(", "));
+        console.log("[browsie][" + methodName + "]", args.length + " args: " + Array.from(args).map(arg => typeof (arg)).join(", "));
       }
     }
 

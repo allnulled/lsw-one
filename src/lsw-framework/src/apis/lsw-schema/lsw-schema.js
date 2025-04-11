@@ -217,8 +217,8 @@
         const columnIds = tableIds.map(tableId => Object.keys(partialSchema.hasTables[tableId].hasColumns || {}).map(columnId => [tableId, columnId].join(".")));
         const tablesMessage = tableIds.length === 0 ? "No tables to fusionate" : "Tables to fusionate:\n - " + tableIds.join("\n - ");
         const columnsMessage = columnIds.length === 0 ? "No columns to fusionate" : "Columns to fusionate:\n - " + columnIds.join("\n - ");
-        console.log(`[*] ${tablesMessage}`);
-        console.log(`[*] ${columnsMessage}`);
+        this.$trace(`[*] ${tablesMessage}`, []);
+        this.$trace(`[*] ${columnsMessage}`, []);
       }
       this.$fusionateSchemaNative(partialSchema);
       Iterating_tables:
@@ -256,7 +256,6 @@
         for(let index=0; index<columnIds.length; index++) {
           const columnId = columnIds[index];
           const ensureColumn = ensureHasColumns.its(columnId).type("object");
-          console.log(ensureColumn.$subject);
           ensureColumn.its("isType").type("string");
           ensureColumn.its("isUnique").type(["boolean", "undefined"]);
           ensureColumn.its("refersTo").type(["object", "undefined", "boolean"]);

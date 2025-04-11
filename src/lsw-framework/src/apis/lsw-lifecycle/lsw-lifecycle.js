@@ -35,80 +35,84 @@
 
     hooks: TriggersClass.create(),
 
+    $trace: function(method, args) {
+      if(Vue.prototype.$trace) {
+        Vue.prototype.$trace("lsw-app-lifecycle." + method, args);
+      }
+    },
+
     onStarted: function () {
-      console.log("[trace][lsw-app-lifecycle] onStarted");
+      this.$trace("onStarted", []);
       return this.hooks.emit("app:started");
     },
 
     onInitialize: function () {
-      console.log("[trace][lsw-app-lifecycle] onInitialize");
+      this.$trace("onInitialize", []);
       return this.hooks.emit("app:initialize");
     },
 
     onInitialized: function () {
-      console.log("[trace][lsw-app-lifecycle] onInitialized");
+      this.$trace("onInitialized", []);
       return this.hooks.emit("app:initialized");
     },
 
     onBoot: function () {
-      console.log("[trace][lsw-app-lifecycle] onBoot");
+      this.$trace("onBoot", []);
       return this.hooks.emit("app:boot");
     },
 
     onBooted: function () {
-      console.log("[trace][lsw-app-lifecycle] onBooted");
+      this.$trace("onBooted", []);
       return this.hooks.emit("app:booted");
     },
 
     onLoadModules: function () {
-      console.log("[trace][lsw-app-lifecycle] onLoadModules");
+      this.$trace("onLoadModules", []);
       return this.hooks.emit("app:load_modules");
     },
 
     onModulesLoaded: function () {
-      console.log("[trace][lsw-app-lifecycle] onModulesLoaded");
+      this.$trace("onModulesLoaded", []);
       return this.hooks.emit("app:modules_loaded");
     },
     onInstallModules: function () {
-      console.log("[trace][lsw-app-lifecycle] onInstallModules");
+      this.$trace("onInstallModules", []);
       return this.hooks.emit("app:install_modules");
     },
     onModulesInstalled: function () {
-      console.log("[trace][lsw-app-lifecycle] onModulesInstalled");
+      this.$trace("onModulesInstalled", []);
       return this.hooks.emit("app:modules_installed");
     },
     onLoadSchema: async function () {
-      console.log("[trace][lsw-app-lifecycle] onLoadSchema");
+      this.$trace("onLoadSchema", []);
       if (process.env.LSW_RESET_DATABASE) {
         await LswDatabase.deleteDatabase("lsw_default_database");
       }
       $lswSchema.loadSchemaByProxies("SchemaEntity");
       const databaseSchema = await $lswSchema.getDatabaseSchemaForLsw();
-      console.log("[*] Creating database from schema by proxies:", databaseSchema);
-      console.log(databaseSchema)
-      await LswDatabase.createDatabase("lsw_default_database", databaseSchema);
+      console.log("[*] Creating database from schema by proxies:", Object.keys(databaseSchema).join(", "));
       return await this.hooks.emit("app:load_schema");
     },
     onSchemaLoaded: function () {
-      console.log("[trace][lsw-app-lifecycle] onSchemaLoaded");
+      this.$trace("onSchemaLoaded", []);
       return this.hooks.emit("app:schema_loaded");
     },
     onSeedDatabase: async function () {
-      console.log("[trace][lsw-app-lifecycle] onSeedDatabase");
+      this.$trace("onSeedDatabase", []);
       Fill_with_your_own_requirements: {
         // @TOFILLIFNEEDED:
       }
       return await this.hooks.emit("app:seed_database");
     },
     onDatabaseSeeded: async function () {
-      console.log("[trace][lsw-app-lifecycle] onDatabaseSeeded");
+      this.$trace("onDatabaseSeeded", []);
       Fill_with_your_own_requirements: {
         // @TOFILLIFNEEDED:
       }
       return await this.hooks.emit("app:database_seeded");
     },
     onLoadDatabase: async function () {
-      console.log("[trace][lsw-app-lifecycle] onLoadDatabase");
+      this.$trace("onLoadDatabase", []);
       Load_database_connection: {
         Vue.prototype.$lsw.database = await LswDatabase.open("lsw_default_database");
         Vue.prototype.$lsw.database.setInnerSchema($lswSchema);
@@ -120,40 +124,40 @@
       return await this.hooks.emit("app:load_database");
     },
     onDatabaseLoaded: function () {
-      console.log("[trace][lsw-app-lifecycle] onDatabaseLoaded");
+      this.$trace("onDatabaseLoaded", []);
       return this.hooks.emit("app:database_loaded");
     },
     onLoadApplication: function () {
-      console.log("[trace][lsw-app-lifecycle] onLoadApplication");
+      this.$trace("onLoadApplication", []);
       return this.hooks.emit("app:load_application");
     },
     onApplicationLoaded: function () {
-      console.log("[trace][lsw-app-lifecycle] onApplicationLoaded");
+      this.$trace("onApplicationLoaded", []);
       return this.hooks.emit("app:application_loaded");
     },
 
     onAllLoaded: function () {
-      console.log("[trace][lsw-app-lifecycle] onAllLoaded");
+      this.$trace("onAllLoaded", []);
       return this.hooks.emit("app:all_loaded");
     },
 
     onFinished: function () {
-      console.log("[trace][lsw-app-lifecycle] onFinished");
+      this.$trace("onFinished", []);
       return this.hooks.emit("app:finished");
     },
 
     loadModule: function (moduleId) {
-      console.log("[trace][lsw-app-lifecycle] loadModule");
+      this.$trace("loadModule", []);
       return Vue.prototype.$lsw.importer.scriptAsync(`modules/${moduleId}/load.js`);
     },
 
     loadSubmodule: function (moduleId, subpath) {
-      console.log("[trace][lsw-app-lifecycle] loadSubmodule");
+      this.$trace("loadSubmodule", []);
       return Vue.prototype.$lsw.importer.scriptAsync(`modules/${moduleId}/${subpath}`);
     },
 
     start: function () {
-      console.log("[trace][lsw-app-lifecycle] start");
+      this.$trace("start", []);
       return this.run(this.steps);
     },
 

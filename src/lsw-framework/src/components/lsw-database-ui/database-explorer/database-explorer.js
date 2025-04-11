@@ -15,7 +15,7 @@ Vue.component("LswDatabaseExplorer", {
     }
   },
   data() {
-    this.$trace("lsw-database-explorer.data", arguments);
+    this.$trace("lsw-database-explorer.data", []);
     return {
       isLoading: false,
       selectedPage: this.initialPage,

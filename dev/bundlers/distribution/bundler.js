@@ -3,7 +3,7 @@ require(__dirname + "/../core/vuebundler.js").bundle({
   list: __dirname + "/../lsw-framework/bundlelist.components.js",
   module: true,
   id: "Litestarter_app",
-  output: __dirname + "/../../../src/assets/components-distribution.js",
+  output: __dirname + "/../../../src/interware/components-distribution.js",
   ignore: [],
 });
 

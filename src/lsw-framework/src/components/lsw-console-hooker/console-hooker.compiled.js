@@ -115,7 +115,7 @@
             <div class="console_box_title" style="display: flex; flex-direction: row; width: 100%; align-items: center;">
                 <span style="flex: 100;">console hooker</span>
                 <span style="flex: 1;">
-                    <button class="mini" v-on:click="hide">X</button>
+                    <button v-on:click="hide">X</button>
                 </span>
             </div>
             <div class="console_box_output_container">

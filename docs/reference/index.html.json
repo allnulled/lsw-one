@@ -91,7 +91,7 @@
         }
       },
       "$section": "Vue.js (v2) Components » LswDialogs API » LswDialogs classes and functions",
-      "$code": "  const defaultDialogFactory = () => {\n    return {\n      props: {},\n      data() {\n        return {};\n      },\n      methods: {},\n      mounted() { },\n    };\n  };\n\n  class Dialog {\n    static fromIdToComponentName(id) {\n      return \"lsw-dialog-\" + id;\n    }\n    constructor(info = {}) {\n      Object.assign(this, info);\n      Validations: {\n        if (typeof this.id !== \"string\") {\n          throw new Error(`Required parameter «dialog.id» to be a string on «Dialog.constructor»`);\n        }\n        if (typeof this.name !== \"string\") {\n          throw new Error(`Required parameter «dialog.name» to be a string on «Dialog.constructor»`);\n        }\n        if (typeof this.priority !== \"number\") {\n          throw new Error(`Required parameter «dialog.priority» to be a number on «Dialog.constructor»`);\n        }\n        if (typeof this.component !== \"object\") {\n          throw new Error(`Required parameter «dialog.component» to be an object on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser !== \"object\") {\n          throw new Error(`Required parameter «dialog.promiser» to be an object on «Dialog.constructor»`);\n        }\n        if (!(this.promiser.promise instanceof Promise)) {\n          throw new Error(`Required parameter «dialog.promiser.promise» to be an instance of Promise on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser.resolve !== \"function\") {\n          throw new Error(`Required parameter «dialog.promiser.resolve» to be an function on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser.reject !== \"function\") {\n          throw new Error(`Required parameter «dialog.promiser.reject» to be an function on «Dialog.constructor»`);\n        }\n        if (typeof this.acceptButton !== \"object\") {\n          this.acceptButton = false;\n        }\n        if (typeof this.cancelButton !== \"object\") {\n          this.cancelButton = false;\n        }\n      }\n    }\n  }\n\n  const closeSubdialogsHook = function (id, lswDialogs) {\n    const ids = Object.keys(lswDialogs.opened);\n    for (let index_dialog = 0; index_dialog < ids.length; index_dialog++) {\n      const idOpened = ids[index_dialog];\n      const idParent = lswDialogs.opened[idOpened].parentId;\n      if (idParent === id) {\n        lswDialogs.close(idOpened);\n      }\n    }\n  };\n\n  Vue.component(\"LswDialogs\", {\n    name: \"LswDialogs\",\n    template: `<div class=\"lws_dialogs_root\">\n    <div class=\"lsw_dialogs\"\n        v-if=\"openedLength && notMinimizedLength\">\n        <div class=\"lsw_dialogs_box\">\n            <template v-for=\"dialog, dialog_index in opened\">\n                <template v-if=\"!dialog.minimized\">\n                    <div class=\"dialog_window\"\n                        v-bind:key=\"'dialog_' + dialog_index\"\n                        :style=\"{ zIndex: dialog.priority }\">\n                        <div class=\"dialog_topbar\">\n                            <div class=\"dialog_title\">\n                                {{ dialog.title }}\n                            </div>\n                            <div class=\"dialog_topbar_buttons\">\n                                <button class=\"mini\"\n                                    v-if=\"enabledWindowsSystem\"\n                                    v-on:click=\"goHome\">☰</button>\n                                <button class=\"mini\"\n                                    v-on:click=\"minimize(dialog.id)\">💡</button>\n                                <button class=\"mini\"\n                                    v-on:click=\"close(dialog.id)\">❌</button>\n                            </div>\n                        </div>\n                        <div class=\"dialog_body\">\n                            <component :is=\"dialog.name\" :ref=\"'currentDialogComponent_' + dialog_index\" />\n                        </div>\n                        <div class=\"dialog_footer\">\n                            <button v-if=\"dialog && dialog.acceptButton\"\n                                class=\"\"\n                                v-on:click=\"() => dialog.acceptButton.callback ? dialog.acceptButton.callback(\\$refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : resolve(dialog.id).close()\">{{\n                                dialog.acceptButton.text || \"Accept\" }}</button>\n                            <button v-if=\"dialog && dialog.cancelButton\"\n                                class=\"\"\n                                v-on:click=\"() => dialog.cancelButton.callback ? dialog.cancelButton.callback(\\$refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : close(dialog.id)\">{{\n                                dialog.cancelButton.text || \"Cancel\" }}</button>\n                            <button v-else\n                                class=\"\"\n                                v-on:click=\"() => close(dialog.id)\">{{ dialog?.cancelButton?.text || \"Cancel\" }}</button>\n                        </div>\n                    </div>\n                </template>\n            </template>\n        </div>\n    </div>\n</div>`,\n    props: {\n      asWindows: {\n        type: Boolean,\n        default: () => false\n      }\n    },\n    data() {\n      this.$trace(\"lsw-dialogs.data\", []);\n      return {\n        enabledWindowsSystem: this.asWindows,\n        opened: {},\n        openedLength: 0,\n        notMinimizedLength: 0,\n        hookOnOpen: undefined,\n        hookOnClose: closeSubdialogsHook,\n      };\n    },\n    watch: {\n      opened(newValue) {\n        this.$trace(\"lsw-dialogs.watch.opened\", [\"too long object\"]);\n        this.openedLength = (typeof newValue !== \"object\") ? 0 : Object.keys(newValue).length;\n        this._refreshMinimizedLength(newValue);\n      }\n    },\n    methods: {\n      open(parametricObject = {}) {\n        this.$trace(\"lsw-dialogs.methods.open\", arguments);\n        if (typeof parametricObject !== \"object\") {\n          throw new Error(`Required argument «parametricObject» to be an object on «LswDialogs.methods.open»`);\n        }\n        const {\n          template,\n          title = \"\",\n          id = \"default\",\n          priority = 500,\n          factory = defaultDialogFactory,\n          parentId = undefined,\n          created_at = new Date()\n        } = parametricObject;\n        const componentInfo = {};\n        if (typeof id !== \"string\") {\n          throw new Error(`Required parameter «id» to be a string on «LswDialogs.methods.open»`);\n        }\n        if (id in this.opened) {\n          return this.maximize(id);\n          // throw new Error(`Cannot open dialog «${id}» because it is already opened on «LswDialogs.methods.open»`);\n        }\n        if (typeof template !== \"string\") {\n          throw new Error(`Required parameter «template» to be a string on «LswDialogs.methods.open»`);\n        }\n        if (typeof factory === \"object\") {\n          // @OK\n        } else if (typeof factory !== \"function\") {\n          throw new Error(`Required parameter «factory» to be an object or a function on «LswDialogs.methods.open»`);\n        }\n        if (typeof priority !== \"number\") {\n          throw new Error(`Required parameter «priority» to be a number on «LswDialogs.methods.open»`);\n        }\n        const dialogComponentInput = typeof factory === \"function\" ? factory() : factory;\n        const dialogComponentData = (() => {\n          if (typeof dialogComponentInput.data === \"undefined\") {\n            return function () { return {}; };\n          } else if (typeof dialogComponentInput.data === \"object\") {\n            return function () { return dialogComponentInput.data };\n          } else if (typeof dialogComponentInput.data === \"function\") {\n            return dialogComponentInput.data;\n          } else {\n            console.log(dialogComponentInput.data);\n            throw new Error(\"Required parameter «data» returned by «factory» to be an object, a function or empty on «LswDialogs.methods.open»\");\n          }\n        })();\n        const scopifyMethods = function (obj, scope) {\n          return Object.keys(obj).reduce((out, k) => {\n            const v = obj[k];\n            if (typeof v !== \"function\") {\n              out[k] = v;\n            } else {\n              out[k] = v.bind(scope);\n            }\n            return out;\n          }, {});\n        };\n        // 1) Este es para el Vue.component:\n        const componentId = Dialog.fromIdToComponentName(id);\n        const dialogComponent = Object.assign({}, dialogComponentInput, {\n          name: componentId,\n          template,\n          data(component, ...args) {\n            this.$trace(`lsw-dialogs.[${componentId}].data`, [\"too long object\"]);\n            const preData = dialogComponentData.call(this);\n            if (typeof preData.value === \"undefined\") {\n              preData.value = \"\";\n            };\n            // console.log(\"El data del nuevo componente dialog:\", preData);\n            dialogComponentInput.watch = scopifyMethods(dialogComponentInput.watch || {}, component);\n            dialogComponentInput.computed = scopifyMethods(dialogComponentInput.computed || {}, component);\n            dialogComponentInput.methods = scopifyMethods(dialogComponentInput.methods || {}, component);\n            return preData;\n          },\n          watch: (dialogComponentInput.watch || {}),\n          computed: (dialogComponentInput.computed || {}),\n          methods: {\n            getValue() {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.getValue`, []);\n              return JSON.parse(JSON.stringify(this.value));\n            },\n            accept(solution = undefined, ...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.accept`, [solution, ...args]);\n              if (solution instanceof Event) {\n                return this.$dialogs.resolve(id, this.getValue()).close(id);\n              }\n              return this.$dialogs.resolve(id, typeof solution !== \"undefined\" ? solution : this.getValue()).close(id);\n            },\n            cancel(...args) {\n              this.$trace(\"lsw-dialogs.[${componentId}].methods.cancel\", args);\n              return this.$dialogs.resolve(id, -1).close(id);\n            },\n            abort(error = undefined, ...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.abort`, [error, ...args]);\n              if (solution instanceof Event) {\n                return this.$dialogs.reject(id, new Error(\"Aborted dialog error\")).close(id);\n              }\n              return this.$dialogs.reject(id, error).close(id);\n            },\n            close(...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.close`, args);\n              return this.$dialogs.resolve(id, -2).close(id);\n            },\n            ...(dialogComponentInput.methods || {})\n          }\n        });\n        Define_component: {\n          Vue.component(dialogComponent.name, dialogComponent);\n        }\n        // 1) Este es para el this.$dialogs:\n        const dialogDefinition = Object.assign({}, {\n          ...parametricObject,\n          id,\n          title,\n          name: dialogComponent.name,\n          component: dialogComponent,\n          priority,\n          minimized: false,\n          parentId,\n          created_at,\n          promiser: Promise.withResolvers(),\n        });\n        const dialogInstance = new Dialog(dialogDefinition);\n        // console.log(\"Definición final del dialogo\", dialogInstance);\n        Define_dialog: {\n          this.opened = Object.assign({}, this.opened, {\n            [id]: dialogInstance\n          });\n        }\n        if (typeof this.hookOnOpen === \"function\") {\n          this.hookOnOpen(this.opened[id], id, this);\n        }\n        return this.opened[id].promiser.promise;\n      },\n      resolve(id, solution, ...args) {\n        this.$trace(\"lsw-dialogs.methods.resolve\", [id, solution, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.resolve»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot resolve dialog «${id}» because it is not opened on «LswDialogs.resolve»`);\n        }\n        this.opened[id].promiser.resolve(solution);\n        return {\n          close: () => this.close(id)\n        };\n      },\n      reject(id, error, ...args) {\n        this.$trace(\"lsw-dialogs.methods.reject\", [id, error, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.reject»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot reject dialog «${id}» because it is not opened on «LswDialogs.reject»`);\n        }\n        this.opened[id].promiser.reject(error);\n        return {\n          close: () => this.close(id)\n        };\n      },\n      close(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.close\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.close»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot close dialog «${id}» because it is not opened on «LswDialogs.close»`);\n        }\n        let promiseOfDialog = undefined;\n        Undefine_component: {\n          const dialogName = Dialog.fromIdToComponentName(id);\n          delete Vue.options.components[dialogName];\n        }\n        Undefine_dialog: {\n          Solve_promise_if_not_already: {\n            if (this.opened[id].promiser.promise.state === \"pending\") {\n              this.opened[id].promiser.resolve(-3);\n            }\n          }\n          promiseOfDialog = this.opened[id].promiser.promise;\n          delete this.opened[id];\n          this.opened = Object.assign({}, this.opened);\n        }\n        if (typeof this.hookOnClose === \"function\") {\n          this.hookOnClose(id, this);\n        }\n        return promiseOfDialog;\n        // this.$forceUpdate(true);\n      },\n      minimize(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.minimize\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.minimize»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.minimize»`);\n        }\n        this.opened[id].minimized = true;\n        this._refreshMinimizedLength(this.opened);\n      },\n      maximize(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.maximize\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.maximize»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.maximize»`);\n        }\n        Iterating_dialogs:\n        for (let dialogId in this.opened) {\n          if (id === dialogId) {\n            continue Iterating_dialogs;\n          }\n          const dialogData = this.opened[dialogId];\n          const currentPriority = parseInt(dialogData.priority);\n          this.opened[dialogId].priority = currentPriority - 1;\n\n        }\n        this.opened[id].priority = 500;\n        this.opened[id].minimized = false;\n        this._refreshMinimizedLength();\n      },\n      _refreshMinimizedLength(newValue = this.opened, ...args) {\n        this.$trace(\"lsw-dialogs.methods._refreshMinimizedLength\", [\"too long object\", ...args]);\n        this.notMinimizedLength = Object.keys(newValue).reduce((out, k) => {\n          const v = newValue[k];\n          if (v.minimized === false) {\n            out++;\n          }\n          return out;\n        }, 0);\n        this.$forceUpdate(true);\n      },\n      goHome(...args) {\n        this.$trace(\"lsw-dialogs.methods.goHome\", [...args]);\n        this.$window.LswWindows.show();\n      },\n      onOpen(callback, ...args) {\n        this.$trace(\"lsw-dialogs.methods.onOpen\", [callback, ...args]);\n        this.hookOnOpen = callback;\n      },\n      onClose(callback, ...args) {\n        this.$trace(\"lsw-dialogs.methods.onClose\", [callback, ...args]);\n        this.hookOnClose = callback;\n      }\n    },\n    mounted(...args) {\n      this.$trace(\"lsw-dialogs.mounted\", [...args]);\n      Vue.prototype.$dialogs = this;\n      if (Vue.prototype.$lsw) {\n        Vue.prototype.$lsw.dialogs = this;\n      }\n      window.LswDialogs = this;\n      console.log(\"[*] LswDialogs mounted.\");\n    }\n  });\n",
+      "$code": "  const defaultDialogFactory = () => {\n    return {\n      props: {},\n      data() {\n        return {};\n      },\n      methods: {},\n      mounted() { },\n    };\n  };\n\n  class Dialog {\n    static fromIdToComponentName(id) {\n      return \"lsw-dialog-\" + id;\n    }\n    constructor(info = {}) {\n      Object.assign(this, info);\n      Validations: {\n        if (typeof this.id !== \"string\") {\n          throw new Error(`Required parameter «dialog.id» to be a string on «Dialog.constructor»`);\n        }\n        if (typeof this.name !== \"string\") {\n          throw new Error(`Required parameter «dialog.name» to be a string on «Dialog.constructor»`);\n        }\n        if (typeof this.priority !== \"number\") {\n          throw new Error(`Required parameter «dialog.priority» to be a number on «Dialog.constructor»`);\n        }\n        if (typeof this.component !== \"object\") {\n          throw new Error(`Required parameter «dialog.component» to be an object on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser !== \"object\") {\n          throw new Error(`Required parameter «dialog.promiser» to be an object on «Dialog.constructor»`);\n        }\n        if (!(this.promiser.promise instanceof Promise)) {\n          throw new Error(`Required parameter «dialog.promiser.promise» to be an instance of Promise on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser.resolve !== \"function\") {\n          throw new Error(`Required parameter «dialog.promiser.resolve» to be an function on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser.reject !== \"function\") {\n          throw new Error(`Required parameter «dialog.promiser.reject» to be an function on «Dialog.constructor»`);\n        }\n        if (typeof this.acceptButton !== \"object\") {\n          this.acceptButton = false;\n        }\n        if (typeof this.cancelButton !== \"object\") {\n          this.cancelButton = false;\n        }\n      }\n    }\n  }\n\n  const closeSubdialogsHook = function (id, lswDialogs) {\n    const ids = Object.keys(lswDialogs.opened);\n    for (let index_dialog = 0; index_dialog < ids.length; index_dialog++) {\n      const idOpened = ids[index_dialog];\n      const idParent = lswDialogs.opened[idOpened].parentId;\n      if (idParent === id) {\n        lswDialogs.close(idOpened);\n      }\n    }\n  };\n\n  Vue.component(\"LswDialogs\", {\n    name: \"LswDialogs\",\n    template: `<div class=\"lws_dialogs_root\">\n    <div class=\"lsw_dialogs\"\n        v-if=\"openedLength && notMinimizedLength\">\n        <div class=\"lsw_dialogs_box\">\n            <template v-for=\"dialog, dialog_index in opened\">\n                <template v-if=\"!dialog.minimized\">\n                    <div class=\"dialog_window\"\n                        v-bind:key=\"'dialog_' + dialog_index\"\n                        :style=\"{ zIndex: dialog.priority }\">\n                        <div class=\"dialog_topbar\">\n                            <div class=\"dialog_title\">\n                                {{ dialog.title }}\n                            </div>\n                            <div class=\"dialog_topbar_buttons\">\n                                <button\n                                    v-if=\"enabledWindowsSystem\"\n                                    v-on:click=\"goHome\">☰</button>\n                                <button\n                                    v-on:click=\"minimize(dialog.id)\">💡</button>\n                                <button\n                                    v-on:click=\"close(dialog.id)\">❌</button>\n                            </div>\n                        </div>\n                        <div class=\"dialog_body\">\n                            <component :is=\"dialog.name\" :ref=\"'currentDialogComponent_' + dialog_index\" />\n                        </div>\n                        <div class=\"dialog_footer\">\n                            <button v-if=\"dialog && dialog.acceptButton\"\n                                class=\"\"\n                                v-on:click=\"() => dialog.acceptButton.callback ? dialog.acceptButton.callback(\\$refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : resolve(dialog.id).close()\">{{\n                                dialog.acceptButton.text || \"Accept\" }}</button>\n                            <button v-if=\"dialog && dialog.cancelButton\"\n                                class=\"\"\n                                v-on:click=\"() => dialog.cancelButton.callback ? dialog.cancelButton.callback(\\$refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : close(dialog.id)\">{{\n                                dialog.cancelButton.text || \"Cancel\" }}</button>\n                            <button v-else\n                                class=\"\"\n                                v-on:click=\"() => close(dialog.id)\">{{ dialog?.cancelButton?.text || \"Cancel\" }}</button>\n                        </div>\n                    </div>\n                </template>\n            </template>\n        </div>\n    </div>\n</div>`,\n    props: {\n      asWindows: {\n        type: Boolean,\n        default: () => false\n      }\n    },\n    data() {\n      this.$trace(\"lsw-dialogs.data\", []);\n      return {\n        enabledWindowsSystem: this.asWindows,\n        opened: {},\n        openedLength: 0,\n        notMinimizedLength: 0,\n        hookOnOpen: undefined,\n        hookOnClose: closeSubdialogsHook,\n      };\n    },\n    watch: {\n      opened(newValue) {\n        this.$trace(\"lsw-dialogs.watch.opened\", [\"too long object\"]);\n        this.openedLength = (typeof newValue !== \"object\") ? 0 : Object.keys(newValue).length;\n        this._refreshMinimizedLength(newValue);\n      }\n    },\n    methods: {\n      open(parametricObject = {}) {\n        this.$trace(\"lsw-dialogs.methods.open\", arguments);\n        if (typeof parametricObject !== \"object\") {\n          throw new Error(`Required argument «parametricObject» to be an object on «LswDialogs.methods.open»`);\n        }\n        const {\n          template,\n          title = \"\",\n          id = \"default\",\n          priority = 500,\n          factory = defaultDialogFactory,\n          parentId = undefined,\n          created_at = new Date()\n        } = parametricObject;\n        const componentInfo = {};\n        if (typeof id !== \"string\") {\n          throw new Error(`Required parameter «id» to be a string on «LswDialogs.methods.open»`);\n        }\n        if (id in this.opened) {\n          return this.maximize(id);\n          // throw new Error(`Cannot open dialog «${id}» because it is already opened on «LswDialogs.methods.open»`);\n        }\n        if (typeof template !== \"string\") {\n          throw new Error(`Required parameter «template» to be a string on «LswDialogs.methods.open»`);\n        }\n        if (typeof factory === \"object\") {\n          // @OK\n        } else if (typeof factory !== \"function\") {\n          throw new Error(`Required parameter «factory» to be an object or a function on «LswDialogs.methods.open»`);\n        }\n        if (typeof priority !== \"number\") {\n          throw new Error(`Required parameter «priority» to be a number on «LswDialogs.methods.open»`);\n        }\n        const dialogComponentInput = typeof factory === \"function\" ? factory() : factory;\n        const dialogComponentData = (() => {\n          if (typeof dialogComponentInput.data === \"undefined\") {\n            return function () { return {}; };\n          } else if (typeof dialogComponentInput.data === \"object\") {\n            return function () { return dialogComponentInput.data };\n          } else if (typeof dialogComponentInput.data === \"function\") {\n            return dialogComponentInput.data;\n          } else {\n            console.log(dialogComponentInput.data);\n            throw new Error(\"Required parameter «data» returned by «factory» to be an object, a function or empty on «LswDialogs.methods.open»\");\n          }\n        })();\n        const scopifyMethods = function (obj, scope) {\n          return Object.keys(obj).reduce((out, k) => {\n            const v = obj[k];\n            if (typeof v !== \"function\") {\n              out[k] = v;\n            } else {\n              out[k] = v.bind(scope);\n            }\n            return out;\n          }, {});\n        };\n        // 1) Este es para el Vue.component:\n        const componentId = Dialog.fromIdToComponentName(id);\n        const dialogComponent = Object.assign({}, dialogComponentInput, {\n          name: componentId,\n          template,\n          data(component, ...args) {\n            this.$trace(`lsw-dialogs.[${componentId}].data`, [\"too long object\"]);\n            const preData = dialogComponentData.call(this);\n            if (typeof preData.value === \"undefined\") {\n              preData.value = \"\";\n            };\n            // console.log(\"El data del nuevo componente dialog:\", preData);\n            dialogComponentInput.watch = scopifyMethods(dialogComponentInput.watch || {}, component);\n            dialogComponentInput.computed = scopifyMethods(dialogComponentInput.computed || {}, component);\n            dialogComponentInput.methods = scopifyMethods(dialogComponentInput.methods || {}, component);\n            return preData;\n          },\n          watch: (dialogComponentInput.watch || {}),\n          computed: (dialogComponentInput.computed || {}),\n          methods: {\n            getValue() {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.getValue`, []);\n              return JSON.parse(JSON.stringify(this.value));\n            },\n            accept(solution = undefined, ...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.accept`, [solution, ...args]);\n              if (solution instanceof Event) {\n                return this.$dialogs.resolve(id, this.getValue()).close(id);\n              }\n              return this.$dialogs.resolve(id, typeof solution !== \"undefined\" ? solution : this.getValue()).close(id);\n            },\n            cancel(...args) {\n              this.$trace(\"lsw-dialogs.[${componentId}].methods.cancel\", args);\n              return this.$dialogs.resolve(id, -1).close(id);\n            },\n            abort(error = undefined, ...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.abort`, [error, ...args]);\n              if (solution instanceof Event) {\n                return this.$dialogs.reject(id, new Error(\"Aborted dialog error\")).close(id);\n              }\n              return this.$dialogs.reject(id, error).close(id);\n            },\n            close(...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.close`, args);\n              return this.$dialogs.resolve(id, -2).close(id);\n            },\n            ...(dialogComponentInput.methods || {})\n          }\n        });\n        Define_component: {\n          Vue.component(dialogComponent.name, dialogComponent);\n        }\n        // 1) Este es para el this.$dialogs:\n        const dialogDefinition = Object.assign({}, {\n          ...parametricObject,\n          id,\n          title,\n          name: dialogComponent.name,\n          component: dialogComponent,\n          priority,\n          minimized: false,\n          parentId,\n          created_at,\n          promiser: Promise.withResolvers(),\n        });\n        const dialogInstance = new Dialog(dialogDefinition);\n        // console.log(\"Definición final del dialogo\", dialogInstance);\n        Define_dialog: {\n          this.opened = Object.assign({}, this.opened, {\n            [id]: dialogInstance\n          });\n        }\n        if (typeof this.hookOnOpen === \"function\") {\n          this.hookOnOpen(this.opened[id], id, this);\n        }\n        return this.opened[id].promiser.promise;\n      },\n      resolve(id, solution, ...args) {\n        this.$trace(\"lsw-dialogs.methods.resolve\", [id, solution, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.resolve»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot resolve dialog «${id}» because it is not opened on «LswDialogs.resolve»`);\n        }\n        this.opened[id].promiser.resolve(solution);\n        return {\n          close: () => this.close(id)\n        };\n      },\n      reject(id, error, ...args) {\n        this.$trace(\"lsw-dialogs.methods.reject\", [id, error, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.reject»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot reject dialog «${id}» because it is not opened on «LswDialogs.reject»`);\n        }\n        this.opened[id].promiser.reject(error);\n        return {\n          close: () => this.close(id)\n        };\n      },\n      close(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.close\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.close»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot close dialog «${id}» because it is not opened on «LswDialogs.close»`);\n        }\n        let promiseOfDialog = undefined;\n        Undefine_component: {\n          const dialogName = Dialog.fromIdToComponentName(id);\n          delete Vue.options.components[dialogName];\n        }\n        Undefine_dialog: {\n          Solve_promise_if_not_already: {\n            if (this.opened[id].promiser.promise.state === \"pending\") {\n              this.opened[id].promiser.resolve(-3);\n            }\n          }\n          promiseOfDialog = this.opened[id].promiser.promise;\n          delete this.opened[id];\n          this.opened = Object.assign({}, this.opened);\n        }\n        if (typeof this.hookOnClose === \"function\") {\n          this.hookOnClose(id, this);\n        }\n        return promiseOfDialog;\n        // this.$forceUpdate(true);\n      },\n      minimize(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.minimize\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.minimize»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.minimize»`);\n        }\n        this.opened[id].minimized = true;\n        this._refreshMinimizedLength(this.opened);\n      },\n      maximize(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.maximize\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.maximize»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.maximize»`);\n        }\n        Iterating_dialogs:\n        for (let dialogId in this.opened) {\n          if (id === dialogId) {\n            continue Iterating_dialogs;\n          }\n          const dialogData = this.opened[dialogId];\n          const currentPriority = parseInt(dialogData.priority);\n          this.opened[dialogId].priority = currentPriority - 1;\n\n        }\n        this.opened[id].priority = 500;\n        this.opened[id].minimized = false;\n        this._refreshMinimizedLength();\n      },\n      _refreshMinimizedLength(newValue = this.opened, ...args) {\n        this.$trace(\"lsw-dialogs.methods._refreshMinimizedLength\", [\"too long object\", ...args]);\n        this.notMinimizedLength = Object.keys(newValue).reduce((out, k) => {\n          const v = newValue[k];\n          if (v.minimized === false) {\n            out++;\n          }\n          return out;\n        }, 0);\n        this.$forceUpdate(true);\n      },\n      goHome(...args) {\n        this.$trace(\"lsw-dialogs.methods.goHome\", [...args]);\n        this.$window.LswWindows.show();\n      },\n      onOpen(callback, ...args) {\n        this.$trace(\"lsw-dialogs.methods.onOpen\", [callback, ...args]);\n        this.hookOnOpen = callback;\n      },\n      onClose(callback, ...args) {\n        this.$trace(\"lsw-dialogs.methods.onClose\", [callback, ...args]);\n        this.hookOnClose = callback;\n      }\n    },\n    mounted(...args) {\n      this.$trace(\"lsw-dialogs.mounted\", [...args]);\n      Vue.prototype.$dialogs = this;\n      if (Vue.prototype.$lsw) {\n        Vue.prototype.$lsw.dialogs = this;\n      }\n      window.LswDialogs = this;\n      console.log(\"[*] LswDialogs mounted.\");\n    }\n  });\n",
       "$code.label": "LswDialogs API",
       "$output": "index.html"
     },
@@ -99,18 +99,18 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 67419,
+          "offset": 67380,
           "line": 1779,
           "column": 1
         },
         "end": {
-          "offset": 67541,
+          "offset": 67502,
           "line": 1780,
           "column": 1
         }
       },
       "$section": "Vue.js (v2) Components » Lsw Windows API » LswWindowsMainTab component",
-      "$code": "// Change this component at your convenience:\nVue.component(\"LswWindowsMainTab\", {\n  template: `<div class=\"lsw_windows_main_tab\">\n        <div class=\"dialog_window\" v-bind:key=\"'main_dialog'\" :style=\"{ zIndex: 501 }\">\n            <div class=\"dialog_topbar\">\n                <div class=\"dialog_title\">\n                    <div>Process manager</div>\n                </div>\n                <div class=\"dialog_topbar_buttons\">\n                    <button v-if=\"\\$consoleHooker?.is_shown === false\" class=\"mini\" style=\"white-space: nowrap;flex: 1; margin-right: 4px;\" v-on:click=\"() => \\$consoleHooker?.show()\">💻</button\n                    ><button class=\"mini\" v-on:click=\"viewer.toggleState\">💡</button>\n                </div>\n            </div>\n            <div class=\"dialog_body\">\n                <div class=\"main_tab_topbar\">\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openAgenda\">📓 Agenda</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openWiki\">🔬 Wiki</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openRest\">📦 Data</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openFilesystem\">📂 Files</button>\n                </div>\n                <div class=\"pad_normal\" v-if=\"!Object.keys(\\$lsw.dialogs.opened).length\">\n                    <span>No processes found right now.</span>\n                </div>\n                <div class=\"pad_normal\" v-else>\n                    <div v-for=\"dialog, dialogIndex, dialogCounter in \\$lsw.dialogs.opened\" v-bind:key=\"'dialog-' + dialogIndex\">\n                        <a href=\"javascript:void(0)\" v-on:click=\"() => viewer.selectDialog(dialogIndex)\">{{ dialogCounter + 1 }}. {{ dialog.title }} [{{ dialog.id }}]</a>\n                    </div>\n                </div>\n            </div>\n            <div class=\"dialog_footer\">\n                <button class=\"\" v-on:click=\"viewer.toggleState\">Minimize</button>\n            </div>\n        </div>\n</div>`,\n  props: {\n    viewer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    return {\n      \n    };\n  },\n  methods: {\n    getRandomString(len = 10) {\n      const alphabet = \"abcdefghijklmnopqrstuvwxyz\".split(\"\");\n      let out = \"\";\n      while(out.length < len) {\n        out += alphabet[Math.floor(Math.random() * alphabet.length)];\n      }\n      return out;\n    },\n    openRest() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"database-explorer-\" + this.getRandomString(5),\n        title: \"Database explorer\",\n        template: `<lsw-database-explorer />`,\n      });\n    },\n    openFilesystem() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"filesystem-explorer-\" + this.getRandomString(5),\n        title: \"Filesystem explorer\",\n        template: `<lsw-filesystem-explorer />`,\n      });\n    },\n    openWiki() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"wiki-explorer-\" + this.getRandomString(5),\n        title: \"Wiki explorer\",\n        template: `<lsw-wiki />`,\n      });\n    },\n    openAgenda() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"agenda-viewer-\" + this.getRandomString(5),\n        title: \"Agenda viewer\",\n        template: `<lsw-agenda />`,\n      });\n    },\n  },\n  mounted() {\n    \n  }\n});\n",
+      "$code": "// Change this component at your convenience:\nVue.component(\"LswWindowsMainTab\", {\n  template: `<div class=\"lsw_windows_main_tab\">\n        <div class=\"dialog_window\" v-bind:key=\"'main_dialog'\" :style=\"{ zIndex: 501 }\">\n            <div class=\"dialog_topbar\">\n                <div class=\"dialog_title\">\n                    <div>Process manager</div>\n                </div>\n                <div class=\"dialog_topbar_buttons\">\n                    <button v-if=\"\\$consoleHooker?.is_shown === false\" style=\"white-space: nowrap;flex: 1; margin-right: 4px;\" v-on:click=\"() => \\$consoleHooker?.show()\">💻</button\n                    ><button v-on:click=\"viewer.toggleState\">💡</button>\n                </div>\n            </div>\n            <div class=\"dialog_body\">\n                <div class=\"main_tab_topbar\">\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openAgenda\">📓 Agenda</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openWiki\">🔬 Wiki</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openRest\">📦 Data</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openFilesystem\">📂 Files</button>\n                </div>\n                <div class=\"pad_normal\" v-if=\"!Object.keys(\\$lsw.dialogs.opened).length\">\n                    <span>No processes found right now.</span>\n                </div>\n                <div class=\"pad_normal\" v-else>\n                    <div v-for=\"dialog, dialogIndex, dialogCounter in \\$lsw.dialogs.opened\" v-bind:key=\"'dialog-' + dialogIndex\">\n                        <a href=\"javascript:void(0)\" v-on:click=\"() => viewer.selectDialog(dialogIndex)\">{{ dialogCounter + 1 }}. {{ dialog.title }} [{{ dialog.id }}]</a>\n                    </div>\n                </div>\n            </div>\n            <div class=\"dialog_footer\">\n                <button class=\"\" v-on:click=\"viewer.toggleState\">Minimize</button>\n            </div>\n        </div>\n</div>`,\n  props: {\n    viewer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    return {\n      \n    };\n  },\n  methods: {\n    getRandomString(len = 10) {\n      const alphabet = \"abcdefghijklmnopqrstuvwxyz\".split(\"\");\n      let out = \"\";\n      while(out.length < len) {\n        out += alphabet[Math.floor(Math.random() * alphabet.length)];\n      }\n      return out;\n    },\n    openRest() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"database-explorer-\" + this.getRandomString(5),\n        title: \"Database explorer\",\n        template: `<lsw-database-explorer />`,\n      });\n    },\n    openFilesystem() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"filesystem-explorer-\" + this.getRandomString(5),\n        title: \"Filesystem explorer\",\n        template: `<lsw-filesystem-explorer />`,\n      });\n    },\n    openWiki() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"wiki-explorer-\" + this.getRandomString(5),\n        title: \"Wiki explorer\",\n        template: `<lsw-wiki />`,\n      });\n    },\n    openAgenda() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"agenda-viewer-\" + this.getRandomString(5),\n        title: \"Agenda viewer\",\n        template: `<lsw-agenda />`,\n      });\n    },\n  },\n  mounted() {\n    \n  }\n});\n",
       "$code.label": "LswWindowsMainTab API",
       "$output": "index.html"
     },
@@ -118,12 +118,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 70902,
+          "offset": 70837,
           "line": 1872,
           "column": 1
         },
         "end": {
-          "offset": 71034,
+          "offset": 70969,
           "line": 1873,
           "column": 1
         }
@@ -137,12 +137,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 71878,
+          "offset": 71813,
           "line": 1911,
           "column": 1
         },
         "end": {
-          "offset": 72008,
+          "offset": 71943,
           "line": 1912,
           "column": 1
         }
@@ -156,12 +156,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 72501,
+          "offset": 72436,
           "line": 1938,
           "column": 1
         },
         "end": {
-          "offset": 72606,
+          "offset": 72541,
           "line": 1939,
           "column": 1
         }
@@ -175,18 +175,18 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 75502,
+          "offset": 75437,
           "line": 2025,
           "column": 1
         },
         "end": {
-          "offset": 75627,
+          "offset": 75562,
           "line": 2026,
           "column": 1
         }
       },
       "$section": "Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker component",
-      "$code": "Vue.component(\"LswConsoleHooker\", {\n  template: `<div class=\"console-hooker\" :class=\"{hide:!is_shown}\">\n    <div class=\"console_viewer\">\n        <div class=\"console_box\">\n            <div class=\"console_box_title\" style=\"display: flex; flex-direction: row; width: 100%; align-items: center;\">\n                <span style=\"flex: 100;\">console hooker</span>\n                <span style=\"flex: 1;\">\n                    <button class=\"mini\" v-on:click=\"hide\">X</button>\n                </span>\n            </div>\n            <div class=\"console_box_output_container\">\n                <div class=\"console_box_output\" id=\"lsw-console-hooker-output\"></div>\n            </div>\n        </div>\n    </div>\n</div>`,\n  props: {},\n  data() {\n    return {\n      is_shown: true,\n      instance: undefined\n    }\n  },\n  methods: {\n    show() {\n      this.is_shown = true;\n    },\n    hide() {\n      this.is_shown = false;\n    }\n  },\n  mounted() {\n    this.instance = new ConsoleHooker(\"lsw-console-hooker-output\");\n    if(process.env.NODE_ENV !== \"production\") {\n    }\n    this.instance.restoreConsole();\n    this.hide();\n    this.$vue.prototype.$consoleHooker = this;\n    this.$window.LswConsoleHooker = this;\n  },\n  unmounted() {\n\n  }\n});\n",
+      "$code": "Vue.component(\"LswConsoleHooker\", {\n  template: `<div class=\"console-hooker\" :class=\"{hide:!is_shown}\">\n    <div class=\"console_viewer\">\n        <div class=\"console_box\">\n            <div class=\"console_box_title\" style=\"display: flex; flex-direction: row; width: 100%; align-items: center;\">\n                <span style=\"flex: 100;\">console hooker</span>\n                <span style=\"flex: 1;\">\n                    <button v-on:click=\"hide\">X</button>\n                </span>\n            </div>\n            <div class=\"console_box_output_container\">\n                <div class=\"console_box_output\" id=\"lsw-console-hooker-output\"></div>\n            </div>\n        </div>\n    </div>\n</div>`,\n  props: {},\n  data() {\n    return {\n      is_shown: true,\n      instance: undefined\n    }\n  },\n  methods: {\n    show() {\n      this.is_shown = true;\n    },\n    hide() {\n      this.is_shown = false;\n    }\n  },\n  mounted() {\n    this.instance = new ConsoleHooker(\"lsw-console-hooker-output\");\n    if(process.env.NODE_ENV !== \"production\") {\n    }\n    this.instance.restoreConsole();\n    this.hide();\n    this.$vue.prototype.$consoleHooker = this;\n    this.$window.LswConsoleHooker = this;\n  },\n  unmounted() {\n\n  }\n});\n",
       "$code.label": "LswConsoleHooker API",
       "$output": "index.html"
     },
@@ -194,12 +194,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 76884,
+          "offset": 76806,
           "line": 2071,
           "column": 1
         },
         "end": {
-          "offset": 77012,
+          "offset": 76934,
           "line": 2072,
           "column": 1
         }
@@ -213,12 +213,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 78489,
+          "offset": 78411,
           "line": 2126,
           "column": 1
         },
         "end": {
-          "offset": 78623,
+          "offset": 78545,
           "line": 2127,
           "column": 1
         }
@@ -232,12 +232,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 79562,
+          "offset": 79484,
           "line": 2168,
           "column": 1
         },
         "end": {
-          "offset": 79681,
+          "offset": 79603,
           "line": 2169,
           "column": 1
         }
@@ -251,12 +251,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 81391,
+          "offset": 81313,
           "line": 2233,
           "column": 1
         },
         "end": {
-          "offset": 81495,
+          "offset": 81417,
           "line": 2234,
           "column": 1
         }
@@ -270,12 +270,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 84919,
+          "offset": 84841,
           "line": 2348,
           "column": 1
         },
         "end": {
-          "offset": 85020,
+          "offset": 84942,
           "line": 2349,
           "column": 1
         }
@@ -289,12 +289,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 89389,
+          "offset": 89311,
           "line": 2500,
           "column": 1
         },
         "end": {
-          "offset": 89499,
+          "offset": 89421,
           "line": 2501,
           "column": 1
         }
@@ -308,12 +308,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 89718,
+          "offset": 89640,
           "line": 2520,
           "column": 1
         },
         "end": {
-          "offset": 89828,
+          "offset": 89750,
           "line": 2521,
           "column": 1
         }
@@ -327,12 +327,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 92094,
+          "offset": 92016,
           "line": 2605,
           "column": 1
         },
         "end": {
-          "offset": 92236,
+          "offset": 92158,
           "line": 2606,
           "column": 1
         }
@@ -346,12 +346,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 110381,
+          "offset": 110303,
           "line": 3079,
           "column": 1
         },
         "end": {
-          "offset": 110531,
+          "offset": 110453,
           "line": 3080,
           "column": 1
         }
@@ -365,18 +365,18 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 111855,
+          "offset": 111777,
           "line": 3127,
           "column": 1
         },
         "end": {
-          "offset": 111993,
+          "offset": 111915,
           "line": 3128,
           "column": 1
         }
       },
       "$section": "Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemEditor component",
-      "$code": "Vue.component(\"LswFilesystemEditor\", {\n  name: \"LswFilesystemEditor\",\n  template: `<div class=\"lsw_filesystem_editor\" style=\"padding-bottom:1px;\">\n    <div style=\"min-height:1px;\"></div>\n    <textarea class=\"editor\" v-model=\"contents\" spellcheck=\"false\" />\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    },\n    filecontents: {\n      type: String,\n      required: true\n    }\n  },\n  data() {\n    return {\n      contents: this.filecontents\n    };\n  },\n  watch: {\n\n  },\n  methods: {\n    getContents() {\n      return this.contents;\n    },\n    setContents(contents) {\n      this.contents = contents;\n    }\n  },\n  mounted() {\n\n  }\n});\n",
+      "$code": "Vue.component(\"LswFilesystemEditor\", {\n  name: \"LswFilesystemEditor\",\n  template: `<div class=\"lsw_filesystem_editor\">\n    <textarea class=\"editor\" v-model=\"contents\" spellcheck=\"false\" />\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    },\n    filecontents: {\n      type: String,\n      required: true\n    }\n  },\n  data() {\n    return {\n      contents: this.filecontents\n    };\n  },\n  watch: {\n\n  },\n  methods: {\n    getContents() {\n      return this.contents;\n    },\n    setContents(contents) {\n      this.contents = contents;\n    }\n  },\n  mounted() {\n\n  }\n});\n",
       "$code.label": "LswFilesystemEditor API",
       "$output": "index.html"
     },
@@ -384,18 +384,18 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 112693,
-          "line": 3165,
+          "offset": 112547,
+          "line": 3164,
           "column": 1
         },
         "end": {
-          "offset": 112839,
-          "line": 3166,
+          "offset": 112693,
+          "line": 3165,
           "column": 1
         }
       },
       "$section": "Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemTreeviewer component",
-      "$code": "Vue.component(\"LswFilesystemTreeviewer\", {\n  name: \"LswFilesystemTreeviewer\",\n  template: `<div class=\"lsw_filesystem_treeviewer\">\n    <table class=\"filesystem_treeviewer_table width_100\">\n        <thead style=\"display: none;\"></thead>\n        <tbody>\n            <tr v-if=\"explorer.current_node !== '/'\"\n                class=\"treeviewer_row\"\n                v-on:click=\"() => goUp()\">\n                <td class=\"icon_cell\">📁</td>\n                <td>\n                    <a class=\"filename_link\" href=\"javascript:void(0)\">..</a>\n                </td>\n                <td></td>\n                <td>\n                    <button style=\"visibility: hidden;\" class=\"mini\" v-on:click=\"() => deleteNode(subnodeIndex)\">❌</button>\n                </td>\n            </tr>\n            <template v-for=\"subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes\">\n                <tr class=\"treeviewer_row\"\n                    v-bind:key=\"'subnode_obj_' + subnodeIndex\">\n                    <template v-if=\"typeof subnode === 'object'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📁</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\"><b>{{ subnodeIndex }}</b></a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📁 ❌</button>\n                        </td>\n                    </template>\n                    <template v-else-if=\"typeof subnode === 'string'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📄</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\">{{ subnodeIndex }}</a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📄 ❌</button>\n                        </td>\n                    </template>\n                </tr>\n            </template>\n        </tbody>\n    </table>\n\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    this.$trace(\"lsw-filesystem-treeviewer.data\");\n    return {};\n  },\n  watch: {},\n  methods: {\n    goUp() {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.goUp\");\n      return this.explorer.goUp();\n    },\n    openSubnode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.openSubnode\");\n      return this.explorer.open(subnodeIndex);\n    },\n    async deleteNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.deleteNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const confirmation = await this.$lsw.dialogs.open({\n        title: `Proceder a eliminar ${elementType}`,\n        template: `\n          <div class=\"pad_1\">\n            <div>Seguro que quieres eliminar el {{ elementType }} «{{ fullpath }}»?</div>\n            <hr />\n            <div class=\"flex_row centered\">\n              <div class=\"flex_100\"></div>\n              <div class=\"flex_1 pad_right_1\">\n                <button class=\"danger_button nowrap\" v-on:click=\"() => accept(true)\">Sí, eliminar</button>\n              </div>\n              <div class=\"flex_1\">\n                <button class=\"\" v-on:click=\"() => accept(false)\">Salir</button>\n              </div>\n            </div>\n          </div>\n        `,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n          }\n        }\n      });\n      if (!confirmation) return;\n      try {\n        if (isDirectory) {\n          await this.$lsw.fs.delete_directory(fullpath);\n        } else {\n          await this.$lsw.fs.delete_file(fullpath);\n        }\n        await this.explorer.refresh();\n      } catch (error) {\n        await this.$lsw.dialogs.open({\n          title: `El fichero no se pudo eliminar`,\n          template: `\n            <div class=\"pad_1\">\n              <div>El fichero «{{ fullpath }}» no se pudo eliminar debido al siguiente error:</div>\n              <hr />\n              <div v-if=\"error\">{{ error.name }}: {{ error.message }}</div>\n            </div>\n          `,\n          factory: {\n            data: {\n              error,\n              fullpath,\n            }\n          }\n        });\n      }\n    },\n    async renameNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.renameNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <input v-focus class=\"width_100\" type=\"text\" v-model=\"newFilename\" v-on:keyup.enter=\"() => accept(newFilename)\" />\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"\" v-on:click=\"() => accept(newFilename)\">Renombrar</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"\" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n            filename: subnodeIndex,\n            newFilename: subnodeIndex,\n          }\n        }\n      });\n      if (typeof newName !== \"string\") return;\n      if (newName.trim() === \"\") return;\n      await this.$lsw.fs.rename(subnodeIndex, newName.replace(/^\\/+/g, \"\"));\n      this.explorer.refresh();\n    }\n  },\n  mounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.mounted\");\n    this.explorer.setPanelButtons({\n      top: [],\n      left: [],\n      right: [],\n      bottom: [],\n    })\n  },\n  unmounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.unmounted\");\n  }\n});\n",
+      "$code": "Vue.component(\"LswFilesystemTreeviewer\", {\n  name: \"LswFilesystemTreeviewer\",\n  template: `<div class=\"lsw_filesystem_treeviewer\">\n    <table class=\"filesystem_treeviewer_table width_100\">\n        <thead style=\"display: none;\"></thead>\n        <tbody>\n            <tr v-if=\"explorer.current_node !== '/'\"\n                class=\"treeviewer_row\"\n                v-on:click=\"() => goUp()\">\n                <td class=\"icon_cell\">📁</td>\n                <td>\n                    <a class=\"filename_link\" href=\"javascript:void(0)\">..</a>\n                </td>\n                <td></td>\n                <td>\n                    <button style=\"visibility: hidden;\" v-on:click=\"() => deleteNode(subnodeIndex)\">❌</button>\n                </td>\n            </tr>\n            <template v-for=\"subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes\">\n                <tr class=\"treeviewer_row\"\n                    v-bind:key=\"'subnode_obj_' + subnodeIndex\">\n                    <template v-if=\"typeof subnode === 'object'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📁</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\"><b>{{ subnodeIndex }}</b></a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📁 ❌</button>\n                        </td>\n                    </template>\n                    <template v-else-if=\"typeof subnode === 'string'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📄</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\">{{ subnodeIndex }}</a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📄 ❌</button>\n                        </td>\n                    </template>\n                </tr>\n            </template>\n        </tbody>\n    </table>\n\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    this.$trace(\"lsw-filesystem-treeviewer.data\");\n    return {};\n  },\n  watch: {},\n  methods: {\n    goUp() {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.goUp\");\n      return this.explorer.goUp();\n    },\n    openSubnode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.openSubnode\");\n      return this.explorer.open(subnodeIndex);\n    },\n    async deleteNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.deleteNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const confirmation = await this.$lsw.dialogs.open({\n        title: `Proceder a eliminar ${elementType}`,\n        template: `\n          <div class=\"pad_1\">\n            <div>Seguro que quieres eliminar el {{ elementType }} «{{ fullpath }}»?</div>\n            <hr />\n            <div class=\"flex_row centered\">\n              <div class=\"flex_100\"></div>\n              <div class=\"flex_1 pad_right_1\">\n                <button class=\"danger_button nowrap\" v-on:click=\"() => accept(true)\">Sí, eliminar</button>\n              </div>\n              <div class=\"flex_1\">\n                <button class=\"\" v-on:click=\"() => accept(false)\">Salir</button>\n              </div>\n            </div>\n          </div>\n        `,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n          }\n        }\n      });\n      if (!confirmation) return;\n      try {\n        if (isDirectory) {\n          await this.$lsw.fs.delete_directory(fullpath);\n        } else {\n          await this.$lsw.fs.delete_file(fullpath);\n        }\n        await this.explorer.refresh();\n      } catch (error) {\n        await this.$lsw.dialogs.open({\n          title: `El fichero no se pudo eliminar`,\n          template: `\n            <div class=\"pad_1\">\n              <div>El fichero «{{ fullpath }}» no se pudo eliminar debido al siguiente error:</div>\n              <hr />\n              <div v-if=\"error\">{{ error.name }}: {{ error.message }}</div>\n            </div>\n          `,\n          factory: {\n            data: {\n              error,\n              fullpath,\n            }\n          }\n        });\n      }\n    },\n    async renameNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.renameNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <input v-focus class=\"width_100\" type=\"text\" v-model=\"newFilename\" v-on:keyup.enter=\"() => accept(newFilename)\" />\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"\" v-on:click=\"() => accept(newFilename)\">Renombrar</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"\" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n            filename: subnodeIndex,\n            newFilename: subnodeIndex,\n          }\n        }\n      });\n      if (typeof newName !== \"string\") return;\n      if (newName.trim() === \"\") return;\n      await this.$lsw.fs.rename(subnodeIndex, newName.replace(/^\\/+/g, \"\"));\n      this.explorer.refresh();\n    }\n  },\n  mounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.mounted\");\n    this.explorer.setPanelButtons({\n      top: [],\n      left: [],\n      right: [],\n      bottom: [],\n    })\n  },\n  unmounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.unmounted\");\n  }\n});\n",
       "$code.label": "LswFilesystemTreeviewer API",
       "$output": "index.html"
     },
@@ -403,13 +403,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 119799,
-          "line": 3347,
+          "offset": 119640,
+          "line": 3346,
           "column": 1
         },
         "end": {
-          "offset": 119898,
-          "line": 3348,
+          "offset": 119739,
+          "line": 3347,
           "column": 1
         }
       },
@@ -422,13 +422,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 120822,
-          "line": 3386,
+          "offset": 120663,
+          "line": 3385,
           "column": 1
         },
         "end": {
-          "offset": 120942,
-          "line": 3387,
+          "offset": 120783,
+          "line": 3386,
           "column": 1
         }
       },
@@ -441,13 +441,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 147401,
-          "line": 3954,
+          "offset": 147242,
+          "line": 3953,
           "column": 1
         },
         "end": {
-          "offset": 147548,
-          "line": 3955,
+          "offset": 147389,
+          "line": 3954,
           "column": 1
         }
       },
@@ -460,13 +460,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 148370,
-          "line": 3992,
+          "offset": 148211,
+          "line": 3991,
           "column": 1
         },
         "end": {
-          "offset": 148526,
-          "line": 3993,
+          "offset": 148367,
+          "line": 3992,
           "column": 1
         }
       },
@@ -479,13 +479,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 149247,
-          "line": 4023,
+          "offset": 149088,
+          "line": 4022,
           "column": 1
         },
         "end": {
-          "offset": 149397,
-          "line": 4024,
+          "offset": 149238,
+          "line": 4023,
           "column": 1
         }
       },
@@ -498,13 +498,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 151455,
-          "line": 4092,
+          "offset": 151296,
+          "line": 4091,
           "column": 1
         },
         "end": {
-          "offset": 151608,
-          "line": 4093,
+          "offset": 151449,
+          "line": 4092,
           "column": 1
         }
       },
@@ -517,13 +517,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 152426,
-          "line": 4130,
+          "offset": 152267,
+          "line": 4129,
           "column": 1
         },
         "end": {
-          "offset": 152588,
-          "line": 4131,
+          "offset": 152429,
+          "line": 4130,
           "column": 1
         }
       },
@@ -536,13 +536,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 153323,
-          "line": 4161,
+          "offset": 153164,
+          "line": 4160,
           "column": 1
         },
         "end": {
-          "offset": 153479,
-          "line": 4162,
+          "offset": 153320,
+          "line": 4161,
           "column": 1
         }
       },
@@ -555,13 +555,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 153904,
-          "line": 4182,
+          "offset": 153745,
+          "line": 4181,
           "column": 1
         },
         "end": {
-          "offset": 154036,
-          "line": 4183,
+          "offset": 153877,
+          "line": 4182,
           "column": 1
         }
       },
@@ -574,13 +574,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 155600,
-          "line": 4240,
+          "offset": 155441,
+          "line": 4239,
           "column": 1
         },
         "end": {
-          "offset": 155756,
-          "line": 4241,
+          "offset": 155597,
+          "line": 4240,
           "column": 1
         }
       },
@@ -593,13 +593,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 156181,
-          "line": 4261,
+          "offset": 156022,
+          "line": 4260,
           "column": 1
         },
         "end": {
-          "offset": 156346,
-          "line": 4262,
+          "offset": 156187,
+          "line": 4261,
           "column": 1
         }
       },
@@ -612,13 +612,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 156789,
-          "line": 4282,
+          "offset": 156630,
+          "line": 4281,
           "column": 1
         },
         "end": {
-          "offset": 156957,
-          "line": 4283,
+          "offset": 156798,
+          "line": 4282,
           "column": 1
         }
       },
@@ -631,13 +631,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 157406,
-          "line": 4303,
+          "offset": 157247,
+          "line": 4302,
           "column": 1
         },
         "end": {
-          "offset": 157562,
-          "line": 4304,
+          "offset": 157403,
+          "line": 4303,
           "column": 1
         }
       },
@@ -650,13 +650,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 158391,
-          "line": 4341,
+          "offset": 158232,
+          "line": 4340,
           "column": 1
         },
         "end": {
-          "offset": 158556,
-          "line": 4342,
+          "offset": 158397,
+          "line": 4341,
           "column": 1
         }
       },
@@ -669,13 +669,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 159298,
-          "line": 4372,
+          "offset": 159139,
+          "line": 4371,
           "column": 1
         },
         "end": {
-          "offset": 159463,
-          "line": 4373,
+          "offset": 159304,
+          "line": 4372,
           "column": 1
         }
       },
@@ -688,13 +688,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 161506,
-          "line": 4436,
+          "offset": 161347,
+          "line": 4435,
           "column": 1
         },
         "end": {
-          "offset": 161683,
-          "line": 4437,
+          "offset": 161524,
+          "line": 4436,
           "column": 1
         }
       },
@@ -707,13 +707,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 162150,
-          "line": 4457,
+          "offset": 161991,
+          "line": 4456,
           "column": 1
         },
         "end": {
-          "offset": 162321,
-          "line": 4458,
+          "offset": 162162,
+          "line": 4457,
           "column": 1
         }
       },
@@ -726,13 +726,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 162776,
-          "line": 4478,
+          "offset": 162617,
+          "line": 4477,
           "column": 1
         },
         "end": {
-          "offset": 162944,
-          "line": 4479,
+          "offset": 162785,
+          "line": 4478,
           "column": 1
         }
       },
@@ -745,13 +745,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 163393,
-          "line": 4499,
+          "offset": 163234,
+          "line": 4498,
           "column": 1
         },
         "end": {
-          "offset": 163511,
-          "line": 4500,
+          "offset": 163352,
+          "line": 4499,
           "column": 1
         }
       },
@@ -764,13 +764,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 171934,
-          "line": 4733,
+          "offset": 171775,
+          "line": 4732,
           "column": 1
         },
         "end": {
-          "offset": 172054,
-          "line": 4734,
+          "offset": 171895,
+          "line": 4733,
           "column": 1
         }
       },
@@ -783,13 +783,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 175710,
-          "line": 4841,
+          "offset": 175551,
+          "line": 4840,
           "column": 1
         },
         "end": {
-          "offset": 175830,
-          "line": 4842,
+          "offset": 175671,
+          "line": 4841,
           "column": 1
         }
       },
@@ -802,13 +802,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 176793,
-          "line": 4882,
+          "offset": 176634,
+          "line": 4881,
           "column": 1
         },
         "end": {
-          "offset": 176911,
-          "line": 4883,
+          "offset": 176752,
+          "line": 4882,
           "column": 1
         }
       },
@@ -821,13 +821,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 179005,
-          "line": 4945,
+          "offset": 178846,
+          "line": 4944,
           "column": 1
         },
         "end": {
-          "offset": 179123,
-          "line": 4946,
+          "offset": 178964,
+          "line": 4945,
           "column": 1
         }
       },
@@ -840,13 +840,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 181009,
-          "line": 5010,
+          "offset": 180850,
+          "line": 5009,
           "column": 1
         },
         "end": {
-          "offset": 181135,
-          "line": 5011,
+          "offset": 180976,
+          "line": 5010,
           "column": 1
         }
       },
@@ -859,13 +859,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 183054,
-          "line": 5077,
+          "offset": 182895,
+          "line": 5076,
           "column": 1
         },
         "end": {
-          "offset": 183172,
-          "line": 5078,
+          "offset": 183013,
+          "line": 5077,
           "column": 1
         }
       },
@@ -878,13 +878,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 186869,
-          "line": 5183,
+          "offset": 186710,
+          "line": 5182,
           "column": 1
         },
         "end": {
-          "offset": 186995,
-          "line": 5184,
+          "offset": 186836,
+          "line": 5183,
           "column": 1
         }
       },
@@ -897,13 +897,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 189818,
-          "line": 5280,
+          "offset": 189659,
+          "line": 5279,
           "column": 1
         },
         "end": {
-          "offset": 189940,
-          "line": 5281,
+          "offset": 189781,
+          "line": 5280,
           "column": 1
         }
       },
@@ -916,13 +916,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 190412,
-          "line": 5306,
+          "offset": 190253,
+          "line": 5305,
           "column": 1
         },
         "end": {
-          "offset": 190536,
-          "line": 5307,
+          "offset": 190377,
+          "line": 5306,
           "column": 1
         }
       },
@@ -935,13 +935,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 192593,
-          "line": 5373,
+          "offset": 192434,
+          "line": 5372,
           "column": 1
         },
         "end": {
-          "offset": 192723,
-          "line": 5374,
+          "offset": 192564,
+          "line": 5373,
           "column": 1
         }
       },
@@ -954,13 +954,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 193207,
-          "line": 5399,
+          "offset": 193048,
+          "line": 5398,
           "column": 1
         },
         "end": {
-          "offset": 193335,
-          "line": 5400,
+          "offset": 193176,
+          "line": 5399,
           "column": 1
         }
       },
@@ -973,13 +973,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 197381,
-          "line": 5509,
+          "offset": 197222,
+          "line": 5508,
           "column": 1
         },
         "end": {
-          "offset": 197505,
-          "line": 5510,
+          "offset": 197346,
+          "line": 5509,
           "column": 1
         }
       },
@@ -992,13 +992,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 201536,
-          "line": 5620,
+          "offset": 201377,
+          "line": 5619,
           "column": 1
         },
         "end": {
-          "offset": 201668,
-          "line": 5621,
+          "offset": 201509,
+          "line": 5620,
           "column": 1
         }
       },
@@ -1011,13 +1011,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 202800,
-          "line": 5665,
+          "offset": 202641,
+          "line": 5664,
           "column": 1
         },
         "end": {
-          "offset": 202912,
-          "line": 5666,
+          "offset": 202753,
+          "line": 5665,
           "column": 1
         }
       },
@@ -1030,13 +1030,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 206856,
-          "line": 5775,
+          "offset": 206697,
+          "line": 5774,
           "column": 1
         },
         "end": {
-          "offset": 206988,
-          "line": 5776,
+          "offset": 206829,
+          "line": 5775,
           "column": 1
         }
       },
@@ -3351,7 +3351,7 @@
                 }
               },
               "$section": "Vue.js (v2) Components » LswDialogs API » LswDialogs classes and functions",
-              "$code": "  const defaultDialogFactory = () => {\n    return {\n      props: {},\n      data() {\n        return {};\n      },\n      methods: {},\n      mounted() { },\n    };\n  };\n\n  class Dialog {\n    static fromIdToComponentName(id) {\n      return \"lsw-dialog-\" + id;\n    }\n    constructor(info = {}) {\n      Object.assign(this, info);\n      Validations: {\n        if (typeof this.id !== \"string\") {\n          throw new Error(`Required parameter «dialog.id» to be a string on «Dialog.constructor»`);\n        }\n        if (typeof this.name !== \"string\") {\n          throw new Error(`Required parameter «dialog.name» to be a string on «Dialog.constructor»`);\n        }\n        if (typeof this.priority !== \"number\") {\n          throw new Error(`Required parameter «dialog.priority» to be a number on «Dialog.constructor»`);\n        }\n        if (typeof this.component !== \"object\") {\n          throw new Error(`Required parameter «dialog.component» to be an object on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser !== \"object\") {\n          throw new Error(`Required parameter «dialog.promiser» to be an object on «Dialog.constructor»`);\n        }\n        if (!(this.promiser.promise instanceof Promise)) {\n          throw new Error(`Required parameter «dialog.promiser.promise» to be an instance of Promise on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser.resolve !== \"function\") {\n          throw new Error(`Required parameter «dialog.promiser.resolve» to be an function on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser.reject !== \"function\") {\n          throw new Error(`Required parameter «dialog.promiser.reject» to be an function on «Dialog.constructor»`);\n        }\n        if (typeof this.acceptButton !== \"object\") {\n          this.acceptButton = false;\n        }\n        if (typeof this.cancelButton !== \"object\") {\n          this.cancelButton = false;\n        }\n      }\n    }\n  }\n\n  const closeSubdialogsHook = function (id, lswDialogs) {\n    const ids = Object.keys(lswDialogs.opened);\n    for (let index_dialog = 0; index_dialog < ids.length; index_dialog++) {\n      const idOpened = ids[index_dialog];\n      const idParent = lswDialogs.opened[idOpened].parentId;\n      if (idParent === id) {\n        lswDialogs.close(idOpened);\n      }\n    }\n  };\n\n  Vue.component(\"LswDialogs\", {\n    name: \"LswDialogs\",\n    template: `<div class=\"lws_dialogs_root\">\n    <div class=\"lsw_dialogs\"\n        v-if=\"openedLength && notMinimizedLength\">\n        <div class=\"lsw_dialogs_box\">\n            <template v-for=\"dialog, dialog_index in opened\">\n                <template v-if=\"!dialog.minimized\">\n                    <div class=\"dialog_window\"\n                        v-bind:key=\"'dialog_' + dialog_index\"\n                        :style=\"{ zIndex: dialog.priority }\">\n                        <div class=\"dialog_topbar\">\n                            <div class=\"dialog_title\">\n                                {{ dialog.title }}\n                            </div>\n                            <div class=\"dialog_topbar_buttons\">\n                                <button class=\"mini\"\n                                    v-if=\"enabledWindowsSystem\"\n                                    v-on:click=\"goHome\">☰</button>\n                                <button class=\"mini\"\n                                    v-on:click=\"minimize(dialog.id)\">💡</button>\n                                <button class=\"mini\"\n                                    v-on:click=\"close(dialog.id)\">❌</button>\n                            </div>\n                        </div>\n                        <div class=\"dialog_body\">\n                            <component :is=\"dialog.name\" :ref=\"'currentDialogComponent_' + dialog_index\" />\n                        </div>\n                        <div class=\"dialog_footer\">\n                            <button v-if=\"dialog && dialog.acceptButton\"\n                                class=\"\"\n                                v-on:click=\"() => dialog.acceptButton.callback ? dialog.acceptButton.callback(\\$refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : resolve(dialog.id).close()\">{{\n                                dialog.acceptButton.text || \"Accept\" }}</button>\n                            <button v-if=\"dialog && dialog.cancelButton\"\n                                class=\"\"\n                                v-on:click=\"() => dialog.cancelButton.callback ? dialog.cancelButton.callback(\\$refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : close(dialog.id)\">{{\n                                dialog.cancelButton.text || \"Cancel\" }}</button>\n                            <button v-else\n                                class=\"\"\n                                v-on:click=\"() => close(dialog.id)\">{{ dialog?.cancelButton?.text || \"Cancel\" }}</button>\n                        </div>\n                    </div>\n                </template>\n            </template>\n        </div>\n    </div>\n</div>`,\n    props: {\n      asWindows: {\n        type: Boolean,\n        default: () => false\n      }\n    },\n    data() {\n      this.$trace(\"lsw-dialogs.data\", []);\n      return {\n        enabledWindowsSystem: this.asWindows,\n        opened: {},\n        openedLength: 0,\n        notMinimizedLength: 0,\n        hookOnOpen: undefined,\n        hookOnClose: closeSubdialogsHook,\n      };\n    },\n    watch: {\n      opened(newValue) {\n        this.$trace(\"lsw-dialogs.watch.opened\", [\"too long object\"]);\n        this.openedLength = (typeof newValue !== \"object\") ? 0 : Object.keys(newValue).length;\n        this._refreshMinimizedLength(newValue);\n      }\n    },\n    methods: {\n      open(parametricObject = {}) {\n        this.$trace(\"lsw-dialogs.methods.open\", arguments);\n        if (typeof parametricObject !== \"object\") {\n          throw new Error(`Required argument «parametricObject» to be an object on «LswDialogs.methods.open»`);\n        }\n        const {\n          template,\n          title = \"\",\n          id = \"default\",\n          priority = 500,\n          factory = defaultDialogFactory,\n          parentId = undefined,\n          created_at = new Date()\n        } = parametricObject;\n        const componentInfo = {};\n        if (typeof id !== \"string\") {\n          throw new Error(`Required parameter «id» to be a string on «LswDialogs.methods.open»`);\n        }\n        if (id in this.opened) {\n          return this.maximize(id);\n          // throw new Error(`Cannot open dialog «${id}» because it is already opened on «LswDialogs.methods.open»`);\n        }\n        if (typeof template !== \"string\") {\n          throw new Error(`Required parameter «template» to be a string on «LswDialogs.methods.open»`);\n        }\n        if (typeof factory === \"object\") {\n          // @OK\n        } else if (typeof factory !== \"function\") {\n          throw new Error(`Required parameter «factory» to be an object or a function on «LswDialogs.methods.open»`);\n        }\n        if (typeof priority !== \"number\") {\n          throw new Error(`Required parameter «priority» to be a number on «LswDialogs.methods.open»`);\n        }\n        const dialogComponentInput = typeof factory === \"function\" ? factory() : factory;\n        const dialogComponentData = (() => {\n          if (typeof dialogComponentInput.data === \"undefined\") {\n            return function () { return {}; };\n          } else if (typeof dialogComponentInput.data === \"object\") {\n            return function () { return dialogComponentInput.data };\n          } else if (typeof dialogComponentInput.data === \"function\") {\n            return dialogComponentInput.data;\n          } else {\n            console.log(dialogComponentInput.data);\n            throw new Error(\"Required parameter «data» returned by «factory» to be an object, a function or empty on «LswDialogs.methods.open»\");\n          }\n        })();\n        const scopifyMethods = function (obj, scope) {\n          return Object.keys(obj).reduce((out, k) => {\n            const v = obj[k];\n            if (typeof v !== \"function\") {\n              out[k] = v;\n            } else {\n              out[k] = v.bind(scope);\n            }\n            return out;\n          }, {});\n        };\n        // 1) Este es para el Vue.component:\n        const componentId = Dialog.fromIdToComponentName(id);\n        const dialogComponent = Object.assign({}, dialogComponentInput, {\n          name: componentId,\n          template,\n          data(component, ...args) {\n            this.$trace(`lsw-dialogs.[${componentId}].data`, [\"too long object\"]);\n            const preData = dialogComponentData.call(this);\n            if (typeof preData.value === \"undefined\") {\n              preData.value = \"\";\n            };\n            // console.log(\"El data del nuevo componente dialog:\", preData);\n            dialogComponentInput.watch = scopifyMethods(dialogComponentInput.watch || {}, component);\n            dialogComponentInput.computed = scopifyMethods(dialogComponentInput.computed || {}, component);\n            dialogComponentInput.methods = scopifyMethods(dialogComponentInput.methods || {}, component);\n            return preData;\n          },\n          watch: (dialogComponentInput.watch || {}),\n          computed: (dialogComponentInput.computed || {}),\n          methods: {\n            getValue() {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.getValue`, []);\n              return JSON.parse(JSON.stringify(this.value));\n            },\n            accept(solution = undefined, ...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.accept`, [solution, ...args]);\n              if (solution instanceof Event) {\n                return this.$dialogs.resolve(id, this.getValue()).close(id);\n              }\n              return this.$dialogs.resolve(id, typeof solution !== \"undefined\" ? solution : this.getValue()).close(id);\n            },\n            cancel(...args) {\n              this.$trace(\"lsw-dialogs.[${componentId}].methods.cancel\", args);\n              return this.$dialogs.resolve(id, -1).close(id);\n            },\n            abort(error = undefined, ...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.abort`, [error, ...args]);\n              if (solution instanceof Event) {\n                return this.$dialogs.reject(id, new Error(\"Aborted dialog error\")).close(id);\n              }\n              return this.$dialogs.reject(id, error).close(id);\n            },\n            close(...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.close`, args);\n              return this.$dialogs.resolve(id, -2).close(id);\n            },\n            ...(dialogComponentInput.methods || {})\n          }\n        });\n        Define_component: {\n          Vue.component(dialogComponent.name, dialogComponent);\n        }\n        // 1) Este es para el this.$dialogs:\n        const dialogDefinition = Object.assign({}, {\n          ...parametricObject,\n          id,\n          title,\n          name: dialogComponent.name,\n          component: dialogComponent,\n          priority,\n          minimized: false,\n          parentId,\n          created_at,\n          promiser: Promise.withResolvers(),\n        });\n        const dialogInstance = new Dialog(dialogDefinition);\n        // console.log(\"Definición final del dialogo\", dialogInstance);\n        Define_dialog: {\n          this.opened = Object.assign({}, this.opened, {\n            [id]: dialogInstance\n          });\n        }\n        if (typeof this.hookOnOpen === \"function\") {\n          this.hookOnOpen(this.opened[id], id, this);\n        }\n        return this.opened[id].promiser.promise;\n      },\n      resolve(id, solution, ...args) {\n        this.$trace(\"lsw-dialogs.methods.resolve\", [id, solution, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.resolve»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot resolve dialog «${id}» because it is not opened on «LswDialogs.resolve»`);\n        }\n        this.opened[id].promiser.resolve(solution);\n        return {\n          close: () => this.close(id)\n        };\n      },\n      reject(id, error, ...args) {\n        this.$trace(\"lsw-dialogs.methods.reject\", [id, error, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.reject»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot reject dialog «${id}» because it is not opened on «LswDialogs.reject»`);\n        }\n        this.opened[id].promiser.reject(error);\n        return {\n          close: () => this.close(id)\n        };\n      },\n      close(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.close\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.close»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot close dialog «${id}» because it is not opened on «LswDialogs.close»`);\n        }\n        let promiseOfDialog = undefined;\n        Undefine_component: {\n          const dialogName = Dialog.fromIdToComponentName(id);\n          delete Vue.options.components[dialogName];\n        }\n        Undefine_dialog: {\n          Solve_promise_if_not_already: {\n            if (this.opened[id].promiser.promise.state === \"pending\") {\n              this.opened[id].promiser.resolve(-3);\n            }\n          }\n          promiseOfDialog = this.opened[id].promiser.promise;\n          delete this.opened[id];\n          this.opened = Object.assign({}, this.opened);\n        }\n        if (typeof this.hookOnClose === \"function\") {\n          this.hookOnClose(id, this);\n        }\n        return promiseOfDialog;\n        // this.$forceUpdate(true);\n      },\n      minimize(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.minimize\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.minimize»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.minimize»`);\n        }\n        this.opened[id].minimized = true;\n        this._refreshMinimizedLength(this.opened);\n      },\n      maximize(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.maximize\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.maximize»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.maximize»`);\n        }\n        Iterating_dialogs:\n        for (let dialogId in this.opened) {\n          if (id === dialogId) {\n            continue Iterating_dialogs;\n          }\n          const dialogData = this.opened[dialogId];\n          const currentPriority = parseInt(dialogData.priority);\n          this.opened[dialogId].priority = currentPriority - 1;\n\n        }\n        this.opened[id].priority = 500;\n        this.opened[id].minimized = false;\n        this._refreshMinimizedLength();\n      },\n      _refreshMinimizedLength(newValue = this.opened, ...args) {\n        this.$trace(\"lsw-dialogs.methods._refreshMinimizedLength\", [\"too long object\", ...args]);\n        this.notMinimizedLength = Object.keys(newValue).reduce((out, k) => {\n          const v = newValue[k];\n          if (v.minimized === false) {\n            out++;\n          }\n          return out;\n        }, 0);\n        this.$forceUpdate(true);\n      },\n      goHome(...args) {\n        this.$trace(\"lsw-dialogs.methods.goHome\", [...args]);\n        this.$window.LswWindows.show();\n      },\n      onOpen(callback, ...args) {\n        this.$trace(\"lsw-dialogs.methods.onOpen\", [callback, ...args]);\n        this.hookOnOpen = callback;\n      },\n      onClose(callback, ...args) {\n        this.$trace(\"lsw-dialogs.methods.onClose\", [callback, ...args]);\n        this.hookOnClose = callback;\n      }\n    },\n    mounted(...args) {\n      this.$trace(\"lsw-dialogs.mounted\", [...args]);\n      Vue.prototype.$dialogs = this;\n      if (Vue.prototype.$lsw) {\n        Vue.prototype.$lsw.dialogs = this;\n      }\n      window.LswDialogs = this;\n      console.log(\"[*] LswDialogs mounted.\");\n    }\n  });\n",
+              "$code": "  const defaultDialogFactory = () => {\n    return {\n      props: {},\n      data() {\n        return {};\n      },\n      methods: {},\n      mounted() { },\n    };\n  };\n\n  class Dialog {\n    static fromIdToComponentName(id) {\n      return \"lsw-dialog-\" + id;\n    }\n    constructor(info = {}) {\n      Object.assign(this, info);\n      Validations: {\n        if (typeof this.id !== \"string\") {\n          throw new Error(`Required parameter «dialog.id» to be a string on «Dialog.constructor»`);\n        }\n        if (typeof this.name !== \"string\") {\n          throw new Error(`Required parameter «dialog.name» to be a string on «Dialog.constructor»`);\n        }\n        if (typeof this.priority !== \"number\") {\n          throw new Error(`Required parameter «dialog.priority» to be a number on «Dialog.constructor»`);\n        }\n        if (typeof this.component !== \"object\") {\n          throw new Error(`Required parameter «dialog.component» to be an object on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser !== \"object\") {\n          throw new Error(`Required parameter «dialog.promiser» to be an object on «Dialog.constructor»`);\n        }\n        if (!(this.promiser.promise instanceof Promise)) {\n          throw new Error(`Required parameter «dialog.promiser.promise» to be an instance of Promise on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser.resolve !== \"function\") {\n          throw new Error(`Required parameter «dialog.promiser.resolve» to be an function on «Dialog.constructor»`);\n        }\n        if (typeof this.promiser.reject !== \"function\") {\n          throw new Error(`Required parameter «dialog.promiser.reject» to be an function on «Dialog.constructor»`);\n        }\n        if (typeof this.acceptButton !== \"object\") {\n          this.acceptButton = false;\n        }\n        if (typeof this.cancelButton !== \"object\") {\n          this.cancelButton = false;\n        }\n      }\n    }\n  }\n\n  const closeSubdialogsHook = function (id, lswDialogs) {\n    const ids = Object.keys(lswDialogs.opened);\n    for (let index_dialog = 0; index_dialog < ids.length; index_dialog++) {\n      const idOpened = ids[index_dialog];\n      const idParent = lswDialogs.opened[idOpened].parentId;\n      if (idParent === id) {\n        lswDialogs.close(idOpened);\n      }\n    }\n  };\n\n  Vue.component(\"LswDialogs\", {\n    name: \"LswDialogs\",\n    template: `<div class=\"lws_dialogs_root\">\n    <div class=\"lsw_dialogs\"\n        v-if=\"openedLength && notMinimizedLength\">\n        <div class=\"lsw_dialogs_box\">\n            <template v-for=\"dialog, dialog_index in opened\">\n                <template v-if=\"!dialog.minimized\">\n                    <div class=\"dialog_window\"\n                        v-bind:key=\"'dialog_' + dialog_index\"\n                        :style=\"{ zIndex: dialog.priority }\">\n                        <div class=\"dialog_topbar\">\n                            <div class=\"dialog_title\">\n                                {{ dialog.title }}\n                            </div>\n                            <div class=\"dialog_topbar_buttons\">\n                                <button\n                                    v-if=\"enabledWindowsSystem\"\n                                    v-on:click=\"goHome\">☰</button>\n                                <button\n                                    v-on:click=\"minimize(dialog.id)\">💡</button>\n                                <button\n                                    v-on:click=\"close(dialog.id)\">❌</button>\n                            </div>\n                        </div>\n                        <div class=\"dialog_body\">\n                            <component :is=\"dialog.name\" :ref=\"'currentDialogComponent_' + dialog_index\" />\n                        </div>\n                        <div class=\"dialog_footer\">\n                            <button v-if=\"dialog && dialog.acceptButton\"\n                                class=\"\"\n                                v-on:click=\"() => dialog.acceptButton.callback ? dialog.acceptButton.callback(\\$refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : resolve(dialog.id).close()\">{{\n                                dialog.acceptButton.text || \"Accept\" }}</button>\n                            <button v-if=\"dialog && dialog.cancelButton\"\n                                class=\"\"\n                                v-on:click=\"() => dialog.cancelButton.callback ? dialog.cancelButton.callback(\\$refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : close(dialog.id)\">{{\n                                dialog.cancelButton.text || \"Cancel\" }}</button>\n                            <button v-else\n                                class=\"\"\n                                v-on:click=\"() => close(dialog.id)\">{{ dialog?.cancelButton?.text || \"Cancel\" }}</button>\n                        </div>\n                    </div>\n                </template>\n            </template>\n        </div>\n    </div>\n</div>`,\n    props: {\n      asWindows: {\n        type: Boolean,\n        default: () => false\n      }\n    },\n    data() {\n      this.$trace(\"lsw-dialogs.data\", []);\n      return {\n        enabledWindowsSystem: this.asWindows,\n        opened: {},\n        openedLength: 0,\n        notMinimizedLength: 0,\n        hookOnOpen: undefined,\n        hookOnClose: closeSubdialogsHook,\n      };\n    },\n    watch: {\n      opened(newValue) {\n        this.$trace(\"lsw-dialogs.watch.opened\", [\"too long object\"]);\n        this.openedLength = (typeof newValue !== \"object\") ? 0 : Object.keys(newValue).length;\n        this._refreshMinimizedLength(newValue);\n      }\n    },\n    methods: {\n      open(parametricObject = {}) {\n        this.$trace(\"lsw-dialogs.methods.open\", arguments);\n        if (typeof parametricObject !== \"object\") {\n          throw new Error(`Required argument «parametricObject» to be an object on «LswDialogs.methods.open»`);\n        }\n        const {\n          template,\n          title = \"\",\n          id = \"default\",\n          priority = 500,\n          factory = defaultDialogFactory,\n          parentId = undefined,\n          created_at = new Date()\n        } = parametricObject;\n        const componentInfo = {};\n        if (typeof id !== \"string\") {\n          throw new Error(`Required parameter «id» to be a string on «LswDialogs.methods.open»`);\n        }\n        if (id in this.opened) {\n          return this.maximize(id);\n          // throw new Error(`Cannot open dialog «${id}» because it is already opened on «LswDialogs.methods.open»`);\n        }\n        if (typeof template !== \"string\") {\n          throw new Error(`Required parameter «template» to be a string on «LswDialogs.methods.open»`);\n        }\n        if (typeof factory === \"object\") {\n          // @OK\n        } else if (typeof factory !== \"function\") {\n          throw new Error(`Required parameter «factory» to be an object or a function on «LswDialogs.methods.open»`);\n        }\n        if (typeof priority !== \"number\") {\n          throw new Error(`Required parameter «priority» to be a number on «LswDialogs.methods.open»`);\n        }\n        const dialogComponentInput = typeof factory === \"function\" ? factory() : factory;\n        const dialogComponentData = (() => {\n          if (typeof dialogComponentInput.data === \"undefined\") {\n            return function () { return {}; };\n          } else if (typeof dialogComponentInput.data === \"object\") {\n            return function () { return dialogComponentInput.data };\n          } else if (typeof dialogComponentInput.data === \"function\") {\n            return dialogComponentInput.data;\n          } else {\n            console.log(dialogComponentInput.data);\n            throw new Error(\"Required parameter «data» returned by «factory» to be an object, a function or empty on «LswDialogs.methods.open»\");\n          }\n        })();\n        const scopifyMethods = function (obj, scope) {\n          return Object.keys(obj).reduce((out, k) => {\n            const v = obj[k];\n            if (typeof v !== \"function\") {\n              out[k] = v;\n            } else {\n              out[k] = v.bind(scope);\n            }\n            return out;\n          }, {});\n        };\n        // 1) Este es para el Vue.component:\n        const componentId = Dialog.fromIdToComponentName(id);\n        const dialogComponent = Object.assign({}, dialogComponentInput, {\n          name: componentId,\n          template,\n          data(component, ...args) {\n            this.$trace(`lsw-dialogs.[${componentId}].data`, [\"too long object\"]);\n            const preData = dialogComponentData.call(this);\n            if (typeof preData.value === \"undefined\") {\n              preData.value = \"\";\n            };\n            // console.log(\"El data del nuevo componente dialog:\", preData);\n            dialogComponentInput.watch = scopifyMethods(dialogComponentInput.watch || {}, component);\n            dialogComponentInput.computed = scopifyMethods(dialogComponentInput.computed || {}, component);\n            dialogComponentInput.methods = scopifyMethods(dialogComponentInput.methods || {}, component);\n            return preData;\n          },\n          watch: (dialogComponentInput.watch || {}),\n          computed: (dialogComponentInput.computed || {}),\n          methods: {\n            getValue() {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.getValue`, []);\n              return JSON.parse(JSON.stringify(this.value));\n            },\n            accept(solution = undefined, ...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.accept`, [solution, ...args]);\n              if (solution instanceof Event) {\n                return this.$dialogs.resolve(id, this.getValue()).close(id);\n              }\n              return this.$dialogs.resolve(id, typeof solution !== \"undefined\" ? solution : this.getValue()).close(id);\n            },\n            cancel(...args) {\n              this.$trace(\"lsw-dialogs.[${componentId}].methods.cancel\", args);\n              return this.$dialogs.resolve(id, -1).close(id);\n            },\n            abort(error = undefined, ...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.abort`, [error, ...args]);\n              if (solution instanceof Event) {\n                return this.$dialogs.reject(id, new Error(\"Aborted dialog error\")).close(id);\n              }\n              return this.$dialogs.reject(id, error).close(id);\n            },\n            close(...args) {\n              this.$trace(`lsw-dialogs.[${componentId}].methods.close`, args);\n              return this.$dialogs.resolve(id, -2).close(id);\n            },\n            ...(dialogComponentInput.methods || {})\n          }\n        });\n        Define_component: {\n          Vue.component(dialogComponent.name, dialogComponent);\n        }\n        // 1) Este es para el this.$dialogs:\n        const dialogDefinition = Object.assign({}, {\n          ...parametricObject,\n          id,\n          title,\n          name: dialogComponent.name,\n          component: dialogComponent,\n          priority,\n          minimized: false,\n          parentId,\n          created_at,\n          promiser: Promise.withResolvers(),\n        });\n        const dialogInstance = new Dialog(dialogDefinition);\n        // console.log(\"Definición final del dialogo\", dialogInstance);\n        Define_dialog: {\n          this.opened = Object.assign({}, this.opened, {\n            [id]: dialogInstance\n          });\n        }\n        if (typeof this.hookOnOpen === \"function\") {\n          this.hookOnOpen(this.opened[id], id, this);\n        }\n        return this.opened[id].promiser.promise;\n      },\n      resolve(id, solution, ...args) {\n        this.$trace(\"lsw-dialogs.methods.resolve\", [id, solution, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.resolve»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot resolve dialog «${id}» because it is not opened on «LswDialogs.resolve»`);\n        }\n        this.opened[id].promiser.resolve(solution);\n        return {\n          close: () => this.close(id)\n        };\n      },\n      reject(id, error, ...args) {\n        this.$trace(\"lsw-dialogs.methods.reject\", [id, error, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.reject»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot reject dialog «${id}» because it is not opened on «LswDialogs.reject»`);\n        }\n        this.opened[id].promiser.reject(error);\n        return {\n          close: () => this.close(id)\n        };\n      },\n      close(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.close\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.close»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot close dialog «${id}» because it is not opened on «LswDialogs.close»`);\n        }\n        let promiseOfDialog = undefined;\n        Undefine_component: {\n          const dialogName = Dialog.fromIdToComponentName(id);\n          delete Vue.options.components[dialogName];\n        }\n        Undefine_dialog: {\n          Solve_promise_if_not_already: {\n            if (this.opened[id].promiser.promise.state === \"pending\") {\n              this.opened[id].promiser.resolve(-3);\n            }\n          }\n          promiseOfDialog = this.opened[id].promiser.promise;\n          delete this.opened[id];\n          this.opened = Object.assign({}, this.opened);\n        }\n        if (typeof this.hookOnClose === \"function\") {\n          this.hookOnClose(id, this);\n        }\n        return promiseOfDialog;\n        // this.$forceUpdate(true);\n      },\n      minimize(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.minimize\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.minimize»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.minimize»`);\n        }\n        this.opened[id].minimized = true;\n        this._refreshMinimizedLength(this.opened);\n      },\n      maximize(id, ...args) {\n        this.$trace(\"lsw-dialogs.methods.maximize\", [id, ...args]);\n        if (typeof id !== \"string\") {\n          throw new Error(\"Required parameter «id» (argument:1) to be a string on «LswDialogs.maximize»\");\n        }\n        if (!(id in this.opened)) {\n          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.maximize»`);\n        }\n        Iterating_dialogs:\n        for (let dialogId in this.opened) {\n          if (id === dialogId) {\n            continue Iterating_dialogs;\n          }\n          const dialogData = this.opened[dialogId];\n          const currentPriority = parseInt(dialogData.priority);\n          this.opened[dialogId].priority = currentPriority - 1;\n\n        }\n        this.opened[id].priority = 500;\n        this.opened[id].minimized = false;\n        this._refreshMinimizedLength();\n      },\n      _refreshMinimizedLength(newValue = this.opened, ...args) {\n        this.$trace(\"lsw-dialogs.methods._refreshMinimizedLength\", [\"too long object\", ...args]);\n        this.notMinimizedLength = Object.keys(newValue).reduce((out, k) => {\n          const v = newValue[k];\n          if (v.minimized === false) {\n            out++;\n          }\n          return out;\n        }, 0);\n        this.$forceUpdate(true);\n      },\n      goHome(...args) {\n        this.$trace(\"lsw-dialogs.methods.goHome\", [...args]);\n        this.$window.LswWindows.show();\n      },\n      onOpen(callback, ...args) {\n        this.$trace(\"lsw-dialogs.methods.onOpen\", [callback, ...args]);\n        this.hookOnOpen = callback;\n      },\n      onClose(callback, ...args) {\n        this.$trace(\"lsw-dialogs.methods.onClose\", [callback, ...args]);\n        this.hookOnClose = callback;\n      }\n    },\n    mounted(...args) {\n      this.$trace(\"lsw-dialogs.mounted\", [...args]);\n      Vue.prototype.$dialogs = this;\n      if (Vue.prototype.$lsw) {\n        Vue.prototype.$lsw.dialogs = this;\n      }\n      window.LswDialogs = this;\n      console.log(\"[*] LswDialogs mounted.\");\n    }\n  });\n",
               "$code.label": "LswDialogs API",
               "$output": "index.html"
             },
@@ -3380,18 +3380,18 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 67419,
+                  "offset": 67380,
                   "line": 1779,
                   "column": 1
                 },
                 "end": {
-                  "offset": 67541,
+                  "offset": 67502,
                   "line": 1780,
                   "column": 1
                 }
               },
               "$section": "Vue.js (v2) Components » Lsw Windows API » LswWindowsMainTab component",
-              "$code": "// Change this component at your convenience:\nVue.component(\"LswWindowsMainTab\", {\n  template: `<div class=\"lsw_windows_main_tab\">\n        <div class=\"dialog_window\" v-bind:key=\"'main_dialog'\" :style=\"{ zIndex: 501 }\">\n            <div class=\"dialog_topbar\">\n                <div class=\"dialog_title\">\n                    <div>Process manager</div>\n                </div>\n                <div class=\"dialog_topbar_buttons\">\n                    <button v-if=\"\\$consoleHooker?.is_shown === false\" class=\"mini\" style=\"white-space: nowrap;flex: 1; margin-right: 4px;\" v-on:click=\"() => \\$consoleHooker?.show()\">💻</button\n                    ><button class=\"mini\" v-on:click=\"viewer.toggleState\">💡</button>\n                </div>\n            </div>\n            <div class=\"dialog_body\">\n                <div class=\"main_tab_topbar\">\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openAgenda\">📓 Agenda</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openWiki\">🔬 Wiki</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openRest\">📦 Data</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openFilesystem\">📂 Files</button>\n                </div>\n                <div class=\"pad_normal\" v-if=\"!Object.keys(\\$lsw.dialogs.opened).length\">\n                    <span>No processes found right now.</span>\n                </div>\n                <div class=\"pad_normal\" v-else>\n                    <div v-for=\"dialog, dialogIndex, dialogCounter in \\$lsw.dialogs.opened\" v-bind:key=\"'dialog-' + dialogIndex\">\n                        <a href=\"javascript:void(0)\" v-on:click=\"() => viewer.selectDialog(dialogIndex)\">{{ dialogCounter + 1 }}. {{ dialog.title }} [{{ dialog.id }}]</a>\n                    </div>\n                </div>\n            </div>\n            <div class=\"dialog_footer\">\n                <button class=\"\" v-on:click=\"viewer.toggleState\">Minimize</button>\n            </div>\n        </div>\n</div>`,\n  props: {\n    viewer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    return {\n      \n    };\n  },\n  methods: {\n    getRandomString(len = 10) {\n      const alphabet = \"abcdefghijklmnopqrstuvwxyz\".split(\"\");\n      let out = \"\";\n      while(out.length < len) {\n        out += alphabet[Math.floor(Math.random() * alphabet.length)];\n      }\n      return out;\n    },\n    openRest() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"database-explorer-\" + this.getRandomString(5),\n        title: \"Database explorer\",\n        template: `<lsw-database-explorer />`,\n      });\n    },\n    openFilesystem() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"filesystem-explorer-\" + this.getRandomString(5),\n        title: \"Filesystem explorer\",\n        template: `<lsw-filesystem-explorer />`,\n      });\n    },\n    openWiki() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"wiki-explorer-\" + this.getRandomString(5),\n        title: \"Wiki explorer\",\n        template: `<lsw-wiki />`,\n      });\n    },\n    openAgenda() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"agenda-viewer-\" + this.getRandomString(5),\n        title: \"Agenda viewer\",\n        template: `<lsw-agenda />`,\n      });\n    },\n  },\n  mounted() {\n    \n  }\n});\n",
+              "$code": "// Change this component at your convenience:\nVue.component(\"LswWindowsMainTab\", {\n  template: `<div class=\"lsw_windows_main_tab\">\n        <div class=\"dialog_window\" v-bind:key=\"'main_dialog'\" :style=\"{ zIndex: 501 }\">\n            <div class=\"dialog_topbar\">\n                <div class=\"dialog_title\">\n                    <div>Process manager</div>\n                </div>\n                <div class=\"dialog_topbar_buttons\">\n                    <button v-if=\"\\$consoleHooker?.is_shown === false\" style=\"white-space: nowrap;flex: 1; margin-right: 4px;\" v-on:click=\"() => \\$consoleHooker?.show()\">💻</button\n                    ><button v-on:click=\"viewer.toggleState\">💡</button>\n                </div>\n            </div>\n            <div class=\"dialog_body\">\n                <div class=\"main_tab_topbar\">\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openAgenda\">📓 Agenda</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openWiki\">🔬 Wiki</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openRest\">📦 Data</button>\n                    <button class=\"main_tab_topbar_button\" v-on:click=\"openFilesystem\">📂 Files</button>\n                </div>\n                <div class=\"pad_normal\" v-if=\"!Object.keys(\\$lsw.dialogs.opened).length\">\n                    <span>No processes found right now.</span>\n                </div>\n                <div class=\"pad_normal\" v-else>\n                    <div v-for=\"dialog, dialogIndex, dialogCounter in \\$lsw.dialogs.opened\" v-bind:key=\"'dialog-' + dialogIndex\">\n                        <a href=\"javascript:void(0)\" v-on:click=\"() => viewer.selectDialog(dialogIndex)\">{{ dialogCounter + 1 }}. {{ dialog.title }} [{{ dialog.id }}]</a>\n                    </div>\n                </div>\n            </div>\n            <div class=\"dialog_footer\">\n                <button class=\"\" v-on:click=\"viewer.toggleState\">Minimize</button>\n            </div>\n        </div>\n</div>`,\n  props: {\n    viewer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    return {\n      \n    };\n  },\n  methods: {\n    getRandomString(len = 10) {\n      const alphabet = \"abcdefghijklmnopqrstuvwxyz\".split(\"\");\n      let out = \"\";\n      while(out.length < len) {\n        out += alphabet[Math.floor(Math.random() * alphabet.length)];\n      }\n      return out;\n    },\n    openRest() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"database-explorer-\" + this.getRandomString(5),\n        title: \"Database explorer\",\n        template: `<lsw-database-explorer />`,\n      });\n    },\n    openFilesystem() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"filesystem-explorer-\" + this.getRandomString(5),\n        title: \"Filesystem explorer\",\n        template: `<lsw-filesystem-explorer />`,\n      });\n    },\n    openWiki() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"wiki-explorer-\" + this.getRandomString(5),\n        title: \"Wiki explorer\",\n        template: `<lsw-wiki />`,\n      });\n    },\n    openAgenda() {\n      this.viewer.hide();\n      this.$dialogs.open({\n        id: \"agenda-viewer-\" + this.getRandomString(5),\n        title: \"Agenda viewer\",\n        template: `<lsw-agenda />`,\n      });\n    },\n  },\n  mounted() {\n    \n  }\n});\n",
               "$code.label": "LswWindowsMainTab API",
               "$output": "index.html"
             },
@@ -3420,12 +3420,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 70902,
+                  "offset": 70837,
                   "line": 1872,
                   "column": 1
                 },
                 "end": {
-                  "offset": 71034,
+                  "offset": 70969,
                   "line": 1873,
                   "column": 1
                 }
@@ -3460,12 +3460,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 71878,
+                  "offset": 71813,
                   "line": 1911,
                   "column": 1
                 },
                 "end": {
-                  "offset": 72008,
+                  "offset": 71943,
                   "line": 1912,
                   "column": 1
                 }
@@ -3500,12 +3500,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 72501,
+                  "offset": 72436,
                   "line": 1938,
                   "column": 1
                 },
                 "end": {
-                  "offset": 72606,
+                  "offset": 72541,
                   "line": 1939,
                   "column": 1
                 }
@@ -3540,18 +3540,18 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 75502,
+                  "offset": 75437,
                   "line": 2025,
                   "column": 1
                 },
                 "end": {
-                  "offset": 75627,
+                  "offset": 75562,
                   "line": 2026,
                   "column": 1
                 }
               },
               "$section": "Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker component",
-              "$code": "Vue.component(\"LswConsoleHooker\", {\n  template: `<div class=\"console-hooker\" :class=\"{hide:!is_shown}\">\n    <div class=\"console_viewer\">\n        <div class=\"console_box\">\n            <div class=\"console_box_title\" style=\"display: flex; flex-direction: row; width: 100%; align-items: center;\">\n                <span style=\"flex: 100;\">console hooker</span>\n                <span style=\"flex: 1;\">\n                    <button class=\"mini\" v-on:click=\"hide\">X</button>\n                </span>\n            </div>\n            <div class=\"console_box_output_container\">\n                <div class=\"console_box_output\" id=\"lsw-console-hooker-output\"></div>\n            </div>\n        </div>\n    </div>\n</div>`,\n  props: {},\n  data() {\n    return {\n      is_shown: true,\n      instance: undefined\n    }\n  },\n  methods: {\n    show() {\n      this.is_shown = true;\n    },\n    hide() {\n      this.is_shown = false;\n    }\n  },\n  mounted() {\n    this.instance = new ConsoleHooker(\"lsw-console-hooker-output\");\n    if(process.env.NODE_ENV !== \"production\") {\n    }\n    this.instance.restoreConsole();\n    this.hide();\n    this.$vue.prototype.$consoleHooker = this;\n    this.$window.LswConsoleHooker = this;\n  },\n  unmounted() {\n\n  }\n});\n",
+              "$code": "Vue.component(\"LswConsoleHooker\", {\n  template: `<div class=\"console-hooker\" :class=\"{hide:!is_shown}\">\n    <div class=\"console_viewer\">\n        <div class=\"console_box\">\n            <div class=\"console_box_title\" style=\"display: flex; flex-direction: row; width: 100%; align-items: center;\">\n                <span style=\"flex: 100;\">console hooker</span>\n                <span style=\"flex: 1;\">\n                    <button v-on:click=\"hide\">X</button>\n                </span>\n            </div>\n            <div class=\"console_box_output_container\">\n                <div class=\"console_box_output\" id=\"lsw-console-hooker-output\"></div>\n            </div>\n        </div>\n    </div>\n</div>`,\n  props: {},\n  data() {\n    return {\n      is_shown: true,\n      instance: undefined\n    }\n  },\n  methods: {\n    show() {\n      this.is_shown = true;\n    },\n    hide() {\n      this.is_shown = false;\n    }\n  },\n  mounted() {\n    this.instance = new ConsoleHooker(\"lsw-console-hooker-output\");\n    if(process.env.NODE_ENV !== \"production\") {\n    }\n    this.instance.restoreConsole();\n    this.hide();\n    this.$vue.prototype.$consoleHooker = this;\n    this.$window.LswConsoleHooker = this;\n  },\n  unmounted() {\n\n  }\n});\n",
               "$code.label": "LswConsoleHooker API",
               "$output": "index.html"
             },
@@ -3580,12 +3580,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 76884,
+                  "offset": 76806,
                   "line": 2071,
                   "column": 1
                 },
                 "end": {
-                  "offset": 77012,
+                  "offset": 76934,
                   "line": 2072,
                   "column": 1
                 }
@@ -3620,12 +3620,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 78489,
+                  "offset": 78411,
                   "line": 2126,
                   "column": 1
                 },
                 "end": {
-                  "offset": 78623,
+                  "offset": 78545,
                   "line": 2127,
                   "column": 1
                 }
@@ -3660,12 +3660,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 79562,
+                  "offset": 79484,
                   "line": 2168,
                   "column": 1
                 },
                 "end": {
-                  "offset": 79681,
+                  "offset": 79603,
                   "line": 2169,
                   "column": 1
                 }
@@ -3700,12 +3700,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 81391,
+                  "offset": 81313,
                   "line": 2233,
                   "column": 1
                 },
                 "end": {
-                  "offset": 81495,
+                  "offset": 81417,
                   "line": 2234,
                   "column": 1
                 }
@@ -3740,12 +3740,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 84919,
+                  "offset": 84841,
                   "line": 2348,
                   "column": 1
                 },
                 "end": {
-                  "offset": 85020,
+                  "offset": 84942,
                   "line": 2349,
                   "column": 1
                 }
@@ -3780,12 +3780,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 89389,
+                  "offset": 89311,
                   "line": 2500,
                   "column": 1
                 },
                 "end": {
-                  "offset": 89499,
+                  "offset": 89421,
                   "line": 2501,
                   "column": 1
                 }
@@ -3820,12 +3820,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 89718,
+                  "offset": 89640,
                   "line": 2520,
                   "column": 1
                 },
                 "end": {
-                  "offset": 89828,
+                  "offset": 89750,
                   "line": 2521,
                   "column": 1
                 }
@@ -3860,12 +3860,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 92094,
+                  "offset": 92016,
                   "line": 2605,
                   "column": 1
                 },
                 "end": {
-                  "offset": 92236,
+                  "offset": 92158,
                   "line": 2606,
                   "column": 1
                 }
@@ -3900,12 +3900,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 110381,
+                  "offset": 110303,
                   "line": 3079,
                   "column": 1
                 },
                 "end": {
-                  "offset": 110531,
+                  "offset": 110453,
                   "line": 3080,
                   "column": 1
                 }
@@ -3940,18 +3940,18 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 111855,
+                  "offset": 111777,
                   "line": 3127,
                   "column": 1
                 },
                 "end": {
-                  "offset": 111993,
+                  "offset": 111915,
                   "line": 3128,
                   "column": 1
                 }
               },
               "$section": "Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemEditor component",
-              "$code": "Vue.component(\"LswFilesystemEditor\", {\n  name: \"LswFilesystemEditor\",\n  template: `<div class=\"lsw_filesystem_editor\" style=\"padding-bottom:1px;\">\n    <div style=\"min-height:1px;\"></div>\n    <textarea class=\"editor\" v-model=\"contents\" spellcheck=\"false\" />\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    },\n    filecontents: {\n      type: String,\n      required: true\n    }\n  },\n  data() {\n    return {\n      contents: this.filecontents\n    };\n  },\n  watch: {\n\n  },\n  methods: {\n    getContents() {\n      return this.contents;\n    },\n    setContents(contents) {\n      this.contents = contents;\n    }\n  },\n  mounted() {\n\n  }\n});\n",
+              "$code": "Vue.component(\"LswFilesystemEditor\", {\n  name: \"LswFilesystemEditor\",\n  template: `<div class=\"lsw_filesystem_editor\">\n    <textarea class=\"editor\" v-model=\"contents\" spellcheck=\"false\" />\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    },\n    filecontents: {\n      type: String,\n      required: true\n    }\n  },\n  data() {\n    return {\n      contents: this.filecontents\n    };\n  },\n  watch: {\n\n  },\n  methods: {\n    getContents() {\n      return this.contents;\n    },\n    setContents(contents) {\n      this.contents = contents;\n    }\n  },\n  mounted() {\n\n  }\n});\n",
               "$code.label": "LswFilesystemEditor API",
               "$output": "index.html"
             },
@@ -3980,18 +3980,18 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 112693,
-                  "line": 3165,
+                  "offset": 112547,
+                  "line": 3164,
                   "column": 1
                 },
                 "end": {
-                  "offset": 112839,
-                  "line": 3166,
+                  "offset": 112693,
+                  "line": 3165,
                   "column": 1
                 }
               },
               "$section": "Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemTreeviewer component",
-              "$code": "Vue.component(\"LswFilesystemTreeviewer\", {\n  name: \"LswFilesystemTreeviewer\",\n  template: `<div class=\"lsw_filesystem_treeviewer\">\n    <table class=\"filesystem_treeviewer_table width_100\">\n        <thead style=\"display: none;\"></thead>\n        <tbody>\n            <tr v-if=\"explorer.current_node !== '/'\"\n                class=\"treeviewer_row\"\n                v-on:click=\"() => goUp()\">\n                <td class=\"icon_cell\">📁</td>\n                <td>\n                    <a class=\"filename_link\" href=\"javascript:void(0)\">..</a>\n                </td>\n                <td></td>\n                <td>\n                    <button style=\"visibility: hidden;\" class=\"mini\" v-on:click=\"() => deleteNode(subnodeIndex)\">❌</button>\n                </td>\n            </tr>\n            <template v-for=\"subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes\">\n                <tr class=\"treeviewer_row\"\n                    v-bind:key=\"'subnode_obj_' + subnodeIndex\">\n                    <template v-if=\"typeof subnode === 'object'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📁</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\"><b>{{ subnodeIndex }}</b></a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📁 ❌</button>\n                        </td>\n                    </template>\n                    <template v-else-if=\"typeof subnode === 'string'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📄</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\">{{ subnodeIndex }}</a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📄 ❌</button>\n                        </td>\n                    </template>\n                </tr>\n            </template>\n        </tbody>\n    </table>\n\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    this.$trace(\"lsw-filesystem-treeviewer.data\");\n    return {};\n  },\n  watch: {},\n  methods: {\n    goUp() {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.goUp\");\n      return this.explorer.goUp();\n    },\n    openSubnode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.openSubnode\");\n      return this.explorer.open(subnodeIndex);\n    },\n    async deleteNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.deleteNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const confirmation = await this.$lsw.dialogs.open({\n        title: `Proceder a eliminar ${elementType}`,\n        template: `\n          <div class=\"pad_1\">\n            <div>Seguro que quieres eliminar el {{ elementType }} «{{ fullpath }}»?</div>\n            <hr />\n            <div class=\"flex_row centered\">\n              <div class=\"flex_100\"></div>\n              <div class=\"flex_1 pad_right_1\">\n                <button class=\"danger_button nowrap\" v-on:click=\"() => accept(true)\">Sí, eliminar</button>\n              </div>\n              <div class=\"flex_1\">\n                <button class=\"\" v-on:click=\"() => accept(false)\">Salir</button>\n              </div>\n            </div>\n          </div>\n        `,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n          }\n        }\n      });\n      if (!confirmation) return;\n      try {\n        if (isDirectory) {\n          await this.$lsw.fs.delete_directory(fullpath);\n        } else {\n          await this.$lsw.fs.delete_file(fullpath);\n        }\n        await this.explorer.refresh();\n      } catch (error) {\n        await this.$lsw.dialogs.open({\n          title: `El fichero no se pudo eliminar`,\n          template: `\n            <div class=\"pad_1\">\n              <div>El fichero «{{ fullpath }}» no se pudo eliminar debido al siguiente error:</div>\n              <hr />\n              <div v-if=\"error\">{{ error.name }}: {{ error.message }}</div>\n            </div>\n          `,\n          factory: {\n            data: {\n              error,\n              fullpath,\n            }\n          }\n        });\n      }\n    },\n    async renameNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.renameNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <input v-focus class=\"width_100\" type=\"text\" v-model=\"newFilename\" v-on:keyup.enter=\"() => accept(newFilename)\" />\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"\" v-on:click=\"() => accept(newFilename)\">Renombrar</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"\" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n            filename: subnodeIndex,\n            newFilename: subnodeIndex,\n          }\n        }\n      });\n      if (typeof newName !== \"string\") return;\n      if (newName.trim() === \"\") return;\n      await this.$lsw.fs.rename(subnodeIndex, newName.replace(/^\\/+/g, \"\"));\n      this.explorer.refresh();\n    }\n  },\n  mounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.mounted\");\n    this.explorer.setPanelButtons({\n      top: [],\n      left: [],\n      right: [],\n      bottom: [],\n    })\n  },\n  unmounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.unmounted\");\n  }\n});\n",
+              "$code": "Vue.component(\"LswFilesystemTreeviewer\", {\n  name: \"LswFilesystemTreeviewer\",\n  template: `<div class=\"lsw_filesystem_treeviewer\">\n    <table class=\"filesystem_treeviewer_table width_100\">\n        <thead style=\"display: none;\"></thead>\n        <tbody>\n            <tr v-if=\"explorer.current_node !== '/'\"\n                class=\"treeviewer_row\"\n                v-on:click=\"() => goUp()\">\n                <td class=\"icon_cell\">📁</td>\n                <td>\n                    <a class=\"filename_link\" href=\"javascript:void(0)\">..</a>\n                </td>\n                <td></td>\n                <td>\n                    <button style=\"visibility: hidden;\" v-on:click=\"() => deleteNode(subnodeIndex)\">❌</button>\n                </td>\n            </tr>\n            <template v-for=\"subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes\">\n                <tr class=\"treeviewer_row\"\n                    v-bind:key=\"'subnode_obj_' + subnodeIndex\">\n                    <template v-if=\"typeof subnode === 'object'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📁</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\"><b>{{ subnodeIndex }}</b></a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📁 ❌</button>\n                        </td>\n                    </template>\n                    <template v-else-if=\"typeof subnode === 'string'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📄</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\">{{ subnodeIndex }}</a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📄 ❌</button>\n                        </td>\n                    </template>\n                </tr>\n            </template>\n        </tbody>\n    </table>\n\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    this.$trace(\"lsw-filesystem-treeviewer.data\");\n    return {};\n  },\n  watch: {},\n  methods: {\n    goUp() {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.goUp\");\n      return this.explorer.goUp();\n    },\n    openSubnode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.openSubnode\");\n      return this.explorer.open(subnodeIndex);\n    },\n    async deleteNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.deleteNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const confirmation = await this.$lsw.dialogs.open({\n        title: `Proceder a eliminar ${elementType}`,\n        template: `\n          <div class=\"pad_1\">\n            <div>Seguro que quieres eliminar el {{ elementType }} «{{ fullpath }}»?</div>\n            <hr />\n            <div class=\"flex_row centered\">\n              <div class=\"flex_100\"></div>\n              <div class=\"flex_1 pad_right_1\">\n                <button class=\"danger_button nowrap\" v-on:click=\"() => accept(true)\">Sí, eliminar</button>\n              </div>\n              <div class=\"flex_1\">\n                <button class=\"\" v-on:click=\"() => accept(false)\">Salir</button>\n              </div>\n            </div>\n          </div>\n        `,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n          }\n        }\n      });\n      if (!confirmation) return;\n      try {\n        if (isDirectory) {\n          await this.$lsw.fs.delete_directory(fullpath);\n        } else {\n          await this.$lsw.fs.delete_file(fullpath);\n        }\n        await this.explorer.refresh();\n      } catch (error) {\n        await this.$lsw.dialogs.open({\n          title: `El fichero no se pudo eliminar`,\n          template: `\n            <div class=\"pad_1\">\n              <div>El fichero «{{ fullpath }}» no se pudo eliminar debido al siguiente error:</div>\n              <hr />\n              <div v-if=\"error\">{{ error.name }}: {{ error.message }}</div>\n            </div>\n          `,\n          factory: {\n            data: {\n              error,\n              fullpath,\n            }\n          }\n        });\n      }\n    },\n    async renameNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.renameNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <input v-focus class=\"width_100\" type=\"text\" v-model=\"newFilename\" v-on:keyup.enter=\"() => accept(newFilename)\" />\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"\" v-on:click=\"() => accept(newFilename)\">Renombrar</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"\" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n            filename: subnodeIndex,\n            newFilename: subnodeIndex,\n          }\n        }\n      });\n      if (typeof newName !== \"string\") return;\n      if (newName.trim() === \"\") return;\n      await this.$lsw.fs.rename(subnodeIndex, newName.replace(/^\\/+/g, \"\"));\n      this.explorer.refresh();\n    }\n  },\n  mounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.mounted\");\n    this.explorer.setPanelButtons({\n      top: [],\n      left: [],\n      right: [],\n      bottom: [],\n    })\n  },\n  unmounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.unmounted\");\n  }\n});\n",
               "$code.label": "LswFilesystemTreeviewer API",
               "$output": "index.html"
             },
@@ -4020,13 +4020,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 119799,
-                  "line": 3347,
+                  "offset": 119640,
+                  "line": 3346,
                   "column": 1
                 },
                 "end": {
-                  "offset": 119898,
-                  "line": 3348,
+                  "offset": 119739,
+                  "line": 3347,
                   "column": 1
                 }
               },
@@ -4060,13 +4060,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 120822,
-                  "line": 3386,
+                  "offset": 120663,
+                  "line": 3385,
                   "column": 1
                 },
                 "end": {
-                  "offset": 120942,
-                  "line": 3387,
+                  "offset": 120783,
+                  "line": 3386,
                   "column": 1
                 }
               },
@@ -4100,13 +4100,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 147401,
-                  "line": 3954,
+                  "offset": 147242,
+                  "line": 3953,
                   "column": 1
                 },
                 "end": {
-                  "offset": 147548,
-                  "line": 3955,
+                  "offset": 147389,
+                  "line": 3954,
                   "column": 1
                 }
               },
@@ -4140,13 +4140,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 148370,
-                  "line": 3992,
+                  "offset": 148211,
+                  "line": 3991,
                   "column": 1
                 },
                 "end": {
-                  "offset": 148526,
-                  "line": 3993,
+                  "offset": 148367,
+                  "line": 3992,
                   "column": 1
                 }
               },
@@ -4180,13 +4180,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 149247,
-                  "line": 4023,
+                  "offset": 149088,
+                  "line": 4022,
                   "column": 1
                 },
                 "end": {
-                  "offset": 149397,
-                  "line": 4024,
+                  "offset": 149238,
+                  "line": 4023,
                   "column": 1
                 }
               },
@@ -4220,13 +4220,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 151455,
-                  "line": 4092,
+                  "offset": 151296,
+                  "line": 4091,
                   "column": 1
                 },
                 "end": {
-                  "offset": 151608,
-                  "line": 4093,
+                  "offset": 151449,
+                  "line": 4092,
                   "column": 1
                 }
               },
@@ -4260,13 +4260,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 152426,
-                  "line": 4130,
+                  "offset": 152267,
+                  "line": 4129,
                   "column": 1
                 },
                 "end": {
-                  "offset": 152588,
-                  "line": 4131,
+                  "offset": 152429,
+                  "line": 4130,
                   "column": 1
                 }
               },
@@ -4300,13 +4300,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 153323,
-                  "line": 4161,
+                  "offset": 153164,
+                  "line": 4160,
                   "column": 1
                 },
                 "end": {
-                  "offset": 153479,
-                  "line": 4162,
+                  "offset": 153320,
+                  "line": 4161,
                   "column": 1
                 }
               },
@@ -4340,13 +4340,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 153904,
-                  "line": 4182,
+                  "offset": 153745,
+                  "line": 4181,
                   "column": 1
                 },
                 "end": {
-                  "offset": 154036,
-                  "line": 4183,
+                  "offset": 153877,
+                  "line": 4182,
                   "column": 1
                 }
               },
@@ -4380,13 +4380,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 155600,
-                  "line": 4240,
+                  "offset": 155441,
+                  "line": 4239,
                   "column": 1
                 },
                 "end": {
-                  "offset": 155756,
-                  "line": 4241,
+                  "offset": 155597,
+                  "line": 4240,
                   "column": 1
                 }
               },
@@ -4420,13 +4420,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 156181,
-                  "line": 4261,
+                  "offset": 156022,
+                  "line": 4260,
                   "column": 1
                 },
                 "end": {
-                  "offset": 156346,
-                  "line": 4262,
+                  "offset": 156187,
+                  "line": 4261,
                   "column": 1
                 }
               },
@@ -4460,13 +4460,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 156789,
-                  "line": 4282,
+                  "offset": 156630,
+                  "line": 4281,
                   "column": 1
                 },
                 "end": {
-                  "offset": 156957,
-                  "line": 4283,
+                  "offset": 156798,
+                  "line": 4282,
                   "column": 1
                 }
               },
@@ -4500,13 +4500,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 157406,
-                  "line": 4303,
+                  "offset": 157247,
+                  "line": 4302,
                   "column": 1
                 },
                 "end": {
-                  "offset": 157562,
-                  "line": 4304,
+                  "offset": 157403,
+                  "line": 4303,
                   "column": 1
                 }
               },
@@ -4540,13 +4540,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 158391,
-                  "line": 4341,
+                  "offset": 158232,
+                  "line": 4340,
                   "column": 1
                 },
                 "end": {
-                  "offset": 158556,
-                  "line": 4342,
+                  "offset": 158397,
+                  "line": 4341,
                   "column": 1
                 }
               },
@@ -4580,13 +4580,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 159298,
-                  "line": 4372,
+                  "offset": 159139,
+                  "line": 4371,
                   "column": 1
                 },
                 "end": {
-                  "offset": 159463,
-                  "line": 4373,
+                  "offset": 159304,
+                  "line": 4372,
                   "column": 1
                 }
               },
@@ -4620,13 +4620,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 161506,
-                  "line": 4436,
+                  "offset": 161347,
+                  "line": 4435,
                   "column": 1
                 },
                 "end": {
-                  "offset": 161683,
-                  "line": 4437,
+                  "offset": 161524,
+                  "line": 4436,
                   "column": 1
                 }
               },
@@ -4660,13 +4660,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 162150,
-                  "line": 4457,
+                  "offset": 161991,
+                  "line": 4456,
                   "column": 1
                 },
                 "end": {
-                  "offset": 162321,
-                  "line": 4458,
+                  "offset": 162162,
+                  "line": 4457,
                   "column": 1
                 }
               },
@@ -4700,13 +4700,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 162776,
-                  "line": 4478,
+                  "offset": 162617,
+                  "line": 4477,
                   "column": 1
                 },
                 "end": {
-                  "offset": 162944,
-                  "line": 4479,
+                  "offset": 162785,
+                  "line": 4478,
                   "column": 1
                 }
               },
@@ -4740,13 +4740,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 163393,
-                  "line": 4499,
+                  "offset": 163234,
+                  "line": 4498,
                   "column": 1
                 },
                 "end": {
-                  "offset": 163511,
-                  "line": 4500,
+                  "offset": 163352,
+                  "line": 4499,
                   "column": 1
                 }
               },
@@ -4780,13 +4780,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 171934,
-                  "line": 4733,
+                  "offset": 171775,
+                  "line": 4732,
                   "column": 1
                 },
                 "end": {
-                  "offset": 172054,
-                  "line": 4734,
+                  "offset": 171895,
+                  "line": 4733,
                   "column": 1
                 }
               },
@@ -4820,13 +4820,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 175710,
-                  "line": 4841,
+                  "offset": 175551,
+                  "line": 4840,
                   "column": 1
                 },
                 "end": {
-                  "offset": 175830,
-                  "line": 4842,
+                  "offset": 175671,
+                  "line": 4841,
                   "column": 1
                 }
               },
@@ -4860,13 +4860,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 176793,
-                  "line": 4882,
+                  "offset": 176634,
+                  "line": 4881,
                   "column": 1
                 },
                 "end": {
-                  "offset": 176911,
-                  "line": 4883,
+                  "offset": 176752,
+                  "line": 4882,
                   "column": 1
                 }
               },
@@ -4900,13 +4900,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 179005,
-                  "line": 4945,
+                  "offset": 178846,
+                  "line": 4944,
                   "column": 1
                 },
                 "end": {
-                  "offset": 179123,
-                  "line": 4946,
+                  "offset": 178964,
+                  "line": 4945,
                   "column": 1
                 }
               },
@@ -4940,13 +4940,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 181009,
-                  "line": 5010,
+                  "offset": 180850,
+                  "line": 5009,
                   "column": 1
                 },
                 "end": {
-                  "offset": 181135,
-                  "line": 5011,
+                  "offset": 180976,
+                  "line": 5010,
                   "column": 1
                 }
               },
@@ -4980,13 +4980,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 183054,
-                  "line": 5077,
+                  "offset": 182895,
+                  "line": 5076,
                   "column": 1
                 },
                 "end": {
-                  "offset": 183172,
-                  "line": 5078,
+                  "offset": 183013,
+                  "line": 5077,
                   "column": 1
                 }
               },
@@ -5020,13 +5020,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 186869,
-                  "line": 5183,
+                  "offset": 186710,
+                  "line": 5182,
                   "column": 1
                 },
                 "end": {
-                  "offset": 186995,
-                  "line": 5184,
+                  "offset": 186836,
+                  "line": 5183,
                   "column": 1
                 }
               },
@@ -5060,13 +5060,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 189818,
-                  "line": 5280,
+                  "offset": 189659,
+                  "line": 5279,
                   "column": 1
                 },
                 "end": {
-                  "offset": 189940,
-                  "line": 5281,
+                  "offset": 189781,
+                  "line": 5280,
                   "column": 1
                 }
               },
@@ -5100,13 +5100,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 190412,
-                  "line": 5306,
+                  "offset": 190253,
+                  "line": 5305,
                   "column": 1
                 },
                 "end": {
-                  "offset": 190536,
-                  "line": 5307,
+                  "offset": 190377,
+                  "line": 5306,
                   "column": 1
                 }
               },
@@ -5140,13 +5140,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 192593,
-                  "line": 5373,
+                  "offset": 192434,
+                  "line": 5372,
                   "column": 1
                 },
                 "end": {
-                  "offset": 192723,
-                  "line": 5374,
+                  "offset": 192564,
+                  "line": 5373,
                   "column": 1
                 }
               },
@@ -5180,13 +5180,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 193207,
-                  "line": 5399,
+                  "offset": 193048,
+                  "line": 5398,
                   "column": 1
                 },
                 "end": {
-                  "offset": 193335,
-                  "line": 5400,
+                  "offset": 193176,
+                  "line": 5399,
                   "column": 1
                 }
               },
@@ -5220,13 +5220,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 197381,
-                  "line": 5509,
+                  "offset": 197222,
+                  "line": 5508,
                   "column": 1
                 },
                 "end": {
-                  "offset": 197505,
-                  "line": 5510,
+                  "offset": 197346,
+                  "line": 5509,
                   "column": 1
                 }
               },
@@ -5260,13 +5260,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 201536,
-                  "line": 5620,
+                  "offset": 201377,
+                  "line": 5619,
                   "column": 1
                 },
                 "end": {
-                  "offset": 201668,
-                  "line": 5621,
+                  "offset": 201509,
+                  "line": 5620,
                   "column": 1
                 }
               },
@@ -5300,13 +5300,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 202800,
-                  "line": 5665,
+                  "offset": 202641,
+                  "line": 5664,
                   "column": 1
                 },
                 "end": {
-                  "offset": 202912,
-                  "line": 5666,
+                  "offset": 202753,
+                  "line": 5665,
                   "column": 1
                 }
               },
@@ -5340,13 +5340,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 206856,
-                  "line": 5775,
+                  "offset": 206697,
+                  "line": 5774,
                   "column": 1
                 },
                 "end": {
-                  "offset": 206988,
-                  "line": 5776,
+                  "offset": 206829,
+                  "line": 5775,
                   "column": 1
                 }
               },

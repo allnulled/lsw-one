@@ -80,8 +80,8 @@ Vue.component("LswWindowsMainTab", {
                     <div>Process manager</div>
                 </div>
                 <div class="dialog_topbar_buttons">
-                    <button v-if="\$consoleHooker?.is_shown === false" class="mini" style="white-space: nowrap;flex: 1; margin-right: 4px;" v-on:click="() => \$consoleHooker?.show()">💻</button
-                    ><button class="mini" v-on:click="viewer.toggleState">💡</button>
+                    <button v-if="\$consoleHooker?.is_shown === false" style="white-space: nowrap;flex: 1; margin-right: 4px;" v-on:click="() => \$consoleHooker?.show()">💻</button
+                    ><button v-on:click="viewer.toggleState">💡</button>
                 </div>
             </div>
             <div class="dialog_body">

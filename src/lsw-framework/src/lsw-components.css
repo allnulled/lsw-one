@@ -687,7 +687,7 @@ table.top_aligned > tbody > tr > td {
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: calc(100% - 25px);
+    height: calc(100% - 43px);
 }
 .lsw_filesystem_explorer .leftside {
     flex: 1;
@@ -723,11 +723,11 @@ table.top_aligned > tbody > tr > td {
 /* Start: Bordes de 1 sola línea entre paneles: */
 .lsw_filesystem_explorer .rightside {
     border-left: 1px solid black;
-    min-width: 32px;
+    min-width: 48px;
 }
 .lsw_filesystem_explorer .leftside {
     border-right: 1px solid black;
-    min-width: 32px;
+    min-width: 48px;
 }
 .lsw_filesystem_explorer .bodyside {
     border-top: 1px solid black;

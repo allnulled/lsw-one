@@ -23017,12 +23017,12 @@ Vue.component('LswDataImplorer', {
                                 {{ dialog.title }}
                             </div>
                             <div class="dialog_topbar_buttons">
-                                <button class="mini"
+                                <button
                                     v-if="enabledWindowsSystem"
                                     v-on:click="goHome">☰</button>
-                                <button class="mini"
+                                <button
                                     v-on:click="minimize(dialog.id)">💡</button>
-                                <button class="mini"
+                                <button
                                     v-on:click="close(dialog.id)">❌</button>
                             </div>
                         </div>
@@ -23342,8 +23342,8 @@ Vue.component("LswWindowsMainTab", {
                     <div>Process manager</div>
                 </div>
                 <div class="dialog_topbar_buttons">
-                    <button v-if="\$consoleHooker?.is_shown === false" class="mini" style="white-space: nowrap;flex: 1; margin-right: 4px;" v-on:click="() => \$consoleHooker?.show()">💻</button
-                    ><button class="mini" v-on:click="viewer.toggleState">💡</button>
+                    <button v-if="\$consoleHooker?.is_shown === false" style="white-space: nowrap;flex: 1; margin-right: 4px;" v-on:click="() => \$consoleHooker?.show()">💻</button
+                    ><button v-on:click="viewer.toggleState">💡</button>
                 </div>
             </div>
             <div class="dialog_body">
@@ -23586,7 +23586,7 @@ Vue.component("LswConsoleHooker", {
             <div class="console_box_title" style="display: flex; flex-direction: row; width: 100%; align-items: center;">
                 <span style="flex: 100;">console hooker</span>
                 <span style="flex: 1;">
-                    <button class="mini" v-on:click="hide">X</button>
+                    <button v-on:click="hide">X</button>
                 </span>
             </div>
             <div class="console_box_output_container">
@@ -24683,8 +24683,7 @@ Vue.component("LswFilesystemButtonsPanel", {
 // @code.start: LswFilesystemEditor API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemEditor component
 Vue.component("LswFilesystemEditor", {
   name: "LswFilesystemEditor",
-  template: `<div class="lsw_filesystem_editor" style="padding-bottom:1px;">
-    <div style="min-height:1px;"></div>
+  template: `<div class="lsw_filesystem_editor">
     <textarea class="editor" v-model="contents" spellcheck="false" />
 </div>`,
   props: {
@@ -24734,7 +24733,7 @@ Vue.component("LswFilesystemTreeviewer", {
                 </td>
                 <td></td>
                 <td>
-                    <button style="visibility: hidden;" class="mini" v-on:click="() => deleteNode(subnodeIndex)">❌</button>
+                    <button style="visibility: hidden;" v-on:click="() => deleteNode(subnodeIndex)">❌</button>
                 </td>
             </tr>
             <template v-for="subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes">

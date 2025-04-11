@@ -584,7 +584,7 @@ Vue.component("LswFilesystemTreeviewer", {
                 </td>
                 <td></td>
                 <td>
-                    <button style="visibility: hidden;" class="mini" v-on:click="() => deleteNode(subnodeIndex)">❌</button>
+                    <button style="visibility: hidden;" v-on:click="() => deleteNode(subnodeIndex)">❌</button>
                 </td>
             </tr>
             <template v-for="subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes">

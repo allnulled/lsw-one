@@ -338,7 +338,7 @@
         }
       },
       "$section": "Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemExplorer component",
-      "$code": "Vue.component(\"LswFilesystemExplorer\", {\n  name: \"LswFilesystemExplorer\",\n  template: `<div class=\"lsw_filesystem_explorer\">\n    <div class=\"current_node_box\">\n        <span class=\"previous_node_path\" :class=\"current_node !== '/' ? '' : 'visibility_hidden'\">\n            <button class=\"mini previous_node_button\" v-on:click=\"goUp\"\n            style=\"transform: rotate(180deg); margin: 1px;\">➜</button>\n        </span>\n        <span class=\"current_node_path\">{{ current_node_basedir }}</span>\n        <span class=\"current_node_filename\">{{ current_node_basename }}</span>\n    </div>\n    <div class=\"filesystem_ui\">\n        <div class=\"leftside\">\n            <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelLeft\" />\n        </div>\n        <div class=\"middleside\">\n            <div class=\"headerside\">\n                <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelTop\" />\n            </div>\n            <div class=\"bodyside\" v-if=\"is_ready\">\n                <lsw-filesystem-treeviewer v-if=\"current_node_is_directory\" :explorer=\"this\" ref=\"treeviewer\" />\n                <lsw-filesystem-editor v-else-if=\"current_node_is_file\" :explorer=\"this\" ref=\"editor\" :filecontents=\"current_node_contents\" />\n            </div>\n            <div class=\"footerside\">\n                <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelBottom\" />\n            </div>\n        </div>\n        <div class=\"rightside\">\n            <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelRight\" />\n        </div>\n    </div>\n</div>`,\n  props: {},\n  data() {\n    this.$trace(\"lsw-filesystem-explorer.data\");\n    return {\n      is_ready: false,\n      current_node: undefined,\n      current_node_parts: undefined,\n      current_node_basename: undefined,\n      current_node_basedir: undefined,\n      current_node_contents: undefined,\n      current_node_subnodes: [],\n      current_node_is_file: false,\n      current_node_is_directory: false,\n      STANDARIZED_REFRESH_DELAY: 100\n    };\n  },\n  methods: {\n    open(...args) {\n      this.$trace(\"lsw-filesystem-explorer.methods.open\");\n      return this.open_node(...args);\n    },\n    goUp() {\n      this.$trace(\"lsw-filesystem-explorer.methods.goUp\");\n      const parts = this.current_node.split(\"/\");\n      parts.pop();\n      const dest = this.normalize_path(\"/\" + parts.join(\"/\"));\n      return this.open(dest);\n    },\n    async refresh() {\n      this.$trace(\"lsw-filesystem-explorer.methods.refresh\");\n      this.is_ready = false;\n      try {\n        await this.open(this.current_node);\n      } catch (error) {\n        throw error;\n      } finally {\n        this.$nextTick(() => {\n          this.is_ready = true;\n          this.$forceUpdate(true);\n        });\n      }\n    },\n    normalize_path(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods.normalize_path\");\n      return this.$lsw.fs.resolve_path(this.current_node, subpath);\n    },\n    async open_node(subpath = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods.open_node\");\n      try {\n        if ([\"\", \"/\"].indexOf(subpath) !== -1) {\n          return await this._openDirectory(\"/\");\n        }\n        const temporaryPath = this.normalize_path(subpath);\n        const is_directory = await this.$lsw.fs.is_directory(temporaryPath);\n        if (is_directory) {\n          return await this._openDirectory(temporaryPath);\n        }\n        const is_file = await this.$lsw.fs.is_file(temporaryPath);\n        if (is_file) {\n          return await this._openFile(temporaryPath);\n        }\n        throw new Error(`Cannot open path because it does not exist: ${temporaryPath} on «LswFilesystemExplorer.methods.open_node»`);\n      } catch (error) {\n        console.log(error);\n        throw error;\n      }\n    },\n    async processToCreateFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToCreateFile\");\n      const filename = await this.$lsw.dialogs.open({\n        title: \"Crear fichero\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Estás en la carpeta:</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n            <div>Di el nombre del nuevo fichero:</div>\n            <div class=\"pad_top_1\">\n              <input class=\"width_100\" type=\"text\" placeholder=\"myfile.txt\" v-model=\"filename\" v-focus v-on:keyup.enter=\"() => accept(filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(filename)\">Crear fichero</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data() {\n            return {\n              current_directory: this.$lsw.fs.get_current_directory(),\n              filename: \"\",\n            };\n          },\n        },\n      });\n      if(!filename) return;\n      const filepath = this.$lsw.fs.resolve_path(this.$lsw.fs.get_current_directory(), filename);\n      await this.$lsw.fs.write_file(filepath, \"\");\n      this.refresh();\n    },\n    async processToCreateDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToCreateDirectory\");\n      const filename = await this.$lsw.dialogs.open({\n        title: \"Crear directorio\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Estás en la carpeta:</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n            <div>Di el nombre del nuevo directorio:</div>\n            <div class=\"pad_top_1\">\n              <input class=\"width_100\" type=\"text\" placeholder=\"myfolder\" v-model=\"filename\" v-focus v-on:keyup.enter=\"() => accept(filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(filename)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data() {\n            return {\n              current_directory: this.$lsw.fs.get_current_directory(),\n              filename: \"\",\n            };\n          },\n        },\n      });\n      if(!filename) return;\n      const filepath = this.$lsw.fs.resolve_path(this.$lsw.fs.get_current_directory(), filename);\n      await this.$lsw.fs.make_directory(filepath);\n      this.refresh();\n    },\n    async processToDeleteDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToDeleteDirectory\");\n      const confirmation = await this.$lsw.dialogs.open({\n        title: \"Eliminar directorio\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>¿Seguro que quieres eliminar el directorio?</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(true)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            current_directory: this.$lsw.fs.get_current_directory(),\n          }\n        }\n      });\n      if(!confirmation) return;\n      await this.$lsw.fs.delete_directory(this.$lsw.fs.get_current_directory());\n      this.refresh();\n    },\n    async processToDeleteFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToDeleteFile\");\n      const confirmation = await this.$lsw.dialogs.open({\n        title: \"Eliminar fichero\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>¿Seguro que quieres eliminar el fichero?</div>\n            <div class=\"pad_2\">{{ current_file }}</div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(true)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            current_file: this.current_node,\n          }\n        }\n      });\n      if(!confirmation) return;\n      await this.$lsw.fs.delete_file(this.current_node);\n      const upperDir = (() => {\n        const parts = this.current_node.split(\"/\");\n        parts.pop();\n        return parts.join(\"/\");\n      })();\n      this.refresh();\n    },\n    async processToRenameFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToRenameFile\");\n      const elementType = this.current_node_is_file ? \"fichero\" : \"directorio\";\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n          </div>\n          <div class=\"pad_1\">\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <div class=\"pad_top_1\">\n              <input v-focus class=\"width_100\" type=\"text\" placeholder=\"Nuevo nombre aquí\" v-model=\"new_filename\" v-on:keyup.enter=\"() => accept(new_filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(new_filename)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            filename: this.current_node,\n            new_filename: this.current_node.split(\"/\").pop(),\n          }\n        }\n      });\n      if(newName === false) return;\n      if(newName.trim() === \"\") return;\n      const allParts = this.current_node.split(\"/\");\n      allParts.pop();\n      const dirPath = \"/\" + allParts.join(\"/\");\n      const newFullpath = this.$lsw.fs.resolve_path(dirPath, newName);\n      await this.$lsw.fs.rename(this.current_node, newName.replace(/^\\/+/g, \"\"));\n      await this.open(newFullpath);\n    },\n    async processToExecuteFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToExecuteFile\");\n      const editorContents = this.$refs.editor.getContents();\n      const AsyncFunction = (async function() {}).constructor;\n      const asyncFunction = new AsyncFunction(editorContents);\n      try {\n        await asyncFunction.call(this);\n      } catch (error) {\n        this.$lsw.toasts.send({\n          title: \"Error arised when executing file\",\n          text: `File ${this.current_node} produced following error: ${error.name}: ${error.message}`\n        });\n      }\n    },\n    async processToLoadFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToLoadFile\");\n      this.is_ready = false;\n      const contents = await this.$lsw.fs.read_file(this.current_node);\n      this.current_node_contents = contents;\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    async processToSaveFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToSaveFile\");\n      if(this.$refs.editor) {\n        const editorContents = this.$refs.editor.getContents();\n        console.log(this.current_node, editorContents);\n        await this.$lsw.fs.write_file(this.current_node, editorContents);\n      }\n    },\n    _setButtonsForFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods._setButtonsForFile\");\n      this.is_ready = false;\n      this.current_node_is_file = true;\n      this.current_node_is_directory = false;\n      const allButtonsOnFile = [\n        {\n          text: \"➜\",\n          classes: \"reversed\",\n          click: () => this.goUp(),\n        }, {\n          text: \"💾\",\n          click: () => this.processToSaveFile(),\n        }, {\n          text: \"↔️\",\n          click: () => this.processToRenameFile(),\n        }, {\n          text: \"🔄\",\n          click: () => this.processToLoadFile(),\n        }, {\n          text: \"📄 ❌\",\n          classes: \"danger_button\",\n          click: () => this.processToDeleteFile(),\n        }\n      ];\n      if(this.current_node.endsWith(\".js\")) {\n        allButtonsOnFile.push({\n          text: \"⚡️\",\n          classes: \"danger_button\",\n          click: () => this.processToExecuteFile(),\n        });\n      }\n      this.$refs.panelTop.setButtons(...allButtonsOnFile);\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    _setButtonsForDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods._setButtonsForDirectory\");\n      this.is_ready = false;\n      this.current_node_is_directory = true;\n      this.current_node_is_file = false;\n      this.$refs.panelTop.setButtons({\n        text: \"📄+\",\n        click: () => this.processToCreateFile(),\n      }, {\n        text: \"📁+\",\n        click: () => this.processToCreateDirectory(),\n      }, {\n        text: \"📁 ❌\",\n        classes: \"danger_button\",\n        click: () => this.processToDeleteDirectory()\n      });\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    async _openFile(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods._openFile\");\n      this.current_node = subpath;\n      const contents = await this.$lsw.fs.read_file(this.current_node);\n      this.current_node_contents = contents;\n      this._setButtonsForFile();\n    },\n    async _openDirectory(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods._openDirectory\");\n      this.current_node = subpath;\n      const subnodes = await this.$lsw.fs.read_directory(this.current_node);\n      const sortedSubnodes = {\n        files: [],\n        folders: []\n      };\n      Object.keys(subnodes).forEach(id => {\n        const subnode = subnodes[id];\n        const subnodeType = typeof subnode === \"string\" ? \"files\" : \"folders\";\n        sortedSubnodes[subnodeType].push(id);\n      });\n      const formattedSubnodes = {};\n      sortedSubnodes.folders.sort().forEach(folder => {\n        formattedSubnodes[folder] = {};\n      });\n      sortedSubnodes.files.sort().forEach(file => {\n        formattedSubnodes[file] = \"...\";\n      });\n      console.log(subnodes, formattedSubnodes);\n      this.$lsw.fs.change_directory(subpath);\n      this.current_node_subnodes = formattedSubnodes;\n      this._setButtonsForDirectory();\n    },\n    __update_node_parts(newValue = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_node_parts\");\n      this.current_node_parts = newValue.split(\"/\").filter(p => p !== \"\");\n    },\n    __update_current_node_basename(current_node_parts = this.current_node_parts) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_current_node_basename\");\n      if (current_node_parts.length) {\n        this.current_node_basename = current_node_parts[current_node_parts.length - 1];\n      } else {\n        this.current_node_basename = \"/\";\n      }\n    },\n    __update_current_node_basedir(current_node_parts = this.current_node_parts) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_current_node_basedir\");\n      if (current_node_parts.length > 1) {\n        this.current_node_basedir = \"/\" + [].concat(current_node_parts).splice(0, current_node_parts.length - 1).join(\"/\") + \"/\";\n      } else {\n        this.current_node_basedir = \"/\";\n      }\n    },\n    _updateNodeSubdata(newValue = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods._updateNodeSubdata\");\n      this.__update_node_parts(newValue);\n      this.__update_current_node_basename();\n      this.__update_current_node_basedir();\n    },\n    setPanelButtons(panelOptions = {}) {\n      this.$trace(\"lsw-filesystem-explorer.methods.setPanelButtons\");\n      Validation: {\n        if (typeof panelOptions !== \"object\") {\n          throw new Error(\"Required argument «panelOptions» to be an object on «LswFilesystemExplorer.methods.setPanelButtons»\");\n        }\n        const keys = Object.keys(panelOptions);\n        if (keys.length === 0) {\n          throw new Error(\"Required argument «panelOptions» to be have 1 or more keys on «LswFilesystemExplorer.methods.setPanelButtons»\");\n        }\n        const valid_keys = [\"top\", \"bottom\", \"left\", \"right\"];\n        for (let index = 0; index < keys.length; index++) {\n          const key = keys[index];\n          if(valid_keys.indexOf(key) === -1) {\n            throw new Error(`Required argument «panelOptions[${key}]» to be a valid key out of «${valid_keys.join(\",\")}», not «${key}» on «LswFilesystemExplorer.methods.setPanelButtons»`);\n          }\n          const value = panelOptions[key];\n          if(typeof value !== \"object\") {\n            throw new Error(`Required argument «panelOptions[${key}]» to be an object or array, not ${typeof value}» on «LswFilesystemExplorer.methods.setPanelButtons»`);\n          }\n        }\n      }\n    }\n  },\n  watch: {\n    current_node(newValue) {\n      this.$trace(\"lsw-filesystem-explorer.watch.current_node\");\n      this._updateNodeSubdata(newValue);\n    }\n  },\n  async mounted() {\n    try {\n      this.$trace(\"lsw-filesystem-explorer.mounted\");\n      this.$lsw.fs = new LswFilesystem();\n      this.$lsw.fsExplorer = this;\n      await this.$lsw.fs.init();\n      await this.open(\"/\");\n    } catch (error) {\n      console.log(error);\n    }\n  }\n});\n",
+      "$code": "Vue.component(\"LswFilesystemExplorer\", {\n  name: \"LswFilesystemExplorer\",\n  template: `<div class=\"lsw_filesystem_explorer\">\n    <div class=\"current_node_box\">\n        <span class=\"previous_node_path\" :class=\"current_node !== '/' ? '' : 'visibility_hidden'\">\n            <button class=\"previous_node_button\" v-on:click=\"goUp\"\n            style=\"transform: rotate(180deg); margin: 1px;\">➜</button>\n        </span>\n        <span class=\"current_node_path\">{{ current_node_basedir }}</span>\n        <span class=\"current_node_filename\">{{ current_node_basename }}</span>\n    </div>\n    <div class=\"filesystem_ui\">\n        <div class=\"leftside\">\n            <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelLeft\" />\n        </div>\n        <div class=\"middleside\">\n            <div class=\"headerside\">\n                <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelTop\" />\n            </div>\n            <div class=\"bodyside\" v-if=\"is_ready\">\n                <lsw-filesystem-treeviewer v-if=\"current_node_is_directory\" :explorer=\"this\" ref=\"treeviewer\" />\n                <lsw-filesystem-editor v-else-if=\"current_node_is_file\" :explorer=\"this\" ref=\"editor\" :filecontents=\"current_node_contents\" />\n            </div>\n            <div class=\"footerside\">\n                <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelBottom\" />\n            </div>\n        </div>\n        <div class=\"rightside\">\n            <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelRight\" />\n        </div>\n    </div>\n</div>`,\n  props: {},\n  data() {\n    this.$trace(\"lsw-filesystem-explorer.data\");\n    return {\n      is_ready: false,\n      current_node: undefined,\n      current_node_parts: undefined,\n      current_node_basename: undefined,\n      current_node_basedir: undefined,\n      current_node_contents: undefined,\n      current_node_subnodes: [],\n      current_node_is_file: false,\n      current_node_is_directory: false,\n      STANDARIZED_REFRESH_DELAY: 100\n    };\n  },\n  methods: {\n    open(...args) {\n      this.$trace(\"lsw-filesystem-explorer.methods.open\");\n      return this.open_node(...args);\n    },\n    goUp() {\n      this.$trace(\"lsw-filesystem-explorer.methods.goUp\");\n      const parts = this.current_node.split(\"/\");\n      parts.pop();\n      const dest = this.normalize_path(\"/\" + parts.join(\"/\"));\n      return this.open(dest);\n    },\n    async refresh() {\n      this.$trace(\"lsw-filesystem-explorer.methods.refresh\");\n      this.is_ready = false;\n      try {\n        await this.open(this.current_node);\n      } catch (error) {\n        throw error;\n      } finally {\n        this.$nextTick(() => {\n          this.is_ready = true;\n          this.$forceUpdate(true);\n        });\n      }\n    },\n    normalize_path(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods.normalize_path\");\n      return this.$lsw.fs.resolve_path(this.current_node, subpath);\n    },\n    async open_node(subpath = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods.open_node\");\n      try {\n        if ([\"\", \"/\"].indexOf(subpath) !== -1) {\n          return await this._openDirectory(\"/\");\n        }\n        const temporaryPath = this.normalize_path(subpath);\n        const is_directory = await this.$lsw.fs.is_directory(temporaryPath);\n        if (is_directory) {\n          return await this._openDirectory(temporaryPath);\n        }\n        const is_file = await this.$lsw.fs.is_file(temporaryPath);\n        if (is_file) {\n          return await this._openFile(temporaryPath);\n        }\n        throw new Error(`Cannot open path because it does not exist: ${temporaryPath} on «LswFilesystemExplorer.methods.open_node»`);\n      } catch (error) {\n        console.log(error);\n        throw error;\n      }\n    },\n    async processToCreateFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToCreateFile\");\n      const filename = await this.$lsw.dialogs.open({\n        title: \"Crear fichero\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Estás en la carpeta:</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n            <div>Di el nombre del nuevo fichero:</div>\n            <div class=\"pad_top_1\">\n              <input class=\"width_100\" type=\"text\" placeholder=\"myfile.txt\" v-model=\"filename\" v-focus v-on:keyup.enter=\"() => accept(filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(filename)\">Crear fichero</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data() {\n            return {\n              current_directory: this.$lsw.fs.get_current_directory(),\n              filename: \"\",\n            };\n          },\n        },\n      });\n      if(!filename) return;\n      const filepath = this.$lsw.fs.resolve_path(this.$lsw.fs.get_current_directory(), filename);\n      await this.$lsw.fs.write_file(filepath, \"\");\n      this.refresh();\n    },\n    async processToCreateDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToCreateDirectory\");\n      const filename = await this.$lsw.dialogs.open({\n        title: \"Crear directorio\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Estás en la carpeta:</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n            <div>Di el nombre del nuevo directorio:</div>\n            <div class=\"pad_top_1\">\n              <input class=\"width_100\" type=\"text\" placeholder=\"myfolder\" v-model=\"filename\" v-focus v-on:keyup.enter=\"() => accept(filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(filename)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data() {\n            return {\n              current_directory: this.$lsw.fs.get_current_directory(),\n              filename: \"\",\n            };\n          },\n        },\n      });\n      if(!filename) return;\n      const filepath = this.$lsw.fs.resolve_path(this.$lsw.fs.get_current_directory(), filename);\n      await this.$lsw.fs.make_directory(filepath);\n      this.refresh();\n    },\n    async processToDeleteDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToDeleteDirectory\");\n      const confirmation = await this.$lsw.dialogs.open({\n        title: \"Eliminar directorio\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>¿Seguro que quieres eliminar el directorio?</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(true)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            current_directory: this.$lsw.fs.get_current_directory(),\n          }\n        }\n      });\n      if(!confirmation) return;\n      await this.$lsw.fs.delete_directory(this.$lsw.fs.get_current_directory());\n      this.refresh();\n    },\n    async processToDeleteFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToDeleteFile\");\n      const confirmation = await this.$lsw.dialogs.open({\n        title: \"Eliminar fichero\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>¿Seguro que quieres eliminar el fichero?</div>\n            <div class=\"pad_2\">{{ current_file }}</div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(true)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            current_file: this.current_node,\n          }\n        }\n      });\n      if(!confirmation) return;\n      await this.$lsw.fs.delete_file(this.current_node);\n      const upperDir = (() => {\n        const parts = this.current_node.split(\"/\");\n        parts.pop();\n        return parts.join(\"/\");\n      })();\n      this.refresh();\n    },\n    async processToRenameFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToRenameFile\");\n      const elementType = this.current_node_is_file ? \"fichero\" : \"directorio\";\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n          </div>\n          <div class=\"pad_1\">\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <div class=\"pad_top_1\">\n              <input v-focus class=\"width_100\" type=\"text\" placeholder=\"Nuevo nombre aquí\" v-model=\"new_filename\" v-on:keyup.enter=\"() => accept(new_filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(new_filename)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            filename: this.current_node,\n            new_filename: this.current_node.split(\"/\").pop(),\n          }\n        }\n      });\n      if(newName === false) return;\n      if(newName.trim() === \"\") return;\n      const allParts = this.current_node.split(\"/\");\n      allParts.pop();\n      const dirPath = \"/\" + allParts.join(\"/\");\n      const newFullpath = this.$lsw.fs.resolve_path(dirPath, newName);\n      await this.$lsw.fs.rename(this.current_node, newName.replace(/^\\/+/g, \"\"));\n      await this.open(newFullpath);\n    },\n    async processToExecuteFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToExecuteFile\");\n      const editorContents = this.$refs.editor.getContents();\n      const AsyncFunction = (async function() {}).constructor;\n      const asyncFunction = new AsyncFunction(editorContents);\n      try {\n        await asyncFunction.call(this);\n      } catch (error) {\n        this.$lsw.toasts.send({\n          title: \"Error arised when executing file\",\n          text: `File ${this.current_node} produced following error: ${error.name}: ${error.message}`\n        });\n      }\n    },\n    async processToLoadFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToLoadFile\");\n      this.is_ready = false;\n      const contents = await this.$lsw.fs.read_file(this.current_node);\n      this.current_node_contents = contents;\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    async processToSaveFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToSaveFile\");\n      if(this.$refs.editor) {\n        const editorContents = this.$refs.editor.getContents();\n        console.log(this.current_node, editorContents);\n        await this.$lsw.fs.write_file(this.current_node, editorContents);\n      }\n    },\n    _setButtonsForFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods._setButtonsForFile\");\n      this.is_ready = false;\n      this.current_node_is_file = true;\n      this.current_node_is_directory = false;\n      const allButtonsOnFile = [\n        {\n          text: \"➜\",\n          classes: \"reversed\",\n          click: () => this.goUp(),\n        }, {\n          text: \"💾\",\n          click: () => this.processToSaveFile(),\n        }, {\n          text: \"↔️\",\n          click: () => this.processToRenameFile(),\n        }, {\n          text: \"🔄\",\n          click: () => this.processToLoadFile(),\n        }, {\n          text: \"📄 ❌\",\n          classes: \"danger_button\",\n          click: () => this.processToDeleteFile(),\n        }\n      ];\n      if(this.current_node.endsWith(\".js\")) {\n        allButtonsOnFile.push({\n          text: \"⚡️\",\n          classes: \"danger_button\",\n          click: () => this.processToExecuteFile(),\n        });\n      }\n      this.$refs.panelTop.setButtons(...allButtonsOnFile);\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    _setButtonsForDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods._setButtonsForDirectory\");\n      this.is_ready = false;\n      this.current_node_is_directory = true;\n      this.current_node_is_file = false;\n      this.$refs.panelTop.setButtons({\n        text: \"📄+\",\n        click: () => this.processToCreateFile(),\n      }, {\n        text: \"📁+\",\n        click: () => this.processToCreateDirectory(),\n      }, {\n        text: \"📁 ❌\",\n        classes: \"danger_button\",\n        click: () => this.processToDeleteDirectory()\n      });\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    async _openFile(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods._openFile\");\n      this.current_node = subpath;\n      const contents = await this.$lsw.fs.read_file(this.current_node);\n      this.current_node_contents = contents;\n      this._setButtonsForFile();\n    },\n    async _openDirectory(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods._openDirectory\");\n      this.current_node = subpath;\n      const subnodes = await this.$lsw.fs.read_directory(this.current_node);\n      const sortedSubnodes = {\n        files: [],\n        folders: []\n      };\n      Object.keys(subnodes).forEach(id => {\n        const subnode = subnodes[id];\n        const subnodeType = typeof subnode === \"string\" ? \"files\" : \"folders\";\n        sortedSubnodes[subnodeType].push(id);\n      });\n      const formattedSubnodes = {};\n      sortedSubnodes.folders.sort().forEach(folder => {\n        formattedSubnodes[folder] = {};\n      });\n      sortedSubnodes.files.sort().forEach(file => {\n        formattedSubnodes[file] = \"...\";\n      });\n      console.log(subnodes, formattedSubnodes);\n      this.$lsw.fs.change_directory(subpath);\n      this.current_node_subnodes = formattedSubnodes;\n      this._setButtonsForDirectory();\n    },\n    __update_node_parts(newValue = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_node_parts\");\n      this.current_node_parts = newValue.split(\"/\").filter(p => p !== \"\");\n    },\n    __update_current_node_basename(current_node_parts = this.current_node_parts) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_current_node_basename\");\n      if (current_node_parts.length) {\n        this.current_node_basename = current_node_parts[current_node_parts.length - 1];\n      } else {\n        this.current_node_basename = \"/\";\n      }\n    },\n    __update_current_node_basedir(current_node_parts = this.current_node_parts) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_current_node_basedir\");\n      if (current_node_parts.length > 1) {\n        this.current_node_basedir = \"/\" + [].concat(current_node_parts).splice(0, current_node_parts.length - 1).join(\"/\") + \"/\";\n      } else {\n        this.current_node_basedir = \"/\";\n      }\n    },\n    _updateNodeSubdata(newValue = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods._updateNodeSubdata\");\n      this.__update_node_parts(newValue);\n      this.__update_current_node_basename();\n      this.__update_current_node_basedir();\n    },\n    setPanelButtons(panelOptions = {}) {\n      this.$trace(\"lsw-filesystem-explorer.methods.setPanelButtons\");\n      Validation: {\n        if (typeof panelOptions !== \"object\") {\n          throw new Error(\"Required argument «panelOptions» to be an object on «LswFilesystemExplorer.methods.setPanelButtons»\");\n        }\n        const keys = Object.keys(panelOptions);\n        if (keys.length === 0) {\n          throw new Error(\"Required argument «panelOptions» to be have 1 or more keys on «LswFilesystemExplorer.methods.setPanelButtons»\");\n        }\n        const valid_keys = [\"top\", \"bottom\", \"left\", \"right\"];\n        for (let index = 0; index < keys.length; index++) {\n          const key = keys[index];\n          if(valid_keys.indexOf(key) === -1) {\n            throw new Error(`Required argument «panelOptions[${key}]» to be a valid key out of «${valid_keys.join(\",\")}», not «${key}» on «LswFilesystemExplorer.methods.setPanelButtons»`);\n          }\n          const value = panelOptions[key];\n          if(typeof value !== \"object\") {\n            throw new Error(`Required argument «panelOptions[${key}]» to be an object or array, not ${typeof value}» on «LswFilesystemExplorer.methods.setPanelButtons»`);\n          }\n        }\n      }\n    }\n  },\n  watch: {\n    current_node(newValue) {\n      this.$trace(\"lsw-filesystem-explorer.watch.current_node\");\n      this._updateNodeSubdata(newValue);\n    }\n  },\n  async mounted() {\n    try {\n      this.$trace(\"lsw-filesystem-explorer.mounted\");\n      this.$lsw.fs = new LswFilesystem();\n      this.$lsw.fsExplorer = this;\n      await this.$lsw.fs.init();\n      await this.open(\"/\");\n    } catch (error) {\n      console.log(error);\n    }\n  }\n});\n",
       "$code.label": "LswFilesystemExplorer API",
       "$output": "index.html"
     },
@@ -346,12 +346,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 110303,
+          "offset": 110298,
           "line": 3079,
           "column": 1
         },
         "end": {
-          "offset": 110453,
+          "offset": 110448,
           "line": 3080,
           "column": 1
         }
@@ -365,12 +365,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 111777,
+          "offset": 111772,
           "line": 3127,
           "column": 1
         },
         "end": {
-          "offset": 111915,
+          "offset": 111910,
           "line": 3128,
           "column": 1
         }
@@ -384,18 +384,18 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 112547,
+          "offset": 112542,
           "line": 3164,
           "column": 1
         },
         "end": {
-          "offset": 112693,
+          "offset": 112688,
           "line": 3165,
           "column": 1
         }
       },
       "$section": "Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemTreeviewer component",
-      "$code": "Vue.component(\"LswFilesystemTreeviewer\", {\n  name: \"LswFilesystemTreeviewer\",\n  template: `<div class=\"lsw_filesystem_treeviewer\">\n    <table class=\"filesystem_treeviewer_table width_100\">\n        <thead style=\"display: none;\"></thead>\n        <tbody>\n            <tr v-if=\"explorer.current_node !== '/'\"\n                class=\"treeviewer_row\"\n                v-on:click=\"() => goUp()\">\n                <td class=\"icon_cell\">📁</td>\n                <td>\n                    <a class=\"filename_link\" href=\"javascript:void(0)\">..</a>\n                </td>\n                <td></td>\n                <td>\n                    <button style=\"visibility: hidden;\" v-on:click=\"() => deleteNode(subnodeIndex)\">❌</button>\n                </td>\n            </tr>\n            <template v-for=\"subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes\">\n                <tr class=\"treeviewer_row\"\n                    v-bind:key=\"'subnode_obj_' + subnodeIndex\">\n                    <template v-if=\"typeof subnode === 'object'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📁</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\"><b>{{ subnodeIndex }}</b></a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📁 ❌</button>\n                        </td>\n                    </template>\n                    <template v-else-if=\"typeof subnode === 'string'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📄</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\">{{ subnodeIndex }}</a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📄 ❌</button>\n                        </td>\n                    </template>\n                </tr>\n            </template>\n        </tbody>\n    </table>\n\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    this.$trace(\"lsw-filesystem-treeviewer.data\");\n    return {};\n  },\n  watch: {},\n  methods: {\n    goUp() {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.goUp\");\n      return this.explorer.goUp();\n    },\n    openSubnode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.openSubnode\");\n      return this.explorer.open(subnodeIndex);\n    },\n    async deleteNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.deleteNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const confirmation = await this.$lsw.dialogs.open({\n        title: `Proceder a eliminar ${elementType}`,\n        template: `\n          <div class=\"pad_1\">\n            <div>Seguro que quieres eliminar el {{ elementType }} «{{ fullpath }}»?</div>\n            <hr />\n            <div class=\"flex_row centered\">\n              <div class=\"flex_100\"></div>\n              <div class=\"flex_1 pad_right_1\">\n                <button class=\"danger_button nowrap\" v-on:click=\"() => accept(true)\">Sí, eliminar</button>\n              </div>\n              <div class=\"flex_1\">\n                <button class=\"\" v-on:click=\"() => accept(false)\">Salir</button>\n              </div>\n            </div>\n          </div>\n        `,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n          }\n        }\n      });\n      if (!confirmation) return;\n      try {\n        if (isDirectory) {\n          await this.$lsw.fs.delete_directory(fullpath);\n        } else {\n          await this.$lsw.fs.delete_file(fullpath);\n        }\n        await this.explorer.refresh();\n      } catch (error) {\n        await this.$lsw.dialogs.open({\n          title: `El fichero no se pudo eliminar`,\n          template: `\n            <div class=\"pad_1\">\n              <div>El fichero «{{ fullpath }}» no se pudo eliminar debido al siguiente error:</div>\n              <hr />\n              <div v-if=\"error\">{{ error.name }}: {{ error.message }}</div>\n            </div>\n          `,\n          factory: {\n            data: {\n              error,\n              fullpath,\n            }\n          }\n        });\n      }\n    },\n    async renameNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.renameNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <input v-focus class=\"width_100\" type=\"text\" v-model=\"newFilename\" v-on:keyup.enter=\"() => accept(newFilename)\" />\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"\" v-on:click=\"() => accept(newFilename)\">Renombrar</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"\" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n            filename: subnodeIndex,\n            newFilename: subnodeIndex,\n          }\n        }\n      });\n      if (typeof newName !== \"string\") return;\n      if (newName.trim() === \"\") return;\n      await this.$lsw.fs.rename(subnodeIndex, newName.replace(/^\\/+/g, \"\"));\n      this.explorer.refresh();\n    }\n  },\n  mounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.mounted\");\n    this.explorer.setPanelButtons({\n      top: [],\n      left: [],\n      right: [],\n      bottom: [],\n    })\n  },\n  unmounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.unmounted\");\n  }\n});\n",
+      "$code": "Vue.component(\"LswFilesystemTreeviewer\", {\n  name: \"LswFilesystemTreeviewer\",\n  template: `<div class=\"lsw_filesystem_treeviewer\">\n    <table class=\"filesystem_treeviewer_table width_100\">\n        <thead style=\"display: none;\"></thead>\n        <tbody>\n            <tr v-if=\"explorer.current_node !== '/'\"\n                class=\"treeviewer_row\"\n                v-on:click=\"() => goUp()\">\n                <td class=\"icon_cell\">📁</td>\n                <td>\n                    <a class=\"filename_link\" href=\"javascript:void(0)\">..</a>\n                </td>\n                <td></td>\n                <td>\n                    <button style=\"visibility: hidden;\" v-on:click=\"() => deleteNode(subnodeIndex)\">❌</button>\n                </td>\n            </tr>\n            <template v-for=\"subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes\">\n                <tr class=\"treeviewer_row\"\n                    v-bind:key=\"'subnode_obj_' + subnodeIndex\">\n                    <template v-if=\"typeof subnode === 'object'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📁</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\"><b>{{ subnodeIndex }}</b></a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📁 ❌</button>\n                        </td>\n                    </template>\n                    <template v-else-if=\"typeof subnode === 'string'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📄</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\">{{ subnodeIndex }}</a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📄 ❌</button>\n                        </td>\n                    </template>\n                </tr>\n            </template>\n        </tbody>\n    </table>\n\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    this.$trace(\"lsw-filesystem-treeviewer.data\");\n    return {};\n  },\n  watch: {},\n  methods: {\n    goUp() {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.goUp\");\n      return this.explorer.goUp();\n    },\n    openSubnode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.openSubnode\");\n      return this.explorer.open(subnodeIndex);\n    },\n    async deleteNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.deleteNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const confirmation = await this.$lsw.dialogs.open({\n        title: `Proceder a eliminar ${elementType}`,\n        template: `\n          <div class=\"pad_1\">\n            <div>Seguro que quieres eliminar el {{ elementType }} «{{ fullpath }}»?</div>\n            <hr />\n            <div class=\"flex_row centered\">\n              <div class=\"flex_100\"></div>\n              <div class=\"flex_1 pad_right_1\">\n                <button class=\"danger_button nowrap\" v-on:click=\"() => accept(true)\">Sí, eliminar</button>\n              </div>\n              <div class=\"flex_1\">\n                <button class=\"\" v-on:click=\"() => accept(false)\">Salir</button>\n              </div>\n            </div>\n          </div>\n        `,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n          }\n        }\n      });\n      if (!confirmation) return;\n      try {\n        if (isDirectory) {\n          await this.$lsw.fs.delete_directory(fullpath);\n        } else {\n          await this.$lsw.fs.delete_file(fullpath);\n        }\n        await this.explorer.refresh();\n      } catch (error) {\n        await this.$lsw.dialogs.open({\n          title: `El fichero no se pudo eliminar`,\n          template: `\n            <div class=\"pad_1\">\n              <div>El fichero «{{ fullpath }}» no se pudo eliminar debido al siguiente error:</div>\n              <hr />\n              <div v-if=\"error\">{{ error.name }}: {{ error.message }}</div>\n            </div>\n          `,\n          factory: {\n            data: {\n              error,\n              fullpath,\n            }\n          }\n        });\n      }\n    },\n    async renameNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.renameNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <input v-focus class=\"width_100\" type=\"text\" v-model=\"newFilename\" v-on:keyup.enter=\"() => accept(newFilename)\" />\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"\" v-on:click=\"() => accept(newFilename)\">Renombrar</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"\" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n            filename: subnodeIndex,\n            newFilename: subnodeIndex,\n          }\n        }\n      });\n      if (typeof newName !== \"string\") return;\n      if (newName.trim() === \"\") return;\n      await this.$lsw.fs.rename(subnodeIndex, newName.replace(/^\\/+/g, \"\"));\n      this.explorer.refresh();\n    }\n  },\n  mounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.mounted\");\n    this.explorer.setPanelButtons({\n      top: [],\n      left: [],\n      right: [],\n      bottom: [],\n    })\n  },\n  unmounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.unmounted\");\n  }\n});\n",
       "$code.label": "LswFilesystemTreeviewer API",
       "$output": "index.html"
     },
@@ -403,12 +403,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 119640,
+          "offset": 119615,
           "line": 3346,
           "column": 1
         },
         "end": {
-          "offset": 119739,
+          "offset": 119714,
           "line": 3347,
           "column": 1
         }
@@ -422,12 +422,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 120663,
+          "offset": 120638,
           "line": 3385,
           "column": 1
         },
         "end": {
-          "offset": 120783,
+          "offset": 120758,
           "line": 3386,
           "column": 1
         }
@@ -441,12 +441,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 147242,
+          "offset": 147217,
           "line": 3953,
           "column": 1
         },
         "end": {
-          "offset": 147389,
+          "offset": 147364,
           "line": 3954,
           "column": 1
         }
@@ -460,12 +460,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 148211,
+          "offset": 148186,
           "line": 3991,
           "column": 1
         },
         "end": {
-          "offset": 148367,
+          "offset": 148342,
           "line": 3992,
           "column": 1
         }
@@ -479,12 +479,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 149088,
+          "offset": 149063,
           "line": 4022,
           "column": 1
         },
         "end": {
-          "offset": 149238,
+          "offset": 149213,
           "line": 4023,
           "column": 1
         }
@@ -498,12 +498,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 151296,
+          "offset": 151271,
           "line": 4091,
           "column": 1
         },
         "end": {
-          "offset": 151449,
+          "offset": 151424,
           "line": 4092,
           "column": 1
         }
@@ -517,12 +517,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 152267,
+          "offset": 152242,
           "line": 4129,
           "column": 1
         },
         "end": {
-          "offset": 152429,
+          "offset": 152404,
           "line": 4130,
           "column": 1
         }
@@ -536,12 +536,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 153164,
+          "offset": 153139,
           "line": 4160,
           "column": 1
         },
         "end": {
-          "offset": 153320,
+          "offset": 153295,
           "line": 4161,
           "column": 1
         }
@@ -555,12 +555,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 153745,
+          "offset": 153720,
           "line": 4181,
           "column": 1
         },
         "end": {
-          "offset": 153877,
+          "offset": 153852,
           "line": 4182,
           "column": 1
         }
@@ -574,12 +574,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 155441,
+          "offset": 155416,
           "line": 4239,
           "column": 1
         },
         "end": {
-          "offset": 155597,
+          "offset": 155572,
           "line": 4240,
           "column": 1
         }
@@ -593,12 +593,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 156022,
+          "offset": 155997,
           "line": 4260,
           "column": 1
         },
         "end": {
-          "offset": 156187,
+          "offset": 156162,
           "line": 4261,
           "column": 1
         }
@@ -612,12 +612,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 156630,
+          "offset": 156605,
           "line": 4281,
           "column": 1
         },
         "end": {
-          "offset": 156798,
+          "offset": 156773,
           "line": 4282,
           "column": 1
         }
@@ -631,12 +631,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 157247,
+          "offset": 157222,
           "line": 4302,
           "column": 1
         },
         "end": {
-          "offset": 157403,
+          "offset": 157378,
           "line": 4303,
           "column": 1
         }
@@ -650,12 +650,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 158232,
+          "offset": 158207,
           "line": 4340,
           "column": 1
         },
         "end": {
-          "offset": 158397,
+          "offset": 158372,
           "line": 4341,
           "column": 1
         }
@@ -669,12 +669,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 159139,
+          "offset": 159114,
           "line": 4371,
           "column": 1
         },
         "end": {
-          "offset": 159304,
+          "offset": 159279,
           "line": 4372,
           "column": 1
         }
@@ -688,12 +688,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 161347,
+          "offset": 161322,
           "line": 4435,
           "column": 1
         },
         "end": {
-          "offset": 161524,
+          "offset": 161499,
           "line": 4436,
           "column": 1
         }
@@ -707,12 +707,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 161991,
+          "offset": 161966,
           "line": 4456,
           "column": 1
         },
         "end": {
-          "offset": 162162,
+          "offset": 162137,
           "line": 4457,
           "column": 1
         }
@@ -726,12 +726,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 162617,
+          "offset": 162592,
           "line": 4477,
           "column": 1
         },
         "end": {
-          "offset": 162785,
+          "offset": 162760,
           "line": 4478,
           "column": 1
         }
@@ -745,12 +745,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 163234,
+          "offset": 163209,
           "line": 4498,
           "column": 1
         },
         "end": {
-          "offset": 163352,
+          "offset": 163327,
           "line": 4499,
           "column": 1
         }
@@ -764,12 +764,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 171775,
+          "offset": 171750,
           "line": 4732,
           "column": 1
         },
         "end": {
-          "offset": 171895,
+          "offset": 171870,
           "line": 4733,
           "column": 1
         }
@@ -783,12 +783,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 175551,
+          "offset": 175526,
           "line": 4840,
           "column": 1
         },
         "end": {
-          "offset": 175671,
+          "offset": 175646,
           "line": 4841,
           "column": 1
         }
@@ -802,12 +802,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 176634,
+          "offset": 176609,
           "line": 4881,
           "column": 1
         },
         "end": {
-          "offset": 176752,
+          "offset": 176727,
           "line": 4882,
           "column": 1
         }
@@ -821,12 +821,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 178846,
+          "offset": 178821,
           "line": 4944,
           "column": 1
         },
         "end": {
-          "offset": 178964,
+          "offset": 178939,
           "line": 4945,
           "column": 1
         }
@@ -840,12 +840,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 180850,
+          "offset": 180825,
           "line": 5009,
           "column": 1
         },
         "end": {
-          "offset": 180976,
+          "offset": 180951,
           "line": 5010,
           "column": 1
         }
@@ -859,12 +859,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 182895,
+          "offset": 182870,
           "line": 5076,
           "column": 1
         },
         "end": {
-          "offset": 183013,
+          "offset": 182988,
           "line": 5077,
           "column": 1
         }
@@ -878,12 +878,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 186710,
+          "offset": 186685,
           "line": 5182,
           "column": 1
         },
         "end": {
-          "offset": 186836,
+          "offset": 186811,
           "line": 5183,
           "column": 1
         }
@@ -897,12 +897,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 189659,
+          "offset": 189634,
           "line": 5279,
           "column": 1
         },
         "end": {
-          "offset": 189781,
+          "offset": 189756,
           "line": 5280,
           "column": 1
         }
@@ -916,12 +916,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 190253,
+          "offset": 190228,
           "line": 5305,
           "column": 1
         },
         "end": {
-          "offset": 190377,
+          "offset": 190352,
           "line": 5306,
           "column": 1
         }
@@ -935,12 +935,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 192434,
+          "offset": 192409,
           "line": 5372,
           "column": 1
         },
         "end": {
-          "offset": 192564,
+          "offset": 192539,
           "line": 5373,
           "column": 1
         }
@@ -954,12 +954,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 193048,
+          "offset": 193023,
           "line": 5398,
           "column": 1
         },
         "end": {
-          "offset": 193176,
+          "offset": 193151,
           "line": 5399,
           "column": 1
         }
@@ -973,12 +973,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 197222,
+          "offset": 197197,
           "line": 5508,
           "column": 1
         },
         "end": {
-          "offset": 197346,
+          "offset": 197321,
           "line": 5509,
           "column": 1
         }
@@ -992,12 +992,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 201377,
+          "offset": 201352,
           "line": 5619,
           "column": 1
         },
         "end": {
-          "offset": 201509,
+          "offset": 201484,
           "line": 5620,
           "column": 1
         }
@@ -1011,12 +1011,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 202641,
+          "offset": 202616,
           "line": 5664,
           "column": 1
         },
         "end": {
-          "offset": 202753,
+          "offset": 202728,
           "line": 5665,
           "column": 1
         }
@@ -1030,12 +1030,12 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 206697,
+          "offset": 206672,
           "line": 5774,
           "column": 1
         },
         "end": {
-          "offset": 206829,
+          "offset": 206804,
           "line": 5775,
           "column": 1
         }
@@ -3871,7 +3871,7 @@
                 }
               },
               "$section": "Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemExplorer component",
-              "$code": "Vue.component(\"LswFilesystemExplorer\", {\n  name: \"LswFilesystemExplorer\",\n  template: `<div class=\"lsw_filesystem_explorer\">\n    <div class=\"current_node_box\">\n        <span class=\"previous_node_path\" :class=\"current_node !== '/' ? '' : 'visibility_hidden'\">\n            <button class=\"mini previous_node_button\" v-on:click=\"goUp\"\n            style=\"transform: rotate(180deg); margin: 1px;\">➜</button>\n        </span>\n        <span class=\"current_node_path\">{{ current_node_basedir }}</span>\n        <span class=\"current_node_filename\">{{ current_node_basename }}</span>\n    </div>\n    <div class=\"filesystem_ui\">\n        <div class=\"leftside\">\n            <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelLeft\" />\n        </div>\n        <div class=\"middleside\">\n            <div class=\"headerside\">\n                <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelTop\" />\n            </div>\n            <div class=\"bodyside\" v-if=\"is_ready\">\n                <lsw-filesystem-treeviewer v-if=\"current_node_is_directory\" :explorer=\"this\" ref=\"treeviewer\" />\n                <lsw-filesystem-editor v-else-if=\"current_node_is_file\" :explorer=\"this\" ref=\"editor\" :filecontents=\"current_node_contents\" />\n            </div>\n            <div class=\"footerside\">\n                <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelBottom\" />\n            </div>\n        </div>\n        <div class=\"rightside\">\n            <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelRight\" />\n        </div>\n    </div>\n</div>`,\n  props: {},\n  data() {\n    this.$trace(\"lsw-filesystem-explorer.data\");\n    return {\n      is_ready: false,\n      current_node: undefined,\n      current_node_parts: undefined,\n      current_node_basename: undefined,\n      current_node_basedir: undefined,\n      current_node_contents: undefined,\n      current_node_subnodes: [],\n      current_node_is_file: false,\n      current_node_is_directory: false,\n      STANDARIZED_REFRESH_DELAY: 100\n    };\n  },\n  methods: {\n    open(...args) {\n      this.$trace(\"lsw-filesystem-explorer.methods.open\");\n      return this.open_node(...args);\n    },\n    goUp() {\n      this.$trace(\"lsw-filesystem-explorer.methods.goUp\");\n      const parts = this.current_node.split(\"/\");\n      parts.pop();\n      const dest = this.normalize_path(\"/\" + parts.join(\"/\"));\n      return this.open(dest);\n    },\n    async refresh() {\n      this.$trace(\"lsw-filesystem-explorer.methods.refresh\");\n      this.is_ready = false;\n      try {\n        await this.open(this.current_node);\n      } catch (error) {\n        throw error;\n      } finally {\n        this.$nextTick(() => {\n          this.is_ready = true;\n          this.$forceUpdate(true);\n        });\n      }\n    },\n    normalize_path(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods.normalize_path\");\n      return this.$lsw.fs.resolve_path(this.current_node, subpath);\n    },\n    async open_node(subpath = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods.open_node\");\n      try {\n        if ([\"\", \"/\"].indexOf(subpath) !== -1) {\n          return await this._openDirectory(\"/\");\n        }\n        const temporaryPath = this.normalize_path(subpath);\n        const is_directory = await this.$lsw.fs.is_directory(temporaryPath);\n        if (is_directory) {\n          return await this._openDirectory(temporaryPath);\n        }\n        const is_file = await this.$lsw.fs.is_file(temporaryPath);\n        if (is_file) {\n          return await this._openFile(temporaryPath);\n        }\n        throw new Error(`Cannot open path because it does not exist: ${temporaryPath} on «LswFilesystemExplorer.methods.open_node»`);\n      } catch (error) {\n        console.log(error);\n        throw error;\n      }\n    },\n    async processToCreateFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToCreateFile\");\n      const filename = await this.$lsw.dialogs.open({\n        title: \"Crear fichero\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Estás en la carpeta:</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n            <div>Di el nombre del nuevo fichero:</div>\n            <div class=\"pad_top_1\">\n              <input class=\"width_100\" type=\"text\" placeholder=\"myfile.txt\" v-model=\"filename\" v-focus v-on:keyup.enter=\"() => accept(filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(filename)\">Crear fichero</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data() {\n            return {\n              current_directory: this.$lsw.fs.get_current_directory(),\n              filename: \"\",\n            };\n          },\n        },\n      });\n      if(!filename) return;\n      const filepath = this.$lsw.fs.resolve_path(this.$lsw.fs.get_current_directory(), filename);\n      await this.$lsw.fs.write_file(filepath, \"\");\n      this.refresh();\n    },\n    async processToCreateDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToCreateDirectory\");\n      const filename = await this.$lsw.dialogs.open({\n        title: \"Crear directorio\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Estás en la carpeta:</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n            <div>Di el nombre del nuevo directorio:</div>\n            <div class=\"pad_top_1\">\n              <input class=\"width_100\" type=\"text\" placeholder=\"myfolder\" v-model=\"filename\" v-focus v-on:keyup.enter=\"() => accept(filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(filename)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data() {\n            return {\n              current_directory: this.$lsw.fs.get_current_directory(),\n              filename: \"\",\n            };\n          },\n        },\n      });\n      if(!filename) return;\n      const filepath = this.$lsw.fs.resolve_path(this.$lsw.fs.get_current_directory(), filename);\n      await this.$lsw.fs.make_directory(filepath);\n      this.refresh();\n    },\n    async processToDeleteDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToDeleteDirectory\");\n      const confirmation = await this.$lsw.dialogs.open({\n        title: \"Eliminar directorio\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>¿Seguro que quieres eliminar el directorio?</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(true)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            current_directory: this.$lsw.fs.get_current_directory(),\n          }\n        }\n      });\n      if(!confirmation) return;\n      await this.$lsw.fs.delete_directory(this.$lsw.fs.get_current_directory());\n      this.refresh();\n    },\n    async processToDeleteFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToDeleteFile\");\n      const confirmation = await this.$lsw.dialogs.open({\n        title: \"Eliminar fichero\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>¿Seguro que quieres eliminar el fichero?</div>\n            <div class=\"pad_2\">{{ current_file }}</div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(true)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            current_file: this.current_node,\n          }\n        }\n      });\n      if(!confirmation) return;\n      await this.$lsw.fs.delete_file(this.current_node);\n      const upperDir = (() => {\n        const parts = this.current_node.split(\"/\");\n        parts.pop();\n        return parts.join(\"/\");\n      })();\n      this.refresh();\n    },\n    async processToRenameFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToRenameFile\");\n      const elementType = this.current_node_is_file ? \"fichero\" : \"directorio\";\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n          </div>\n          <div class=\"pad_1\">\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <div class=\"pad_top_1\">\n              <input v-focus class=\"width_100\" type=\"text\" placeholder=\"Nuevo nombre aquí\" v-model=\"new_filename\" v-on:keyup.enter=\"() => accept(new_filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(new_filename)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            filename: this.current_node,\n            new_filename: this.current_node.split(\"/\").pop(),\n          }\n        }\n      });\n      if(newName === false) return;\n      if(newName.trim() === \"\") return;\n      const allParts = this.current_node.split(\"/\");\n      allParts.pop();\n      const dirPath = \"/\" + allParts.join(\"/\");\n      const newFullpath = this.$lsw.fs.resolve_path(dirPath, newName);\n      await this.$lsw.fs.rename(this.current_node, newName.replace(/^\\/+/g, \"\"));\n      await this.open(newFullpath);\n    },\n    async processToExecuteFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToExecuteFile\");\n      const editorContents = this.$refs.editor.getContents();\n      const AsyncFunction = (async function() {}).constructor;\n      const asyncFunction = new AsyncFunction(editorContents);\n      try {\n        await asyncFunction.call(this);\n      } catch (error) {\n        this.$lsw.toasts.send({\n          title: \"Error arised when executing file\",\n          text: `File ${this.current_node} produced following error: ${error.name}: ${error.message}`\n        });\n      }\n    },\n    async processToLoadFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToLoadFile\");\n      this.is_ready = false;\n      const contents = await this.$lsw.fs.read_file(this.current_node);\n      this.current_node_contents = contents;\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    async processToSaveFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToSaveFile\");\n      if(this.$refs.editor) {\n        const editorContents = this.$refs.editor.getContents();\n        console.log(this.current_node, editorContents);\n        await this.$lsw.fs.write_file(this.current_node, editorContents);\n      }\n    },\n    _setButtonsForFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods._setButtonsForFile\");\n      this.is_ready = false;\n      this.current_node_is_file = true;\n      this.current_node_is_directory = false;\n      const allButtonsOnFile = [\n        {\n          text: \"➜\",\n          classes: \"reversed\",\n          click: () => this.goUp(),\n        }, {\n          text: \"💾\",\n          click: () => this.processToSaveFile(),\n        }, {\n          text: \"↔️\",\n          click: () => this.processToRenameFile(),\n        }, {\n          text: \"🔄\",\n          click: () => this.processToLoadFile(),\n        }, {\n          text: \"📄 ❌\",\n          classes: \"danger_button\",\n          click: () => this.processToDeleteFile(),\n        }\n      ];\n      if(this.current_node.endsWith(\".js\")) {\n        allButtonsOnFile.push({\n          text: \"⚡️\",\n          classes: \"danger_button\",\n          click: () => this.processToExecuteFile(),\n        });\n      }\n      this.$refs.panelTop.setButtons(...allButtonsOnFile);\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    _setButtonsForDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods._setButtonsForDirectory\");\n      this.is_ready = false;\n      this.current_node_is_directory = true;\n      this.current_node_is_file = false;\n      this.$refs.panelTop.setButtons({\n        text: \"📄+\",\n        click: () => this.processToCreateFile(),\n      }, {\n        text: \"📁+\",\n        click: () => this.processToCreateDirectory(),\n      }, {\n        text: \"📁 ❌\",\n        classes: \"danger_button\",\n        click: () => this.processToDeleteDirectory()\n      });\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    async _openFile(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods._openFile\");\n      this.current_node = subpath;\n      const contents = await this.$lsw.fs.read_file(this.current_node);\n      this.current_node_contents = contents;\n      this._setButtonsForFile();\n    },\n    async _openDirectory(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods._openDirectory\");\n      this.current_node = subpath;\n      const subnodes = await this.$lsw.fs.read_directory(this.current_node);\n      const sortedSubnodes = {\n        files: [],\n        folders: []\n      };\n      Object.keys(subnodes).forEach(id => {\n        const subnode = subnodes[id];\n        const subnodeType = typeof subnode === \"string\" ? \"files\" : \"folders\";\n        sortedSubnodes[subnodeType].push(id);\n      });\n      const formattedSubnodes = {};\n      sortedSubnodes.folders.sort().forEach(folder => {\n        formattedSubnodes[folder] = {};\n      });\n      sortedSubnodes.files.sort().forEach(file => {\n        formattedSubnodes[file] = \"...\";\n      });\n      console.log(subnodes, formattedSubnodes);\n      this.$lsw.fs.change_directory(subpath);\n      this.current_node_subnodes = formattedSubnodes;\n      this._setButtonsForDirectory();\n    },\n    __update_node_parts(newValue = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_node_parts\");\n      this.current_node_parts = newValue.split(\"/\").filter(p => p !== \"\");\n    },\n    __update_current_node_basename(current_node_parts = this.current_node_parts) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_current_node_basename\");\n      if (current_node_parts.length) {\n        this.current_node_basename = current_node_parts[current_node_parts.length - 1];\n      } else {\n        this.current_node_basename = \"/\";\n      }\n    },\n    __update_current_node_basedir(current_node_parts = this.current_node_parts) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_current_node_basedir\");\n      if (current_node_parts.length > 1) {\n        this.current_node_basedir = \"/\" + [].concat(current_node_parts).splice(0, current_node_parts.length - 1).join(\"/\") + \"/\";\n      } else {\n        this.current_node_basedir = \"/\";\n      }\n    },\n    _updateNodeSubdata(newValue = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods._updateNodeSubdata\");\n      this.__update_node_parts(newValue);\n      this.__update_current_node_basename();\n      this.__update_current_node_basedir();\n    },\n    setPanelButtons(panelOptions = {}) {\n      this.$trace(\"lsw-filesystem-explorer.methods.setPanelButtons\");\n      Validation: {\n        if (typeof panelOptions !== \"object\") {\n          throw new Error(\"Required argument «panelOptions» to be an object on «LswFilesystemExplorer.methods.setPanelButtons»\");\n        }\n        const keys = Object.keys(panelOptions);\n        if (keys.length === 0) {\n          throw new Error(\"Required argument «panelOptions» to be have 1 or more keys on «LswFilesystemExplorer.methods.setPanelButtons»\");\n        }\n        const valid_keys = [\"top\", \"bottom\", \"left\", \"right\"];\n        for (let index = 0; index < keys.length; index++) {\n          const key = keys[index];\n          if(valid_keys.indexOf(key) === -1) {\n            throw new Error(`Required argument «panelOptions[${key}]» to be a valid key out of «${valid_keys.join(\",\")}», not «${key}» on «LswFilesystemExplorer.methods.setPanelButtons»`);\n          }\n          const value = panelOptions[key];\n          if(typeof value !== \"object\") {\n            throw new Error(`Required argument «panelOptions[${key}]» to be an object or array, not ${typeof value}» on «LswFilesystemExplorer.methods.setPanelButtons»`);\n          }\n        }\n      }\n    }\n  },\n  watch: {\n    current_node(newValue) {\n      this.$trace(\"lsw-filesystem-explorer.watch.current_node\");\n      this._updateNodeSubdata(newValue);\n    }\n  },\n  async mounted() {\n    try {\n      this.$trace(\"lsw-filesystem-explorer.mounted\");\n      this.$lsw.fs = new LswFilesystem();\n      this.$lsw.fsExplorer = this;\n      await this.$lsw.fs.init();\n      await this.open(\"/\");\n    } catch (error) {\n      console.log(error);\n    }\n  }\n});\n",
+              "$code": "Vue.component(\"LswFilesystemExplorer\", {\n  name: \"LswFilesystemExplorer\",\n  template: `<div class=\"lsw_filesystem_explorer\">\n    <div class=\"current_node_box\">\n        <span class=\"previous_node_path\" :class=\"current_node !== '/' ? '' : 'visibility_hidden'\">\n            <button class=\"previous_node_button\" v-on:click=\"goUp\"\n            style=\"transform: rotate(180deg); margin: 1px;\">➜</button>\n        </span>\n        <span class=\"current_node_path\">{{ current_node_basedir }}</span>\n        <span class=\"current_node_filename\">{{ current_node_basename }}</span>\n    </div>\n    <div class=\"filesystem_ui\">\n        <div class=\"leftside\">\n            <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelLeft\" />\n        </div>\n        <div class=\"middleside\">\n            <div class=\"headerside\">\n                <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelTop\" />\n            </div>\n            <div class=\"bodyside\" v-if=\"is_ready\">\n                <lsw-filesystem-treeviewer v-if=\"current_node_is_directory\" :explorer=\"this\" ref=\"treeviewer\" />\n                <lsw-filesystem-editor v-else-if=\"current_node_is_file\" :explorer=\"this\" ref=\"editor\" :filecontents=\"current_node_contents\" />\n            </div>\n            <div class=\"footerside\">\n                <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelBottom\" />\n            </div>\n        </div>\n        <div class=\"rightside\">\n            <lsw-filesystem-buttons-panel :explorer=\"this\" ref=\"panelRight\" />\n        </div>\n    </div>\n</div>`,\n  props: {},\n  data() {\n    this.$trace(\"lsw-filesystem-explorer.data\");\n    return {\n      is_ready: false,\n      current_node: undefined,\n      current_node_parts: undefined,\n      current_node_basename: undefined,\n      current_node_basedir: undefined,\n      current_node_contents: undefined,\n      current_node_subnodes: [],\n      current_node_is_file: false,\n      current_node_is_directory: false,\n      STANDARIZED_REFRESH_DELAY: 100\n    };\n  },\n  methods: {\n    open(...args) {\n      this.$trace(\"lsw-filesystem-explorer.methods.open\");\n      return this.open_node(...args);\n    },\n    goUp() {\n      this.$trace(\"lsw-filesystem-explorer.methods.goUp\");\n      const parts = this.current_node.split(\"/\");\n      parts.pop();\n      const dest = this.normalize_path(\"/\" + parts.join(\"/\"));\n      return this.open(dest);\n    },\n    async refresh() {\n      this.$trace(\"lsw-filesystem-explorer.methods.refresh\");\n      this.is_ready = false;\n      try {\n        await this.open(this.current_node);\n      } catch (error) {\n        throw error;\n      } finally {\n        this.$nextTick(() => {\n          this.is_ready = true;\n          this.$forceUpdate(true);\n        });\n      }\n    },\n    normalize_path(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods.normalize_path\");\n      return this.$lsw.fs.resolve_path(this.current_node, subpath);\n    },\n    async open_node(subpath = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods.open_node\");\n      try {\n        if ([\"\", \"/\"].indexOf(subpath) !== -1) {\n          return await this._openDirectory(\"/\");\n        }\n        const temporaryPath = this.normalize_path(subpath);\n        const is_directory = await this.$lsw.fs.is_directory(temporaryPath);\n        if (is_directory) {\n          return await this._openDirectory(temporaryPath);\n        }\n        const is_file = await this.$lsw.fs.is_file(temporaryPath);\n        if (is_file) {\n          return await this._openFile(temporaryPath);\n        }\n        throw new Error(`Cannot open path because it does not exist: ${temporaryPath} on «LswFilesystemExplorer.methods.open_node»`);\n      } catch (error) {\n        console.log(error);\n        throw error;\n      }\n    },\n    async processToCreateFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToCreateFile\");\n      const filename = await this.$lsw.dialogs.open({\n        title: \"Crear fichero\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Estás en la carpeta:</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n            <div>Di el nombre del nuevo fichero:</div>\n            <div class=\"pad_top_1\">\n              <input class=\"width_100\" type=\"text\" placeholder=\"myfile.txt\" v-model=\"filename\" v-focus v-on:keyup.enter=\"() => accept(filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(filename)\">Crear fichero</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data() {\n            return {\n              current_directory: this.$lsw.fs.get_current_directory(),\n              filename: \"\",\n            };\n          },\n        },\n      });\n      if(!filename) return;\n      const filepath = this.$lsw.fs.resolve_path(this.$lsw.fs.get_current_directory(), filename);\n      await this.$lsw.fs.write_file(filepath, \"\");\n      this.refresh();\n    },\n    async processToCreateDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToCreateDirectory\");\n      const filename = await this.$lsw.dialogs.open({\n        title: \"Crear directorio\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Estás en la carpeta:</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n            <div>Di el nombre del nuevo directorio:</div>\n            <div class=\"pad_top_1\">\n              <input class=\"width_100\" type=\"text\" placeholder=\"myfolder\" v-model=\"filename\" v-focus v-on:keyup.enter=\"() => accept(filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(filename)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data() {\n            return {\n              current_directory: this.$lsw.fs.get_current_directory(),\n              filename: \"\",\n            };\n          },\n        },\n      });\n      if(!filename) return;\n      const filepath = this.$lsw.fs.resolve_path(this.$lsw.fs.get_current_directory(), filename);\n      await this.$lsw.fs.make_directory(filepath);\n      this.refresh();\n    },\n    async processToDeleteDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToDeleteDirectory\");\n      const confirmation = await this.$lsw.dialogs.open({\n        title: \"Eliminar directorio\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>¿Seguro que quieres eliminar el directorio?</div>\n            <div class=\"pad_2\">{{ current_directory }}</div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(true)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            current_directory: this.$lsw.fs.get_current_directory(),\n          }\n        }\n      });\n      if(!confirmation) return;\n      await this.$lsw.fs.delete_directory(this.$lsw.fs.get_current_directory());\n      this.refresh();\n    },\n    async processToDeleteFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToDeleteFile\");\n      const confirmation = await this.$lsw.dialogs.open({\n        title: \"Eliminar fichero\",\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>¿Seguro que quieres eliminar el fichero?</div>\n            <div class=\"pad_2\">{{ current_file }}</div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(true)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            current_file: this.current_node,\n          }\n        }\n      });\n      if(!confirmation) return;\n      await this.$lsw.fs.delete_file(this.current_node);\n      const upperDir = (() => {\n        const parts = this.current_node.split(\"/\");\n        parts.pop();\n        return parts.join(\"/\");\n      })();\n      this.refresh();\n    },\n    async processToRenameFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToRenameFile\");\n      const elementType = this.current_node_is_file ? \"fichero\" : \"directorio\";\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n          </div>\n          <div class=\"pad_1\">\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <div class=\"pad_top_1\">\n              <input v-focus class=\"width_100\" type=\"text\" placeholder=\"Nuevo nombre aquí\" v-model=\"new_filename\" v-on:keyup.enter=\"() => accept(new_filename)\" />\n            </div>\n          </div>\n          <hr />\n          <div class=\"flex_row centered\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"nowrap danger_button\" v-on:click=\"() => accept(new_filename)\">Sí, seguro</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"nowrap \" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            filename: this.current_node,\n            new_filename: this.current_node.split(\"/\").pop(),\n          }\n        }\n      });\n      if(newName === false) return;\n      if(newName.trim() === \"\") return;\n      const allParts = this.current_node.split(\"/\");\n      allParts.pop();\n      const dirPath = \"/\" + allParts.join(\"/\");\n      const newFullpath = this.$lsw.fs.resolve_path(dirPath, newName);\n      await this.$lsw.fs.rename(this.current_node, newName.replace(/^\\/+/g, \"\"));\n      await this.open(newFullpath);\n    },\n    async processToExecuteFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToExecuteFile\");\n      const editorContents = this.$refs.editor.getContents();\n      const AsyncFunction = (async function() {}).constructor;\n      const asyncFunction = new AsyncFunction(editorContents);\n      try {\n        await asyncFunction.call(this);\n      } catch (error) {\n        this.$lsw.toasts.send({\n          title: \"Error arised when executing file\",\n          text: `File ${this.current_node} produced following error: ${error.name}: ${error.message}`\n        });\n      }\n    },\n    async processToLoadFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToLoadFile\");\n      this.is_ready = false;\n      const contents = await this.$lsw.fs.read_file(this.current_node);\n      this.current_node_contents = contents;\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    async processToSaveFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods.processToSaveFile\");\n      if(this.$refs.editor) {\n        const editorContents = this.$refs.editor.getContents();\n        console.log(this.current_node, editorContents);\n        await this.$lsw.fs.write_file(this.current_node, editorContents);\n      }\n    },\n    _setButtonsForFile() {\n      this.$trace(\"lsw-filesystem-explorer.methods._setButtonsForFile\");\n      this.is_ready = false;\n      this.current_node_is_file = true;\n      this.current_node_is_directory = false;\n      const allButtonsOnFile = [\n        {\n          text: \"➜\",\n          classes: \"reversed\",\n          click: () => this.goUp(),\n        }, {\n          text: \"💾\",\n          click: () => this.processToSaveFile(),\n        }, {\n          text: \"↔️\",\n          click: () => this.processToRenameFile(),\n        }, {\n          text: \"🔄\",\n          click: () => this.processToLoadFile(),\n        }, {\n          text: \"📄 ❌\",\n          classes: \"danger_button\",\n          click: () => this.processToDeleteFile(),\n        }\n      ];\n      if(this.current_node.endsWith(\".js\")) {\n        allButtonsOnFile.push({\n          text: \"⚡️\",\n          classes: \"danger_button\",\n          click: () => this.processToExecuteFile(),\n        });\n      }\n      this.$refs.panelTop.setButtons(...allButtonsOnFile);\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    _setButtonsForDirectory() {\n      this.$trace(\"lsw-filesystem-explorer.methods._setButtonsForDirectory\");\n      this.is_ready = false;\n      this.current_node_is_directory = true;\n      this.current_node_is_file = false;\n      this.$refs.panelTop.setButtons({\n        text: \"📄+\",\n        click: () => this.processToCreateFile(),\n      }, {\n        text: \"📁+\",\n        click: () => this.processToCreateDirectory(),\n      }, {\n        text: \"📁 ❌\",\n        classes: \"danger_button\",\n        click: () => this.processToDeleteDirectory()\n      });\n      this.$nextTick(() => {\n        this.is_ready = true;\n      });\n    },\n    async _openFile(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods._openFile\");\n      this.current_node = subpath;\n      const contents = await this.$lsw.fs.read_file(this.current_node);\n      this.current_node_contents = contents;\n      this._setButtonsForFile();\n    },\n    async _openDirectory(subpath) {\n      this.$trace(\"lsw-filesystem-explorer.methods._openDirectory\");\n      this.current_node = subpath;\n      const subnodes = await this.$lsw.fs.read_directory(this.current_node);\n      const sortedSubnodes = {\n        files: [],\n        folders: []\n      };\n      Object.keys(subnodes).forEach(id => {\n        const subnode = subnodes[id];\n        const subnodeType = typeof subnode === \"string\" ? \"files\" : \"folders\";\n        sortedSubnodes[subnodeType].push(id);\n      });\n      const formattedSubnodes = {};\n      sortedSubnodes.folders.sort().forEach(folder => {\n        formattedSubnodes[folder] = {};\n      });\n      sortedSubnodes.files.sort().forEach(file => {\n        formattedSubnodes[file] = \"...\";\n      });\n      console.log(subnodes, formattedSubnodes);\n      this.$lsw.fs.change_directory(subpath);\n      this.current_node_subnodes = formattedSubnodes;\n      this._setButtonsForDirectory();\n    },\n    __update_node_parts(newValue = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_node_parts\");\n      this.current_node_parts = newValue.split(\"/\").filter(p => p !== \"\");\n    },\n    __update_current_node_basename(current_node_parts = this.current_node_parts) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_current_node_basename\");\n      if (current_node_parts.length) {\n        this.current_node_basename = current_node_parts[current_node_parts.length - 1];\n      } else {\n        this.current_node_basename = \"/\";\n      }\n    },\n    __update_current_node_basedir(current_node_parts = this.current_node_parts) {\n      this.$trace(\"lsw-filesystem-explorer.methods.__update_current_node_basedir\");\n      if (current_node_parts.length > 1) {\n        this.current_node_basedir = \"/\" + [].concat(current_node_parts).splice(0, current_node_parts.length - 1).join(\"/\") + \"/\";\n      } else {\n        this.current_node_basedir = \"/\";\n      }\n    },\n    _updateNodeSubdata(newValue = this.current_node) {\n      this.$trace(\"lsw-filesystem-explorer.methods._updateNodeSubdata\");\n      this.__update_node_parts(newValue);\n      this.__update_current_node_basename();\n      this.__update_current_node_basedir();\n    },\n    setPanelButtons(panelOptions = {}) {\n      this.$trace(\"lsw-filesystem-explorer.methods.setPanelButtons\");\n      Validation: {\n        if (typeof panelOptions !== \"object\") {\n          throw new Error(\"Required argument «panelOptions» to be an object on «LswFilesystemExplorer.methods.setPanelButtons»\");\n        }\n        const keys = Object.keys(panelOptions);\n        if (keys.length === 0) {\n          throw new Error(\"Required argument «panelOptions» to be have 1 or more keys on «LswFilesystemExplorer.methods.setPanelButtons»\");\n        }\n        const valid_keys = [\"top\", \"bottom\", \"left\", \"right\"];\n        for (let index = 0; index < keys.length; index++) {\n          const key = keys[index];\n          if(valid_keys.indexOf(key) === -1) {\n            throw new Error(`Required argument «panelOptions[${key}]» to be a valid key out of «${valid_keys.join(\",\")}», not «${key}» on «LswFilesystemExplorer.methods.setPanelButtons»`);\n          }\n          const value = panelOptions[key];\n          if(typeof value !== \"object\") {\n            throw new Error(`Required argument «panelOptions[${key}]» to be an object or array, not ${typeof value}» on «LswFilesystemExplorer.methods.setPanelButtons»`);\n          }\n        }\n      }\n    }\n  },\n  watch: {\n    current_node(newValue) {\n      this.$trace(\"lsw-filesystem-explorer.watch.current_node\");\n      this._updateNodeSubdata(newValue);\n    }\n  },\n  async mounted() {\n    try {\n      this.$trace(\"lsw-filesystem-explorer.mounted\");\n      this.$lsw.fs = new LswFilesystem();\n      this.$lsw.fsExplorer = this;\n      await this.$lsw.fs.init();\n      await this.open(\"/\");\n    } catch (error) {\n      console.log(error);\n    }\n  }\n});\n",
               "$code.label": "LswFilesystemExplorer API",
               "$output": "index.html"
             },
@@ -3900,12 +3900,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 110303,
+                  "offset": 110298,
                   "line": 3079,
                   "column": 1
                 },
                 "end": {
-                  "offset": 110453,
+                  "offset": 110448,
                   "line": 3080,
                   "column": 1
                 }
@@ -3940,12 +3940,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 111777,
+                  "offset": 111772,
                   "line": 3127,
                   "column": 1
                 },
                 "end": {
-                  "offset": 111915,
+                  "offset": 111910,
                   "line": 3128,
                   "column": 1
                 }
@@ -3980,18 +3980,18 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 112547,
+                  "offset": 112542,
                   "line": 3164,
                   "column": 1
                 },
                 "end": {
-                  "offset": 112693,
+                  "offset": 112688,
                   "line": 3165,
                   "column": 1
                 }
               },
               "$section": "Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemTreeviewer component",
-              "$code": "Vue.component(\"LswFilesystemTreeviewer\", {\n  name: \"LswFilesystemTreeviewer\",\n  template: `<div class=\"lsw_filesystem_treeviewer\">\n    <table class=\"filesystem_treeviewer_table width_100\">\n        <thead style=\"display: none;\"></thead>\n        <tbody>\n            <tr v-if=\"explorer.current_node !== '/'\"\n                class=\"treeviewer_row\"\n                v-on:click=\"() => goUp()\">\n                <td class=\"icon_cell\">📁</td>\n                <td>\n                    <a class=\"filename_link\" href=\"javascript:void(0)\">..</a>\n                </td>\n                <td></td>\n                <td>\n                    <button style=\"visibility: hidden;\" v-on:click=\"() => deleteNode(subnodeIndex)\">❌</button>\n                </td>\n            </tr>\n            <template v-for=\"subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes\">\n                <tr class=\"treeviewer_row\"\n                    v-bind:key=\"'subnode_obj_' + subnodeIndex\">\n                    <template v-if=\"typeof subnode === 'object'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📁</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\"><b>{{ subnodeIndex }}</b></a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📁 ❌</button>\n                        </td>\n                    </template>\n                    <template v-else-if=\"typeof subnode === 'string'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📄</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\">{{ subnodeIndex }}</a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"mini danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📄 ❌</button>\n                        </td>\n                    </template>\n                </tr>\n            </template>\n        </tbody>\n    </table>\n\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    this.$trace(\"lsw-filesystem-treeviewer.data\");\n    return {};\n  },\n  watch: {},\n  methods: {\n    goUp() {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.goUp\");\n      return this.explorer.goUp();\n    },\n    openSubnode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.openSubnode\");\n      return this.explorer.open(subnodeIndex);\n    },\n    async deleteNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.deleteNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const confirmation = await this.$lsw.dialogs.open({\n        title: `Proceder a eliminar ${elementType}`,\n        template: `\n          <div class=\"pad_1\">\n            <div>Seguro que quieres eliminar el {{ elementType }} «{{ fullpath }}»?</div>\n            <hr />\n            <div class=\"flex_row centered\">\n              <div class=\"flex_100\"></div>\n              <div class=\"flex_1 pad_right_1\">\n                <button class=\"danger_button nowrap\" v-on:click=\"() => accept(true)\">Sí, eliminar</button>\n              </div>\n              <div class=\"flex_1\">\n                <button class=\"\" v-on:click=\"() => accept(false)\">Salir</button>\n              </div>\n            </div>\n          </div>\n        `,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n          }\n        }\n      });\n      if (!confirmation) return;\n      try {\n        if (isDirectory) {\n          await this.$lsw.fs.delete_directory(fullpath);\n        } else {\n          await this.$lsw.fs.delete_file(fullpath);\n        }\n        await this.explorer.refresh();\n      } catch (error) {\n        await this.$lsw.dialogs.open({\n          title: `El fichero no se pudo eliminar`,\n          template: `\n            <div class=\"pad_1\">\n              <div>El fichero «{{ fullpath }}» no se pudo eliminar debido al siguiente error:</div>\n              <hr />\n              <div v-if=\"error\">{{ error.name }}: {{ error.message }}</div>\n            </div>\n          `,\n          factory: {\n            data: {\n              error,\n              fullpath,\n            }\n          }\n        });\n      }\n    },\n    async renameNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.renameNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <input v-focus class=\"width_100\" type=\"text\" v-model=\"newFilename\" v-on:keyup.enter=\"() => accept(newFilename)\" />\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"\" v-on:click=\"() => accept(newFilename)\">Renombrar</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"\" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n            filename: subnodeIndex,\n            newFilename: subnodeIndex,\n          }\n        }\n      });\n      if (typeof newName !== \"string\") return;\n      if (newName.trim() === \"\") return;\n      await this.$lsw.fs.rename(subnodeIndex, newName.replace(/^\\/+/g, \"\"));\n      this.explorer.refresh();\n    }\n  },\n  mounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.mounted\");\n    this.explorer.setPanelButtons({\n      top: [],\n      left: [],\n      right: [],\n      bottom: [],\n    })\n  },\n  unmounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.unmounted\");\n  }\n});\n",
+              "$code": "Vue.component(\"LswFilesystemTreeviewer\", {\n  name: \"LswFilesystemTreeviewer\",\n  template: `<div class=\"lsw_filesystem_treeviewer\">\n    <table class=\"filesystem_treeviewer_table width_100\">\n        <thead style=\"display: none;\"></thead>\n        <tbody>\n            <tr v-if=\"explorer.current_node !== '/'\"\n                class=\"treeviewer_row\"\n                v-on:click=\"() => goUp()\">\n                <td class=\"icon_cell\">📁</td>\n                <td>\n                    <a class=\"filename_link\" href=\"javascript:void(0)\">..</a>\n                </td>\n                <td></td>\n                <td>\n                    <button style=\"visibility: hidden;\" v-on:click=\"() => deleteNode(subnodeIndex)\">❌</button>\n                </td>\n            </tr>\n            <template v-for=\"subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes\">\n                <tr class=\"treeviewer_row\"\n                    v-bind:key=\"'subnode_obj_' + subnodeIndex\">\n                    <template v-if=\"typeof subnode === 'object'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📁</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\"><b>{{ subnodeIndex }}</b></a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📁 ❌</button>\n                        </td>\n                    </template>\n                    <template v-else-if=\"typeof subnode === 'string'\">\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\" class=\"icon_cell\">📄</td>\n                        <td v-on:click=\"() => openSubnode(subnodeIndex)\">\n                            <a class=\"filename_link\" href=\"javascript:void(0)\">{{ subnodeIndex }}</a>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"nowrap\" v-on:click=\"() => renameNode(subnodeIndex)\">↔️</button>\n                        </td>\n                        <td style=\"padding: 2px;\">\n                            <button class=\"danger_button nowrap\" v-on:click=\"() => deleteNode(subnodeIndex)\">📄 ❌</button>\n                        </td>\n                    </template>\n                </tr>\n            </template>\n        </tbody>\n    </table>\n\n</div>`,\n  props: {\n    explorer: {\n      type: Object,\n      required: true\n    }\n  },\n  data() {\n    this.$trace(\"lsw-filesystem-treeviewer.data\");\n    return {};\n  },\n  watch: {},\n  methods: {\n    goUp() {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.goUp\");\n      return this.explorer.goUp();\n    },\n    openSubnode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.openSubnode\");\n      return this.explorer.open(subnodeIndex);\n    },\n    async deleteNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.deleteNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const confirmation = await this.$lsw.dialogs.open({\n        title: `Proceder a eliminar ${elementType}`,\n        template: `\n          <div class=\"pad_1\">\n            <div>Seguro que quieres eliminar el {{ elementType }} «{{ fullpath }}»?</div>\n            <hr />\n            <div class=\"flex_row centered\">\n              <div class=\"flex_100\"></div>\n              <div class=\"flex_1 pad_right_1\">\n                <button class=\"danger_button nowrap\" v-on:click=\"() => accept(true)\">Sí, eliminar</button>\n              </div>\n              <div class=\"flex_1\">\n                <button class=\"\" v-on:click=\"() => accept(false)\">Salir</button>\n              </div>\n            </div>\n          </div>\n        `,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n          }\n        }\n      });\n      if (!confirmation) return;\n      try {\n        if (isDirectory) {\n          await this.$lsw.fs.delete_directory(fullpath);\n        } else {\n          await this.$lsw.fs.delete_file(fullpath);\n        }\n        await this.explorer.refresh();\n      } catch (error) {\n        await this.$lsw.dialogs.open({\n          title: `El fichero no se pudo eliminar`,\n          template: `\n            <div class=\"pad_1\">\n              <div>El fichero «{{ fullpath }}» no se pudo eliminar debido al siguiente error:</div>\n              <hr />\n              <div v-if=\"error\">{{ error.name }}: {{ error.message }}</div>\n            </div>\n          `,\n          factory: {\n            data: {\n              error,\n              fullpath,\n            }\n          }\n        });\n      }\n    },\n    async renameNode(subnodeIndex) {\n      this.$trace(\"lsw-filesystem-treeviewer.methods.renameNode\");\n      const fullpath = this.$lsw.fs.resolve_path(subnodeIndex);\n      const isDirectory = await this.$lsw.fs.is_directory(fullpath);\n      const elementType = isDirectory ? 'directorio' : 'fichero';\n      const newName = await this.$lsw.dialogs.open({\n        title: \"Renombrar \" + elementType,\n        template: `<div>\n          <div class=\"pad_1\">\n            <div>Refiriéndose al {{ elementType }}:</div>\n            <div class=\"pad_2\">{{ filename }}</div>\n            <div>Di el nuevo nombre del {{ elementType }}:</div>\n            <input v-focus class=\"width_100\" type=\"text\" v-model=\"newFilename\" v-on:keyup.enter=\"() => accept(newFilename)\" />\n          </div>\n          <hr />\n          <div class=\"flex_row centered pad_1\">\n            <div class=\"flex_100\"></div>\n            <div class=\"flex_1 pad_right_1\">\n              <button class=\"\" v-on:click=\"() => accept(newFilename)\">Renombrar</button>\n            </div>\n            <div class=\"flex_1\">\n              <button class=\"\" v-on:click=\"() => accept(false)\">Cancelar</button>\n            </div>\n          </div>\n        </div>`,\n        factory: {\n          data: {\n            elementType,\n            fullpath,\n            filename: subnodeIndex,\n            newFilename: subnodeIndex,\n          }\n        }\n      });\n      if (typeof newName !== \"string\") return;\n      if (newName.trim() === \"\") return;\n      await this.$lsw.fs.rename(subnodeIndex, newName.replace(/^\\/+/g, \"\"));\n      this.explorer.refresh();\n    }\n  },\n  mounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.mounted\");\n    this.explorer.setPanelButtons({\n      top: [],\n      left: [],\n      right: [],\n      bottom: [],\n    })\n  },\n  unmounted() {\n    this.$trace(\"lsw-filesystem-treeviewer.unmounted\");\n  }\n});\n",
               "$code.label": "LswFilesystemTreeviewer API",
               "$output": "index.html"
             },
@@ -4020,12 +4020,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 119640,
+                  "offset": 119615,
                   "line": 3346,
                   "column": 1
                 },
                 "end": {
-                  "offset": 119739,
+                  "offset": 119714,
                   "line": 3347,
                   "column": 1
                 }
@@ -4060,12 +4060,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 120663,
+                  "offset": 120638,
                   "line": 3385,
                   "column": 1
                 },
                 "end": {
-                  "offset": 120783,
+                  "offset": 120758,
                   "line": 3386,
                   "column": 1
                 }
@@ -4100,12 +4100,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 147242,
+                  "offset": 147217,
                   "line": 3953,
                   "column": 1
                 },
                 "end": {
-                  "offset": 147389,
+                  "offset": 147364,
                   "line": 3954,
                   "column": 1
                 }
@@ -4140,12 +4140,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 148211,
+                  "offset": 148186,
                   "line": 3991,
                   "column": 1
                 },
                 "end": {
-                  "offset": 148367,
+                  "offset": 148342,
                   "line": 3992,
                   "column": 1
                 }
@@ -4180,12 +4180,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 149088,
+                  "offset": 149063,
                   "line": 4022,
                   "column": 1
                 },
                 "end": {
-                  "offset": 149238,
+                  "offset": 149213,
                   "line": 4023,
                   "column": 1
                 }
@@ -4220,12 +4220,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 151296,
+                  "offset": 151271,
                   "line": 4091,
                   "column": 1
                 },
                 "end": {
-                  "offset": 151449,
+                  "offset": 151424,
                   "line": 4092,
                   "column": 1
                 }
@@ -4260,12 +4260,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 152267,
+                  "offset": 152242,
                   "line": 4129,
                   "column": 1
                 },
                 "end": {
-                  "offset": 152429,
+                  "offset": 152404,
                   "line": 4130,
                   "column": 1
                 }
@@ -4300,12 +4300,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 153164,
+                  "offset": 153139,
                   "line": 4160,
                   "column": 1
                 },
                 "end": {
-                  "offset": 153320,
+                  "offset": 153295,
                   "line": 4161,
                   "column": 1
                 }
@@ -4340,12 +4340,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 153745,
+                  "offset": 153720,
                   "line": 4181,
                   "column": 1
                 },
                 "end": {
-                  "offset": 153877,
+                  "offset": 153852,
                   "line": 4182,
                   "column": 1
                 }
@@ -4380,12 +4380,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 155441,
+                  "offset": 155416,
                   "line": 4239,
                   "column": 1
                 },
                 "end": {
-                  "offset": 155597,
+                  "offset": 155572,
                   "line": 4240,
                   "column": 1
                 }
@@ -4420,12 +4420,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 156022,
+                  "offset": 155997,
                   "line": 4260,
                   "column": 1
                 },
                 "end": {
-                  "offset": 156187,
+                  "offset": 156162,
                   "line": 4261,
                   "column": 1
                 }
@@ -4460,12 +4460,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 156630,
+                  "offset": 156605,
                   "line": 4281,
                   "column": 1
                 },
                 "end": {
-                  "offset": 156798,
+                  "offset": 156773,
                   "line": 4282,
                   "column": 1
                 }
@@ -4500,12 +4500,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 157247,
+                  "offset": 157222,
                   "line": 4302,
                   "column": 1
                 },
                 "end": {
-                  "offset": 157403,
+                  "offset": 157378,
                   "line": 4303,
                   "column": 1
                 }
@@ -4540,12 +4540,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 158232,
+                  "offset": 158207,
                   "line": 4340,
                   "column": 1
                 },
                 "end": {
-                  "offset": 158397,
+                  "offset": 158372,
                   "line": 4341,
                   "column": 1
                 }
@@ -4580,12 +4580,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 159139,
+                  "offset": 159114,
                   "line": 4371,
                   "column": 1
                 },
                 "end": {
-                  "offset": 159304,
+                  "offset": 159279,
                   "line": 4372,
                   "column": 1
                 }
@@ -4620,12 +4620,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 161347,
+                  "offset": 161322,
                   "line": 4435,
                   "column": 1
                 },
                 "end": {
-                  "offset": 161524,
+                  "offset": 161499,
                   "line": 4436,
                   "column": 1
                 }
@@ -4660,12 +4660,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 161991,
+                  "offset": 161966,
                   "line": 4456,
                   "column": 1
                 },
                 "end": {
-                  "offset": 162162,
+                  "offset": 162137,
                   "line": 4457,
                   "column": 1
                 }
@@ -4700,12 +4700,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 162617,
+                  "offset": 162592,
                   "line": 4477,
                   "column": 1
                 },
                 "end": {
-                  "offset": 162785,
+                  "offset": 162760,
                   "line": 4478,
                   "column": 1
                 }
@@ -4740,12 +4740,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 163234,
+                  "offset": 163209,
                   "line": 4498,
                   "column": 1
                 },
                 "end": {
-                  "offset": 163352,
+                  "offset": 163327,
                   "line": 4499,
                   "column": 1
                 }
@@ -4780,12 +4780,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 171775,
+                  "offset": 171750,
                   "line": 4732,
                   "column": 1
                 },
                 "end": {
-                  "offset": 171895,
+                  "offset": 171870,
                   "line": 4733,
                   "column": 1
                 }
@@ -4820,12 +4820,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 175551,
+                  "offset": 175526,
                   "line": 4840,
                   "column": 1
                 },
                 "end": {
-                  "offset": 175671,
+                  "offset": 175646,
                   "line": 4841,
                   "column": 1
                 }
@@ -4860,12 +4860,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 176634,
+                  "offset": 176609,
                   "line": 4881,
                   "column": 1
                 },
                 "end": {
-                  "offset": 176752,
+                  "offset": 176727,
                   "line": 4882,
                   "column": 1
                 }
@@ -4900,12 +4900,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 178846,
+                  "offset": 178821,
                   "line": 4944,
                   "column": 1
                 },
                 "end": {
-                  "offset": 178964,
+                  "offset": 178939,
                   "line": 4945,
                   "column": 1
                 }
@@ -4940,12 +4940,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 180850,
+                  "offset": 180825,
                   "line": 5009,
                   "column": 1
                 },
                 "end": {
-                  "offset": 180976,
+                  "offset": 180951,
                   "line": 5010,
                   "column": 1
                 }
@@ -4980,12 +4980,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 182895,
+                  "offset": 182870,
                   "line": 5076,
                   "column": 1
                 },
                 "end": {
-                  "offset": 183013,
+                  "offset": 182988,
                   "line": 5077,
                   "column": 1
                 }
@@ -5020,12 +5020,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 186710,
+                  "offset": 186685,
                   "line": 5182,
                   "column": 1
                 },
                 "end": {
-                  "offset": 186836,
+                  "offset": 186811,
                   "line": 5183,
                   "column": 1
                 }
@@ -5060,12 +5060,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 189659,
+                  "offset": 189634,
                   "line": 5279,
                   "column": 1
                 },
                 "end": {
-                  "offset": 189781,
+                  "offset": 189756,
                   "line": 5280,
                   "column": 1
                 }
@@ -5100,12 +5100,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 190253,
+                  "offset": 190228,
                   "line": 5305,
                   "column": 1
                 },
                 "end": {
-                  "offset": 190377,
+                  "offset": 190352,
                   "line": 5306,
                   "column": 1
                 }
@@ -5140,12 +5140,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 192434,
+                  "offset": 192409,
                   "line": 5372,
                   "column": 1
                 },
                 "end": {
-                  "offset": 192564,
+                  "offset": 192539,
                   "line": 5373,
                   "column": 1
                 }
@@ -5180,12 +5180,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 193048,
+                  "offset": 193023,
                   "line": 5398,
                   "column": 1
                 },
                 "end": {
-                  "offset": 193176,
+                  "offset": 193151,
                   "line": 5399,
                   "column": 1
                 }
@@ -5220,12 +5220,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 197222,
+                  "offset": 197197,
                   "line": 5508,
                   "column": 1
                 },
                 "end": {
-                  "offset": 197346,
+                  "offset": 197321,
                   "line": 5509,
                   "column": 1
                 }
@@ -5260,12 +5260,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 201377,
+                  "offset": 201352,
                   "line": 5619,
                   "column": 1
                 },
                 "end": {
-                  "offset": 201509,
+                  "offset": 201484,
                   "line": 5620,
                   "column": 1
                 }
@@ -5300,12 +5300,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 202641,
+                  "offset": 202616,
                   "line": 5664,
                   "column": 1
                 },
                 "end": {
-                  "offset": 202753,
+                  "offset": 202728,
                   "line": 5665,
                   "column": 1
                 }
@@ -5340,12 +5340,12 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 206697,
+                  "offset": 206672,
                   "line": 5774,
                   "column": 1
                 },
                 "end": {
-                  "offset": 206829,
+                  "offset": 206804,
                   "line": 5775,
                   "column": 1
                 }

@@ -24164,7 +24164,7 @@ Vue.component("LswFilesystemExplorer", {
   template: `<div class="lsw_filesystem_explorer">
     <div class="current_node_box">
         <span class="previous_node_path" :class="current_node !== '/' ? '' : 'visibility_hidden'">
-            <button class="mini previous_node_button" v-on:click="goUp"
+            <button class="previous_node_button" v-on:click="goUp"
             style="transform: rotate(180deg); margin: 1px;">➜</button>
         </span>
         <span class="current_node_path">{{ current_node_basedir }}</span>
@@ -24745,10 +24745,10 @@ Vue.component("LswFilesystemTreeviewer", {
                             <a class="filename_link" href="javascript:void(0)"><b>{{ subnodeIndex }}</b></a>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="mini nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
+                            <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="mini danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 ❌</button>
+                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 ❌</button>
                         </td>
                     </template>
                     <template v-else-if="typeof subnode === 'string'">
@@ -24757,10 +24757,10 @@ Vue.component("LswFilesystemTreeviewer", {
                             <a class="filename_link" href="javascript:void(0)">{{ subnodeIndex }}</a>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="mini nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
+                            <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="mini danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📄 ❌</button>
+                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📄 ❌</button>
                         </td>
                     </template>
                 </tr>

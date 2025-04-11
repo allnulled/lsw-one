@@ -23,10 +23,10 @@
                             <a class="filename_link" href="javascript:void(0)"><b>{{ subnodeIndex }}</b></a>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="mini nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
+                            <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="mini danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 ❌</button>
+                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 ❌</button>
                         </td>
                     </template>
                     <template v-else-if="typeof subnode === 'string'">
@@ -35,10 +35,10 @@
                             <a class="filename_link" href="javascript:void(0)">{{ subnodeIndex }}</a>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="mini nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
+                            <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="mini danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📄 ❌</button>
+                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📄 ❌</button>
                         </td>
                     </template>
                 </tr>

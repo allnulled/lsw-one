@@ -20,6 +20,8 @@
 .current_node_box > .current_node_path {
     display: inline-block;
     padding: 4px;
+    align-self: stretch;
+    height: 42px;
 }
 .current_node_box > .current_node_filename {
     flex: 1;

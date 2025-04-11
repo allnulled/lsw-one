@@ -5855,7 +5855,13 @@ Vue.component("LswNotes", {
       // *@TODO: seleccionar e importar notes.
       this.isLoaded = false;
       const notes = await this.$lsw.database.selectMany("Nota");
-      this.allNotes = notes;
+      const notesSorted = notes.sort((n1, n2) => {
+        const d1 = LswTimer.utils.getDateFromMomentoText(n1.tiene_fecha);
+        const d2 = LswTimer.utils.getDateFromMomentoText(n2.tiene_fecha);
+        if(d1 >= d2) return -1;
+        return 1;
+      });
+      this.allNotes = notesSorted;
       this.isLoaded = true;
     },
     async openAddNoteDialog() {

@@ -86,11 +86,11 @@
 /* Start: Bordes de 1 sola línea entre paneles: */
 .lsw_filesystem_explorer .rightside {
     border-left: 1px solid black;
-    min-width: 32px;
+    min-width: 48px;
 }
 .lsw_filesystem_explorer .leftside {
     border-right: 1px solid black;
-    min-width: 32px;
+    min-width: 48px;
 }
 .lsw_filesystem_explorer .bodyside {
     border-top: 1px solid black;
@@ -98,6 +98,6 @@
 }
 .lsw_filesystem_explorer .headerside,
 .lsw_filesystem_explorer .footerside {
-    min-height: 32px;
+    min-height: 48px;
 }
 /* End */

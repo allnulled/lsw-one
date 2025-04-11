@@ -735,7 +735,7 @@ table.top_aligned > tbody > tr > td {
 }
 .lsw_filesystem_explorer .headerside,
 .lsw_filesystem_explorer .footerside {
-    min-height: 32px;
+    min-height: 48px;
 }
 /* End */
 .lsw_filesystem_buttons_panel {
@@ -2636,7 +2636,7 @@ table.top_aligned > tbody > tr > td {
 }
 .lsw_filesystem_explorer .headerside,
 .lsw_filesystem_explorer .footerside {
-    min-height: 32px;
+    min-height: 48px;
 }
 /* End */
 .lsw_filesystem_buttons_panel {

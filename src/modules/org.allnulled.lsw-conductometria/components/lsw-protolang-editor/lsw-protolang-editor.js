@@ -1,3 +1,4 @@
+// @code.start: LswProtolangEditor API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswProtolangEditor API » LswProtolangEditor component
 Vue.component("LswProtolangEditor", {
   template: $template,
   props: {
@@ -61,3 +62,4 @@ Vue.component("LswProtolangEditor", {
     }
   }
 });
+// @code.end: LswProtolangEditor API

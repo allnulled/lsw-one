@@ -26,8 +26,8 @@ button {
     background-color: black;
     color: white;
     margin-bottom: 0px;
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 32px;
+    min-height: 32px;
     white-space: nowrap;
     overflow: hidden;
 }

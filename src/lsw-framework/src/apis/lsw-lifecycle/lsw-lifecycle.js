@@ -14,15 +14,15 @@
   /**
    * 
    * 
-   * @$section: Lsw LswCycler API » LswCycler class
+   * @$section: Lsw LswLifecycle API » LswLifecycle class
    * @type: class
    * @extends: Object
    * @vendor: lsw
-   * @namespace: LswCycler
+   * @namespace: LswLifecycle
    * @source code: La clase está definida así:
    * 
    */
-  // @code.start: LswCycler class | @section: Lsw LswCycler API » LswCycler class
+  // @code.start: LswLifecycle class | @section: Lsw LswLifecycle API » LswLifecycle class
   const cycle = LswCycler.from({
 
     steps: [
@@ -42,6 +42,7 @@
       "onLoadApplication",
       "onApplicationLoaded",
       "onAllLoaded",
+      "onRunApplication",
       "onFinished",
     ],
 
@@ -148,12 +149,20 @@
       this.$trace("onApplicationLoaded", []);
       return this.hooks.emit("app:application_loaded");
     },
-
     onAllLoaded: function () {
       this.$trace("onAllLoaded", []);
       return this.hooks.emit("app:all_loaded");
     },
-
+    onRunApplication: function() {
+      this.$trace("onRunApplication", []);
+      if(!Vue.options.components.App) {
+        throw new Error("Required Vue.js (v2) component «App» to be defined on «LswLifecycle.onRunApplication» for hook «app:run_application»");
+      }
+      const vueInstance = new Vue({
+        render: h => h(Vue.options.components.App),
+      }).$mount("#app");
+      return this.hooks.emit("app:run_application");
+    },
     onFinished: function () {
       this.$trace("onFinished", []);
       return this.hooks.emit("app:finished");
@@ -175,7 +184,7 @@
     },
 
   }, "*");
-  // @code.end: LswCycler class
+  // @code.end: LswLifecycle class
 
   return cycle;
 

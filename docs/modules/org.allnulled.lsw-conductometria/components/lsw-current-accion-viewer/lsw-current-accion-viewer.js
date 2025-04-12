@@ -1,3 +1,4 @@
+// @code.start: LswCurrentAccionViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswCurrentAccionViewer API » LswCurrentAccionViewer component
 Vue.component("LswCurrentAccionViewer", {
   template: $template,
   props: {
@@ -88,3 +89,4 @@ Vue.component("LswCurrentAccionViewer", {
     this.stopTimer();
   }
 });
+// @code.end: LswCurrentAccionViewer API

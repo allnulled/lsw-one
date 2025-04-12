@@ -75,6 +75,7 @@ class HtmlBundler {
     IteratingFiles:
     for(let index=0; index<files.length; index++) {
       const file = files[index];
+      console.log(`[${index}] adding file ${file}`);
       if(ignore.indexOf(file) !== -1) {
         continue IteratingFiles;
       }

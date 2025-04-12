@@ -2,8 +2,6 @@
     "search.exclude": {
         "**/src/lsw-framework/lsw-framework.js": true,
         "**/src/lsw-framework/lsw-framework.css": true,
-        "**/src/lsw-framework/src/lsw-components.js": true,
-        "**/src/lsw-framework/src/lsw-components.css": true,
         "docs/**": true
     }
 }

@@ -29,7 +29,9 @@
     static $defaultAlphabet = "abcdefghijklmnopqrstuvwxyz";
 
     static getRandomIntegerBetween(start = 0, end = 100) {
-      return Math.round(Math.random() * (end - start)) + start;
+      const min = Math.ceil(Math.min(start, end));
+      const max = Math.floor(Math.max(start, end));
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
     static getRandomString(len, alphabet = this.$defaultAlphabet) {

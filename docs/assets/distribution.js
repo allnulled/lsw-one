@@ -1,3 +1,15 @@
+(function(factory) {
+  const mod = factory();
+  if(typeof window !== 'undefined') {
+    window["Litestarter_app"] = mod;
+  }
+  if(typeof global !== 'undefined') {
+    global["Litestarter_app"] = mod;
+  }
+  if(typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function() {
 Start_environment: {
   window.process = Object.assign(window.process || {});
   window.process.env = Object.assign(window.process || {});
@@ -11,6 +23,18 @@ Set_global_configurations: {
   process.env.LSW_RESET_DATABASE = 1;
   process.env.LSW_RESET_DATABASE = 0;
 }
+(function(factory) {
+  const mod = factory();
+  if(typeof window !== 'undefined') {
+    window["Lsw_framework_components"] = mod;
+  }
+  if(typeof global !== 'undefined') {
+    global["Lsw_framework_components"] = mod;
+  }
+  if(typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function() {
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -12350,7 +12374,9 @@ if (process?.env?.NODE_ENV === "test") {
     static $defaultAlphabet = "abcdefghijklmnopqrstuvwxyz";
 
     static getRandomIntegerBetween(start = 0, end = 100) {
-      return Math.round(Math.random() * (end - start)) + start;
+      const min = Math.ceil(Math.min(start, end));
+      const max = Math.floor(Math.max(start, end));
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
     static getRandomString(len, alphabet = this.$defaultAlphabet) {
@@ -16167,15 +16193,15 @@ return Store;
   /**
    * 
    * 
-   * @$section: Lsw LswCycler API » LswCycler class
+   * @$section: Lsw LswLifecycle API » LswLifecycle class
    * @type: class
    * @extends: Object
    * @vendor: lsw
-   * @namespace: LswCycler
+   * @namespace: LswLifecycle
    * @source code: La clase está definida así:
    * 
    */
-  // @code.start: LswCycler class | @section: Lsw LswCycler API » LswCycler class
+  // @code.start: LswLifecycle class | @section: Lsw LswLifecycle API » LswLifecycle class
   const cycle = LswCycler.from({
 
     steps: [
@@ -16195,6 +16221,7 @@ return Store;
       "onLoadApplication",
       "onApplicationLoaded",
       "onAllLoaded",
+      "onRunApplication",
       "onFinished",
     ],
 
@@ -16301,12 +16328,20 @@ return Store;
       this.$trace("onApplicationLoaded", []);
       return this.hooks.emit("app:application_loaded");
     },
-
     onAllLoaded: function () {
       this.$trace("onAllLoaded", []);
       return this.hooks.emit("app:all_loaded");
     },
-
+    onRunApplication: function() {
+      this.$trace("onRunApplication", []);
+      if(!Vue.options.components.App) {
+        throw new Error("Required Vue.js (v2) component «App» to be defined on «LswLifecycle.onRunApplication» for hook «app:run_application»");
+      }
+      const vueInstance = new Vue({
+        render: h => h(Vue.options.components.App),
+      }).$mount("#app");
+      return this.hooks.emit("app:run_application");
+    },
     onFinished: function () {
       this.$trace("onFinished", []);
       return this.hooks.emit("app:finished");
@@ -16328,7 +16363,7 @@ return Store;
     },
 
   }, "*");
-  // @code.end: LswCycler class
+  // @code.end: LswLifecycle class
 
   return cycle;
 
@@ -17459,6 +17494,26 @@ return Store;
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
+    window['LswFilesystem'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswFilesystem'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+  
+  class LswFilesystem extends UFS_manager.idb_driver {
+
+  }
+
+  return LswFilesystem;
+
+});
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
     window['LswSchema'] = mod;
   }
   if (typeof global !== 'undefined') {
@@ -18213,180 +18268,6 @@ return Store;
   // @code.end: LswDepender class
 
   return LswDepender;
-
-});
-(function (factory) {
-  const mod = factory();
-  if (typeof window !== 'undefined') {
-    window['LswDepender'] = mod;
-  }
-  if (typeof global !== 'undefined') {
-    global['LswDepender'] = mod;
-  }
-  if (typeof module !== 'undefined') {
-    module.exports = mod;
-  }
-})(function () {
-
-  /**
-   * 
-   * 
-   * @$section: Lsw Depender API » LswDepender class
-   * @type: class
-   * @extends: Object
-   * @vendor: lsw
-   * @namespace: LswDepender
-   * @source code: La clase está definida así:
-   * 
-   */
-  // @code.start: LswDepender class | @section: Lsw Depender API » LswDepender class
-  const Definition = class {
-    constructor({ id, dependencies = [] }) {
-      this.id = id;
-      this.dependencies = dependencies;
-    }
-  };
-
-  const LswDepender = class {
-
-    static create(...args) {
-      return new this(...args);
-    }
-
-    constructor(definitions = {}) {
-      this.$definitions = definitions;
-    }
-
-    hasDefined(name) {
-      if (name in this.$definitions) {
-        if (this.$definitions[name] instanceof Definition) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    define(...args) {
-      if (typeof args[0] === "string") {
-        return this.addDefinition(...args);
-      }
-      return this.addUniqueDefinitions(...args);
-    }
-
-    resolve(idsInput = this, defs = this.$definitions) {
-      const ids = idsInput === this ? Object.keys(this.$definitions) : idsInput;
-      let resolved = new Set();
-      let resultado = [];
-      const resolverNodo = function(id) {
-        console.log("resolviendo nodo:", id, defs);
-        if (resolved.has(id)) return;
-        if (!defs[id]) return; // Si no está definido, lo ignoramos
-        for (let dep of defs[id].dependencies || []) {
-          resolverNodo(dep);
-        }
-        resolved.add(id);
-        resultado.push(id);
-      }
-      for (let id of [].concat(ids)) {
-        resolverNodo(id);
-      }
-      return resultado;
-    }
-
-    addDefinition(name, definition, shouldFailOnRedundancy = 1, shouldOverrideOnRedundancy = 1) {
-      Validation: {
-        if (this.hasDefined(name)) {
-          if (shouldFailOnRedundancy) {
-            throw new Error(`Dependency «${name}» is already defined and should not redund on «LswDepender.define»`);
-          } else if (!shouldOverrideOnRedundancy) {
-            return false; // !@BREAK: the fallback must not override it
-          } else if (shouldOverrideOnRedundancy) {
-            // !@OK: the fallback will override it
-          } else {
-            throw new Error("Cannot logically happen (1)");
-          }
-        }
-      }
-      Define_it: {
-        if (typeof definition !== "object") {
-          throw new Error(`Required definition of «${name}» to be an object on «LswDepender.define»`);
-        } else if (typeof definition.id !== "string") {
-          definition.id = name;
-        } else if (Array.isArray(definition.dependencies)) {
-          throw new Error(`Required definition of «${name}» its property «dependencies» to be a array on «LswDepender.define»`);
-        } else {
-          for (let indexDependency = 0; indexDependency < definition.dependencies.length; indexDependency++) {
-            const dependencyRef = definition.dependencies[indexDependency];
-            if (typeof dependencyRef !== "string") {
-              throw new Error(`Required definition of «${name}» its property «dependencies» on its index «${indexDependency}» to be a string on «LswDepender.define»`);
-            }
-          }
-        }
-        this.$definitions[name] = new Definition(definition);
-      }
-    }
-
-    addUniqueDefinitions(moreDefinitions = {}) {
-      const definitionIds = Object.keys(moreDefinitions);
-      for (let indexId = 0; indexId < definitionIds.length; indexId++) {
-        const definitionId = definitionIds[indexId];
-        const definitionInstance = moreDefinitions[definitionId];
-        this.define(definitionId, definitionInstance, 1);
-      }
-    }
-
-    addMissingDefinitions(moreDefinitions = {}) {
-      const definitionIds = Object.keys(moreDefinitions);
-      for (let indexId = 0; indexId < definitionIds.length; indexId++) {
-        const definitionId = definitionIds[indexId];
-        const definitionInstance = moreDefinitions[definitionId];
-        this.define(definitionId, definitionInstance, 0, 0);
-      }
-    }
-
-    resetDefinitions(moreDefinitions = {}) {
-      const definitionIds = Object.keys(moreDefinitions);
-      for (let indexId = 0; indexId < definitionIds.length; indexId++) {
-        const definitionId = definitionIds[indexId];
-        const definitionInstance = moreDefinitions[definitionId];
-        this.define(definitionId, definitionInstance, 0, 1);
-      }
-    }
-
-    deleteDefinitions(definitionsInput = []) {
-      const definitions = Array.isArray(definitionsInput) ? definitionsInput : [definitionsInput];
-      for (let indexDefinition = 0; indexDefinition < definitions.length; indexDefinition++) {
-        const definitionId = definitions[indexDefinition];
-        delete this.$definitions[definitionId];
-      }
-    }
-
-  }
-
-  LswDepender.default = LswDepender;
-  // @code.end: LswDepender class
-
-  return LswDepender;
-
-});
-(function (factory) {
-  const mod = factory();
-  if (typeof window !== 'undefined') {
-    window['LswFilesystem'] = mod;
-  }
-  if (typeof global !== 'undefined') {
-    global['LswFilesystem'] = mod;
-  }
-  if (typeof module !== 'undefined') {
-    module.exports = mod;
-  }
-})(function () {
-  
-  class LswFilesystem extends UFS_manager.idb_driver {
-
-  }
-
-  return LswFilesystem;
 
 });
 (function(factory) {
@@ -20187,713 +20068,6 @@ Vue.directive("focus", {
   }
 });
 // @code.end: v-focus API
-(() => {
-  const registerIdInScope = function (id, scope, element) {
-    console.log("[trace][v-form] registerIdInScope");
-    if (typeof id === "undefined" && typeof scope === "undefined") {
-      return false;
-    } else if (typeof scope === "undefined") {
-      return false;
-    } else if (scope === null) {
-      return false;
-    } else if (id === null) {
-      return false;
-    }
-    if (id in scope) {
-      // !@EXPERIMENTAL: volver a quitar el comentario si es muy loco.
-      // throw new Error(`Cannot repeat id «${id}» in scope on «registerIdInScope»`);
-    }
-    scope[id] = element;
-    return true;
-  };
-  const capitalize = function (txt) {
-    return txt.substr(0, 1).toUpperCase() + txt.substr(1);
-  };
-  const getRandomString = function (len = 10) {
-    const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
-    let out = "";
-    while (out.length < len) {
-      out += alphabet[Math.floor(Math.random() * alphabet.length)];
-    }
-    return out;
-  };
-  const generateGetChildrenFunction = function (el, binding, objectType = "form") {
-    console.log("[trace][v-form] generateGetChildrenFunction");
-    const isForm = objectType === "form";
-    const isControl = (!isForm) && (objectType === "control");
-    const canHaveChildren = isForm || isControl;
-    if (canHaveChildren) {
-      return function () {
-        console.log(`[trace][v-form] getChildren (from ${objectType})`);
-        // !@TODO: encontrar nodos hijo en el scope pertinente
-        const id = el.$lswFormMetadata.parameters.selfId;
-        const scope = el.$lswFormMetadata.parameters.selfScope;
-        const scopeIds = Object.keys(scope);
-        const children = [];
-        for (let index = 0; index < scopeIds.length; index++) {
-          const elementId = scopeIds[index];
-          const element = scope[elementId];
-          const elementParentId = element.$lswFormMetadata.parameters.parentId;
-          if (elementParentId === id) {
-            children.push(element);
-          }
-        }
-        const expectation1 = parseInt(el.$lswFormMetadata.parameters.expectedChildren) || -1;
-        if (expectation1 !== -1) {
-          if (expectation1 !== children.length) {
-            throw new Error(`Failed «expectedChildren» on «{${Object.keys(el.$lswFormMetadata.parameters.selfScope).join(", ")}}.${el.$lswFormMetadata.parameters.selfId}»: current=${children.length} / expected=${expectation1}`);
-          }
-        }
-        const elementTag = el.tagName;
-        const elementClasses = el.className.split(" ").join(".");
-        const vFormType = el.$lswFormMetadata.type;
-        console.log(`[trace][v-form] Found ${children.length} children on «${elementTag.toLowerCase()}${elementClasses ? '.' + elementClasses : ''} v-form.${vFormType}»`);
-        return children;
-      };
-    } else {
-      throw new Error(`Required parameter «objectType» to be a valid option (form, control, input, error) on «v-form.${el.$lswFormMetadata.type}» directive`);
-    }
-  };
-  const generateGetValueFunction = function (el, binding, objectType = "form") {
-    console.log("[trace][v-form] generateGetValueFunction");
-    const applyFormat = (...args) => {
-      if (el.$lswFormMetadata.parameters.onFormat) {
-        return el.$lswFormMetadata.parameters.onFormat(...args);
-      }
-      return args[0];
-    };
-    if (el.$lswFormMetadata.parameters.onGetValue) {
-      return function () {
-        const result = el.$lswFormMetadata.parameters.onGetValue(el, binding);
-        return applyFormat(result);
-      };
-    }
-    if (objectType === "form") {
-      return function () {
-        console.log("[trace][v-form] getValue (from form)");
-        const allChildren = this.getChildren();
-        const finalValue = {};
-        Iterating_children_of_form_to_get_values:
-        for (let index = 0; index < allChildren.length; index++) {
-          const child = allChildren[index];
-          if(child.$lswFormMetadata.type === "error") {
-            continue Iterating_children_of_form_to_get_values;
-          }
-          const value = child.$lswFormMetadata.methods.getValue();
-          const prop = child.$lswFormMetadata.parameters.name;
-          if(typeof prop !== "string") {
-            // !@EASYERROR!
-            // All v-form.FORM nodes must have a «name». 
-            // This error is extensively documented and debugged
-            // because it is easy to be committed.
-            const directiveType = child.$lswFormMetadata.type;
-            const directiveElement = child.tagName;
-            console.error(`[!] Error fetching «name» property on «v-form.form» child. All «v-form.*» nodes that are children of «v-form.form» must have a «name» property on «vForm.getValue». Details provided below:`);
-            console.log("Directive tag:", el.tagName);
-            console.log("Directive element:", el);
-            console.log("Directive type:", el.$lswFormMetadata.type);
-            console.log("Directive expression:", el.$lswFormMetadata.expression);
-            console.log("Child tag:", child.tagName);
-            console.log("Child element:", child);
-            console.log("Child type:", child.$lswFormMetadata.type);
-            console.log("Child expression:", child.$lswFormMetadata.expression);
-            throw new Error(`Required child «v-form.${directiveType}» on element «${directiveElement}» to have property «name» as string on «getValue»`);
-          }
-          finalValue[prop] = value;
-        }
-        return applyFormat(finalValue);
-      };
-    } else if (objectType === "control") {
-      return function () {
-        console.log("[trace][v-form] getValue (from control)");
-        const allChildren = this.getChildren();
-        let finalValue = {};
-        Iterating_children_of_control_to_get_values:
-        for (let index = 0; index < allChildren.length; index++) {
-          const child = allChildren[index];
-          const value = child.$lswFormMetadata.methods.getValue();
-          const prop = child.$lswFormMetadata.parameters.name;
-          if(prop === null) {
-            // !@CAUTION!
-            // Passing explicitly a null on «name» means to override the whole CONTROL value:
-            finalValue = value;
-          } else if(typeof prop !== "string") {
-            // !@EASYERROR!
-            // All v-form.CONTROL nodes must have a «name» or be null.
-            // This error is extensively documented and debugged
-            // because it is easy to be committed.
-            const directiveType = child.$lswFormMetadata.type;
-            const directiveElement = child.tagName;
-            console.error(`[!] Error fetching «name» property on «v-form.form» child. All «v-form.*» nodes that are children of «v-form.form» must have a «name» property on «vForm.getValue». Details provided below:`);
-            console.log("Directive tag:", el.tagName);
-            console.log("Directive element:", el);
-            console.log("Directive type:", el.$lswFormMetadata.type);
-            console.log("Directive expression:", el.$lswFormMetadata.expression);
-            console.log("Child tag:", child.tagName);
-            console.log("Child element:", child);
-            console.log("Child type:", child.$lswFormMetadata.type);
-            console.log("Child expression:", child.$lswFormMetadata.expression);
-            throw new Error(`Required child «v-form.${directiveType}» on element «${directiveElement}» to have property «name» as string on «getValue»`);
-          } else {
-            // !@NORMALLY:
-            finalValue[prop] = value;
-          }
-        }
-        return applyFormat(finalValue);
-      };
-    } else if (objectType === "input") {
-      return function () {
-        console.log("[trace][v-form] getValue (from input)");
-        const tagName = el.tagName.toLowerCase();
-        const valuedTags = ["input", "textarea", "select"];
-        if (valuedTags.indexOf(tagName) !== -1) {
-          return el.value;
-        }
-        return applyFormat(el.textContent);
-      };
-    } else {
-      throw new Error(`Required parameter «objectType» to be a valid option (form, control, input, error) on v-form directive`);
-    }
-  };
-  const generateSubmitFunction = function (el, binding) {
-    return async function () {
-      console.log("[trace][v-form] generateFormObject.submit");
-      try {
-        const validationResult = await this.validate();
-        const value = await this.getValue();
-        console.log("Final form value:", value);
-        if (el.$lswFormMetadata.parameters.onSubmit) {
-          return el.$lswFormMetadata.parameters.onSubmit(value, el, this);
-        }
-        return value;
-      } catch (error) {
-        this.propagateError(error);
-      }
-    };
-  };
-  const generateCommonValidateFunction = function (el, binding, objectType = "form") {
-    return async function () {
-      console.log(`[trace][v-form] generate${capitalize(objectType)}Object.commonValidate`);
-      const children = this.getChildren();
-      const arisedErrors = [];
-      Iterating_subscribed_children:
-      for (let index = 0; index < children.length; index++) {
-        const child = children[index];
-        try {
-          if (child.$lswFormMetadata.type === "error") {
-            break Iterating_subscribed_children;
-          }
-          await child.$lswFormMetadata.methods.validate();
-        } catch (error) {
-          arisedErrors.push(error);
-        }
-      }
-      try {
-        if (el.$lswFormMetadata.parameters.onValidate) {
-          await el.$lswFormMetadata.parameters.onValidate();
-        }
-      } catch (error) {
-        arisedErrors.push(error);
-      }
-      if (arisedErrors.length) {
-        const unifiedErrorMessage = arisedErrors.map(e => `  - ${e.name}: ${e.message}`).join("\n");
-        this.propagateError(unifiedErrorMessage);
-        throw unifiedErrorMessage;
-      }
-      this.propagateSuccess();
-      return true;
-    };
-  }
-  const generateValidateFunction = function (el, binding, objectType = "form") {
-    if (objectType === "form") {
-      return generateCommonValidateFunction(el, binding, "form");
-    } else if (objectType === "control") {
-      return generateCommonValidateFunction(el, binding, "control");
-    } else if (objectType === "input") {
-      return async function () {
-        console.log("[trace][v-form] generateInputObject.validate");
-        if (el.$lswFormMetadata.parameters.onValidate) {
-          try {
-            const value = await this.getValue();
-            await el.$lswFormMetadata.parameters.onValidate(value, el, this);
-            this.propagateSuccess();
-          } catch (error) {
-            this.propagateError(error);
-            throw error;
-          }
-        }
-      };
-    } else {
-      throw new Error(`Required parameter «objectType» to be a valid option (form, control, input, error) on v-form directive`);
-    }
-  };
-  const generatePropagateErrorFunction = function (el, binding, objectType = "form") {
-    return function (error) {
-      console.log("[trace][v-form] propagateError");
-      console.log(error);
-      Propagate_arriba: {
-        const parentId = el.$lswFormMetadata.parameters.parentId;
-        const parentScope = el.$lswFormMetadata.parameters.parentScope;
-        const notPretendsParent = (!parentScope) || (!parentId);
-        if (notPretendsParent) {
-          break Propagate_arriba;
-        }
-        const notFoundParent = !(parentId in parentScope);
-        if (notFoundParent) {
-          console.log(`[error][v-form] Directive «${el.$lswFormMetadata.tagName} v-form.${el.$lswFormMetadata.type}» could not find «parentId:${parentId}» in parentScope with keys: «${Object.keys(parentScope).join(", ")}»`);
-          console.log(`[error][v-form] This error will be ignored in order to continue fluently the tree-up error propagation as expected.`);
-        }
-        const parentElement = parentScope[parentId];
-        const isFormType = parentElement.$lswFormMetadata.type === "form";
-        const isControlType = parentElement.$lswFormMetadata.type === "control";
-        const isInputType = parentElement.$lswFormMetadata.type === "input";
-        const shouldPropagateUp = (isFormType || isControlType) && !isInputType;
-        if (shouldPropagateUp) {
-          parentElement.$lswFormMetadata.methods.propagateError(error);
-        }
-      }
-      Propagate_abajo: {
-        const selfId = el.$lswFormMetadata.parameters.selfId;
-        const selfScope = el.$lswFormMetadata.parameters.selfScope;
-        const selfScopeKeys = Object.keys(selfScope);
-        for (let index = 0; index < selfScopeKeys.length; index++) {
-          const selfScopeKey = selfScopeKeys[index];
-          const selfScopeElement = selfScope[selfScopeKey];
-          const elementParentId = selfScopeElement.$lswFormMetadata.parameters.parentId;
-          const isChild = elementParentId === selfId;
-          const isErrorType = selfScopeElement.$lswFormMetadata.type === "error";
-          const shouldPropagateDown = isChild && isErrorType;
-          if (shouldPropagateDown) {
-            selfScopeElement.$lswFormMetadata.methods.propagateError(error);
-          }
-        }
-      }
-      if (el.$lswFormMetadata.parameters.onError) {
-        try {
-          el.$lswFormMetadata.parameters.onError(error);
-        } catch (error) {
-          console.log(error); // only prints, onError should be safe function.
-        }
-      }
-    };
-  };
-  const generatePropagateSuccessFunction = function (el, binding, objectType = "form") {
-    return function () {
-      console.log("[trace][v-form] propagateSuccess");
-      Propagate_abajo: {
-        const selfId = el.$lswFormMetadata.parameters.selfId;
-        const selfScope = el.$lswFormMetadata.parameters.selfScope;
-        const selfScopeKeys = Object.keys(selfScope);
-        for (let index = 0; index < selfScopeKeys.length; index++) {
-          const selfScopeKey = selfScopeKeys[index];
-          const selfScopeElement = selfScope[selfScopeKey];
-          const elementParentId = selfScopeElement.$lswFormMetadata.parameters.parentId;
-          const isChild = elementParentId === selfId;
-          const isErrorType = selfScopeElement.$lswFormMetadata.type === "error";
-          if (isChild && isErrorType) {
-            selfScopeElement.$lswFormMetadata.methods.propagateSuccess();
-          }
-        }
-        if (el.$lswFormMetadata.parameters.onValidated) {
-          el.$lswFormMetadata.parameters.onValidated(el, binding);
-        }
-      }
-    };
-  };
-  const generateFormObject = function (el, binding) {
-    console.log("[trace][v-form] generateFormObject");
-    return {
-      getChildren: generateGetChildrenFunction(el, binding, "form"),
-      getValue: generateGetValueFunction(el, binding, "form"),
-      submit: generateSubmitFunction(el, binding, "form"),
-      validate: generateValidateFunction(el, binding, "form"),
-      propagateSuccess: generatePropagateSuccessFunction(el, binding, "form"),
-      propagateError: generatePropagateErrorFunction(el, binding, "form"),
-    };
-  };
-  const generateControlObject = function (el, binding) {
-    console.log("[trace][v-form] generateControlObject");
-    return {
-      getChildren: generateGetChildrenFunction(el, binding, "control"),
-      getValue: generateGetValueFunction(el, binding, "control"),
-      validate: generateValidateFunction(el, binding, "control"),
-      propagateSuccess: generatePropagateSuccessFunction(el, binding, "control"),
-      propagateError: generatePropagateErrorFunction(el, binding, "control"),
-    };
-  };
-  const generateInputObject = function (el, binding) {
-    console.log("[trace][v-form] generateErrorObject");
-    return {
-      getChildren: false,
-      getValue: generateGetValueFunction(el, binding, "input"),
-      validate: generateValidateFunction(el, binding, "input"),
-      propagateSuccess: generatePropagateSuccessFunction(el, binding, "input"),
-      propagateError: generatePropagateErrorFunction(el, binding, "input")
-    };
-  };
-  const generateErrorObject = function (el, binding) {
-    console.log("[trace][v-form] generateErrorObject");
-    return {
-      setError: function (error) {
-        console.log("[trace][v-form] generateErrorObject.setError");
-        el.textContent = `${error.name}: ${error.message}`;
-      },
-      clearError: function () {
-        console.log("[trace][v-form] generateErrorObject.clearError");
-        el.textContent = "";
-      },
-      propagateError: function (...args) {
-        console.log("[trace][v-form] generateErrorObject.propagateError");
-        const error = args[0];
-        el.classList.remove("successBox");
-        el.classList.add("errorBox");
-        this.setError(...args);
-        if (el.$lswFormMetadata.parameters.onError) {
-          try {
-            el.$lswFormMetadata.parameters.onError(error, el, this);
-          } catch (error) {
-            console.log(error); // only prints, onError should be safe function.
-          }
-        }
-      },
-      propagateSuccess: function (...args) {
-        console.log("[trace][v-form] generateErrorObject.propagateSuccess");
-        el.classList.remove("errorBox");
-        el.classList.add("successBox");
-        if (el.$lswFormMetadata.parameters.onValidated) {
-          el.$lswFormMetadata.parameters.onValidated(el, this);
-        }
-        if (el.$lswFormMetadata.parameters.onSuccessStatus) {
-          return this.setError(el.$lswFormMetadata.parameters.onSuccessStatus);
-        } else {
-          return this.clearError();
-        }
-      }
-    };
-  };
-  const loadMetadataAsForm = function (el, binding) {
-    console.log("[trace][v-form] loadMetadataAsForm");
-    try {
-      el.$lswFormMetadata = {
-        type: "form",
-        component: binding.instance,
-        expression: binding.expression,
-        parameters: binding.value,
-        element: el,
-      };
-      const params = binding.value;
-      Validate_parameters: {
-        const { parentId } = params;
-        const { parentScope } = params;
-        const { selfId } = params;
-        const { selfScope } = params;
-        const { onValidate } = params;
-        const { onValidated } = params;
-        const { onSubmit } = params;
-        if (typeof parentId === "undefined") {
-          // !@OK. Because form can have no parent.
-        } else if (typeof parentId !== "string") {
-          throw new Error(`Required parameter «parentId» to be a string on «v-form.form» directive on «loadMetadataAsForm»`);
-        }
-        if (typeof parentScope === "undefined") {
-          // !@OK. Because form can have no parent.
-        } else if (typeof parentScope !== "object") {
-          throw new Error(`Required parameter «parentScope» to be an object on «v-form.form» directive on «loadMetadataAsForm»`);
-        }
-        if (typeof selfId !== "string") {
-          throw new Error(`Required parameter «selfId» to be a string on «v-form.form» directive on «loadMetadataAsForm»`);
-        }
-        if (typeof selfScope !== "object") {
-          throw new Error(`Required parameter «selfScope» to be an object on «v-form.form» directive on «loadMetadataAsForm»`);
-        }
-        if (typeof onValidate === "undefined") {
-          // !@OK.
-        } else if (typeof onValidate !== "function") {
-          throw new Error(`Required parameter «onValidate» to be a function on «v-form.form» directive on «loadMetadataAsForm»`);
-        }
-        if (typeof onSubmit === "undefined") {
-          // !@OK.
-        } else if (typeof onSubmit !== "function") {
-          throw new Error(`Required parameter «onSubmit» to be an function on «v-form.form» directive on «loadMetadataAsForm»`);
-        }
-      }
-      Inject_scopes: {
-        const finalSelfId = params.selfId || null;
-        const selfScopedOk = registerIdInScope(finalSelfId, params.selfScope, el);
-        const parentScopedOk = registerIdInScope(finalSelfId, params.parentScope, el);
-        if (!selfScopedOk) {
-          // !@ERROR. Because forms requires children.
-          throw new Error(`Required «v-form.form» directive to be able to register «selfId» in «selfScope» on «loadMetadataAsForm»`);
-        }
-        if (!parentScopedOk) {
-          // !@OK. Because form does not need a parent.
-        }
-      }
-      Inject_api: {
-        el.$lswFormMetadata.methods = generateFormObject(el, binding);
-      }
-    } catch (error) {
-      console.log("[!] Error fetching «name» property on  Error loading v-form.form:", binding);
-      throw error;
-    }
-  };
-  const loadMetadataAsControl = function (el, binding) {
-    console.log("[trace][v-form] loadMetadataAsControl");
-    try {
-      el.$lswFormMetadata = {
-        type: "control",
-        component: binding.instance,
-        expression: binding.expression,
-        parameters: binding.value,
-        element: el,
-      };
-      const params = binding.value;
-      Validate_parameters: {
-        const { parentId } = params;
-        const { parentScope } = params;
-        const { selfId } = params;
-        const { selfScope } = params;
-        const { name } = params;
-        const { onValidate } = params;
-        const { onValidated } = params;
-        const { onSubmit } = params;
-        if (typeof parentScope !== "object") {
-          throw new Error(`Required «v-form.control» to have always an object as «parentScope» parameter on «loadMetadataAsControl»`);
-        }
-        if (typeof parentId !== "string") {
-          throw new Error(`Required «v-form.control» to have always a string as «parentId» on «loadMetadataAsControl»`);
-        }
-        if (typeof selfScope !== "object") {
-          throw new Error(`Required «v-form.control» to have always an object as «selfScope» parameter on «loadMetadataAsControl»`);
-        }
-        if (typeof selfId !== "string") {
-          throw new Error(`Required «v-form.control» to have always a string as «selfId» parameter on «loadMetadataAsControl»`);
-        }
-        if (typeof name !== "string") {
-          if(name !== null) {
-            throw new Error(`Required «v-form.control» to have always a string [or at least «null» to override the value not only a property] as «name» parameter on «loadMetadataAsControl»`);
-          }
-        }
-        if ((typeof onValidate !== "undefined") && (typeof onValidate !== "function")) {
-          throw new Error(`Required «v-form.control» to have always a function or undefined as «onValidate» parameter on «loadMetadataAsControl»`);
-        }
-        if ((typeof onSubmit !== "undefined") && (typeof onSubmit !== "function")) {
-          throw new Error(`Required «v-form.control» to have always a function or undefined as «onSubmit» parameter on «loadMetadataAsControl»`);
-        }
-        if ((typeof onValidated !== "undefined") && (typeof onValidated !== "function")) {
-          throw new Error(`Required «v-form.control» to have always a function or undefined as «onValidated» parameter on «loadMetadataAsControl»`);
-        }
-      }
-      Inject_scopes: {
-        const finalSelfId = params.selfId || "control." + getRandomString(10);
-        const selfScopedOk = registerIdInScope(finalSelfId, params.selfScope, el);
-        const parentScopedOk = registerIdInScope(finalSelfId, params.parentScope, el);
-        if (!selfScopedOk) {
-          // !@OK. Because control does not need a children.
-        }
-        if (!parentScopedOk) {
-          throw new Error(`Required «v-form.control» directive to be able to register «selfId» in «parentScope» on «loadMetadataAsForm»`);
-        }
-        if ((!selfScopedOk) && (!parentScopedOk)) {
-          throw new Error(`Required «v-form.control» directive to register «parentId» or «selfId» but not none on «loadMetadataAsControl»`);
-        }
-      }
-      Inject_api: {
-        el.$lswFormMetadata.methods = generateControlObject(el, binding);
-      }
-    } catch (error) {
-      console.log("[!] Error fetching «name» property on  Error loading v-form.control:", binding);
-      throw error;
-    }
-  };
-  const loadMetadataAsInput = function (el, binding) {
-    console.log("[trace][v-form] loadMetadataAsInput");
-    try {
-      el.$lswFormMetadata = {
-        type: "input",
-        component: binding.instance,
-        expression: binding.expression,
-        parameters: binding.value,
-        element: el,
-      };
-      const params = binding.value;
-      Validate_parameters: {
-        const { parentId } = params;
-        const { parentScope } = params;
-        const { selfId } = params;
-        const { selfScope } = params;
-        const { name } = params;
-        const { onValidate } = params;
-        const { onValidated } = params;
-        const { onSubmit } = params;
-        if (typeof parentScope !== "object") {
-          throw new Error(`Required «v-form.input» to have always an object as «parentScope» parameter on «loadMetadataAsInput»`);
-        }
-        if (typeof parentId !== "string") {
-          throw new Error(`Required «v-form.input» to have always a string as «parentId» on «loadMetadataAsInput»`);
-        }
-        if (typeof selfScope !== "object") {
-          // !@OK: input does not need children
-        }
-        if (typeof selfId !== "string") {
-          // !@OK: input does not need children
-        }
-        if (typeof name !== "string") {
-          throw new Error(`Required «v-form.input» to have always a string as «name» parameter on «loadMetadataAsInput»`);
-        }
-        if ((typeof onValidate !== "undefined") && (typeof onValidate !== "function")) {
-          throw new Error(`Required «v-form.input» to have always a function or undefined as «onValidate» parameter on «loadMetadataAsInput»`);
-        }
-        if ((typeof onSubmit !== "undefined") && (typeof onSubmit !== "function")) {
-          throw new Error(`Required «v-form.input» to have always a function or undefined as «onSubmit» parameter on «loadMetadataAsInput»`);
-        }
-        if ((typeof onValidated !== "undefined") && (typeof onValidated !== "function")) {
-          throw new Error(`Required «v-form.input» to have always a function or undefined as «onValidated» parameter on «loadMetadataAsInput»`);
-        }
-      }
-      Inject_scopes: {
-        const finalSelfId = params.selfId || "input." + getRandomString(10);
-        const selfScopedOk = registerIdInScope(finalSelfId, params.selfScope, el);
-        const parentScopedOk = registerIdInScope(finalSelfId, params.parentScope, el);
-        if (!selfScopedOk) {
-          // !@OK. Because input cannot have a children.
-        }
-        if (!parentScopedOk) {
-          // !@ERROR. Because input requires parent.
-          throw new Error(`Required «v-form.input» directive to be able to register «selfId» in «parentScope»`);
-        }
-      }
-      Inject_api: {
-        el.$lswFormMetadata.methods = generateInputObject(el, binding);
-      }
-    } catch (error) {
-      console.log("[!] Error fetching «name» property on  Error loading v-form.input:", binding);
-      throw error;
-    }
-  };
-  const loadMetadataAsError = function (el, binding) {
-    console.log("[trace][v-form] loadMetadataAsError");
-    try {
-      el.$lswFormMetadata = {
-        type: "error",
-        component: binding.instance,
-        expression: binding.expression,
-        parameters: binding.value,
-        element: el,
-      };
-      const params = binding.value;
-      Validate_parameters: {
-        const { parentId } = params;
-        const { parentScope } = params;
-        const { selfId } = params;
-        const { selfScope } = params;
-        const { onValidate } = params;
-        const { onValidated } = params;
-        const { onSuccessStatus } = params;
-        const { onSubmit } = params;
-      }
-      Inject_scopes: {
-        const finalSelfId = params.selfId || "error." + getRandomString(10);
-        const selfScopedOk = registerIdInScope(finalSelfId, params.selfScope, el);
-        const parentScopedOk = registerIdInScope(finalSelfId, params.parentScope, el);
-        if (!selfScopedOk) {
-          // !@OK. Because error does not need a children.
-        }
-        if (!parentScopedOk) {
-          // !@ERROR. Because error requires parent.
-          throw new Error(`Required «v-form.error» directive to be able to register «selfId» in «parentScope»`);
-        }
-      }
-      Inject_api: {
-        el.$lswFormMetadata.methods = generateErrorObject(el, binding);
-      }
-    } catch (error) {
-      console.log("[!] Error fetching «name» property on  Error loading v-form.error:", binding);
-      throw error;
-    }
-  };
-  const loadForm = function (el, binding) {
-    console.log("[trace][v-form] loadForm");
-    loadMetadataAsForm(el, binding);
-  };
-  const loadControl = function (el, binding) {
-    console.log("[trace][v-form] loadControl");
-    loadMetadataAsControl(el, binding);
-  };
-  const loadInput = function (el, binding) {
-    console.log("[trace][v-form] loadInput");
-    loadMetadataAsInput(el, binding);
-  };
-  const loadError = function (el, binding) {
-    console.log("[trace][v-form] loadError");
-    loadMetadataAsError(el, binding);
-  };
-  const knownScopes = [];
-  Vue.directive("form", {
-    bind(el, binding) {
-      console.log("[trace][v-form] bind");
-      let modifierAlias = Object.keys(binding.modifiers).join("|");
-      try {
-        const { modifiers } = binding;
-        const isForm = "form" in modifiers;
-        const isControl = "control" in modifiers;
-        const isError = "error" in modifiers;
-        const isInput = "input" in modifiers;
-        modifierAlias = isForm ? "form" : isControl ? "control" : isError ? "error" : isInput ? "input" : "-";
-        if (typeof binding.value !== "object") {
-          console.error(`You are passing a «${typeof binding.value}» type in some «v-form.${modifierAlias}» directive on an element of type «${el.tagName}». Details are provided below:`);
-          console.log(el);
-          console.log(binding);
-          console.error("Good luck. I believe in you.");
-          throw new Error(`Required «v-form» directive to receive an object as parameter on «v-form.${modifierAlias}»`);
-        }
-        if (isForm) {
-          loadForm(el, binding);
-          el.setAttribute("data-v-form-type", "form");
-        } else if (isControl) {
-          loadControl(el, binding);
-          el.setAttribute("data-v-form-type", "control");
-        } else if (isError) {
-          loadError(el, binding);
-          el.setAttribute("data-v-form-type", "error");
-        } else if (isInput) {
-          loadInput(el, binding);
-          el.setAttribute("data-v-form-type", "input");
-        } else {
-          throw new Error(`Required v-form directive to have 1 modifier: .form .control .input or .error`);
-        }
-        Extend_element_for_debug_purposes: {
-          el.setAttribute("data-v-form-parent-id", el.$lswFormMetadata.parameters.parentId);
-          el.setAttribute("data-v-form-self-id", el.$lswFormMetadata.parameters.selfId);
-          const posParentBrute = knownScopes.indexOf(el.$lswFormMetadata.parameters.parentScope);
-          const posSelfBrute = knownScopes.indexOf(el.$lswFormMetadata.parameters.selfScope);
-          let posParent = posParentBrute;
-          let posSelf = posSelfBrute;
-          if (posParent === -1) {
-            knownScopes.push(el.$lswFormMetadata.parameters.parentScope);
-            posParent = knownScopes.length - 1;
-          }
-          if (posSelf === -1) {
-            knownScopes.push(el.$lswFormMetadata.parameters.selfScope);
-            posSelf = knownScopes.length - 1;
-          }
-          el.setAttribute("data-v-form-parent-scope", "{" + posParent + "}");
-          el.setAttribute("data-v-form-self-scope", "{" + posSelf + "}");
-        }
-      } catch (error) {
-        console.error(`[!] Error fetching «name» property on  Error binding «v-form.${modifierAlias}». Details provided below:`);
-        console.log(el, binding);
-        console.error(error);
-        throw error;
-      }
-    },
-    unbind(el) {
-      delete el.$lswFormMetadata.component;
-      delete el.$lswFormMetadata.element;
-      delete el.$lswFormMetadata;
-    }
-  });
-})();
 // @code.start: LswXForm API | @$section: Lsw Directives » v-xform directive
 (function (factory) {
   const mod = factory();
@@ -21375,202 +20549,6 @@ Vue.directive("focus", {
 
 });
 // @code.end: LswXForm API
-(function (factory) {
-  const mod = factory();
-  if (typeof window !== 'undefined') {
-    window['LswFormtypes'] = mod;
-  }
-  if (typeof global !== 'undefined') {
-    global['LswFormtypes'] = mod;
-  }
-  if (typeof module !== 'undefined') {
-    module.exports = mod;
-  }
-})(function () {
-
-  // @code.start: LswFormtypesUtils API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswFormtypesUtils component
-  class LswFormtypesUtils {
-
-    static class = this;
-
-    static async submitControl() {
-      if (this.settings.parentSchemaForm) {
-        await this.validate();
-      }
-
-    }
-
-    static validateControl() {
-      return this.$refs.controller.$xform.validate();
-    }
-
-    static validateSettings() {
-      LswXForm.validateSettings(this.settings);
-      const ensureSettings = $ensure(this.settings);
-      const checkSettings = $check(this.settings);
-      ensureSettings.to.have.onlyPotentialKeys([
-        "name",
-        "input",
-        "entity",
-        "database",
-        "table",
-        "column",
-        "initialValue",
-        "label",
-        "parentSchemaForm",
-        "extraAttributes",
-        "formtypeParameters",
-        "formtypeSettings"
-      ]);
-      if (checkSettings.to.have.key("initialValue")) {
-        const ensureInitialValue = ensureSettings.its("initialValue").type("string");
-      }
-      if (checkSettings.to.have.key("label")) {
-        const ensureHasLabel = ensureSettings.its("label").type(["string", "undefined", "boolean"]);
-      }
-    }
-
-  }
-
-  class LswFormtypes {
-
-    static class = this;
-
-    constructor() {
-      this.$formtypes = new Map();
-    }
-
-    static utils = LswFormtypesUtils;
-
-  }
-
-  window.commonFormtypes = new LswFormtypes();
-
-  return LswFormtypes;
-  // @code.end: LswFormtypesUtils API
-
-});
-(function (factory) {
-  const mod = factory();
-  if (typeof window !== 'undefined') {
-    window['ConsoleHooker'] = mod;
-  }
-  if (typeof global !== 'undefined') {
-    global['ConsoleHooker'] = mod;
-  }
-  if (typeof module !== 'undefined') {
-    module.exports = mod;
-  }
-})(function () {
-
-  // @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker API
-  class ConsoleHooker {
-    constructor(outputElementId) {
-      this.originalConsole = { ...console }; // Guardar los métodos originales
-      this.outputElementId = outputElementId;
-      this.hookConsole();
-      this.messageCounter = 0;
-    }
-
-    hookConsole() {
-      Object.keys(console).forEach(method => {
-        if (typeof console[method] === 'function') {
-          console[method] = (...args) => {
-            this.writeToHtml(method, args);
-            this.originalConsole[method](...args); // Llamar al método original
-          };
-        }
-      });
-    }
-
-    formatError(error) {
-      let errorMessage = "";
-      errorMessage += "Error: " + error.name + ": " + error.message;
-      if (error.location) {
-        errorMessage += JSON.stringify({
-          found: error.found,
-          expected: error.expected,
-          location: error.location
-        }, null, 2);
-      }
-      return errorMessage;
-    }
-
-    consoleReducer() {
-      return (arg) => {
-        if (typeof arg === 'object') {
-          if (arg instanceof Error) {
-            return this.formatError(arg);
-          } else {
-            const seen = new WeakSet();
-            return JSON.stringify(arg, function (key, value) {
-              if (typeof value === "object") {
-                if (seen.has(value)) {
-                  return "[Circular]";
-                }
-                if (value !== null) {
-                  seen.add(value);
-                }
-              }
-              return value;
-            }, 2);
-          }
-        } else {
-          return arg;
-        }
-      };
-    }
-
-    writeToHtml(method, args) {
-      // Do not log from this method or it becomes recursive:
-      const message = document.createElement('div');
-      message.className = `console-${method}`;
-      message.textContent = `[${this.messageCounter++}] ${args.map(this.consoleReducer()).join(' ')}`;
-      const outputElement = document.getElementById(this.outputElementId);
-      if (!outputElement) {
-        // console.log("no console hooker output element found");
-        return;
-      }
-      const subnodes = outputElement.children;
-      const subnodesLength = outputElement.children.length;
-      const hasMoreThan100 = outputElement.children.length > 100;
-      if (hasMoreThan100) {
-        for (let index = subnodes.length - 1; index > 50; index--) {
-          const subnode = subnodes[index];
-          subnode.remove();
-        }
-      }
-      const parent = outputElement;
-      parent.insertBefore(message, parent.firstChild);
-    }
-
-    restoreConsole() {
-      Object.keys(this.originalConsole).forEach(method => {
-        console[method] = this.originalConsole[method];
-      });
-    }
-  }
-
-  ConsoleHooker.default = ConsoleHooker;
-
-  return ConsoleHooker;
-  // @code.end: LswConsoleHooker API
-
-});
-
-
-(function(factory) {
-  const mod = factory();
-  if(typeof window !== 'undefined') {
-    window["Litestarter_app"] = mod;
-  }
-  if(typeof global !== 'undefined') {
-    global["Litestarter_app"] = mod;
-  }
-  if(typeof module !== 'undefined') {
-    module.exports = mod;
-  }
-})(function() {
 // @code.start: LswCalendario API | @$section: Vue.js (v2) Components » LswCalendario API » LswCalendario component
 Vue.component("LswCalendario", {
   template: `<div class="Component LswCalendario">
@@ -23353,10 +22331,10 @@ Vue.component("LswWindowsMainTab", {
             </div>
             <div class="dialog_body">
                 <div class="main_tab_topbar">
-                    <button class="main_tab_topbar_button" v-on:click="openAgenda">📓 Agenda</button>
-                    <button class="main_tab_topbar_button" v-on:click="openWiki">🔬 Wiki</button>
-                    <button class="main_tab_topbar_button" v-on:click="openRest">📦 Data</button>
-                    <button class="main_tab_topbar_button" v-on:click="openFilesystem">📂 Files</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📓</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openWiki">🔬</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openRest">📦</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openFilesystem">📂</button>
                 </div>
                 <div class="pad_normal" v-if="!Object.keys(\$lsw.dialogs.opened).length">
                     <span>No processes found right now.</span>
@@ -23368,7 +22346,7 @@ Vue.component("LswWindowsMainTab", {
                 </div>
             </div>
             <div class="dialog_footer">
-                <button class="" v-on:click="viewer.toggleState">Minimize</button>
+                <button class="" v-on:click="viewer.toggleState">🔹</button>
             </div>
         </div>
 </div>`,
@@ -23473,7 +22451,7 @@ Vue.component("LswWindowsViewer", {
 // Change this component at your convenience:
 Vue.component("LswWindowsPivotButton", {
   template: `<div class="lsw_windows_pivot_button" v-on:click="onClick">
-    <button id="windows_pivot_button" class="">🔴</button>
+    <button id="windows_pivot_button" class="">🔵</button>
 </div>`,
   props: {
     viewer: {
@@ -23583,6 +22561,113 @@ Vue.component("LswToasts", {
   }
 });
 // @code.end: LswToasts API
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['ConsoleHooker'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['ConsoleHooker'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+
+  // @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker API
+  class ConsoleHooker {
+    constructor(outputElementId) {
+      this.originalConsole = { ...console }; // Guardar los métodos originales
+      this.outputElementId = outputElementId;
+      this.hookConsole();
+      this.messageCounter = 0;
+    }
+
+    hookConsole() {
+      Object.keys(console).forEach(method => {
+        if (typeof console[method] === 'function') {
+          console[method] = (...args) => {
+            this.writeToHtml(method, args);
+            this.originalConsole[method](...args); // Llamar al método original
+          };
+        }
+      });
+    }
+
+    formatError(error) {
+      let errorMessage = "";
+      errorMessage += "Error: " + error.name + ": " + error.message;
+      if (error.location) {
+        errorMessage += JSON.stringify({
+          found: error.found,
+          expected: error.expected,
+          location: error.location
+        }, null, 2);
+      }
+      return errorMessage;
+    }
+
+    consoleReducer() {
+      return (arg) => {
+        if (typeof arg === 'object') {
+          if (arg instanceof Error) {
+            return this.formatError(arg);
+          } else {
+            const seen = new WeakSet();
+            return JSON.stringify(arg, function (key, value) {
+              if (typeof value === "object") {
+                if (seen.has(value)) {
+                  return "[Circular]";
+                }
+                if (value !== null) {
+                  seen.add(value);
+                }
+              }
+              return value;
+            }, 2);
+          }
+        } else {
+          return arg;
+        }
+      };
+    }
+
+    writeToHtml(method, args) {
+      // Do not log from this method or it becomes recursive:
+      const message = document.createElement('div');
+      message.className = `console-${method}`;
+      message.textContent = `[${this.messageCounter++}] ${args.map(this.consoleReducer()).join(' ')}`;
+      const outputElement = document.getElementById(this.outputElementId);
+      if (!outputElement) {
+        // console.log("no console hooker output element found");
+        return;
+      }
+      const subnodes = outputElement.children;
+      const subnodesLength = outputElement.children.length;
+      const hasMoreThan100 = outputElement.children.length > 100;
+      if (hasMoreThan100) {
+        for (let index = subnodes.length - 1; index > 50; index--) {
+          const subnode = subnodes[index];
+          subnode.remove();
+        }
+      }
+      const parent = outputElement;
+      parent.insertBefore(message, parent.firstChild);
+    }
+
+    restoreConsole() {
+      Object.keys(this.originalConsole).forEach(method => {
+        console[method] = this.originalConsole[method];
+      });
+    }
+  }
+
+  ConsoleHooker.default = ConsoleHooker;
+
+  return ConsoleHooker;
+  // @code.end: LswConsoleHooker API
+
+});
 // @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker component
 Vue.component("LswConsoleHooker", {
   template: `<div class="console-hooker" :class="{hide:!is_shown}">
@@ -26056,6 +25141,81 @@ Vue.component("LswAgendaPropagadorSearch", {
   }
 });
 // @code.end: LswAgendaPropagadorSearch API
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswFormtypes'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswFormtypes'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+
+  // @code.start: LswFormtypesUtils API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswFormtypesUtils component
+  class LswFormtypesUtils {
+
+    static class = this;
+
+    static async submitControl() {
+      if (this.settings.parentSchemaForm) {
+        await this.validate();
+      }
+
+    }
+
+    static validateControl() {
+      return this.$refs.controller.$xform.validate();
+    }
+
+    static validateSettings() {
+      LswXForm.validateSettings(this.settings);
+      const ensureSettings = $ensure(this.settings);
+      const checkSettings = $check(this.settings);
+      ensureSettings.to.have.onlyPotentialKeys([
+        "name",
+        "input",
+        "entity",
+        "database",
+        "table",
+        "column",
+        "initialValue",
+        "label",
+        "parentSchemaForm",
+        "extraAttributes",
+        "formtypeParameters",
+        "formtypeSettings"
+      ]);
+      if (checkSettings.to.have.key("initialValue")) {
+        const ensureInitialValue = ensureSettings.its("initialValue").type("string");
+      }
+      if (checkSettings.to.have.key("label")) {
+        const ensureHasLabel = ensureSettings.its("label").type(["string", "undefined", "boolean"]);
+      }
+    }
+
+  }
+
+  class LswFormtypes {
+
+    static class = this;
+
+    constructor() {
+      this.$formtypes = new Map();
+    }
+
+    static utils = LswFormtypesUtils;
+
+  }
+
+  window.commonFormtypes = new LswFormtypes();
+
+  return LswFormtypes;
+  // @code.end: LswFormtypesUtils API
+
+});
 // @code.start: LswFormBuilder API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswFormBuilder component
 Vue.component("LswFormBuilder", {
   template: `<div class="lsw-form-builder">
@@ -27226,305 +26386,6 @@ Vue.component("LswRefRelationControl", {
   }
 });
 // @code.end: LswRefRelationControl API
-Vue.component("LswCurrentAccionViewer", {
-  template: `<div class="lsw_current_accion_viewer">
-    <div class="flex_row centered pad_left_1 pad_top_2">
-        <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'despues'}"
-                v-on:click="() => selectSection('despues')">🕐⏩</button>
-        </div>
-        <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'antes'}"
-                v-on:click="() => selectSection('antes')">🕐⏪</button>
-        </div>
-        <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'calendario'}"
-                v-on:click="() => selectSection('calendario')">📆</button>
-        </div>
-        <div class="pad_left_1 flex_100">
-            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, false, true) }}
-        </div>
-        <div class="pad_left_1">
-            <slot />
-        </div>
-    </div>
-    <div class="scrollable_panel_viewer pad_2" v-if="selectedSection !== 'none'">
-        <div class="as_card">
-            <div class="pad_2"
-                v-if="selectedSection === 'antes'">
-                <template v-if="accionesAntes && accionesAntes.length">
-                    <div>Acciones anteriores:</div>
-                    <div class="tarjetas_de_accion">
-                        <div class="tarjeta_de_accion nowrap"
-                            v-for="accion, accionIndex in accionesAntes"
-                            v-bind:key="'accion_antes_' + accionIndex">
-                            <div>{{ accion.tiene_inicio }}</div>
-                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                            <div>{{ accion.tiene_duracion }}</div>
-                            <div class="cell_en_estado"
-                                :class="'estado_' + accion.tiene_estado"
-                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                            <!--div>{{ accion.tiene_parametros }}</div>
-                <div>{{ accion.tiene_resultados }}</div>
-                <div>{{ accion.tiene_comentarios }}</div-->
-                        </div>
-                    </div>
-                </template>
-                <div v-else
-                    class="pad_2">No hay acciones anteriores.</div>
-            </div>
-            <div class="pad_2"
-                v-if="selectedSection === 'despues'">
-                <template v-if="accionesDespues && accionesDespues.length">
-                    <div>Acciones posteriores:</div>
-                    <div class="tarjetas_de_accion">
-                        <div class="tarjeta_de_accion nowrap"
-                            v-for="accion, accionIndex in accionesDespues"
-                            v-bind:key="'accion_despues_' + accionIndex">
-                            <div>{{ accion.tiene_inicio }}</div>
-                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                            <div>{{ accion.tiene_duracion }}</div>
-                            <div class="cell_en_estado cursor_pointer"
-                                :class="'estado_' + accion.tiene_estado"
-                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                            <div>{{ accion.tiene_parametros }}</div>
-                            <div>{{ accion.tiene_resultados }}</div>
-                            <div>{{ accion.tiene_comentarios }}</div>
-                        </div>
-                    </div>
-                </template>
-                <div v-else
-                    class="pad_2">No hay acciones posteriores.</div>
-            </div>
-
-            <div class="pad_1"
-                v-if="selectedSection === 'calendario'">
-                <div class="">
-                    <div class="pad_1 pad_bottom_0">
-                        <lsw-agenda />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>`,
-  props: {
-    
-  },
-  data() {
-    this.$trace("lsw-current-accion-viewer.data");
-    return {
-      currentDate: new Date(),
-      selectedSection: 'none', // 'antes', 'despues'
-      accionesAntes: false,
-      accionesDespues: false,
-    };
-  },
-  methods: {
-    selectSection(section) {
-      this.$trace("lsw-current-accion-viewer.selectSection");
-      if(this.selectedSection === section) {
-        this.selectedSection = "none";
-      } else {
-        this.selectedSection = section;
-      }
-      if(["antes", "despues"].indexOf(section) !== -1) {
-        this.loadAcciones();
-      } else {
-        this.$forceUpdate(true);
-      }
-    },
-    async loadAcciones() {
-      this.$trace("lsw-current-accion-viewer.loadAcciones");
-      const output = await this.$lsw.database.selectMany("Accion");
-      const estaHora = (() => {
-        const d = new Date();
-        d.setHours(0);
-        return d;
-      })();
-      const accionesAntes = [];
-      const accionesDespues = [];
-      output.forEach(accion => {
-        console.log(accion.tiene_inicio);
-        try {
-          const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
-          console.log(dateAccion);
-          if(dateAccion >= estaHora) {
-            accionesDespues.push(accion);
-          } else {
-            accionesAntes.push(accion);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      });
-      this.accionesAntes = accionesAntes;
-      this.accionesDespues = accionesDespues;
-      this.$forceUpdate(true);
-    },
-    async alternarEstado(accion) {
-      this.$trace("lsw-current-accion-viewer.methods.alternarEstado");
-      const nextEstado = accion.tiene_estado === "pendiente" ? "completada" : 
-        accion.tiene_estado === "completada" ? "fallida" : "pendiente";
-      await this.$lsw.database.update("Accion", accion.id, {
-        ...accion,
-        tiene_estado: nextEstado
-      });
-      await this.loadAcciones();
-    },
-    startTimer() {
-      this.timerId = setTimeout(() => {
-        this.currentDate = new Date();
-        this.startTimer();
-      }, 1000);
-    },
-    stopTimer() {
-      clearTimeout(this.timerId);
-    }
-  },
-  watch: {},
-  async mounted() {
-    try {
-      this.$trace("lsw-current-accion-viewer.mounted");
-      await this.loadAcciones();
-      this.startTimer();
-    } catch(error) {
-      console.log(error);
-    }
-  },
-  unmount() {
-    this.stopTimer();
-  }
-});
-// @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component
-Vue.component("LswNotes", {
-  template: `<div class="lsw_notes pad_2 pad_top_0">
-    <div class="titulo_de_notas">Últimas notas:</div>
-    <div class="pad_2 pad_left_0 pad_right_0" v-if="isLoaded">
-        <div class="note_card flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
-            <div class="flex_1 nowrap date_cell" :title="note.tiene_fecha" style="text-align: ltr;">{{ note.tiene_fecha.split(" ")[1] || note.tiene_fecha }}</div>
-            <div class="flex_100 nowrap shortable_text" :title="note.tiene_titulo">{{ note.tiene_titulo }}</div>
-            <div class="flex_1 nowrap" :title="note.tiene_contenido">{{ note.tiene_contenido.length }}B</div>
-            <!--div class="flex_1 nowrap" :title="note.tiene_categorias">{{ note.tiene_categorias.split(";").length }}</div-->
-        </div>
-    </div>
-</div>`,
-  props: {
-    
-  },
-  data() {
-    this.$trace("lsw-notes.data");
-    return {
-      isLoaded: false,
-      allNotes: false,
-      currentError: this.error,
-    };
-  },
-  methods: {
-    setError(error = undefined) {
-      this.$trace("lsw-notes.methods.setError");
-      this.currentError = error;
-    },
-    async loadNotes() {
-      this.$trace("lsw-notes.methods.loadNotes");
-      // *@TODO: seleccionar e importar notes.
-      this.isLoaded = false;
-      const notes = await this.$lsw.database.selectMany("Nota");
-      const notesSorted = notes.sort((n1, n2) => {
-        const d1 = LswTimer.utils.getDateFromMomentoText(n1.tiene_fecha);
-        const d2 = LswTimer.utils.getDateFromMomentoText(n2.tiene_fecha);
-        if(d1 >= d2) return -1;
-        return 1;
-      });
-      this.allNotes = notesSorted;
-      this.isLoaded = true;
-    },
-    async openAddNoteDialog() {
-      this.$trace("lsw-notes.methods.openAddNoteDialog");
-      const response = await this.$lsw.dialogs.open({
-        title: "Nueva nota",
-        template: `<div class="pad_1 position_absolute top_0 right_0 left_0 bottom_0 flex_column">
-          <div class="flex_1">
-            <input class="width_100" type="text" v-model="value.tiene_fecha" placeholder="Fecha de la nota" ref="fecha" />
-          </div>
-          <div class="flex_1 flex_row centered" style="padding-top: 1px;">
-            <div class="flex_1">Estado: </div>
-            <select class="flex_100" v-model="value.tiene_estado">
-              <option value="creada">Creada</option>
-              <option value="procesada">Procesada</option>
-              <option value="dudosa">Dudosa</option>
-              <option value="desestimada">Desestimada</option>
-            </select>
-          </div>
-          <div class="flex_1" style="padding-top: 2px;">
-            <input class="width_100" type="text" v-model="value.tiene_categorias" placeholder="categoría 1; categoria 2; categoria 3" />
-          </div>
-          <div class="flex_100" style="padding-top: 1px;">
-            <textarea v-focus v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." ref="contenido" />
-          </div>
-          <div class="flex_1" style="padding-top: 2px;">
-            <input class="width_100" type="text" v-model="value.tiene_titulo" placeholder="Título de la nota" ref="titulo" />
-          </div>
-          <div class="flex_row pad_top_1">
-            <div class="flex_100"></div>
-            <div class="flex_1 flex_row">
-              <div class="pad_right_1">
-                <button class="mini" v-on:click="validate">➕ Añadir</button>
-              </div>
-              <div>
-                <button class="mini" v-on:click="cancel">❌ Cancelar</button>
-              </div>
-            </div>
-          </div>
-        </div>`,
-        factory: {
-          methods: {
-            validate() {
-              const isValidFecha = LswTimer.parser.parse(this.value.tiene_fecha);
-              const isValidContenido = this.value.tiene_contenido.trim() !== "";
-              const isValidTitulo = this.value.tiene_titulo.trim() !== "";
-              if(!isValidTitulo) {
-                window.alert("Necesita un título la nota.");
-                return this.$refs.titulo.focus();
-              }
-              if(!isValidContenido) {
-                window.alert("Necesita un contenido la nota.");
-                return this.$refs.contenido.focus();
-              }
-              if(!isValidFecha) {
-                window.alert("Necesita una fecha válida la nota.");
-                return this.$refs.fecha.focus();
-              }
-              return this.accept();
-            }
-          },
-          data: {
-            value: {
-              tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date(), false, false, true),
-              tiene_titulo: "",
-              tiene_categorias: "",
-              tiene_contenido: "",
-              tiene_estado: "creada", // "procesada"
-            }
-          }
-        }
-      });
-      if(typeof response !== "object") return;
-      await this.$lsw.database.insert("Nota", response);
-      await this.loadNotes();
-    }
-  },
-  watch: {},
-  async mounted() {
-    try {
-      this.$trace("lsw-notes.mounted");
-      await this.loadNotes();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-});
-// @code.end: LswNotes API
 // @code.start: LswSchemaBasedForm API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswSchemaBasedForm component
 Vue.component("LswSchemaBasedForm", {
   template: `<div class="lsw_schema_form">
@@ -27959,6 +26820,136 @@ Vue.component("LswSchemaBasedForm", {
   }
 });
 // @code.end: LswSchemaBasedForm API
+// @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component
+Vue.component("LswNotes", {
+  template: `<div class="lsw_notes pad_2 pad_top_0">
+    <div class="titulo_de_notas">Últimas notas:</div>
+    <div class="pad_2 pad_left_0 pad_right_0" v-if="isLoaded">
+        <div class="note_card flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
+            <div class="flex_1 nowrap date_cell" :title="note.tiene_fecha" style="text-align: ltr;">{{ note.tiene_fecha.split(" ")[1] || note.tiene_fecha }}</div>
+            <div class="flex_100 nowrap shortable_text" :title="note.tiene_titulo">{{ note.tiene_titulo }}</div>
+            <div class="flex_1 nowrap" :title="note.tiene_contenido">{{ note.tiene_contenido.length }}B</div>
+            <!--div class="flex_1 nowrap" :title="note.tiene_categorias">{{ note.tiene_categorias.split(";").length }}</div-->
+        </div>
+    </div>
+</div>`,
+  props: {
+    
+  },
+  data() {
+    this.$trace("lsw-notes.data");
+    return {
+      isLoaded: false,
+      allNotes: false,
+      currentError: this.error,
+    };
+  },
+  methods: {
+    setError(error = undefined) {
+      this.$trace("lsw-notes.methods.setError");
+      this.currentError = error;
+    },
+    async loadNotes() {
+      this.$trace("lsw-notes.methods.loadNotes");
+      // *@TODO: seleccionar e importar notes.
+      this.isLoaded = false;
+      const notes = await this.$lsw.database.selectMany("Nota");
+      const notesSorted = notes.sort((n1, n2) => {
+        const d1 = LswTimer.utils.getDateFromMomentoText(n1.tiene_fecha);
+        const d2 = LswTimer.utils.getDateFromMomentoText(n2.tiene_fecha);
+        if(d1 >= d2) return -1;
+        return 1;
+      });
+      this.allNotes = notesSorted;
+      this.isLoaded = true;
+    },
+    async openAddNoteDialog() {
+      this.$trace("lsw-notes.methods.openAddNoteDialog");
+      const response = await this.$lsw.dialogs.open({
+        title: "Nueva nota",
+        template: `<div class="pad_1 position_absolute top_0 right_0 left_0 bottom_0 flex_column">
+          <div class="flex_1">
+            <input class="width_100" type="text" v-model="value.tiene_fecha" placeholder="Fecha de la nota" ref="fecha" />
+          </div>
+          <div class="flex_1 flex_row centered" style="padding-top: 1px;">
+            <div class="flex_1">Estado: </div>
+            <select class="flex_100" v-model="value.tiene_estado">
+              <option value="creada">Creada</option>
+              <option value="procesada">Procesada</option>
+              <option value="dudosa">Dudosa</option>
+              <option value="desestimada">Desestimada</option>
+            </select>
+          </div>
+          <div class="flex_1" style="padding-top: 2px;">
+            <input class="width_100" type="text" v-model="value.tiene_categorias" placeholder="categoría 1; categoria 2; categoria 3" />
+          </div>
+          <div class="flex_100" style="padding-top: 1px;">
+            <textarea v-focus v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." ref="contenido" />
+          </div>
+          <div class="flex_1" style="padding-top: 2px;">
+            <input class="width_100" type="text" v-model="value.tiene_titulo" placeholder="Título de la nota" ref="titulo" />
+          </div>
+          <div class="flex_row pad_top_1">
+            <div class="flex_100"></div>
+            <div class="flex_1 flex_row">
+              <div class="pad_right_1">
+                <button class="mini" v-on:click="validate">➕ Añadir</button>
+              </div>
+              <div>
+                <button class="mini" v-on:click="cancel">❌ Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>`,
+        factory: {
+          methods: {
+            validate() {
+              const isValidFecha = LswTimer.parser.parse(this.value.tiene_fecha);
+              const isValidContenido = this.value.tiene_contenido.trim() !== "";
+              const isValidTitulo = this.value.tiene_titulo.trim() !== "";
+              if(!isValidTitulo) {
+                window.alert("Necesita un título la nota.");
+                return this.$refs.titulo.focus();
+              }
+              if(!isValidContenido) {
+                window.alert("Necesita un contenido la nota.");
+                return this.$refs.contenido.focus();
+              }
+              if(!isValidFecha) {
+                window.alert("Necesita una fecha válida la nota.");
+                return this.$refs.fecha.focus();
+              }
+              return this.accept();
+            }
+          },
+          data: {
+            value: {
+              tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date(), false, false, true),
+              tiene_titulo: "",
+              tiene_categorias: "",
+              tiene_contenido: "",
+              tiene_estado: "creada", // "procesada"
+            }
+          }
+        }
+      });
+      if(typeof response !== "object") return;
+      await this.$lsw.database.insert("Nota", response);
+      await this.loadNotes();
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-notes.mounted");
+      await this.loadNotes();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswNotes API
+
 (() => {
   let isFirstTime = true;
   const initialCode = `
@@ -27986,15 +26977,15 @@ rel correr
   Vue.component("App", {
     template: `<div>
 
-
     <div class="position_fixed top_auto left_auto"
         style="right: 8px; bottom: 8px;">
         <button class="danger_button"
-            v-on:click="resetDatabase">Reset database</button>
+            v-on:click="resetDatabase">⭕️</button>
         <button class="danger_button"
             v-on:click="goToDocs">📘</button>
     </div>
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
+    <lsw-automensajes-viewer />
     <template v-if="isMounted">
         <lsw-current-accion-viewer>
             <div class="pad_1 float_right">
@@ -41437,6 +40428,331 @@ LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled
   console.log("[*] Installing db");
   return LswUtils.waitForMilliseconds(1);
 });
+// @code.start: LswAutomensajesViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAutomensajesViewer API » LswAutomensajesViewer component
+Vue.component("LswAutomensajesViewer", {
+  template: `<div class="lsw_automensajes_viewer">
+    <div v-if="selectedAutomensaje" class="pad_1 pad_top_2 pad_left_2">
+        <div class="automensaje_block" v-on:click="refreshAutomessaging">
+            <span style="text-decoration: underline;">{{ selectedAutomensaje.tiene_contenido }}</span> * {{ automessagingSeconds }}s
+        </div>
+    </div>
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-automensajes-viewer.data");
+    return {
+      automensajes: [],
+      selectedAutomensaje: undefined,
+      automessagingId: undefined,
+      automessagingSeconds: 0,
+    };
+  },
+  methods: {
+    async loadAutomensajes() {
+      this.$trace("LswAutomensajesViewer.methods.loadAutomensajes", arguments);
+      const automensajes = await this.$lsw.database.selectMany("Automensaje");
+      this.automensajes = automensajes;
+    },
+    async sendAutomessage() {
+      this.$trace("LswAutomensajesViewer.methods.sendAutomessage", arguments);
+      await this.loadAutomensajes();
+      const availableAutomensajes = this.automensajes.filter(a => {
+        if((typeof this.selectedAutomensaje !== "object") || (typeof this.selectedAutomensaje.tiene_contenido !== "string")) return true;
+        return a.tiene_contenido !== this.selectedAutomensaje.tiene_contenido;
+      });
+      this.selectedAutomensaje = LswRandomizer.getRandomItem(availableAutomensajes);
+      console.log(this.selectedAutomensaje);
+      this.$forceUpdate(true);
+      this.startAutomessaging();
+    },
+    startAutomessaging() {
+      this.$trace("LswAutomensajesViewer.methods.startAutomessaging", arguments);
+      this.automessagingSeconds = LswRandomizer.getRandomIntegerBetween(5,15);
+      this.automessagingId = setTimeout(() => this.sendAutomessage(), this.automessagingSeconds * 1000);
+    },
+    stopAutomessaging() {
+      this.$trace("LswAutomensajesViewer.methods.stopAutomessaging");
+      clearTimeout(this.automessagingId);
+    },
+    async refreshAutomessaging() {
+      this.$trace("LswAutomensajesViewer.methods.refreshAutomessaging", arguments);
+      this.stopAutomessaging();
+      this.startAutomessaging();
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-automensajes-viewer.mounted");
+      await this.loadAutomensajes();
+      this.sendAutomessage();
+      await this.startAutomessaging();
+    } catch(error) {
+      console.log(error);
+    }
+  },
+  unmount() {
+    this.$trace("lsw-automensajes-viewer.unmount");
+    this.stopAutomessaging();
+  }
+});
+// @code.end: LswAutomensajesViewer API
+// @code.start: LswCurrentAccionViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswCurrentAccionViewer API » LswCurrentAccionViewer component
+Vue.component("LswCurrentAccionViewer", {
+  template: `<div class="lsw_current_accion_viewer">
+    <div class="flex_row centered pad_left_1 pad_top_1">
+        <div class="pad_left_1">
+            <button :class="{activated: selectedSection === 'despues'}"
+                v-on:click="() => selectSection('despues')">🕐⏩</button>
+        </div>
+        <div class="pad_left_1">
+            <button :class="{activated: selectedSection === 'antes'}"
+                v-on:click="() => selectSection('antes')">🕐⏪</button>
+        </div>
+        <div class="pad_left_1">
+            <button :class="{activated: selectedSection === 'calendario'}"
+                v-on:click="() => selectSection('calendario')">📆</button>
+        </div>
+        <div class="pad_left_1 flex_100">
+            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, false, true) }}
+        </div>
+        <div class="pad_left_1">
+            <slot />
+        </div>
+    </div>
+    <div class="scrollable_panel_viewer pad_2" v-if="selectedSection !== 'none'">
+        <div class="as_card">
+            <div class="pad_2"
+                v-if="selectedSection === 'antes'">
+                <template v-if="accionesAntes && accionesAntes.length">
+                    <div>Acciones anteriores:</div>
+                    <div class="tarjetas_de_accion">
+                        <div class="tarjeta_de_accion nowrap"
+                            v-for="accion, accionIndex in accionesAntes"
+                            v-bind:key="'accion_antes_' + accionIndex">
+                            <div>{{ accion.tiene_inicio }}</div>
+                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                            <div>{{ accion.tiene_duracion }}</div>
+                            <div class="cell_en_estado"
+                                :class="'estado_' + accion.tiene_estado"
+                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                            <!--div>{{ accion.tiene_parametros }}</div>
+                <div>{{ accion.tiene_resultados }}</div>
+                <div>{{ accion.tiene_comentarios }}</div-->
+                        </div>
+                    </div>
+                </template>
+                <div v-else
+                    class="pad_2">No hay acciones anteriores.</div>
+            </div>
+            <div class="pad_2"
+                v-if="selectedSection === 'despues'">
+                <template v-if="accionesDespues && accionesDespues.length">
+                    <div>Acciones posteriores:</div>
+                    <div class="tarjetas_de_accion">
+                        <div class="tarjeta_de_accion nowrap"
+                            v-for="accion, accionIndex in accionesDespues"
+                            v-bind:key="'accion_despues_' + accionIndex">
+                            <div>{{ accion.tiene_inicio }}</div>
+                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                            <div>{{ accion.tiene_duracion }}</div>
+                            <div class="cell_en_estado cursor_pointer"
+                                :class="'estado_' + accion.tiene_estado"
+                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                            <div>{{ accion.tiene_parametros }}</div>
+                            <div>{{ accion.tiene_resultados }}</div>
+                            <div>{{ accion.tiene_comentarios }}</div>
+                        </div>
+                    </div>
+                </template>
+                <div v-else
+                    class="pad_2">No hay acciones posteriores.</div>
+            </div>
+
+            <div class="pad_1"
+                v-if="selectedSection === 'calendario'">
+                <div class="">
+                    <div class="pad_1 pad_bottom_0">
+                        <lsw-agenda />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`,
+  props: {
+    
+  },
+  data() {
+    this.$trace("lsw-current-accion-viewer.data");
+    return {
+      currentDate: new Date(),
+      selectedSection: 'none', // 'antes', 'despues'
+      accionesAntes: false,
+      accionesDespues: false,
+    };
+  },
+  methods: {
+    selectSection(section) {
+      this.$trace("lsw-current-accion-viewer.selectSection");
+      if(this.selectedSection === section) {
+        this.selectedSection = "none";
+      } else {
+        this.selectedSection = section;
+      }
+      if(["antes", "despues"].indexOf(section) !== -1) {
+        this.loadAcciones();
+      } else {
+        this.$forceUpdate(true);
+      }
+    },
+    async loadAcciones() {
+      this.$trace("lsw-current-accion-viewer.loadAcciones");
+      const output = await this.$lsw.database.selectMany("Accion");
+      const estaHora = (() => {
+        const d = new Date();
+        d.setHours(0);
+        return d;
+      })();
+      const accionesAntes = [];
+      const accionesDespues = [];
+      output.forEach(accion => {
+        console.log(accion.tiene_inicio);
+        try {
+          const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
+          console.log(dateAccion);
+          if(dateAccion >= estaHora) {
+            accionesDespues.push(accion);
+          } else {
+            accionesAntes.push(accion);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+      this.accionesAntes = accionesAntes;
+      this.accionesDespues = accionesDespues;
+      this.$forceUpdate(true);
+    },
+    async alternarEstado(accion) {
+      this.$trace("lsw-current-accion-viewer.methods.alternarEstado");
+      const nextEstado = accion.tiene_estado === "pendiente" ? "completada" : 
+        accion.tiene_estado === "completada" ? "fallida" : "pendiente";
+      await this.$lsw.database.update("Accion", accion.id, {
+        ...accion,
+        tiene_estado: nextEstado
+      });
+      await this.loadAcciones();
+    },
+    startTimer() {
+      this.timerId = setTimeout(() => {
+        this.currentDate = new Date();
+        this.startTimer();
+      }, 1000);
+    },
+    stopTimer() {
+      clearTimeout(this.timerId);
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-current-accion-viewer.mounted");
+      await this.loadAcciones();
+      this.startTimer();
+    } catch(error) {
+      console.log(error);
+    }
+  },
+  unmount() {
+    this.stopTimer();
+  }
+});
+// @code.end: LswCurrentAccionViewer API
+// @code.start: LswProtolangEditor API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswProtolangEditor API » LswProtolangEditor component
+Vue.component("LswProtolangEditor", {
+  template: `<div class="lsw_protolang_editor">
+    <div class="pad_1">
+        <div class="flex_row">
+            <div class="flex_100"></div>
+            <div class="flex_1 pad_right_1">
+                <button class="danger_button" v-on:click="validateCode">✅</button>
+            </div>
+            <div class="flex_1">
+                <button class="danger_button" v-on:click="evaluateCode">⚡️</button>
+            </div>
+        </div>
+        <div class="pad_top_1">
+            <textarea class="nowrap" v-model="contents" :placeholder="placeholder" style="height: 380px;" spellcheck="false" />
+        </div>
+        <template v-if="error">
+            <lsw-error-viewer :error="error" :on-clear-error="() => error = false" />
+        </template>
+        <pre v-if="result" style="font-size:10px;">{{ result }}</pre>
+    </div>
+</div>`,
+  props: {
+    initialContents: {
+      type: String,
+      default: () => ""
+    }
+  },
+  data() {
+    this.$trace("lsw-protolang-editor.data");
+    return {
+      error: false,
+      result: false,
+      contents: this.initialContents,
+      placeholder: `rel correr
+  > cardio * 1
+  > musculación * 0.3
+  >> propagador de correr * []`
+    };
+  },
+  methods: {
+    setError(error) {
+      this.$trace("lsw-protolang-editor.methods.setError");
+      this.error = error;
+    },
+    setResult(result) {
+      this.$trace("lsw-protolang-editor.methods.setResult");
+      this.result = result;
+    },
+    async validateCode() {
+      this.$trace("lsw-protolang-editor.methods.validateCode");
+      try {
+        const value = this.contents;
+        const js = await Protolang.codify(value);
+        console.log(js);
+        this.setError(false);
+        this.setResult(js);
+      } catch (error) {
+        this.setError(error);
+      }
+    },
+    async evaluateCode() {
+      this.$trace("lsw-protolang-editor.methods.evaluateCode");
+      try {
+        const value = this.contents;
+        const js = await Protolang.codify(value);
+        console.log(js);
+        this.setError(false);
+      } catch (error) {
+        this.setError(error);
+      }
+    },
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-protolang-editor.mounted");
+      this.$window.protolangEditor = this;
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswProtolangEditor API
 $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -42189,10 +41505,63 @@ $proxifier.define("org.allnulled.lsw-conductometria.Nota", {
 
   }
 });
+$proxifier.define("org.allnulled.lsw-conductometria.Automensaje", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Automensaje@SchemaEntity";
+    }
+    static getName() {
+      return "Automensaje";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_contenido: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene contenido:",
+          hasDescription: "El contenido de este automensaje. Permite markdown.",
+          hasPlaceholder: "El **contenido** de tu automensaje o artículo.",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Automensaje@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "automensaje"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
 const boot = async function () {
   try {
-
-    Step_0_organize_api: {
+    Step_1_organize_api: {
       Vue.prototype.$noop = () => { };
       Vue.prototype.$window = window;
       Vue.prototype.$console = console;
@@ -42238,13 +41607,11 @@ const boot = async function () {
         // Vue.prototype.$lsw.classes.Windows = LswWindows;
         // Vue.prototype.$lsw.classes.Toasts = LswToasts;
       }
-    }
-
-    Step_1_remove_intersitial: {
       window.lsw = Vue.prototype.$lsw;
+    }
+    Step_2_remove_intersitial: {
       importer.$removeIntersitial();
     }
-
   } catch (error) {
     console.error(error);
     console.log("[!] Boot failed");
@@ -42252,224 +41619,23 @@ const boot = async function () {
 };
 
 window.addEventListener("load", boot);
-LswLifecycle.hooks.register("app:load_modules", "load_all_modules", async () => {
+LswLifecycle.hooks.register("app:load_modules", "inject_application", async () => {
   try {
-    Step_1_inject_modules: {
-      // await LswLifecycle.loadModule("app");
-      // await importer.scriptSrc("assets/lib/jquery/jquery-v3.7.1.js");
-      // await importer.scriptSrc("assets/lib/marked/marked.js");
-      // await LswLifecycle.loadModule("org.allnulled.lsw-agenda-ui");
-      // await LswLifecycle.loadModule("org.allnulled.lsw-conductometria");
-      // await LswLifecycle.loadModule("org.allnulled.lsw.db");
-      // await LswLifecycle.loadModule("org.allnulled.lsw.fs");
-      // await LswLifecycle.loadModule("org.allnulled.lsw.wiki");
+    Step_1_inject_application_component: {
+      await LswLifecycle.loadModule("app");
+    }
+    Step_2_inject_application: {
+      if (!Vue.options.components.App) {
+        throw new Error("Required Vue.js (v2) component «App» to be defined on «LswLifecycle.onRunApplication» for hook «app:run_application»");
+      }
+      const vueInstance = new Vue({
+        render: h => h(Vue.options.components.App),
+      }).$mount("#app");
     }
   } catch (error) {
     console.error(error);
   }
 });
 
-LswLifecycle.hooks.register("app:all_loaded", "inject_development_point", async () => {
-  Step_2_inject_development_point: {
-    try {
-      console.log("[*] Application is ready here!");
-      // @TOUNCOMMENT:
-      // return;
-      Load_e2e_utils: {
-        window.filterDomElements = function (selector, filterCallback, base = document) {
-          return Array.from(base.querySelectorAll(selector)).filter(filterCallback);
-        };
-        window.getButtonFromLswTableCellText = function (text, buttonIndex = 0, context = undefined, selector = ".lsw_database_ui table td.data_cell") {
-          return jQuery(selector, context).filter((i, cell) => {
-            return cell.textContent.trim() === text
-          }).eq(0).closest("tr").find("button").eq(buttonIndex);
-        };
-      }
-
-      Working_on_filesystem: {
-        break Working_on_filesystem;
-        document.querySelector("#windows_pivot_button").click();
-        await waitForMilliseconds(100);
-        filterDomElements(".main_tab_topbar > button", button => button.textContent.trim() === "📂 Files")[0].click();
-        await waitForMilliseconds(100);
-      }
-
-      Fill_database_with_limitadores_fake: {
-        if(process.env.NODE_ENV === "production") {
-          break Fill_database_with_limitadores_fake
-        };
-        await Vue.prototype.$lsw.database.deleteMany("Limitador", it => true);
-        await Vue.prototype.$lsw.database.insertMany("Limitador", [{
-          en_concepto: "Ejercicio físico * 1 al día",
-          tiene_funcion: (async function() {
-            const hoy = new Date();
-            const fechaDeHoy = `${hoy.getFullYear()}/${((hoy.getMonth() +1) + "").padStart(2, "0")}/${(hoy.getDate() + "").padStart(2, "0")}`;
-            const acciones = await this.$lsw.database.selectMany("Accion", accion => {
-              return accion.tiene_inicio.startsWith(fechaDeHoy);
-            });
-            const ejerciciosFisicos = [];
-            for(let index=0; index<acciones.length; index++) {
-              const accion = acciones[index];
-              const isAccepted = accion.en_concepto === "Ejercicio físico";
-              if(isAccepted) {
-                ejerciciosFisicos.push(accion);
-              }
-            }
-            if(!ejerciciosFisicos.length) {
-              throw new Error("Debes hacer ejercicio físico 1 vez al día");
-            }
-          }).toString()
-        }]);
-      }
-
-      break Step_2_inject_development_point;
-      // Vue.prototype.$consoleHooker.instance.restoreConsole();
-      Fill_database: {
-        await Vue.prototype.$lsw.database.insert("Accion", {
-          en_concepto: "Desayunar",
-          tiene_detalles: "ajo, cacao, leche, tostada, miel, mermelada",
-          tiene_inicio: "2025/03/16 08:00",
-          tiene_estado: "completada",
-          tiene_duracion: "50min",
-          tiene_descripcion: "",
-          tiene_aprendizaje: "",
-          tiene_aprendizajes: "",
-        });
-        await Vue.prototype.$lsw.database.insert("Accion", {
-          en_concepto: "Comer",
-          tiene_detalles: "comida en general",
-          tiene_inicio: "2025/03/16 14:00",
-          tiene_estado: "pendiente",
-          tiene_duracion: "50min",
-          tiene_descripcion: "",
-          tiene_aprendizaje: "",
-        });
-        await Vue.prototype.$lsw.database.insert("Accion", {
-          en_concepto: "Cenar",
-          tiene_detalles: "sopa, tortilla",
-          tiene_inicio: "2025/03/16 21:00",
-          tiene_estado: "fallida",
-          tiene_duracion: "50min",
-          tiene_descripcion: "",
-          tiene_aprendizaje: "",
-        });
-        await Vue.prototype.$lsw.database.insert("Accion", {
-          en_concepto: "Cenar",
-          tiene_detalles: "sopa, tortilla",
-          tiene_inicio: "2025/03/16 14:00",
-          tiene_estado: "pendiente",
-          tiene_duracion: "50min",
-          tiene_descripcion: "",
-          tiene_aprendizaje: "",
-          tiene_aprendizajes: "",
-        });
-        await Vue.prototype.$lsw.database.insert("Concepto", {
-          tiene_nombre: "Desayunar",
-          tiene_detalles: "No especificados",
-          tiene_descripcion: "No especificada",
-          tiene_aprendizaje: "No todavía",
-          tiene_aprendizajes: "No todavía",
-        });
-        await Vue.prototype.$lsw.database.insert("Concepto", {
-          tiene_nombre: "Comer",
-          tiene_detalles: "No especificados",
-          tiene_descripcion: "No especificada",
-          tiene_aprendizaje: "No todavía",
-          tiene_aprendizajes: "No todavía",
-        });
-        await Vue.prototype.$lsw.database.insert("Concepto", {
-          tiene_nombre: "Cenar",
-          tiene_detalles: "No especificados",
-          tiene_descripcion: "No especificada",
-          tiene_aprendizaje: "No todavía",
-          tiene_aprendizajes: "No todavía",
-        });
-        await Vue.prototype.$lsw.database.insert("Concepto", {
-          tiene_nombre: "Merendar",
-          tiene_detalles: "No especificados",
-          tiene_descripcion: "No especificada",
-          tiene_aprendizaje: "No todavía",
-          tiene_aprendizajes: "No todavía",
-        });
-        await Vue.prototype.$lsw.database.insert("Concepto", {
-          tiene_nombre: "Almorzar",
-          tiene_detalles: "No especificados",
-          tiene_descripcion: "No especificada",
-          tiene_aprendizaje: "No todavía",
-          tiene_aprendizajes: "No todavía",
-        });
-        await Vue.prototype.$lsw.database.insert("Concepto", {
-          tiene_nombre: "Tomar un tentempié",
-          tiene_detalles: "No especificados",
-          tiene_descripcion: "No especificada",
-          tiene_aprendizaje: "No todavía",
-          tiene_aprendizajes: "No todavía",
-        });
-        await Vue.prototype.$lsw.database.insert("Limitador", {
-          en_concepto: "Dormir",
-          tiene_funcion: "console.log('ok')",
-        });
-      }
-
-      // return;
-
-      Working_on_database_ui: {
-        break Working_on_database_ui;
-        document.querySelector("#windows_pivot_button").click();
-        await waitForMilliseconds(100);
-        filterDomElements(".main_tab_topbar > button", button => button.textContent.trim() === "Data")[0].click();
-        await waitForMilliseconds(100);
-        Working_on_insert_task_form: {
-          getButtonFromLswTableCellText("lsw_default_database", 1).click();
-          await waitForMilliseconds(100);
-          getButtonFromLswTableCellText("Concepto", 1).click();
-          await waitForMilliseconds(100);
-          getButtonFromLswTableCellText("Desayunar", 1).click();
-          break Working_on_database_ui;
-        }
-        Working_on_insert_task_form: {
-          break Working_on_database_ui;
-          getButtonFromLswTableCellText("lsw_default_database", 1).click();
-          await waitForMilliseconds(100);
-          getButtonFromLswTableCellText("Accion", 1).click();
-          await waitForMilliseconds(100);
-          getButtonFromLswTableCellText("Desayunar", 1).click();
-          break Working_on_database_ui;
-          await waitForMilliseconds(100);
-          getButtonFromLswTableCellText("Impresion_de_concepto", 1).click();
-          await waitForMilliseconds(100);
-          filterDomElements("button", button => button.textContent.trim() === "➕")[0].click();
-          await waitForMilliseconds(100);
-
-        }
-      }
-      Working_on_agenda: {
-        // break Working_on_agenda;
-        // document.querySelector("#windows_pivot_button").click();
-        // await waitForMilliseconds(100);
-        // filterDomElements(".main_tab_topbar > button", button => button.textContent.trim() === "Agenda")[0].click();
-        // await waitForMilliseconds(100);
-        Working_on_insert_task_form: {
-          // break Working_on_insert_task_form;
-          filterDomElements(".dia_de_calendario_texto", button => button.textContent.trim() === "16")[0].click();
-          await waitForMilliseconds(100);
-          break Working_on_insert_task_form;
-          filterDomElements(".lsw_agenda", el => true)[0].__vue__.selectContext("accion.add");
-          await waitForMilliseconds(100);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
+LswLifecycle.start().then(console.log).catch(console.error);
 });
-
-LswLifecycle.hooks.register("app:load_application", "inject_vue_app_on_dom", async () => {
-  Step_3_deploy_application: {
-    const vueInstance = new Vue({
-      render: h => h(Vue.options.components.App),
-    }).$mount("#app");
-  }
-});
-
-LswLifecycle.start();

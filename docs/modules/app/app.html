@@ -1,14 +1,14 @@
 <div>
 
-
     <div class="position_fixed top_auto left_auto"
         style="right: 8px; bottom: 8px;">
         <button class="danger_button"
-            v-on:click="resetDatabase">Reset database</button>
+            v-on:click="resetDatabase">⭕️</button>
         <button class="danger_button"
             v-on:click="goToDocs">📘</button>
     </div>
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
+    <lsw-automensajes-viewer />
     <template v-if="isMounted">
         <lsw-current-accion-viewer>
             <div class="pad_1 float_right">

@@ -1,7 +1,6 @@
 const boot = async function () {
   try {
-
-    Step_0_organize_api: {
+    Step_1_organize_api: {
       Vue.prototype.$noop = () => { };
       Vue.prototype.$window = window;
       Vue.prototype.$console = console;
@@ -47,13 +46,11 @@ const boot = async function () {
         // Vue.prototype.$lsw.classes.Windows = LswWindows;
         // Vue.prototype.$lsw.classes.Toasts = LswToasts;
       }
-    }
-
-    Step_1_remove_intersitial: {
       window.lsw = Vue.prototype.$lsw;
+    }
+    Step_2_remove_intersitial: {
       importer.$removeIntersitial();
     }
-
   } catch (error) {
     console.error(error);
     console.log("[!] Boot failed");

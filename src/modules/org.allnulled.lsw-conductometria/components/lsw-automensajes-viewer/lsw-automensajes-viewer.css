@@ -1,0 +1,17 @@
+.lsw_automensajes_viewer {}
+
+
+.automensaje_block {
+    border: 1px solid #CCC;
+    box-shadow: 0 0 4px black;
+    background-color: #333;
+    color: #CCC;
+    padding: 10px;
+    text-shadow: 0 0 1px white;
+    transition: background-color .2s linear;
+    cursor: pointer;
+}
+
+.automensaje_block:hover {
+    background-color: #446;
+}

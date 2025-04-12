@@ -76,11 +76,20 @@ class vuebundler {
     for(let index_node=0; index_node<nodes.length; index_node++) {
       let templateHtml = "";
       const node = nodes[index_node];
-      const files = [
+      const isJs = node.endsWith(".js");
+      const isCss = node.endsWith(".css");
+      const files = (isJs || isCss) ? [node] : [
         node + ".html",
         node + ".js",
         node + ".css",
       ];
+      if(isJs) {
+        console.log(`[${index_node}] adding js ${node}`);
+      } else if(isCss) {
+        console.log(`[${index_node}] adding css ${node}`);
+      } else {
+        console.log(`[${index_node}] adding component ${node}`);
+      }
       for(let index=0; index<files.length; index++) {
         const file = files[index];
         const filepath = path.resolve(file);
@@ -105,13 +114,20 @@ class vuebundler {
         if(filename.endsWith(".html")) {
           templateHtml = this.printAsString(content);
         } else if(filename.endsWith(".js")) {
-          bundlingJs += this.replaceTemplate(content, templateHtml) + "\n";
+          if(templateHtml.length) {
+            bundlingJs += this.replaceTemplate(content, templateHtml) + "\n";
+          } else {
+            bundlingJs += content + "\n";
+          }
         } else if(filename.endsWith(".css")) {
           bundlingCss += content + "\n";
         }
       }
     }
     bundlingJs += this._closer();
+    console.log("[*] Generating: ");
+    console.log("  - " + outputpathJs);
+    console.log("  - " + outputpathCss);
     fs.writeFileSync(outputpathJs, bundlingJs, "utf8");
     fs.writeFileSync(outputpathCss, bundlingCss, "utf8");
     return this;

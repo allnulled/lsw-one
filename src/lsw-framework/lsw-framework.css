@@ -1,3 +1,81 @@
+/* // @code.start: Lsw Styling Structure | @$section: Lsw Styles » Lsw Styling Structure */
+/* // @code.end: Lsw Styling Structure */
+/* // @code.start: Lsw Styling Theme | @$section: Lsw Styles » Lsw Styling Theme */
+/* // @code.end: Lsw Styling Theme */
+/* // @code.start: Lsw Styling Framework | @$section: Lsw Styles » Lsw Styling Framework */
+/* RESET STYLES */
+h3 {
+    margin: 0;
+    padding: 4px;
+}
+
+/* STYLE-BASED COMPONENTS */
+.pill_group {
+
+}
+.pill_group > * {
+    border-radius: 0pt;
+}
+.pill_group > *:first-child {
+    border-top-left-radius: 2pt;
+    border-bottom-left-radius: 2pt;
+}
+.pill_group > *:last-child {
+    border-top-right-radius: 2pt;
+    border-bottom-right-radius: 2pt;
+}
+
+table.collapsed_table {
+    border-collapse: collapse;
+    border: 1px solid #999;
+}
+table.collapsed_table > thead > tr > th {
+    /*padding: 8px;*/
+    background-color: black;
+    color: white;
+    border-right: 1px solid #999;
+    vertical-align: middle;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-bottom: 1px solid white;
+}
+table.collapsed_table > thead > tr > th:last-child {
+    border-right: none;
+}
+
+table.basic_table {
+    border-collapse: collapse;
+    border: 0px solid white;
+}
+table.basic_table > tbody > tr:nth-child(odd) {
+    background-color: #FFF;
+}
+table.basic_table > tbody > tr > td {
+    vertical-align: top;
+}
+table.basic_table > thead > tr,
+table.basic_table > tbody > tr:nth-child(even) {
+    background-color: #DDD;
+}
+table.basic_table > thead > tr > th {
+    
+}
+table.basic_table > thead > tr > th:last-child {
+    border-right: none solid white;
+}
+
+/* INLINE RULES */
+.display_block { display: block; }
+.display_flex_row { display: flex; flex-direction: row; }
+.display_flex_column { display: flex; flex-direction: column; }
+.display_inline_block { display: inline-block; }
+.text_align_center { text-align: center; }
+.text_align_left { text-align: left; }
+.text_align_right { text-align: right; }
+.width_100 { width: 100%; }
+.width_1 { width: 1%; }
+.width_auto { width: auto; }
+/* // @code.end: Lsw Styling Framework */
 :root {
     --altura_de_dias_de_calendario: 40px;
 }
@@ -1511,101 +1589,6 @@ select.form_control {
 .lsw_ref_object_control {}
 .lsw_ref_list_control {}
 .lsw_ref_relation_control {}
-.lsw_current_accion_viewer {
-
-}
-.scrollable_panel_viewer {
-    min-height: 3px;
-    max-height: 320px;
-    overflow: scroll;
-    border-top: 3px double #333;
-    border-bottom: 3px double #333;
-}
-.tarjetas_de_accion {
-    border-top: 1px solid #222;
-    border-right: 0px solid #222;
-}
-.tarjeta_de_accion {
-    display: flex;
-    flex-direction: row;
-    border-top: 0px solid #222;
-    border-right: 1px solid #222;
-}
-.tarjeta_de_accion > div {
-    white-space: no-wrap;
-    padding: 8px;
-    border: 1px solid #222;
-    border-right: 0px solid #222;
-    border-top: 0px solid #222;
-}
-.tarjeta_de_accion > .cell_en_concepto {
-    
-}
-.tarjeta_de_accion > .cell_en_estado {
-    cursor: pointer;
-}
-.tarjeta_de_accion > .cell_en_estado.estado_pendiente {
-    background-color: yellow;
-}
-.tarjeta_de_accion > .cell_en_estado.estado_completada {
-    background-color: rgb(30, 255, 0);
-}
-.tarjeta_de_accion > .cell_en_estado.estado_fallida {
-    background-color: red;
-}
-
-:root {
-    --middle-color: #000;
-}
-
-.lsw_notes {}
-
-.lsw_notes .titulo_de_notas {
-    border: 1px solid #C1C630;
-    border-radius: 2pt;
-    box-shadow: 0 0 3px black;
-    background-color: var(--middle-color);
-    color: white;
-    padding: 12px;
-    animation: changeMiddle 160s infinite linear;
-    transition: background-color 1s linear;
-}
-
-.note_card > div {
-    border-left: 1px solid white;
-    padding: 4px;
-}
-
-.note_card > .date_cell {
-    border-left: 0px solid white;
-}
-
-.note_card {
-    border: 1px solid #CCC;
-    box-shadow: 0 0 3px black;
-    background-color: #111;
-    color: white;
-    padding: 0px;
-    margin-bottom: 0px;
-}
-
-@keyframes changeMiddle {
-    0% {
-      background-color: #00806e;
-    }
-    33% {
-      background-color: #ff5500;
-    }
-    66% {
-      background-color: #5533ff;
-    }
-    100% {
-      background-color: #00806e;
-    }
-  }
-
-
-
 .lsw-schema-based-form {}
 
 .schema_form_top_panel {
@@ -1667,6 +1650,58 @@ select.form_control {
 }
 
 
+:root {
+    --middle-color: #000;
+}
+
+.lsw_notes {}
+
+.lsw_notes .titulo_de_notas {
+    border: 1px solid #C1C630;
+    border-radius: 2pt;
+    box-shadow: 0 0 3px black;
+    background-color: var(--middle-color);
+    color: white;
+    padding: 12px;
+    animation: changeMiddle 160s infinite linear;
+    transition: background-color 1s linear;
+}
+
+.note_card > div {
+    border-left: 1px solid white;
+    padding: 4px;
+}
+
+.note_card > .date_cell {
+    border-left: 0px solid white;
+}
+
+.note_card {
+    border: 1px solid #CCC;
+    box-shadow: 0 0 3px black;
+    background-color: #111;
+    color: white;
+    padding: 0px;
+    margin-bottom: 0px;
+}
+
+@keyframes changeMiddle {
+    0% {
+      background-color: #00806e;
+    }
+    33% {
+      background-color: #ff5500;
+    }
+    66% {
+      background-color: #5533ff;
+    }
+    100% {
+      background-color: #00806e;
+    }
+  }
+
+
+
 * {
     box-sizing: border-box;
 }
@@ -1695,8 +1730,8 @@ button {
     background-color: black;
     color: white;
     margin-bottom: 0px;
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 32px;
+    min-height: 32px;
     white-space: nowrap;
     overflow: hidden;
 }
@@ -2020,82 +2055,3 @@ table.tabla_de_conductometria .minibutton {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
-/* // @code.start: Lsw Styling Structure | @$section: Lsw Styles » Lsw Styling Structure */
-/* // @code.end: Lsw Styling Structure */
-/* // @code.start: Lsw Styling Theme | @$section: Lsw Styles » Lsw Styling Theme */
-/* // @code.end: Lsw Styling Theme */
-/* // @code.start: Lsw Styling Framework | @$section: Lsw Styles » Lsw Styling Framework */
-/* RESET STYLES */
-h3 {
-    margin: 0;
-    padding: 4px;
-}
-
-/* STYLE-BASED COMPONENTS */
-.pill_group {
-
-}
-.pill_group > * {
-    border-radius: 0pt;
-}
-.pill_group > *:first-child {
-    border-top-left-radius: 2pt;
-    border-bottom-left-radius: 2pt;
-}
-.pill_group > *:last-child {
-    border-top-right-radius: 2pt;
-    border-bottom-right-radius: 2pt;
-}
-
-table.collapsed_table {
-    border-collapse: collapse;
-    border: 1px solid #999;
-}
-table.collapsed_table > thead > tr > th {
-    /*padding: 8px;*/
-    background-color: black;
-    color: white;
-    border-right: 1px solid #999;
-    vertical-align: middle;
-    padding-left: 8px;
-    padding-right: 8px;
-    border-bottom: 1px solid white;
-}
-table.collapsed_table > thead > tr > th:last-child {
-    border-right: none;
-}
-
-table.basic_table {
-    border-collapse: collapse;
-    border: 0px solid white;
-}
-table.basic_table > tbody > tr:nth-child(odd) {
-    background-color: #FFF;
-}
-table.basic_table > tbody > tr > td {
-    vertical-align: top;
-}
-table.basic_table > thead > tr,
-table.basic_table > tbody > tr:nth-child(even) {
-    background-color: #DDD;
-}
-table.basic_table > thead > tr > th {
-    
-}
-table.basic_table > thead > tr > th:last-child {
-    border-right: none solid white;
-}
-
-/* INLINE RULES */
-.display_block { display: block; }
-.display_flex_row { display: flex; flex-direction: row; }
-.display_flex_column { display: flex; flex-direction: column; }
-.display_inline_block { display: inline-block; }
-.text_align_center { text-align: center; }
-.text_align_left { text-align: left; }
-.text_align_right { text-align: right; }
-.width_100 { width: 100%; }
-.width_1 { width: 1%; }
-.width_auto { width: auto; }
-/* // @code.end: Lsw Styling Framework */

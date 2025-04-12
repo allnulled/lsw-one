@@ -43,6 +43,10 @@ LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled
       tiene_estado: "creada",
       tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date())
     }];
+
+    all.automensajes = [{
+      tiene_contenido: "Esto es un automensaje"
+    }];
   
     LswLifecycle.hooks.register("app:seed_database", "seed_database:org.allnulled.lsw-conductometria", async function () {
       console.log("[*] Seeding conductometria database");
@@ -51,6 +55,7 @@ LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled
       await lsw.database.insertMany("Propagador_prototipo", all.propagadores_prototipo);
       await lsw.database.insertMany("Propagador_de_concepto", all.propagadores_de_concepto);
       await lsw.database.insertMany("Nota", all.notas);
+      await lsw.database.insertMany("Automensaje", all.automensajes);
       return LswUtils.waitForMilliseconds(1);
     });
   

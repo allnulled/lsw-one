@@ -1567,7 +1567,7 @@ select.form_control {
     background-color: var(--middle-color);
     color: white;
     padding: 12px;
-    animation: changeMiddle 40s infinite ease-in-out;
+    animation: changeMiddle 160s infinite linear;
     transition: background-color 1s linear;
 }
 
@@ -3590,7 +3590,7 @@ select.form_control {
     background-color: var(--middle-color);
     color: white;
     padding: 12px;
-    animation: changeMiddle 40s infinite ease-in-out;
+    animation: changeMiddle 160s infinite linear;
     transition: background-color 1s linear;
 }
 

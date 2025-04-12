@@ -63,6 +63,15 @@ Vue.component("LswCurrentAccionViewer", {
         tiene_estado: nextEstado
       });
       await this.loadAcciones();
+    },
+    startTimer() {
+      this.timerId = setTimeout(() => {
+        this.currentDate = new Date();
+        this.startTimer();
+      }, 1000);
+    },
+    stopTimer() {
+      clearTimeout(this.timerId);
     }
   },
   watch: {},
@@ -70,8 +79,12 @@ Vue.component("LswCurrentAccionViewer", {
     try {
       this.$trace("lsw-current-accion-viewer.mounted");
       await this.loadAcciones();
+      this.startTimer();
     } catch(error) {
       console.log(error);
     }
+  },
+  unmount() {
+    this.stopTimer();
   }
 });

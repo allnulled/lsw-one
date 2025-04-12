@@ -5681,7 +5681,7 @@ Vue.component("LswCurrentAccionViewer", {
                 v-on:click="() => selectSection('calendario')">📆</button>
         </div>
         <div class="pad_left_1 flex_100">
-            {{ LswTimer.utils.formatDatestringFromDate(currentDate) }}
+            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, false, true) }}
         </div>
         <div class="pad_left_1">
             <slot />
@@ -5810,6 +5810,15 @@ Vue.component("LswCurrentAccionViewer", {
         tiene_estado: nextEstado
       });
       await this.loadAcciones();
+    },
+    startTimer() {
+      this.timerId = setTimeout(() => {
+        this.currentDate = new Date();
+        this.startTimer();
+      }, 1000);
+    },
+    stopTimer() {
+      clearTimeout(this.timerId);
     }
   },
   watch: {},
@@ -5817,9 +5826,13 @@ Vue.component("LswCurrentAccionViewer", {
     try {
       this.$trace("lsw-current-accion-viewer.mounted");
       await this.loadAcciones();
+      this.startTimer();
     } catch(error) {
       console.log(error);
     }
+  },
+  unmount() {
+    this.stopTimer();
   }
 });
 // @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component

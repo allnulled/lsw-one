@@ -1011,13 +1011,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 209113,
-          "line": 5825,
+          "offset": 209406,
+          "line": 5838,
           "column": 1
         },
         "end": {
-          "offset": 209225,
-          "line": 5826,
+          "offset": 209518,
+          "line": 5839,
           "column": 1
         }
       },
@@ -1030,13 +1030,13 @@
       "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
       "$location": {
         "start": {
-          "offset": 214495,
-          "line": 5954,
+          "offset": 214788,
+          "line": 5967,
           "column": 1
         },
         "end": {
-          "offset": 214627,
-          "line": 5955,
+          "offset": 214920,
+          "line": 5968,
           "column": 1
         }
       },
@@ -5300,13 +5300,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 209113,
-                  "line": 5825,
+                  "offset": 209406,
+                  "line": 5838,
                   "column": 1
                 },
                 "end": {
-                  "offset": 209225,
-                  "line": 5826,
+                  "offset": 209518,
+                  "line": 5839,
                   "column": 1
                 }
               },
@@ -5340,13 +5340,13 @@
               "$file": "/home/carlos/Escritorio/lsw-one/src/interware/components-distribution.js",
               "$location": {
                 "start": {
-                  "offset": 214495,
-                  "line": 5954,
+                  "offset": 214788,
+                  "line": 5967,
                   "column": 1
                 },
                 "end": {
-                  "offset": 214627,
-                  "line": 5955,
+                  "offset": 214920,
+                  "line": 5968,
                   "column": 1
                 }
               },

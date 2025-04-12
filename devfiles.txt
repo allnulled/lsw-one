@@ -2,7 +2,6 @@ src/lsw-framework/src/directives/v-descriptor/v-descriptor.js
 src/boot.js
 src/preboot.js
 src/runner.js
-src/runner.js
 src/modules
 src/lsw-framework/src/apis
 src/lsw-framework/src/components

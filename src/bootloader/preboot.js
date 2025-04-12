@@ -8,6 +8,6 @@ Start_environment: {
 
 Set_global_configurations: {
   // Cambiar cuando se quiera resetear el esquema:
-  process.env.LSW_RESET_DATABASE = 0;
   process.env.LSW_RESET_DATABASE = 1;
+  process.env.LSW_RESET_DATABASE = 0;
 }

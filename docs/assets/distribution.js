@@ -15807,6 +15807,8 @@ return Store;
   }
 })(function () {
 
+    // @code.start: LswTimer API | @$section: LswTimer API » LswTimer classes and functions
+    // exported to LswTimer
   const Timeformat_utils = {};
 
   Timeformat_utils.formatHour = function (horaInput, minutoInput) {
@@ -15815,7 +15817,7 @@ return Store;
     return `${hora}:${minuto}`;
   };
 
-  Timeformat_utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false) {
+  Timeformat_utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false) {
     if(typeof dateObject === "undefined") {
       return undefined;
     }
@@ -15827,7 +15829,8 @@ return Store;
     }
     const hora = ("" + (dateObject.getHours() ?? 0)).padStart(2, '0');
     const minuto = ("" + (dateObject.getMinutes() ?? 0)).padStart(2, '0');
-    return `${anio}/${mes}/${dia} ${hora}:${minuto}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
+    const segundo = setSeconds ? ("" + (dateObject.getSeconds() ?? 0)).padStart(2, '0') : false;
+    return `${anio}/${mes}/${dia} ${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
   };
 
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
@@ -16028,6 +16031,7 @@ return Store;
     parser: Timeformat_parser,
     utils: Timeformat_utils
   };
+  // @code.end: LswTimer API
 
 });
 
@@ -26716,7 +26720,7 @@ Vue.component("LswDateControl", {
     setValueFromCalendar(v) {
       this.$trace("lsw-date-control.methods.setValueFromCalendar");
       console.log("Valor:", v);
-      const value = LswTimer.utils.formatDatestringFromDate(v);
+      const value = LswTimer.utils.formatDatestringFromDate(v, false, false, true);
       if(this.formMode === "datetime") {
         this.value = value;
       } else if(this.formMode === "date") {
@@ -27385,9 +27389,10 @@ Vue.component("LswNotes", {
     <div class="titulo_de_notas">Últimas notas:</div>
     <div class="pad_2 pad_left_0 pad_right_0" v-if="isLoaded">
         <div class="note_card flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
-            <div class="flex_100 nowrap">{{ note.tiene_contenido }}</div>
-            <div class="flex_1 nowrap">{{ note.tiene_titulo }}</div>
-            <div class="flex_1 nowrap">{{ note.tiene_categorias }}</div>
+            <div class="flex_1 nowrap date_cell" :title="note.tiene_fecha" style="text-align: ltr;">{{ note.tiene_fecha.split(" ")[1] || note.tiene_fecha }}</div>
+            <div class="flex_100 nowrap shortable_text" :title="note.tiene_titulo">{{ note.tiene_titulo }}</div>
+            <div class="flex_1 nowrap" :title="note.tiene_contenido">{{ note.tiene_contenido.length }}B</div>
+            <!--div class="flex_1 nowrap" :title="note.tiene_categorias">{{ note.tiene_categorias.split(";").length }}</div-->
         </div>
     </div>
 </div>`,
@@ -27427,10 +27432,7 @@ Vue.component("LswNotes", {
         title: "Nueva nota",
         template: `<div class="pad_1 position_absolute top_0 right_0 left_0 bottom_0 flex_column">
           <div class="flex_1">
-            <input class="width_100" type="text" v-model="value.tiene_fecha" placeholder="Fecha de la nota" />
-          </div>
-          <div class="flex_1" style="padding-top: 1px;">
-            <input class="width_100" type="text" v-model="value.tiene_titulo" placeholder="Título de la nota" />
+            <input class="width_100" type="text" v-model="value.tiene_fecha" placeholder="Fecha de la nota" ref="fecha" />
           </div>
           <div class="flex_1 flex_row centered" style="padding-top: 1px;">
             <div class="flex_1">Estado: </div>
@@ -27445,24 +27447,47 @@ Vue.component("LswNotes", {
             <input class="width_100" type="text" v-model="value.tiene_categorias" placeholder="categoría 1; categoria 2; categoria 3" />
           </div>
           <div class="flex_100" style="padding-top: 1px;">
-            <textarea v-focus v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." />
+            <textarea v-focus v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." ref="contenido" />
+          </div>
+          <div class="flex_1" style="padding-top: 2px;">
+            <input class="width_100" type="text" v-model="value.tiene_titulo" placeholder="Título de la nota" ref="titulo" />
           </div>
           <div class="flex_row pad_top_1">
             <div class="flex_100"></div>
             <div class="flex_1 flex_row">
               <div class="pad_right_1">
-                <button v-on:click="accept">Añadir</button>
+                <button class="mini" v-on:click="validate">➕ Añadir</button>
               </div>
               <div>
-                <button v-on:click="cancel">Cancelar</button>
+                <button class="mini" v-on:click="cancel">❌ Cancelar</button>
               </div>
             </div>
           </div>
         </div>`,
         factory: {
+          methods: {
+            validate() {
+              const isValidFecha = LswTimer.parser.parse(this.value.tiene_fecha);
+              const isValidContenido = this.value.tiene_contenido.trim() !== "";
+              const isValidTitulo = this.value.tiene_titulo.trim() !== "";
+              if(!isValidTitulo) {
+                window.alert("Necesita un título la nota.");
+                return this.$refs.titulo.focus();
+              }
+              if(!isValidContenido) {
+                window.alert("Necesita un contenido la nota.");
+                return this.$refs.contenido.focus();
+              }
+              if(!isValidFecha) {
+                window.alert("Necesita una fecha válida la nota.");
+                return this.$refs.fecha.focus();
+              }
+              return this.accept();
+            }
+          },
           data: {
             value: {
-              tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date()),
+              tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date(), false, false, true),
               tiene_titulo: "",
               tiene_categorias: "",
               tiene_contenido: "",

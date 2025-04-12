@@ -37,10 +37,7 @@ Vue.component("LswNotes", {
         title: "Nueva nota",
         template: `<div class="pad_1 position_absolute top_0 right_0 left_0 bottom_0 flex_column">
           <div class="flex_1">
-            <input class="width_100" type="text" v-model="value.tiene_fecha" placeholder="Fecha de la nota" />
-          </div>
-          <div class="flex_1" style="padding-top: 1px;">
-            <input class="width_100" type="text" v-model="value.tiene_titulo" placeholder="Título de la nota" />
+            <input class="width_100" type="text" v-model="value.tiene_fecha" placeholder="Fecha de la nota" ref="fecha" />
           </div>
           <div class="flex_1 flex_row centered" style="padding-top: 1px;">
             <div class="flex_1">Estado: </div>
@@ -55,24 +52,47 @@ Vue.component("LswNotes", {
             <input class="width_100" type="text" v-model="value.tiene_categorias" placeholder="categoría 1; categoria 2; categoria 3" />
           </div>
           <div class="flex_100" style="padding-top: 1px;">
-            <textarea v-focus v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." />
+            <textarea v-focus v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." ref="contenido" />
+          </div>
+          <div class="flex_1" style="padding-top: 2px;">
+            <input class="width_100" type="text" v-model="value.tiene_titulo" placeholder="Título de la nota" ref="titulo" />
           </div>
           <div class="flex_row pad_top_1">
             <div class="flex_100"></div>
             <div class="flex_1 flex_row">
               <div class="pad_right_1">
-                <button v-on:click="accept">Añadir</button>
+                <button class="mini" v-on:click="validate">➕ Añadir</button>
               </div>
               <div>
-                <button v-on:click="cancel">Cancelar</button>
+                <button class="mini" v-on:click="cancel">❌ Cancelar</button>
               </div>
             </div>
           </div>
         </div>`,
         factory: {
+          methods: {
+            validate() {
+              const isValidFecha = LswTimer.parser.parse(this.value.tiene_fecha);
+              const isValidContenido = this.value.tiene_contenido.trim() !== "";
+              const isValidTitulo = this.value.tiene_titulo.trim() !== "";
+              if(!isValidTitulo) {
+                window.alert("Necesita un título la nota.");
+                return this.$refs.titulo.focus();
+              }
+              if(!isValidContenido) {
+                window.alert("Necesita un contenido la nota.");
+                return this.$refs.contenido.focus();
+              }
+              if(!isValidFecha) {
+                window.alert("Necesita una fecha válida la nota.");
+                return this.$refs.fecha.focus();
+              }
+              return this.accept();
+            }
+          },
           data: {
             value: {
-              tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date()),
+              tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date(), false, false, true),
               tiene_titulo: "",
               tiene_categorias: "",
               tiene_contenido: "",

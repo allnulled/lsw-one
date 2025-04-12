@@ -21,7 +21,7 @@
     return `${hora}:${minuto}`;
   };
 
-  Timeformat_utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false) {
+  Timeformat_utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false) {
     if(typeof dateObject === "undefined") {
       return undefined;
     }
@@ -33,7 +33,8 @@
     }
     const hora = ("" + (dateObject.getHours() ?? 0)).padStart(2, '0');
     const minuto = ("" + (dateObject.getMinutes() ?? 0)).padStart(2, '0');
-    return `${anio}/${mes}/${dia} ${hora}:${minuto}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
+    const segundo = setSeconds ? ("" + (dateObject.getSeconds() ?? 0)).padStart(2, '0') : false;
+    return `${anio}/${mes}/${dia} ${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
   };
 
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {

@@ -54,7 +54,7 @@ Vue.component("LswDateControl", {
     setValueFromCalendar(v) {
       this.$trace("lsw-date-control.methods.setValueFromCalendar");
       console.log("Valor:", v);
-      const value = LswTimer.utils.formatDatestringFromDate(v);
+      const value = LswTimer.utils.formatDatestringFromDate(v, false, false, true);
       if(this.formMode === "datetime") {
         this.value = value;
       } else if(this.formMode === "date") {

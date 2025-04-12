@@ -27058,7 +27058,7 @@ rel correr
           console.log(error);
         }
         try {
-          await LswDatabase.deleteDatabase();
+          await LswDatabase.deleteDatabase("lsw_default_database");
         } catch (error) {
           console.log(error);
         }

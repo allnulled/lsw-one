@@ -22306,10 +22306,10 @@ Vue.component("LswWindowsMainTab", {
             </div>
             <div class="dialog_body">
                 <div class="main_tab_topbar">
-                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📓</button>
-                    <button class="mini main_tab_topbar_button" v-on:click="openWiki">🔬</button>
-                    <button class="mini main_tab_topbar_button" v-on:click="openRest">📦</button>
-                    <button class="mini main_tab_topbar_button" v-on:click="openFilesystem">📂</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📓 Cal</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openWiki">🔬 Wik</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openRest">📦 DB</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openFilesystem">📂 FS</button>
                 </div>
                 <div class="pad_normal" v-if="!Object.keys(\$lsw.dialogs.opened).length">
                     <span>No processes found right now.</span>
@@ -22374,7 +22374,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "agenda-viewer-" + this.getRandomString(5),
         title: "Agenda viewer",
-        template: `<lsw-agenda />`,
+        template: `<div class="pad_2"><lsw-agenda /></div>`,
       });
     },
   },

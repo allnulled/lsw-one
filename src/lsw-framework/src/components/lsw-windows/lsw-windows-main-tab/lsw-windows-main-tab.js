@@ -51,7 +51,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "agenda-viewer-" + this.getRandomString(5),
         title: "Agenda viewer",
-        template: `<lsw-agenda />`,
+        template: `<div class="pad_2"><lsw-agenda /></div>`,
       });
     },
   },

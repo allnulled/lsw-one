@@ -1,7 +1,7 @@
 LswLifecycle.hooks.register("app:load_modules", "inject_application", async () => {
   try {
     Step_1_inject_application_component: {
-      await LswLifecycle.loadModule("app");
+      // await LswLifecycle.loadModule("app");
     }
     Step_2_inject_application: {
       if (!Vue.options.components.App) {

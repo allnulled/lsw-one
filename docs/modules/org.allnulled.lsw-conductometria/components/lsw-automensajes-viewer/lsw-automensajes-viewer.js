@@ -19,7 +19,6 @@ Vue.component("LswAutomensajesViewer", {
     },
     async sendAutomessage() {
       this.$trace("LswAutomensajesViewer.methods.sendAutomessage", arguments);
-      await this.loadAutomensajes();
       const availableAutomensajes = this.automensajes.filter(a => {
         if((typeof this.selectedAutomensaje !== "object") || (typeof this.selectedAutomensaje.tiene_contenido !== "string")) return true;
         return a.tiene_contenido !== this.selectedAutomensaje.tiene_contenido;
@@ -40,6 +39,7 @@ Vue.component("LswAutomensajesViewer", {
     },
     async refreshAutomessaging() {
       this.$trace("LswAutomensajesViewer.methods.refreshAutomessaging", arguments);
+      await this.loadAutomensajes();
       this.stopAutomessaging();
       this.startAutomessaging();
     }

@@ -1,13 +1,12 @@
--w src/lsw-framework/src/directives/v-descriptor/v-descriptor.js
--w src/boot.js
--w src/preboot.js
--w src/runner.js
--w src/runner.js
--w src/modules
--w src/lsw-framework/src/apis
--w src/lsw-framework/src/components
--w src/lsw-framework/src/styles
--w src/lsw-framework/src/directives
--w src/bootloader
--w devfiles.txt
--e "js,css,html,md,txt,json"
+src/lsw-framework/src/directives/v-descriptor/v-descriptor.js
+src/boot.js
+src/preboot.js
+src/runner.js
+src/runner.js
+src/modules
+src/lsw-framework/src/apis
+src/lsw-framework/src/components
+src/lsw-framework/src/styles
+src/lsw-framework/src/directives
+src/bootloader
+devfiles.txt

@@ -22331,10 +22331,10 @@ Vue.component("LswWindowsMainTab", {
             </div>
             <div class="dialog_body">
                 <div class="main_tab_topbar">
-                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📓</button>
-                    <button class="mini main_tab_topbar_button" v-on:click="openWiki">🔬</button>
-                    <button class="mini main_tab_topbar_button" v-on:click="openRest">📦</button>
-                    <button class="mini main_tab_topbar_button" v-on:click="openFilesystem">📂</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📓 Cal</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openWiki">🔬 Wik</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openRest">📦 DB</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openFilesystem">📂 FS</button>
                 </div>
                 <div class="pad_normal" v-if="!Object.keys(\$lsw.dialogs.opened).length">
                     <span>No processes found right now.</span>
@@ -22399,7 +22399,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "agenda-viewer-" + this.getRandomString(5),
         title: "Agenda viewer",
-        template: `<lsw-agenda />`,
+        template: `<div class="pad_2"><lsw-agenda /></div>`,
       });
     },
   },
@@ -40455,7 +40455,6 @@ Vue.component("LswAutomensajesViewer", {
     },
     async sendAutomessage() {
       this.$trace("LswAutomensajesViewer.methods.sendAutomessage", arguments);
-      await this.loadAutomensajes();
       const availableAutomensajes = this.automensajes.filter(a => {
         if((typeof this.selectedAutomensaje !== "object") || (typeof this.selectedAutomensaje.tiene_contenido !== "string")) return true;
         return a.tiene_contenido !== this.selectedAutomensaje.tiene_contenido;
@@ -40476,6 +40475,7 @@ Vue.component("LswAutomensajesViewer", {
     },
     async refreshAutomessaging() {
       this.$trace("LswAutomensajesViewer.methods.refreshAutomessaging", arguments);
+      await this.loadAutomensajes();
       this.stopAutomessaging();
       this.startAutomessaging();
     }
@@ -41622,7 +41622,7 @@ window.addEventListener("load", boot);
 LswLifecycle.hooks.register("app:load_modules", "inject_application", async () => {
   try {
     Step_1_inject_application_component: {
-      await LswLifecycle.loadModule("app");
+      // await LswLifecycle.loadModule("app");
     }
     Step_2_inject_application: {
       if (!Vue.options.components.App) {

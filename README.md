@@ -2,13 +2,23 @@
 
 Lite Starter Webkit. Boilerplate for front-end web-dev.
 
+# Instrucciones para usuario
+
+Aquí solo voy a poner los tips.
+
+- Usa la tabla de **automensaje** para proyectarte mensajes.
+
+
+
+
+
 # Comandos
 
 Usa **npm run build** para reconstruir el JS y el CSS.
 
 Usa **npm run dev** para reconstruir el JS y el CSS mientras editas.
 
-# Instrucciones
+# Instrucciones para desarrollo
 
 Tienes que:
 
@@ -22,3 +32,4 @@ Para ir engrosando el framework:
 1. Ir poniendo en [dev/bundlers/lsw-framework/bundlelist.components.js](dev/bundlers/lsw-framework/bundlelist.components.js) los **componentes del framework**.
 2. Ir poniendo en [dev/bundlers/lsw-framework/bundlelist.css.js](dev/bundlers/lsw-framework/bundlelist.css.js) los **estilos del framework**.
 3. Ir poniendo en [dev/bundlers/lsw-framework/bundlelist.js.js](dev/bundlers/lsw-framework/bundlelist.js.js) los **scripts del framework**.
+

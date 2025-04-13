@@ -98,7 +98,7 @@
             margin-bottom: 0px;
             font-size: 12px;
             font-family: Arial;
-            border-top: 1px solid white;
+
         }
 
         .intersitial_title_bar {
@@ -144,19 +144,23 @@
 <body>
     <div id="app"></div>
     <div id="intersitial">
-        <pre style="display:none;text-align:center;">Van <span id="intersitial_modules_loaded"></span>/<span id="intersitial_modules_all">?</span>
+        <pre style="display:none;text-align:center;">Van <span id="intersitial_modules_loaded"></span>/<span
+                id="intersitial_modules_all">?</span>
             módulos cargados.</pre>
-            <div style="text-align:center;padding:4px;text-align:center;font-size:14px;background-color:#333;color:white;">Bienvenido a LSW</div>
-            <div id="intersitial_loader">
-                <div id="intersitial_loader_bar"></div>
-            </div>
-            <pre id="intersitial_modules_trace"
+        <div style="padding: 4px;">
+            <div id="random_message_on_intersitial"></div>
+        </div>
+        <div id="intersitial_loader">
+            <div id="intersitial_loader_bar"></div>
+        </div>
+        <pre id="intersitial_modules_trace"
             style="text-align:left;"></pre>
-            <div class="intersitial_title_bar">
-                <div class="l1">
-                    <div class="l2">
-                        <div class="l3">
-                            <div class="l4">
+        <div class="intersitial_title_bar">
+            <div class="l1">
+                <div class="l2">
+                    <div class="l3">
+                        <div class="l4">
+                            <div style="border-bottom: 1px solid #CCC;">Bienvenido a <a style="font-weight: bold; color: rgb(182, 182, 239)" href="https://github.com/allnulled/lsw-one">lsw-one</a></div>
                             <div id="caja_para_hora"></div>
                         </div>
                     </div>
@@ -165,9 +169,10 @@
         </div>
     </div>
     <script>
-        document.getElementById("caja_para_hora").textContent = "Son las " + ("" + (new Date().getHours())).padStart(2, '0') + ":" + ("" + (new Date().getMinutes())).padStart(2, '0');
+        document.getElementById("caja_para_hora").textContent = "son las " + ("" + (new Date().getHours())).padStart(2, '0') + ":" + ("" + (new Date().getMinutes())).padStart(2, '0');
     </script>
-    <link rel="stylesheet" href="assets/distribution.css">
+    <link rel="stylesheet"
+        href="assets/distribution.css">
     <script src="assets/distribution.js"></script>
 </body>
 

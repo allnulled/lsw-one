@@ -3,6 +3,7 @@ src/boot.js
 src/preboot.js
 src/runner.js
 src/modules
+src/index.html
 src/lsw-framework/src/apis
 src/lsw-framework/src/components
 src/lsw-framework/src/styles

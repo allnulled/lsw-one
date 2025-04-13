@@ -21,7 +21,7 @@ Aplicación de gestión del tiempo y la información + Proyecto base para el des
 
 Es una aplicación de gestión del tiempo y la información.
 
-Esto se hace a través de una *base de datos* y unas *aplicaciones menores+*.
+Esto se hace a través de una *base de datos* y unas *aplicaciones menores*.
 
 Estas aplicaciones se ponen en común y a disposición de un sistema de diálogos pintados con opacidad atenuada por un eje de profundidad, concretamente el `z-index` del `css` inyectado por componentes `vue@2`.
 

@@ -1,24 +1,90 @@
 # lsw-one
 
-Lite Starter Webkit. Boilerplate for front-end web-dev.
+Aplicación de gestión del tiempo y la información + Proyecto base para el desarrollo web del lado cliente.
 
-# Instrucciones para usuario
+**Nota: esta aplicación está en desarrollo todavía y puede sufrir cambios que la deshabiliten si no se hace un borrado de caché.**
 
-Aquí solo voy a poner los tips.
+# Contenidos del documento
 
-- Usa la tabla de **automensaje** para proyectarte mensajes.
+- [lsw-one](#lsw-one)
+- [Contenidos del documento](#contenidos-del-documento)
+- [¿Qué es esta aplicación?](#qué-es-esta-aplicación)
+  - [Características específicas](#características-específicas)
+- [Instrucciones para el usuario](#instrucciones-para-el-usuario)
+  - [Estructura de la base de datos](#estructura-de-la-base-de-datos)
+  - [Aplicaciones menores](#aplicaciones-menores)
+- [Instrucciones para el desarrollador](#instrucciones-para-el-desarrollador)
+  - [Comandos para el desarrollo](#comandos-para-el-desarrollo)
+  - [Ficheros para el desarrollo](#ficheros-para-el-desarrollo)
+
+# ¿Qué es esta aplicación?
+
+Es una aplicación de gestión del tiempo y la información.
+
+Esto se hace a través de una *base de datos* y unas *aplicaciones menores+*.
+
+Estas aplicaciones se ponen en común y a disposición de un sistema de diálogos, donde puedes abrir y cerrar ventanas con estas aplicaciones dentro, lo cual puede sugerir el funcionamiento de un sistema operativo.
+
+## Características específicas
+
+Aunque se parezca a un sistema operativo, es simplemente que el funcionamiento principal de la aplicación y el proyecto base es:
+
+  - Se crea una **base de datos** (basada en [*IndexedDB*](https://en.wikipedia.org/Indexed_Database_API)), lo que quiere decir que:
+     - Con memoria completamente local:
+        - No se envían datos a servidores en ningún momento más que las peticiones de los ficheros de la aplicación.
+        - Todos los datos usados son 100% confidenciales entre el usuario y la sesión del navegador correspondiente.
+        - Pueden borrarse si limpias la caché.
+        - No los encontrarás si accedes a la misma aplicación desde diferente perfil de navegador, dominio web, o máquina directamente.
+     - Independiente por cada dominio web. Esto significa que puedes abrir la aplicación y no ver los datos que esperas si no estás en el dominio web asociado correspondiente a la memoria que pretendes acceder, simplemente estás accediendo a otro.
+  - Se define un **sistema de diálogos** para poder jugar con diferentes ventanas y aplicaciones a la vez, entre otras utilidades.
+  - Se definen unos **componentes gráficos** y/o **aplicaciones menores** que interactúan con esta base de datos y entre sí.
+  - Se arranca una página inicial, la de [`src/modules/app/app.html`](./src/modules/app/app.html).
+
+# Instrucciones para el usuario
+
+La app consiste en una base de datos que alimenta a diferentes aplicaciones menores. Por eso aquí, se explicará:
+
+  - Estructura de la base de datos
+  - Aplicaciones menores
+
+## Estructura de la base de datos
+
+Las estructuras de **datos conceptuales** son:
+
+- **Automensaje**: para proyectarte mensajes.
+- **Acción**: para establecer tareas con duración en el tiempo.
+- **Concepto**: para crear nuevas tareas predefinidas u otros conceptos de interés (objetivos, roles, etc).
+- **Nota**: para registrar un pensamiento de interés.
+- **Propagador_prototipo**: para definir un artefacto propagador abstracto reutilizable.
+
+Las estructuras de **datos relacionales** son:
+
+- **Categoria_de_concepto**: para asociar nuevos grupos de concepto reconocidos.
+- **Impresión_de_concepto**: para asociar una percepción de estado de concepto de interés con un momento del tiempo.
+- **Propagador_de_concepto**: para asociar un artefacto propagador a un concepto.
+
+## Aplicaciones menores
+
+Las aplicaciones menores *básicas* son:
+
+- **agenda**: con calendario y acciones para trackeo del **yo planificativo y ejecutivo**.
+- **filesystem**: para persistencia multiuso ordenada.
+- **base de datos**: para persistencia estructurada ordenada.
+- **notas**: para persistencia natural informal.
+- **wiki**: para persistencia natural formal.
+- **protolang**: para persistencia lógica.
+- **automensajes**: para autoinfluenciar al yo.
+
+# Instrucciones para el desarrollador
 
 
-
-
-
-# Comandos
+## Comandos para el desarrollo
 
 Usa **npm run build** para reconstruir el JS y el CSS.
 
 Usa **npm run dev** para reconstruir el JS y el CSS mientras editas.
 
-# Instrucciones para desarrollo
+## Ficheros para el desarrollo
 
 Tienes que:
 

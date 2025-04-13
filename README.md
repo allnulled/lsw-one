@@ -1,12 +1,12 @@
-# lsw-one
+# Lsw-one
 
 Aplicación de gestión del tiempo y la información + Proyecto base para el desarrollo web del lado cliente.
 
-**Nota: esta aplicación está en desarrollo todavía y puede sufrir cambios que la deshabiliten si no se hace un borrado de caché.**
+> Nota: esta aplicación está en desarrollo todavía y puede sufrir cambios que la deshabiliten si no se hace un borrado de caché.
 
 # Contenidos del documento
 
-- [lsw-one](#lsw-one)
+- [Lsw-one](#lsw-one)
 - [Contenidos del documento](#contenidos-del-documento)
 - [¿Qué es esta aplicación?](#qué-es-esta-aplicación)
   - [Características específicas](#características-específicas)

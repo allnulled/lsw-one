@@ -23,22 +23,19 @@ Es una aplicación de gestión del tiempo y la información.
 
 Esto se hace a través de una *base de datos* y unas *aplicaciones menores+*.
 
-Estas aplicaciones se ponen en común y a disposición de un sistema de diálogos, donde puedes abrir y cerrar ventanas con estas aplicaciones dentro, lo cual puede sugerir el funcionamiento de un sistema operativo.
+Estas aplicaciones se ponen en común y a disposición de un sistema de diálogos pintados con opacidad atenuada por un eje de profundidad, concretamente el `z-index` del `css` inyectado por componentes `vue@2`.
 
 ## Características específicas
 
 Aunque se parezca a un sistema operativo, es simplemente que el funcionamiento principal de la aplicación y el proyecto base es:
 
-  - Se crea una **base de datos** (basada en [*IndexedDB*](https://en.wikipedia.org/Indexed_Database_API)), lo que quiere decir que:
-     - Con memoria completamente local:
-        - No se envían datos a servidores en ningún momento más que las peticiones de los ficheros de la aplicación.
-        - Todos los datos usados son 100% confidenciales entre el usuario y la sesión del navegador correspondiente.
-        - Pueden borrarse si limpias la caché.
-        - No los encontrarás si accedes a la misma aplicación desde diferente perfil de navegador, dominio web, o máquina directamente.
-     - Independiente por cada dominio web. Esto significa que puedes abrir la aplicación y no ver los datos que esperas si no estás en el dominio web asociado correspondiente a la memoria que pretendes acceder, simplemente estás accediendo a otro.
+  - Se crea una **base de datos** (basada en [*IndexedDB*](https://en.wikipedia.org/Indexed_Database_API)), lo que quiere decir que usa memoria local y por tanto:
+     - Los datos *no se envían* a ninguna base de datos o servidor externo, todo ocurre en el navegador.
+     - Los datos *pueden borrarse* si limpias la caché.
+     - Los datos *pueden no aparecer* si accedes a la misma aplicación desde diferente perfil de navegador, dominio web, o máquina directamente.
   - Se define un **sistema de diálogos** para poder jugar con diferentes ventanas y aplicaciones a la vez, entre otras utilidades.
-  - Se definen unos **componentes gráficos** y/o **aplicaciones menores** que interactúan con esta base de datos y entre sí.
-  - Se arranca una página inicial, la de [`src/modules/app/app.html`](./src/modules/app/app.html).
+  - Se definen unos **componentes gráficos** y/o **aplicaciones menores** que interactúan con esta **base de datos** y entre sí.
+  - Se arranca una **página inicial**, concretamente la de [`src/modules/app/app.html`](./src/modules/app/app.html).
 
 # Instrucciones para el usuario
 
@@ -46,6 +43,8 @@ La app consiste en una base de datos que alimenta a diferentes aplicaciones meno
 
   - Estructura de la base de datos
   - Aplicaciones menores
+
+A continuación se detallan estas secciones.
 
 ## Estructura de la base de datos
 

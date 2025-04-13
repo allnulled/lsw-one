@@ -16,6 +16,8 @@ module.exports = [
   `${basepath}/lsw-framework/src/others/vue.draggable/vue.draggable.js`,
   // SOCKET.IO:
   `${basepath}/lsw-framework/src/others/socket.io-client/socket.io-client.js`,
+  // LSW INITIALIZATION
+  `${basepath}/bootloader/initialization.js`,
   // LSW ERROR MANAGER:
   `${basepath}/lsw-framework/src/apis/lsw-error-manager/lsw-error-manager.js`,
   // LSW RELOADER:

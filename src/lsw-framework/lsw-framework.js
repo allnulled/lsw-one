@@ -11025,6 +11025,7 @@ if (typeof window !== "undefined" && "Vue" in window) {
 }));
 
 
+Vue.prototype.$lsw = {};
 
 
 /**
@@ -16185,14 +16186,14 @@ return Store;
       "onInitialized",
       "onBoot",
       "onBooted",
-      "onLoadModules",
-      "onModulesLoaded",
-      "onInstallModules",
-      "onModulesInstalled",
       "onLoadSchema",
       "onSchemaLoaded",
       "onLoadDatabase",
       "onDatabaseLoaded",
+      // "onLoadModules",
+      // "onModulesLoaded",
+      "onInstallModules",
+      "onModulesInstalled",
       "onLoadApplication",
       "onApplicationLoaded",
       "onAllLoaded",
@@ -16235,6 +16236,9 @@ return Store;
 
     onLoadModules: function () {
       this.$trace("onLoadModules", []);
+      if (!Vue.options.components.App) {
+        throw new Error("Required Vue.js (v2) component «App» to be defined on «LswLifecycle.onRunApplication» for hook «app:run_application»");
+      }
       return this.hooks.emit("app:load_modules");
     },
 
@@ -16252,7 +16256,40 @@ return Store;
     },
     onLoadSchema: async function () {
       this.$trace("onLoadSchema", []);
-      if (process.env.LSW_RESET_DATABASE) {
+      let hasNeededTables = false;
+      Check_if_has_needed_tables: {
+        try {
+          const currentSchema = await LswDatabase.getSchema("lsw_default_database");
+          const neededTables = [
+            "Accion",
+            "Automensaje",
+            "Categoria_de_concepto",
+            "Concepto",
+            "Impresion_de_concepto",
+            "Limitador",
+            "Nota",
+            "Propagador_de_concepto",
+            "Propagador_prototipo",
+          ];
+          Iterating_needed_tables: {
+            const currentTables = Object.keys(currentSchema);
+            for(let index=0; index<neededTables.length; index++) {
+              const neededTable = neededTables[index];
+              const containsTable = currentTables.indexOf(neededTable) !== -1;
+              if(!containsTable) {
+                hasNeededTables = false;
+                break Iterating_needed_tables;
+              }
+            }
+            Confirm_it_contains_tables: {
+              hasNeededTables = true;
+            }
+          }
+        } catch (error) {
+          // @OK
+        }
+      }
+      if (!hasNeededTables) {
         await LswDatabase.deleteDatabase("lsw_default_database");
       }
       $lswSchema.loadSchemaByProxies("SchemaEntity");
@@ -16285,7 +16322,8 @@ return Store;
         Vue.prototype.$lsw.database = await LswDatabase.open("lsw_default_database");
         Vue.prototype.$lsw.database.setInnerSchema($lswSchema);
       }
-      if(process.env.LSW_RESET_DATABASE) {
+      let hasNeededRows = false;
+      if(!hasNeededRows) {
         await this.onSeedDatabase();
         await this.onDatabaseSeeded();
       }
@@ -22237,7 +22275,10 @@ Vue.component('LswDataImplorer', {
           throw new Error("Required parameter «id» (argument:1) to be a string on «LswDialogs.maximize»");
         }
         if (!(id in this.opened)) {
-          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.maximize»`);
+          console.log(this.opened);
+          console.log(id);
+          console.log(Object.keys(this.opened)[0] === id);
+          throw new Error(`Cannot maximize dialog «${id}» because it is not opened on «LswDialogs.maximize»`);
         }
         Iterating_dialogs:
         for (let dialogId in this.opened) {
@@ -22247,7 +22288,6 @@ Vue.component('LswDataImplorer', {
           const dialogData = this.opened[dialogId];
           const currentPriority = parseInt(dialogData.priority);
           this.opened[dialogId].priority = currentPriority - 1;
-
         }
         this.opened[id].priority = 500;
         this.opened[id].minimized = false;
@@ -22279,10 +22319,12 @@ Vue.component('LswDataImplorer', {
     },
     mounted(...args) {
       this.$trace("lsw-dialogs.mounted", [...args]);
-      Vue.prototype.$dialogs = this;
-      if (Vue.prototype.$lsw) {
-        Vue.prototype.$lsw.dialogs = this;
+      console.log("MONTANDOSE DIALOGOOOOS");
+      if(Vue.prototype.$dialogs) {
+        throw new Error("Cannot install «lsw-dialogs» as global on «Vue.prototype.$dialogs» because it is another instance mounted on «LswDialogs.mounted»");
       }
+      Vue.prototype.$dialogs = this;
+      Vue.prototype.$lsw.dialogs = this;
       window.LswDialogs = this;
       console.log("[*] LswDialogs mounted.");
     }
@@ -22387,7 +22429,7 @@ Vue.component("LswWindowsMainTab", {
 // Change this component at your convenience:
 Vue.component("LswWindowsViewer", {
   template: `<div class="lsw-windows-viewer">
-    <lsw-dialogs ref="dialogs" :as-windows="true"></lsw-dialogs>
+    <lsw-dialogs ref="dialogs" :as-windows="true" />
     <lsw-windows-pivot-button :viewer="this" />
     <template v-if="isShowing">
         <lsw-windows-main-tab :viewer="this" />
@@ -26962,7 +27004,7 @@ rel correr
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
     <lsw-automensajes-viewer />
     <template v-if="isMounted">
-        <lsw-current-accion-viewer>
+        <lsw-current-accion-viewer keep-alive>
             <div class="pad_1 float_right">
                 <div class="flex_row">
                     <div class="flex_100"></div>
@@ -26978,7 +27020,7 @@ rel correr
             </div>
         </lsw-current-accion-viewer>
     </template>
-    <div class="pad_top_2">
+    <div class="pad_top_2" keep-alive>
         <lsw-notes ref="notes" />
     </div>
     <lsw-console-hooker />

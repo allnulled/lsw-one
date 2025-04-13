@@ -19,17 +19,24 @@ Vue.component("LswAutomensajesViewer", {
     },
     async sendAutomessage() {
       this.$trace("LswAutomensajesViewer.methods.sendAutomessage", arguments);
+      console.log(this.automensajes);
       const availableAutomensajes = this.automensajes.filter(a => {
         if((typeof this.selectedAutomensaje !== "object") || (typeof this.selectedAutomensaje.tiene_contenido !== "string")) return true;
         return a.tiene_contenido !== this.selectedAutomensaje.tiene_contenido;
       });
+      console.log(availableAutomensajes);
       this.selectedAutomensaje = LswRandomizer.getRandomItem(availableAutomensajes);
-      console.log(this.selectedAutomensaje);
-      this.$forceUpdate(true);
-      this.startAutomessaging();
+      this.continueAutomessaging();
     },
-    startAutomessaging() {
+    async startAutomessaging() {
       this.$trace("LswAutomensajesViewer.methods.startAutomessaging", arguments);
+      await this.loadAutomensajes();
+      await this.sendAutomessage();
+      await this.continueAutomessaging();
+    },
+    async continueAutomessaging() {
+      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
+      clearTimeout(this.automessagingId);
       this.automessagingSeconds = LswRandomizer.getRandomIntegerBetween(5,15);
       this.automessagingId = setTimeout(() => this.sendAutomessage(), this.automessagingSeconds * 1000);
     },
@@ -38,19 +45,17 @@ Vue.component("LswAutomensajesViewer", {
       clearTimeout(this.automessagingId);
     },
     async refreshAutomessaging() {
-      this.$trace("LswAutomensajesViewer.methods.refreshAutomessaging", arguments);
-      await this.loadAutomensajes();
+      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
       this.stopAutomessaging();
       this.startAutomessaging();
-    }
+    },
   },
   watch: {},
   async mounted() {
     try {
       this.$trace("lsw-automensajes-viewer.mounted");
-      await this.loadAutomensajes();
-      this.sendAutomessage();
-      await this.startAutomessaging();
+      this.$window.$autom = this;
+      this.startAutomessaging();
     } catch(error) {
       console.log(error);
     }

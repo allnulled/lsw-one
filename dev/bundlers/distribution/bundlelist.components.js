@@ -23,7 +23,7 @@ module.exports = [
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Impresion.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Nota.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Automensaje.js`,
-
+  // LSW INITIALIZATION
   `${basepath}/bootloader/boot.js`,
   `${basepath}/bootloader/runner.js`,
 ];

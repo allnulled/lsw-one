@@ -31,14 +31,14 @@
       "onInitialized",
       "onBoot",
       "onBooted",
-      "onLoadModules",
-      "onModulesLoaded",
-      "onInstallModules",
-      "onModulesInstalled",
       "onLoadSchema",
       "onSchemaLoaded",
       "onLoadDatabase",
       "onDatabaseLoaded",
+      // "onLoadModules",
+      // "onModulesLoaded",
+      "onInstallModules",
+      "onModulesInstalled",
       "onLoadApplication",
       "onApplicationLoaded",
       "onAllLoaded",
@@ -81,6 +81,9 @@
 
     onLoadModules: function () {
       this.$trace("onLoadModules", []);
+      if (!Vue.options.components.App) {
+        throw new Error("Required Vue.js (v2) component «App» to be defined on «LswLifecycle.onRunApplication» for hook «app:run_application»");
+      }
       return this.hooks.emit("app:load_modules");
     },
 
@@ -98,7 +101,40 @@
     },
     onLoadSchema: async function () {
       this.$trace("onLoadSchema", []);
-      if (process.env.LSW_RESET_DATABASE) {
+      let hasNeededTables = false;
+      Check_if_has_needed_tables: {
+        try {
+          const currentSchema = await LswDatabase.getSchema("lsw_default_database");
+          const neededTables = [
+            "Accion",
+            "Automensaje",
+            "Categoria_de_concepto",
+            "Concepto",
+            "Impresion_de_concepto",
+            "Limitador",
+            "Nota",
+            "Propagador_de_concepto",
+            "Propagador_prototipo",
+          ];
+          Iterating_needed_tables: {
+            const currentTables = Object.keys(currentSchema);
+            for(let index=0; index<neededTables.length; index++) {
+              const neededTable = neededTables[index];
+              const containsTable = currentTables.indexOf(neededTable) !== -1;
+              if(!containsTable) {
+                hasNeededTables = false;
+                break Iterating_needed_tables;
+              }
+            }
+            Confirm_it_contains_tables: {
+              hasNeededTables = true;
+            }
+          }
+        } catch (error) {
+          // @OK
+        }
+      }
+      if (!hasNeededTables) {
         await LswDatabase.deleteDatabase("lsw_default_database");
       }
       $lswSchema.loadSchemaByProxies("SchemaEntity");
@@ -131,7 +167,8 @@
         Vue.prototype.$lsw.database = await LswDatabase.open("lsw_default_database");
         Vue.prototype.$lsw.database.setInnerSchema($lswSchema);
       }
-      if(process.env.LSW_RESET_DATABASE) {
+      let hasNeededRows = false;
+      if(!hasNeededRows) {
         await this.onSeedDatabase();
         await this.onDatabaseSeeded();
       }

@@ -11,3 +11,4 @@ Set_global_configurations: {
   process.env.LSW_RESET_DATABASE = 1;
   process.env.LSW_RESET_DATABASE = 0;
 }
+

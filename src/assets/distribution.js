@@ -23,6 +23,8 @@ Set_global_configurations: {
   process.env.LSW_RESET_DATABASE = 1;
   process.env.LSW_RESET_DATABASE = 0;
 }
+
+
 (function(factory) {
   const mod = factory();
   if(typeof window !== 'undefined') {
@@ -11050,6 +11052,7 @@ if (typeof window !== "undefined" && "Vue" in window) {
 }));
 
 
+Vue.prototype.$lsw = {};
 
 
 /**
@@ -16210,14 +16213,14 @@ return Store;
       "onInitialized",
       "onBoot",
       "onBooted",
-      "onLoadModules",
-      "onModulesLoaded",
-      "onInstallModules",
-      "onModulesInstalled",
       "onLoadSchema",
       "onSchemaLoaded",
       "onLoadDatabase",
       "onDatabaseLoaded",
+      // "onLoadModules",
+      // "onModulesLoaded",
+      "onInstallModules",
+      "onModulesInstalled",
       "onLoadApplication",
       "onApplicationLoaded",
       "onAllLoaded",
@@ -16260,6 +16263,9 @@ return Store;
 
     onLoadModules: function () {
       this.$trace("onLoadModules", []);
+      if (!Vue.options.components.App) {
+        throw new Error("Required Vue.js (v2) component «App» to be defined on «LswLifecycle.onRunApplication» for hook «app:run_application»");
+      }
       return this.hooks.emit("app:load_modules");
     },
 
@@ -16277,7 +16283,40 @@ return Store;
     },
     onLoadSchema: async function () {
       this.$trace("onLoadSchema", []);
-      if (process.env.LSW_RESET_DATABASE) {
+      let hasNeededTables = false;
+      Check_if_has_needed_tables: {
+        try {
+          const currentSchema = await LswDatabase.getSchema("lsw_default_database");
+          const neededTables = [
+            "Accion",
+            "Automensaje",
+            "Categoria_de_concepto",
+            "Concepto",
+            "Impresion_de_concepto",
+            "Limitador",
+            "Nota",
+            "Propagador_de_concepto",
+            "Propagador_prototipo",
+          ];
+          Iterating_needed_tables: {
+            const currentTables = Object.keys(currentSchema);
+            for(let index=0; index<neededTables.length; index++) {
+              const neededTable = neededTables[index];
+              const containsTable = currentTables.indexOf(neededTable) !== -1;
+              if(!containsTable) {
+                hasNeededTables = false;
+                break Iterating_needed_tables;
+              }
+            }
+            Confirm_it_contains_tables: {
+              hasNeededTables = true;
+            }
+          }
+        } catch (error) {
+          // @OK
+        }
+      }
+      if (!hasNeededTables) {
         await LswDatabase.deleteDatabase("lsw_default_database");
       }
       $lswSchema.loadSchemaByProxies("SchemaEntity");
@@ -16310,7 +16349,8 @@ return Store;
         Vue.prototype.$lsw.database = await LswDatabase.open("lsw_default_database");
         Vue.prototype.$lsw.database.setInnerSchema($lswSchema);
       }
-      if(process.env.LSW_RESET_DATABASE) {
+      let hasNeededRows = false;
+      if(!hasNeededRows) {
         await this.onSeedDatabase();
         await this.onDatabaseSeeded();
       }
@@ -22262,7 +22302,10 @@ Vue.component('LswDataImplorer', {
           throw new Error("Required parameter «id» (argument:1) to be a string on «LswDialogs.maximize»");
         }
         if (!(id in this.opened)) {
-          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.maximize»`);
+          console.log(this.opened);
+          console.log(id);
+          console.log(Object.keys(this.opened)[0] === id);
+          throw new Error(`Cannot maximize dialog «${id}» because it is not opened on «LswDialogs.maximize»`);
         }
         Iterating_dialogs:
         for (let dialogId in this.opened) {
@@ -22272,7 +22315,6 @@ Vue.component('LswDataImplorer', {
           const dialogData = this.opened[dialogId];
           const currentPriority = parseInt(dialogData.priority);
           this.opened[dialogId].priority = currentPriority - 1;
-
         }
         this.opened[id].priority = 500;
         this.opened[id].minimized = false;
@@ -22304,10 +22346,12 @@ Vue.component('LswDataImplorer', {
     },
     mounted(...args) {
       this.$trace("lsw-dialogs.mounted", [...args]);
-      Vue.prototype.$dialogs = this;
-      if (Vue.prototype.$lsw) {
-        Vue.prototype.$lsw.dialogs = this;
+      console.log("MONTANDOSE DIALOGOOOOS");
+      if(Vue.prototype.$dialogs) {
+        throw new Error("Cannot install «lsw-dialogs» as global on «Vue.prototype.$dialogs» because it is another instance mounted on «LswDialogs.mounted»");
       }
+      Vue.prototype.$dialogs = this;
+      Vue.prototype.$lsw.dialogs = this;
       window.LswDialogs = this;
       console.log("[*] LswDialogs mounted.");
     }
@@ -22412,7 +22456,7 @@ Vue.component("LswWindowsMainTab", {
 // Change this component at your convenience:
 Vue.component("LswWindowsViewer", {
   template: `<div class="lsw-windows-viewer">
-    <lsw-dialogs ref="dialogs" :as-windows="true"></lsw-dialogs>
+    <lsw-dialogs ref="dialogs" :as-windows="true" />
     <lsw-windows-pivot-button :viewer="this" />
     <template v-if="isShowing">
         <lsw-windows-main-tab :viewer="this" />
@@ -26987,7 +27031,7 @@ rel correr
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
     <lsw-automensajes-viewer />
     <template v-if="isMounted">
-        <lsw-current-accion-viewer>
+        <lsw-current-accion-viewer keep-alive>
             <div class="pad_1 float_right">
                 <div class="flex_row">
                     <div class="flex_100"></div>
@@ -27003,7 +27047,7 @@ rel correr
             </div>
         </lsw-current-accion-viewer>
     </template>
-    <div class="pad_top_2">
+    <div class="pad_top_2" keep-alive>
         <lsw-notes ref="notes" />
     </div>
     <lsw-console-hooker />
@@ -40431,9 +40475,14 @@ LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled
 // @code.start: LswAutomensajesViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAutomensajesViewer API » LswAutomensajesViewer component
 Vue.component("LswAutomensajesViewer", {
   template: `<div class="lsw_automensajes_viewer">
-    <div v-if="selectedAutomensaje" class="pad_1 pad_top_2 pad_left_2">
+    <div class="pad_1 pad_top_2 pad_left_2">
         <div class="automensaje_block" v-on:click="refreshAutomessaging">
-            <span style="text-decoration: underline;">{{ selectedAutomensaje.tiene_contenido }}</span> * {{ automessagingSeconds }}s
+            <template v-if="selectedAutomensaje">
+                <span style="text-decoration: underline;">{{ selectedAutomensaje.tiene_contenido }}</span> * {{ automessagingSeconds }}s
+            </template>
+            <template v-else>
+                <span>Establece tus propios eslóganos de apoyo.</span>
+            </template>
         </div>
     </div>
 </div>`,
@@ -40455,17 +40504,24 @@ Vue.component("LswAutomensajesViewer", {
     },
     async sendAutomessage() {
       this.$trace("LswAutomensajesViewer.methods.sendAutomessage", arguments);
+      console.log(this.automensajes);
       const availableAutomensajes = this.automensajes.filter(a => {
         if((typeof this.selectedAutomensaje !== "object") || (typeof this.selectedAutomensaje.tiene_contenido !== "string")) return true;
         return a.tiene_contenido !== this.selectedAutomensaje.tiene_contenido;
       });
+      console.log(availableAutomensajes);
       this.selectedAutomensaje = LswRandomizer.getRandomItem(availableAutomensajes);
-      console.log(this.selectedAutomensaje);
-      this.$forceUpdate(true);
-      this.startAutomessaging();
+      this.continueAutomessaging();
     },
-    startAutomessaging() {
+    async startAutomessaging() {
       this.$trace("LswAutomensajesViewer.methods.startAutomessaging", arguments);
+      await this.loadAutomensajes();
+      await this.sendAutomessage();
+      await this.continueAutomessaging();
+    },
+    async continueAutomessaging() {
+      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
+      clearTimeout(this.automessagingId);
       this.automessagingSeconds = LswRandomizer.getRandomIntegerBetween(5,15);
       this.automessagingId = setTimeout(() => this.sendAutomessage(), this.automessagingSeconds * 1000);
     },
@@ -40474,19 +40530,17 @@ Vue.component("LswAutomensajesViewer", {
       clearTimeout(this.automessagingId);
     },
     async refreshAutomessaging() {
-      this.$trace("LswAutomensajesViewer.methods.refreshAutomessaging", arguments);
-      await this.loadAutomensajes();
+      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
       this.stopAutomessaging();
       this.startAutomessaging();
-    }
+    },
   },
   watch: {},
   async mounted() {
     try {
       this.$trace("lsw-automensajes-viewer.mounted");
-      await this.loadAutomensajes();
-      this.sendAutomessage();
-      await this.startAutomessaging();
+      this.$window.$autom = this;
+      this.startAutomessaging();
     } catch(error) {
       console.log(error);
     }
@@ -41559,83 +41613,64 @@ $proxifier.define("org.allnulled.lsw-conductometria.Automensaje", {
 
   }
 });
-const boot = async function () {
-  try {
-    Step_1_organize_api: {
-      Vue.prototype.$noop = () => { };
-      Vue.prototype.$window = window;
-      Vue.prototype.$console = console;
-      Vue.prototype.$vue = Vue;
+try {
+  Step_1_organize_api: {
+    Vue.prototype.$noop = () => { };
+    Vue.prototype.$window = window;
+    Vue.prototype.$console = console;
+    Vue.prototype.$vue = Vue;
+    if (!Vue.prototype.$lsw) {
       Vue.prototype.$lsw = {};
-      Inject_global_api: {
-        Vue.prototype.$lsw.importer = importer;
-        Vue.prototype.$lsw.logger = Superlogger.create("lsw");
-        Vue.prototype.$trace = (...args) => Vue.prototype.$lsw.logger.trace(...args);
-        Vue.prototype.$lsw.utils = LswUtils;
-        Vue.prototype.$lsw.timer = LswTimer;
-        Vue.prototype.$lsw.windows = null;
-        Vue.prototype.$lsw.dialogs = null;
-        Vue.prototype.$lsw.toasts = null;
-        Vue.prototype.$lsw.proxifier = $proxifier;
-        Vue.prototype.$lsw.fs = null;
-        Vue.prototype.$lsw.wiki = null;
-        Vue.prototype.$lsw.agenda = null;
-      }
-      Vue.prototype.$lsw.classes = {};
-      Inject_classes_api: {
-        Vue.prototype.$lsw.classes.Logger = Superlogger;
-        Vue.prototype.$lsw.classes.Proxifier = LswProxifier;
-        Vue.prototype.$lsw.classes.Ensurer = LswEnsurer;
-        Vue.prototype.$lsw.classes.Randomizer = LswRandomizer;
-        Vue.prototype.$lsw.classes.Proxifier = LswProxifier;
-        Vue.prototype.$lsw.classes.DatabaseMigration = LswDatabaseMigration;
-        Vue.prototype.$lsw.classes.Database = LswDatabase;
-        Vue.prototype.$lsw.classes.Cycler = LswCycler;
-        Vue.prototype.$lsw.classes.Compromiser = LswCompromiser;
-        Vue.prototype.$lsw.classes.Utils = LswUtils;
-        Vue.prototype.$lsw.classes.Formtypes = LswFormtypes;
-        Vue.prototype.$lsw.classes.Schema = LswSchema;
-        Vue.prototype.$lsw.classes.Lifecycle = LswLifecycle;
-        Vue.prototype.$lsw.classes.DatabaseVirtualizer = LswDatabaseVirtualizer;
-        // Vue.prototype.$lsw.classes.DatabaseAdapter = LswDatabaseAdapter;
-        Vue.prototype.$lsw.classes.Timer = LswTimer;
-        Vue.prototype.$lsw.classes.Depender = LswDepender;
-        Vue.prototype.$lsw.classes.Filesystem = LswFilesystem;
-        Vue.prototype.$lsw.classes.ConsoleHooker = ConsoleHooker;
-        Vue.prototype.$lsw.classes.ClassRegister = LswClassRegister;
-        // Vue.prototype.$lsw.classes.Dialogs = LswDialogs;
-        // Vue.prototype.$lsw.classes.Windows = LswWindows;
-        // Vue.prototype.$lsw.classes.Toasts = LswToasts;
-      }
-      window.lsw = Vue.prototype.$lsw;
     }
-    Step_2_remove_intersitial: {
-      importer.$removeIntersitial();
+    Inject_global_api: {
+      Vue.prototype.$lsw.importer = importer;
+      Vue.prototype.$lsw.logger = Superlogger.create("lsw");
+      Vue.prototype.$trace = (...args) => Vue.prototype.$lsw.logger.trace(...args);
+      Vue.prototype.$lsw.utils = LswUtils;
+      Vue.prototype.$lsw.timer = LswTimer;
+      Vue.prototype.$lsw.windows = null;
+      Vue.prototype.$lsw.dialogs = null;
+      Vue.prototype.$lsw.toasts = null;
+      Vue.prototype.$lsw.proxifier = $proxifier;
+      Vue.prototype.$lsw.fs = null;
+      Vue.prototype.$lsw.wiki = null;
+      Vue.prototype.$lsw.agenda = null;
+      // WE DO NOT INJECT DATABASE FROM HERE.
     }
-  } catch (error) {
-    console.error(error);
-    console.log("[!] Boot failed");
+    Vue.prototype.$lsw.classes = {};
+    Inject_classes_api: {
+      Vue.prototype.$lsw.classes.Logger = Superlogger;
+      Vue.prototype.$lsw.classes.Proxifier = LswProxifier;
+      Vue.prototype.$lsw.classes.Ensurer = LswEnsurer;
+      Vue.prototype.$lsw.classes.Randomizer = LswRandomizer;
+      Vue.prototype.$lsw.classes.Proxifier = LswProxifier;
+      Vue.prototype.$lsw.classes.DatabaseMigration = LswDatabaseMigration;
+      Vue.prototype.$lsw.classes.Database = LswDatabase;
+      Vue.prototype.$lsw.classes.Cycler = LswCycler;
+      Vue.prototype.$lsw.classes.Compromiser = LswCompromiser;
+      Vue.prototype.$lsw.classes.Utils = LswUtils;
+      Vue.prototype.$lsw.classes.Formtypes = LswFormtypes;
+      Vue.prototype.$lsw.classes.Schema = LswSchema;
+      Vue.prototype.$lsw.classes.Lifecycle = LswLifecycle;
+      Vue.prototype.$lsw.classes.DatabaseVirtualizer = LswDatabaseVirtualizer;
+      // Vue.prototype.$lsw.classes.DatabaseAdapter = LswDatabaseAdapter;
+      Vue.prototype.$lsw.classes.Timer = LswTimer;
+      Vue.prototype.$lsw.classes.Depender = LswDepender;
+      Vue.prototype.$lsw.classes.Filesystem = LswFilesystem;
+      Vue.prototype.$lsw.classes.ConsoleHooker = ConsoleHooker;
+      Vue.prototype.$lsw.classes.ClassRegister = LswClassRegister;
+      // Vue.prototype.$lsw.classes.Dialogs = LswDialogs;
+      // Vue.prototype.$lsw.classes.Windows = LswWindows;
+      // Vue.prototype.$lsw.classes.Toasts = LswToasts;
+    }
+    window.lsw = Vue.prototype.$lsw;
   }
-};
-
-window.addEventListener("load", boot);
-LswLifecycle.hooks.register("app:load_modules", "inject_application", async () => {
-  try {
-    Step_1_inject_application_component: {
-      // await LswLifecycle.loadModule("app");
-    }
-    Step_2_inject_application: {
-      if (!Vue.options.components.App) {
-        throw new Error("Required Vue.js (v2) component «App» to be defined on «LswLifecycle.onRunApplication» for hook «app:run_application»");
-      }
-      const vueInstance = new Vue({
-        render: h => h(Vue.options.components.App),
-      }).$mount("#app");
-    }
-  } catch (error) {
-    console.error(error);
+  Step_2_remove_intersitial: {
+    importer.$removeIntersitial();
   }
-});
-
+} catch (error) {
+  console.error(error);
+  console.log("[!] Boot failed");
+}
 LswLifecycle.start().then(console.log).catch(console.error);
 });

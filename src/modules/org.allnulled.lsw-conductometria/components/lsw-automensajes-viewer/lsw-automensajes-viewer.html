@@ -1,7 +1,12 @@
 <div class="lsw_automensajes_viewer">
-    <div v-if="selectedAutomensaje" class="pad_1 pad_top_2 pad_left_2">
+    <div class="pad_1 pad_top_2 pad_left_2">
         <div class="automensaje_block" v-on:click="refreshAutomessaging">
-            <span style="text-decoration: underline;">{{ selectedAutomensaje.tiene_contenido }}</span> * {{ automessagingSeconds }}s
+            <template v-if="selectedAutomensaje">
+                <span style="text-decoration: underline;">{{ selectedAutomensaje.tiene_contenido }}</span> * {{ automessagingSeconds }}s
+            </template>
+            <template v-else>
+                <span>Establece tus propios eslóganos de apoyo.</span>
+            </template>
         </div>
     </div>
 </div>

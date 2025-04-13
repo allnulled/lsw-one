@@ -298,7 +298,10 @@
           throw new Error("Required parameter «id» (argument:1) to be a string on «LswDialogs.maximize»");
         }
         if (!(id in this.opened)) {
-          throw new Error(`Cannot minimize dialog «${id}» because it is not opened on «LswDialogs.maximize»`);
+          console.log(this.opened);
+          console.log(id);
+          console.log(Object.keys(this.opened)[0] === id);
+          throw new Error(`Cannot maximize dialog «${id}» because it is not opened on «LswDialogs.maximize»`);
         }
         Iterating_dialogs:
         for (let dialogId in this.opened) {
@@ -308,7 +311,6 @@
           const dialogData = this.opened[dialogId];
           const currentPriority = parseInt(dialogData.priority);
           this.opened[dialogId].priority = currentPriority - 1;
-
         }
         this.opened[id].priority = 500;
         this.opened[id].minimized = false;
@@ -340,10 +342,12 @@
     },
     mounted(...args) {
       this.$trace("lsw-dialogs.mounted", [...args]);
-      Vue.prototype.$dialogs = this;
-      if (Vue.prototype.$lsw) {
-        Vue.prototype.$lsw.dialogs = this;
+      console.log("MONTANDOSE DIALOGOOOOS");
+      if(Vue.prototype.$dialogs) {
+        throw new Error("Cannot install «lsw-dialogs» as global on «Vue.prototype.$dialogs» because it is another instance mounted on «LswDialogs.mounted»");
       }
+      Vue.prototype.$dialogs = this;
+      Vue.prototype.$lsw.dialogs = this;
       window.LswDialogs = this;
       console.log("[*] LswDialogs mounted.");
     }

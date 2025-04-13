@@ -97,7 +97,7 @@
     isDatePassed(date, time, currentDate = new Date()) {
       const [day, month, year] = date.split("/").map(Number);
       const [hour, minute, second] = time.split(":").map(Number);
-      const targetDate = new Date(year, month-1, day, hour, minute, second);
+      const targetDate = new Date(year, month - 1, day, hour, minute, second);
       return currentDate > targetDate;
     },
     sheetToRegistros(sheet, asObjectIsOkay = false) {
@@ -193,7 +193,7 @@
   });
 
   // API de LSW:
-  LswUtils.toPlainObject = function(obj) {
+  LswUtils.toPlainObject = function (obj) {
     const seen = new WeakSet();
     return JSON.parse(JSON.stringify(obj, (key, value) => {
       if (typeof value === "object" && value !== null) {
@@ -205,14 +205,14 @@
   };
 
 
-  LswUtils.stringify = function(argInput, avoidedIndexes = []) {
+  LswUtils.stringify = function (argInput, avoidedIndexes = []) {
     const seen = new WeakSet();
     return JSON.stringify(argInput, function (key, value) {
-      if(avoidedIndexes.indexOf(key) !== -1) {
+      if (avoidedIndexes.indexOf(key) !== -1) {
         return;
       }
       if (typeof value === "object") {
-        if(value.$el) {
+        if (value.$el) {
           return `[VueComponent:${value?.$options?.name}]`;
         }
         if (seen.has(value)) {
@@ -226,52 +226,123 @@
     }, 2);
   };
 
-  LswUtils.pluralizar = function(singular, plural, contexto, cantidad) {
+  LswUtils.pluralizar = function (singular, plural, contexto, cantidad) {
     return contexto.replace("%s", cantidad === 1 ? singular : plural).replace("%i", cantidad);
   };
 
-  LswUtils.getRandomString = function(len = 10) {
+  LswUtils.getRandomString = function (len = 10) {
     const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
     let out = "";
-    while(out.length < len) {
+    while (out.length < len) {
       out += alphabet[Math.floor(Math.random() * alphabet.length)];
     }
     return out;
   };
 
-  LswUtils.hello = function() {
+  LswUtils.hello = function () {
     console.log("hello");
   };
 
-  LswUtils.waitForMilliseconds = function(ms) {
+  LswUtils.waitForMilliseconds = function (ms) {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
   };
 
-  LswUtils.splitStringOnce = function(text, splitter) {
-    if(typeof text !== "string") {
+  LswUtils.splitStringOnce = function (text, splitter) {
+    if (typeof text !== "string") {
       throw new Error("Required parameter «text» to be a string on «LswUtils.splitStringOnce»");
     }
-    if(typeof splitter !== "string") {
+    if (typeof splitter !== "string") {
       throw new Error("Required parameter «text» to be a string on «LswUtils.splitStringOnce»");
     }
     const pos = text.indexOf(splitter);
-    if(pos === -1) return [undefined, text];
+    if (pos === -1) return [undefined, text];
     const parts = text.split("");
-    return [[...parts].splice(0, pos).join(""), [...parts].splice(pos+1).join("")];
+    return [[...parts].splice(0, pos).join(""), [...parts].splice(pos + 1).join("")];
   };
 
-  LswUtils.reverseString = function(text) {
+  LswUtils.reverseString = function (text) {
     return text.split("").reverse().join("");
   };
 
-  LswUtils.capitalize = function(text) {
-    return text.substr(0,1).toUpperCase() + text.substr(1);
+  LswUtils.capitalize = function (text) {
+    return text.substr(0, 1).toUpperCase() + text.substr(1);
   };
 
-  LswUtils.startThread = function(callback) {
+  LswUtils.startThread = function (callback) {
     setTimeout(callback, 0);
+  };
+
+  LswUtils.openAddNoteDialog = async function () {
+    const response = await Vue.prototype.$lsw.dialogs.open({
+      title: "Nueva nota",
+      template: `
+        <div class="pad_1 position_absolute top_0 right_0 left_0 bottom_0 flex_column">
+          <div class="flex_1">
+            <input class="width_100" type="text" v-model="value.tiene_fecha" placeholder="Fecha de la nota" ref="fecha" />
+          </div>
+          <div class="flex_1 flex_row centered" style="padding-top: 1px;">
+            <div class="flex_1">Estado: </div>
+            <select class="flex_100" v-model="value.tiene_estado">
+              <option value="creada">Creada</option>
+              <option value="procesada">Procesada</option>
+              <option value="dudosa">Dudosa</option>
+              <option value="desestimada">Desestimada</option>
+            </select>
+          </div>
+          <div class="flex_1" style="padding-top: 2px;">
+            <input class="width_100" type="text" v-model="value.tiene_categorias" placeholder="categoría 1; categoria 2; categoria 3" />
+          </div>
+          <div class="flex_100" style="padding-top: 1px;">
+            <textarea v-focus v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." ref="contenido" />
+          </div>
+          <div class="flex_1" style="padding-top: 2px;">
+            <input class="width_100" type="text" v-model="value.tiene_titulo" placeholder="Título de la nota" ref="titulo" />
+          </div>
+          <div class="flex_row pad_top_1">
+            <div class="flex_100"></div>
+            <div class="flex_1 flex_row">
+              <div class="pad_right_1">
+                <button class="mini" v-on:click="validate">➕ Añadir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      factory: {
+        methods: {
+          validate() {
+            const isValidFecha = LswTimer.parser.parse(this.value.tiene_fecha);
+            const isValidContenido = this.value.tiene_contenido.trim() !== "";
+            const isValidTitulo = this.value.tiene_titulo.trim() !== "";
+            if (!isValidTitulo) {
+              window.alert("Necesita un título la nota.");
+              return this.$refs.titulo.focus();
+            }
+            if (!isValidContenido) {
+              window.alert("Necesita un contenido la nota.");
+              return this.$refs.contenido.focus();
+            }
+            if (!isValidFecha) {
+              window.alert("Necesita una fecha válida la nota.");
+              return this.$refs.fecha.focus();
+            }
+            return this.accept();
+          }
+        },
+        data: {
+          value: {
+            tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date(), false, false, true),
+            tiene_titulo: "",
+            tiene_categorias: "",
+            tiene_contenido: "",
+            tiene_estado: "creada", // "procesada"
+          }
+        }
+      }
+    });
+    return response;
   };
   // @code.end: LswUtils
 

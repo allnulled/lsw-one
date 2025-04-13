@@ -1,12 +1,19 @@
 <div class="lsw_automensajes_viewer">
     <div class="pad_0 pad_top_2 pad_left_2 pad_right_2">
-        <div class="automensaje_block" v-on:click="refreshAutomessaging">
-            <template v-if="selectedAutomensaje">
-                <span style="text-decoration: underline;">{{ selectedAutomensaje.tiene_contenido }}</span> * {{ automessagingSeconds }}s
-            </template>
-            <template v-else>
-                <span>Establece tus propios eslóganos de apoyo.</span>
-            </template>
+        <div class="flex_row">
+            <div class="flex_100">
+                <div class="automensaje_block" v-on:click="refreshAutomessaging">
+                    <template v-if="selectedAutomensaje">
+                        <span style="text-decoration: underline;">{{ selectedAutomensaje.tiene_contenido }}</span> * {{ automessagingSeconds }}s
+                    </template>
+                    <template v-else>
+                        <span>Eslóganes para ti aquí.</span>
+                    </template>
+                </div>
+            </div>
+            <div class="flex_1 pad_left_1" style="padding-top:1px; padding-right:2px;">
+                <button v-on:click="() => $lsw.windows.toggleState()">🔵</button>
+            </div>
         </div>
     </div>
 </div>

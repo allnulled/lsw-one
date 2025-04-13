@@ -2,14 +2,17 @@
 
 
 .automensaje_block {
-    border: 1px solid #CCC;
+    border: 1px solid #e7e7e7;
+    border-radius:2pt;
     box-shadow: 0 0 4px black;
-    background-color: #333;
+    background-color: #ce2a2a;
     color: #CCC;
     padding: 10px;
     text-shadow: 0 0 1px white;
-    transition: background-color .2s linear;
+    animation: changeMiddle 50s infinite linear, changeColor 10s infinite linear;
+    transition: background-color 1s linear;
     cursor: pointer;
+    font-size: 10px;
 }
 
 .automensaje_block:hover {

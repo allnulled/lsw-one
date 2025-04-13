@@ -19,21 +19,21 @@
                                 Insertar info
                             </div>
                             <div class="flex_1">
-                                <button v-on:click="() => selectSubmenu1('none')">❌</button>
+                                <button class="mini" v-on:click="() => selectSubmenu1('none')">❌</button>
                             </div>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('accion.add', { initialValues: { tiene_inicio: selectedDate } })">Crear
+                            <button class="mini" v-on:click="() => selectContext('accion.add', { initialValues: { tiene_inicio: selectedDate } })">Crear
                                 acción</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('concepto.add')">Crear concepto</button>
+                            <button class="mini" v-on:click="() => selectContext('concepto.add')">Crear concepto</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('limitador.add')">Crear limitador</button>
+                            <button class="mini" v-on:click="() => selectContext('limitador.add')">Crear limitador</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('impresion.add')">Crear impresión</button>
+                            <button class="mini" v-on:click="() => selectContext('impresion.add')">Crear impresión</button>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                                 Buscar info
                             </div>
                             <div class="flex_1">
-                                <button v-on:click="() => selectSubmenu1('none')">❌</button>
+                                <button class="mini" v-on:click="() => selectSubmenu1('none')">❌</button>
                             </div>
                         </div>
                         <div class="separator">
@@ -63,35 +63,35 @@
                                 style="padding-left: 4px;">Tablas físicas:</div>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
+                            <button class="mini" v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('concepto.search')">Buscar por concepto</button>
+                            <button class="mini" v-on:click="() => selectContext('concepto.search')">Buscar por concepto</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('propagador.search')">Buscar por propagador</button>
+                            <button class="mini" v-on:click="() => selectContext('propagador.search')">Buscar por propagador</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('limitador.search')">Buscar por límite</button>
+                            <button class="mini" v-on:click="() => selectContext('limitador.search')">Buscar por límite</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('impresion.search')">Buscar por impresión</button>
+                            <button class="mini" v-on:click="() => selectContext('impresion.search')">Buscar por impresión</button>
                         </div>
                         <div class="separator">
                             <div class="flex_100"
                                 style="padding-left: 4px;">Tablas virtuales:</div>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('propagacion.search')">Buscar por propagación</button>
+                            <button class="mini" v-on:click="() => selectContext('propagacion.search')">Buscar por propagación</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('infraccion.search')">Buscar por infracción</button>
+                            <button class="mini" v-on:click="() => selectContext('infraccion.search')">Buscar por infracción</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('postimpresion.search')">Buscar por postimpresión</button>
+                            <button class="mini" v-on:click="() => selectContext('postimpresion.search')">Buscar por postimpresión</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('evento.search')">Buscar por evento</button>
+                            <button class="mini" v-on:click="() => selectContext('evento.search')">Buscar por evento</button>
                         </div>
                     </div>
                 </div>
@@ -221,7 +221,7 @@
                 <div class="flex_row centered">
                     <div class="flex_1 margin_right_1"><button class="bright_border" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
                     <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }} {{ selectedDate.getMonth() }}</div>
-                    <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'visibility: hidden'">
+                    <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'display: none;'">
                         <button class="bright_border" v-on:click="togglePsicodelia" :class="{activated: hasPsicodelia}">❤️</button>
                         <button class="bright_border" v-on:click="showAllHours">🔓*</button>
                         <button class="bright_border" v-on:click="hideAllHours">🔒*</button>
@@ -315,7 +315,7 @@
                                         <div class="lighted_cell" style="text-overflow: ellipsis; overflow: clip; max-width: 100%;">{{ tarea.en_concepto || '🤔' }}</div>
                                     </div>
                                     <div class="flex_1 hour_task_editer pill_middle button_pill_cell">
-                                        <button v-on:click="() => openUpdateTaskDialog(tarea)"
+                                        <button class="mini" v-on:click="() => openUpdateTaskDialog(tarea)"
                                             :class="{activated: selectedForm === tarea.id}">#️⃣</button>
                                     </div>
                                     <div class="flex_1 hour_task_editer pill_end button_pill_cell">

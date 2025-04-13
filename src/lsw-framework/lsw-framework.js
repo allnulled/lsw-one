@@ -16598,7 +16598,7 @@ return Store;
     isDatePassed(date, time, currentDate = new Date()) {
       const [day, month, year] = date.split("/").map(Number);
       const [hour, minute, second] = time.split(":").map(Number);
-      const targetDate = new Date(year, month-1, day, hour, minute, second);
+      const targetDate = new Date(year, month - 1, day, hour, minute, second);
       return currentDate > targetDate;
     },
     sheetToRegistros(sheet, asObjectIsOkay = false) {
@@ -16694,7 +16694,7 @@ return Store;
   });
 
   // API de LSW:
-  LswUtils.toPlainObject = function(obj) {
+  LswUtils.toPlainObject = function (obj) {
     const seen = new WeakSet();
     return JSON.parse(JSON.stringify(obj, (key, value) => {
       if (typeof value === "object" && value !== null) {
@@ -16706,14 +16706,14 @@ return Store;
   };
 
 
-  LswUtils.stringify = function(argInput, avoidedIndexes = []) {
+  LswUtils.stringify = function (argInput, avoidedIndexes = []) {
     const seen = new WeakSet();
     return JSON.stringify(argInput, function (key, value) {
-      if(avoidedIndexes.indexOf(key) !== -1) {
+      if (avoidedIndexes.indexOf(key) !== -1) {
         return;
       }
       if (typeof value === "object") {
-        if(value.$el) {
+        if (value.$el) {
           return `[VueComponent:${value?.$options?.name}]`;
         }
         if (seen.has(value)) {
@@ -16727,52 +16727,123 @@ return Store;
     }, 2);
   };
 
-  LswUtils.pluralizar = function(singular, plural, contexto, cantidad) {
+  LswUtils.pluralizar = function (singular, plural, contexto, cantidad) {
     return contexto.replace("%s", cantidad === 1 ? singular : plural).replace("%i", cantidad);
   };
 
-  LswUtils.getRandomString = function(len = 10) {
+  LswUtils.getRandomString = function (len = 10) {
     const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
     let out = "";
-    while(out.length < len) {
+    while (out.length < len) {
       out += alphabet[Math.floor(Math.random() * alphabet.length)];
     }
     return out;
   };
 
-  LswUtils.hello = function() {
+  LswUtils.hello = function () {
     console.log("hello");
   };
 
-  LswUtils.waitForMilliseconds = function(ms) {
+  LswUtils.waitForMilliseconds = function (ms) {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
   };
 
-  LswUtils.splitStringOnce = function(text, splitter) {
-    if(typeof text !== "string") {
+  LswUtils.splitStringOnce = function (text, splitter) {
+    if (typeof text !== "string") {
       throw new Error("Required parameter «text» to be a string on «LswUtils.splitStringOnce»");
     }
-    if(typeof splitter !== "string") {
+    if (typeof splitter !== "string") {
       throw new Error("Required parameter «text» to be a string on «LswUtils.splitStringOnce»");
     }
     const pos = text.indexOf(splitter);
-    if(pos === -1) return [undefined, text];
+    if (pos === -1) return [undefined, text];
     const parts = text.split("");
-    return [[...parts].splice(0, pos).join(""), [...parts].splice(pos+1).join("")];
+    return [[...parts].splice(0, pos).join(""), [...parts].splice(pos + 1).join("")];
   };
 
-  LswUtils.reverseString = function(text) {
+  LswUtils.reverseString = function (text) {
     return text.split("").reverse().join("");
   };
 
-  LswUtils.capitalize = function(text) {
-    return text.substr(0,1).toUpperCase() + text.substr(1);
+  LswUtils.capitalize = function (text) {
+    return text.substr(0, 1).toUpperCase() + text.substr(1);
   };
 
-  LswUtils.startThread = function(callback) {
+  LswUtils.startThread = function (callback) {
     setTimeout(callback, 0);
+  };
+
+  LswUtils.openAddNoteDialog = async function () {
+    const response = await Vue.prototype.$lsw.dialogs.open({
+      title: "Nueva nota",
+      template: `
+        <div class="pad_1 position_absolute top_0 right_0 left_0 bottom_0 flex_column">
+          <div class="flex_1">
+            <input class="width_100" type="text" v-model="value.tiene_fecha" placeholder="Fecha de la nota" ref="fecha" />
+          </div>
+          <div class="flex_1 flex_row centered" style="padding-top: 1px;">
+            <div class="flex_1">Estado: </div>
+            <select class="flex_100" v-model="value.tiene_estado">
+              <option value="creada">Creada</option>
+              <option value="procesada">Procesada</option>
+              <option value="dudosa">Dudosa</option>
+              <option value="desestimada">Desestimada</option>
+            </select>
+          </div>
+          <div class="flex_1" style="padding-top: 2px;">
+            <input class="width_100" type="text" v-model="value.tiene_categorias" placeholder="categoría 1; categoria 2; categoria 3" />
+          </div>
+          <div class="flex_100" style="padding-top: 1px;">
+            <textarea v-focus v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." ref="contenido" />
+          </div>
+          <div class="flex_1" style="padding-top: 2px;">
+            <input class="width_100" type="text" v-model="value.tiene_titulo" placeholder="Título de la nota" ref="titulo" />
+          </div>
+          <div class="flex_row pad_top_1">
+            <div class="flex_100"></div>
+            <div class="flex_1 flex_row">
+              <div class="pad_right_1">
+                <button class="mini" v-on:click="validate">➕ Añadir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      factory: {
+        methods: {
+          validate() {
+            const isValidFecha = LswTimer.parser.parse(this.value.tiene_fecha);
+            const isValidContenido = this.value.tiene_contenido.trim() !== "";
+            const isValidTitulo = this.value.tiene_titulo.trim() !== "";
+            if (!isValidTitulo) {
+              window.alert("Necesita un título la nota.");
+              return this.$refs.titulo.focus();
+            }
+            if (!isValidContenido) {
+              window.alert("Necesita un contenido la nota.");
+              return this.$refs.contenido.focus();
+            }
+            if (!isValidFecha) {
+              window.alert("Necesita una fecha válida la nota.");
+              return this.$refs.fecha.focus();
+            }
+            return this.accept();
+          }
+        },
+        data: {
+          value: {
+            tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date(), false, false, true),
+            tiene_titulo: "",
+            tiene_categorias: "",
+            tiene_contenido: "",
+            tiene_estado: "creada", // "procesada"
+          }
+        }
+      }
+    });
+    return response;
   };
   // @code.end: LswUtils
 
@@ -22014,12 +22085,15 @@ Vue.component('LswDataImplorer', {
                             </div>
                             <div class="dialog_topbar_buttons">
                                 <button
-                                    v-if="enabledWindowsSystem"
-                                    v-on:click="goHome">🔵</button>
+                                    class="mini"
+                                    v-on:click="close(dialog.id)">❌</button>
                                 <button
+                                    class="mini"
                                     v-on:click="minimize(dialog.id)">➖</button>
                                 <button
-                                    v-on:click="close(dialog.id)">❌</button>
+                                    class="mini"
+                                    v-if="enabledWindowsSystem"
+                                    v-on:click="goHome">🔵</button>
                             </div>
                         </div>
                         <div class="dialog_body">
@@ -22342,16 +22416,18 @@ Vue.component("LswWindowsMainTab", {
                     <div>Process manager</div>
                 </div>
                 <div class="dialog_topbar_buttons">
-                    <button v-if="\$consoleHooker?.is_shown === false" style="white-space: nowrap;flex: 1; margin-right: 4px;" v-on:click="() => \$consoleHooker?.show()">💻</button
-                    ><button v-on:click="viewer.toggleState">🔵</button>
+                    <button class="mini" v-if="\$consoleHooker?.is_shown === false" style="white-space: nowrap;flex: 1;" v-on:click="() => \$consoleHooker?.show()">💻</button>
+                    <button class="mini" v-on:click="viewer.toggleState">🔵</button>
                 </div>
             </div>
             <div class="dialog_body">
                 <div class="main_tab_topbar">
-                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📓 Cal</button>
-                    <button class="mini main_tab_topbar_button" v-on:click="openWiki">🔬 Wik</button>
-                    <button class="mini main_tab_topbar_button" v-on:click="openRest">📦 DB</button>
-                    <button class="mini main_tab_topbar_button" v-on:click="openFilesystem">📂 FS</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📓</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openWiki">🔬</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openRest">📦</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openFilesystem">📂</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openAutomessages">📫</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openNoteUploader">💬</button>
                 </div>
                 <div class="pad_normal" v-if="!Object.keys(\$lsw.dialogs.opened).length">
                     <span>No processes found right now.</span>
@@ -22374,12 +22450,14 @@ Vue.component("LswWindowsMainTab", {
     }
   },
   data() {
+    this.$trace("lsw-windows-main-tab.data", arguments);
     return {
       
     };
   },
   methods: {
     getRandomString(len = 10) {
+      this.$trace("lsw-windows-main-tab.methods.getRandomString", arguments);
       const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
       let out = "";
       while(out.length < len) {
@@ -22388,6 +22466,7 @@ Vue.component("LswWindowsMainTab", {
       return out;
     },
     openRest() {
+      this.$trace("lsw-windows-main-tab.methods.openRest", arguments);
       this.viewer.hide();
       this.$dialogs.open({
         id: "database-explorer-" + this.getRandomString(5),
@@ -22396,6 +22475,7 @@ Vue.component("LswWindowsMainTab", {
       });
     },
     openFilesystem() {
+      this.$trace("lsw-windows-main-tab.methods.openFilesystem", arguments);
       this.viewer.hide();
       this.$dialogs.open({
         id: "filesystem-explorer-" + this.getRandomString(5),
@@ -22404,14 +22484,16 @@ Vue.component("LswWindowsMainTab", {
       });
     },
     openWiki() {
+      this.$trace("lsw-windows-main-tab.methods.openWiki", arguments);
       this.viewer.hide();
       this.$dialogs.open({
         id: "wiki-explorer-" + this.getRandomString(5),
         title: "Wiki explorer",
-        template: `<lsw-wiki />`,
+        template: `<div class="pad_2"><lsw-wiki /></div>`,
       });
     },
     openAgenda() {
+      this.$trace("lsw-windows-main-tab.methods.openAgenda", arguments);
       this.viewer.hide();
       this.$dialogs.open({
         id: "agenda-viewer-" + this.getRandomString(5),
@@ -22419,6 +22501,19 @@ Vue.component("LswWindowsMainTab", {
         template: `<div class="pad_2"><lsw-agenda /></div>`,
       });
     },
+    openAutomessages() {
+      this.$trace("lsw-windows-main-tab.methods.openAutomessages", arguments);
+      this.viewer.hide();
+    },
+    openNoteUploader() {
+      this.$trace("lsw-windows-main-tab.methods.openNoteUploader", arguments);
+      this.viewer.hide();
+      this.$dialogs.open({
+        id: "note-uploader-" + this.getRandomString(5),
+        title: "Note uploader",
+        template: `<div class="pad_2"><lsw-notes /></div>`,
+      });
+    }
   },
   mounted() {
     
@@ -24035,13 +24130,78 @@ Vue.component("LswFilesystemTreeviewer", {
 Vue.component("LswWiki", {
   name: "LswWiki",
   template: `<div class="lsw_wiki">
-    <h3>Welcome to wiki</h3>
-    <div class="wiki_searcher_1_box">
-        <div class="wiki_searcher_1_input_cell">
-            <input class="wiki_searcher_1_input" v-model="search_text_1" type="text" placeholder="Fast search" v-on:key-down.enter="search" />
+    <div class="wiki_buscador"
+        :class="{esta_buscando:isSearching}">
+        <div class="flex_row centered">
+            <div class="flex_100">
+                <input class="width_100 wiki_buscador_texto"
+                    style="min-height: 34px;"
+                    v-model="searchText"
+                    type="text"
+                    placeholder="Buscar en artículos"
+                    v-on:keyup="loadArticulosDelayed"
+                    v-on:keyup.enter="loadArticulos" />
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button v-on:click="loadArticulos">🔎</button>
+            </div>
         </div>
-        <div class="wiki_searcher_1_button_cell">
-            <button class="wiki_searcher_1_button" v-on:click="search">🔎</button>
+        <div class="pad_top_1 pad_bottom_1">
+            <div class="caja_de_mensaje_sobre_articulos">
+                <div class=""
+                    v-if="isSearching"
+                    style="color: rgb(255, 196, 86);">
+                    Buscando artículos...
+                </div>
+                <div class=""
+                    v-else-if="!articulos"
+                    style="color: rgb(245, 89, 78);">
+                    No se alcanzaron a encontrar los artículos.
+                </div>
+                <div class=""
+                    v-else-if="!articulos.length"
+                    style="color: rgb(183, 215, 210);">
+                    No se encontraron artículos según la búsqueda.
+                </div>
+                <div class=""
+                    v-else-if="articulos.length !== 1">
+                    Se encontraron {{ articulos.length }} artículos coincidentes.
+                </div>
+                <div class=""
+                    v-else-if="articulos.length === 1">
+                    Se encontró {{ articulos.length }} artículo coincidente.
+                </div>
+            </div>
+        </div>
+        <div class="lista_articulos"
+            v-if="articulos && articulos.length">
+            <template v-for="articulo, articuloIndex in articulos">
+                <div class="item_articulo"
+                    :class="{activated: openedArticulos.indexOf(articulo.id) !== -1}"
+                    v-on:click="() => toggleArticulo(articulo.id)"
+                    v-bind:key="'articulo_de_wiki_' + articulo.id">
+                    <div class="flex_column">
+                        <div class="flex_1 flex_row">
+                            <div class="celda_articulo flex_1">
+                                {{ articuloIndex + 1 }}.
+                            </div>
+                            <div class="celda_articulo flex_100">
+                                {{ articulo.tiene_titulo }}
+                            </div>
+                            <div class="celda_articulo flex_1">
+                                {{ articulo.tiene_contenido?.length }}B
+                            </div>
+                        </div>
+                        <div class="flex_1"
+                            class="articulo_detalles"
+                            v-if="openedArticulos.indexOf(articulo.id) !== -1">
+                            <div class="celda_articulo">
+                                {{ articulo.tiene_contenido }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
     </div>
 </div>`,
@@ -24049,13 +24209,48 @@ Vue.component("LswWiki", {
   data() {
     this.$trace("lsw-wiki.data");
     return {
-      search_text_1: "",
+      isSearching: true,
+      searchText: "",
+      articulos: undefined,
+      timeoutId: undefined,
+      timeoutSeconds: 0.4,
+      openedArticulos: [],
     };
   },
   methods: {
-    search() {
-      this.$trace("lsw-wiki.methods.search");
-      console.log("Search");
+    async loadArticulos() {
+      this.$trace("lsw-wiki.methods.loadArticulos");
+      clearTimeout(this.searchTimeoutId);
+      this.isSearching = true;
+      const articulos = await (() => {
+        if(this.searchText) {
+          return this.$lsw.database.selectMany("Articulo", articulo => {
+            return JSON.stringify(articulo).indexOf(this.searchText) !== -1;
+          });
+        } else {
+          return this.$lsw.database.selectMany("Articulo");
+        }
+      })();
+      this.openedArticulos = [];
+      this.articulos = articulos;
+      this.isSearching = false;
+    },
+    loadArticulosDelayed() {
+      this.$trace("lsw-wiki.methods.loadArticulosDelayed");
+      clearTimeout(this.searchTimeoutId);
+      this.isSearching = true;
+      this.searchTimeoutId = setTimeout(() => {
+        this.loadArticulos();
+      }, 1000 * this.timeoutSeconds);
+    },
+    toggleArticulo(articuloId) {
+      this.$trace("lsw-wiki.methods.toggleArticulo");
+      const pos = this.openedArticulos.indexOf(articuloId);
+      if(pos === -1) {
+        this.openedArticulos.push(articuloId);
+      } else {
+        this.openedArticulos.splice(pos, 1);
+      }
     }
   },
   watch: {
@@ -24064,6 +24259,7 @@ Vue.component("LswWiki", {
   async mounted() {
     try {
       this.$trace("lsw-wiki.mounted");
+      await this.loadArticulos();
     } catch (error) {
       console.log(error);
     }
@@ -24094,21 +24290,21 @@ Vue.component("LswAgenda", {
                                 Insertar info
                             </div>
                             <div class="flex_1">
-                                <button v-on:click="() => selectSubmenu1('none')">❌</button>
+                                <button class="mini" v-on:click="() => selectSubmenu1('none')">❌</button>
                             </div>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('accion.add', { initialValues: { tiene_inicio: selectedDate } })">Crear
+                            <button class="mini" v-on:click="() => selectContext('accion.add', { initialValues: { tiene_inicio: selectedDate } })">Crear
                                 acción</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('concepto.add')">Crear concepto</button>
+                            <button class="mini" v-on:click="() => selectContext('concepto.add')">Crear concepto</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('limitador.add')">Crear limitador</button>
+                            <button class="mini" v-on:click="() => selectContext('limitador.add')">Crear limitador</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('impresion.add')">Crear impresión</button>
+                            <button class="mini" v-on:click="() => selectContext('impresion.add')">Crear impresión</button>
                         </div>
                     </div>
                 </div>
@@ -24130,7 +24326,7 @@ Vue.component("LswAgenda", {
                                 Buscar info
                             </div>
                             <div class="flex_1">
-                                <button v-on:click="() => selectSubmenu1('none')">❌</button>
+                                <button class="mini" v-on:click="() => selectSubmenu1('none')">❌</button>
                             </div>
                         </div>
                         <div class="separator">
@@ -24138,35 +24334,35 @@ Vue.component("LswAgenda", {
                                 style="padding-left: 4px;">Tablas físicas:</div>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
+                            <button class="mini" v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('concepto.search')">Buscar por concepto</button>
+                            <button class="mini" v-on:click="() => selectContext('concepto.search')">Buscar por concepto</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('propagador.search')">Buscar por propagador</button>
+                            <button class="mini" v-on:click="() => selectContext('propagador.search')">Buscar por propagador</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('limitador.search')">Buscar por límite</button>
+                            <button class="mini" v-on:click="() => selectContext('limitador.search')">Buscar por límite</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('impresion.search')">Buscar por impresión</button>
+                            <button class="mini" v-on:click="() => selectContext('impresion.search')">Buscar por impresión</button>
                         </div>
                         <div class="separator">
                             <div class="flex_100"
                                 style="padding-left: 4px;">Tablas virtuales:</div>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('propagacion.search')">Buscar por propagación</button>
+                            <button class="mini" v-on:click="() => selectContext('propagacion.search')">Buscar por propagación</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('infraccion.search')">Buscar por infracción</button>
+                            <button class="mini" v-on:click="() => selectContext('infraccion.search')">Buscar por infracción</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('postimpresion.search')">Buscar por postimpresión</button>
+                            <button class="mini" v-on:click="() => selectContext('postimpresion.search')">Buscar por postimpresión</button>
                         </div>
                         <div class="button_cell">
-                            <button v-on:click="() => selectContext('evento.search')">Buscar por evento</button>
+                            <button class="mini" v-on:click="() => selectContext('evento.search')">Buscar por evento</button>
                         </div>
                     </div>
                 </div>
@@ -24296,7 +24492,7 @@ Vue.component("LswAgenda", {
                 <div class="flex_row centered">
                     <div class="flex_1 margin_right_1"><button class="bright_border" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
                     <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }} {{ selectedDate.getMonth() }}</div>
-                    <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'visibility: hidden'">
+                    <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'display: none;'">
                         <button class="bright_border" v-on:click="togglePsicodelia" :class="{activated: hasPsicodelia}">❤️</button>
                         <button class="bright_border" v-on:click="showAllHours">🔓*</button>
                         <button class="bright_border" v-on:click="hideAllHours">🔒*</button>
@@ -24390,7 +24586,7 @@ Vue.component("LswAgenda", {
                                         <div class="lighted_cell" style="text-overflow: ellipsis; overflow: clip; max-width: 100%;">{{ tarea.en_concepto || '🤔' }}</div>
                                     </div>
                                     <div class="flex_1 hour_task_editer pill_middle button_pill_cell">
-                                        <button v-on:click="() => openUpdateTaskDialog(tarea)"
+                                        <button class="mini" v-on:click="() => openUpdateTaskDialog(tarea)"
                                             :class="{activated: selectedForm === tarea.id}">#️⃣</button>
                                     </div>
                                     <div class="flex_1 hour_task_editer pill_end button_pill_cell">
@@ -26864,19 +27060,41 @@ Vue.component("LswSchemaBasedForm", {
 // @code.end: LswSchemaBasedForm API
 // @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component
 Vue.component("LswNotes", {
-  template: `<div class="lsw_notes pad_2 pad_top_0">
-    <div class="titulo_de_notas">Últimas notas:</div>
-    <div class="pad_2 pad_left_0 pad_right_0" v-if="isLoaded">
-        <div class="note_card flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
-            <div class="flex_1 nowrap date_cell" :title="note.tiene_fecha" style="text-align: ltr;">{{ note.tiene_fecha.split(" ")[1] || note.tiene_fecha }}</div>
-            <div class="flex_100 nowrap shortable_text" :title="note.tiene_titulo">{{ note.tiene_titulo }}</div>
-            <div class="flex_1 nowrap" :title="note.tiene_contenido">{{ note.tiene_contenido.length }}B</div>
-            <!--div class="flex_1 nowrap" :title="note.tiene_categorias">{{ note.tiene_categorias.split(";").length }}</div-->
+  template: `<div class="lsw_notes pad_0 pad_top_0">
+    <template v-if="allNotes && allNotes.length">
+        <div class="titulo_de_notas">Últimas notas:</div>
+        <div class="pad_2 pad_left_0 pad_right_0"
+            v-if="isLoaded">
+            <div class="note_card flex_row"
+                v-for="note, noteIndex in allNotes"
+                v-bind:key="'note_' + noteIndex">
+                <div class="flex_1 nowrap date_cell"
+                    :title="note.tiene_fecha"
+                    style="text-align: ltr;">{{ note.tiene_fecha.split(" ")[1] || note.tiene_fecha }}</div>
+                <div class="flex_100 nowrap shortable_text"
+                    :title="note.tiene_titulo">{{ note.tiene_titulo }}</div>
+                <div class="flex_1 nowrap"
+                    :title="note.tiene_contenido">{{ note.tiene_contenido.length }}B</div>
+                <!--div class="flex_1 nowrap" :title="note.tiene_categorias">{{ note.tiene_categorias.split(";").length }}</div-->
+            </div>
         </div>
-    </div>
+    </template>
+    <div class=""
+        v-else>No hay notas actualmente.</div>
 </div>`,
   props: {
-    
+    autoDialog: {
+      type: Boolean,
+      default: () => false,
+    },
+    onAutoDialogSuccess: {
+      type: Function,
+      default: () => {},
+    },
+    onAutoDialogError: {
+      type: Function,
+      default: () => {},
+    }
   },
   data() {
     this.$trace("lsw-notes.data");
@@ -26907,72 +27125,10 @@ Vue.component("LswNotes", {
     },
     async openAddNoteDialog() {
       this.$trace("lsw-notes.methods.openAddNoteDialog");
-      const response = await this.$lsw.dialogs.open({
-        title: "Nueva nota",
-        template: `<div class="pad_1 position_absolute top_0 right_0 left_0 bottom_0 flex_column">
-          <div class="flex_1">
-            <input class="width_100" type="text" v-model="value.tiene_fecha" placeholder="Fecha de la nota" ref="fecha" />
-          </div>
-          <div class="flex_1 flex_row centered" style="padding-top: 1px;">
-            <div class="flex_1">Estado: </div>
-            <select class="flex_100" v-model="value.tiene_estado">
-              <option value="creada">Creada</option>
-              <option value="procesada">Procesada</option>
-              <option value="dudosa">Dudosa</option>
-              <option value="desestimada">Desestimada</option>
-            </select>
-          </div>
-          <div class="flex_1" style="padding-top: 2px;">
-            <input class="width_100" type="text" v-model="value.tiene_categorias" placeholder="categoría 1; categoria 2; categoria 3" />
-          </div>
-          <div class="flex_100" style="padding-top: 1px;">
-            <textarea v-focus v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." ref="contenido" />
-          </div>
-          <div class="flex_1" style="padding-top: 2px;">
-            <input class="width_100" type="text" v-model="value.tiene_titulo" placeholder="Título de la nota" ref="titulo" />
-          </div>
-          <div class="flex_row pad_top_1">
-            <div class="flex_100"></div>
-            <div class="flex_1 flex_row">
-              <div class="pad_right_1">
-                <button class="mini" v-on:click="validate">➕ Añadir</button>
-              </div>
-            </div>
-          </div>
-        </div>`,
-        factory: {
-          methods: {
-            validate() {
-              const isValidFecha = LswTimer.parser.parse(this.value.tiene_fecha);
-              const isValidContenido = this.value.tiene_contenido.trim() !== "";
-              const isValidTitulo = this.value.tiene_titulo.trim() !== "";
-              if(!isValidTitulo) {
-                window.alert("Necesita un título la nota.");
-                return this.$refs.titulo.focus();
-              }
-              if(!isValidContenido) {
-                window.alert("Necesita un contenido la nota.");
-                return this.$refs.contenido.focus();
-              }
-              if(!isValidFecha) {
-                window.alert("Necesita una fecha válida la nota.");
-                return this.$refs.fecha.focus();
-              }
-              return this.accept();
-            }
-          },
-          data: {
-            value: {
-              tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date(), false, false, true),
-              tiene_titulo: "",
-              tiene_categorias: "",
-              tiene_contenido: "",
-              tiene_estado: "creada", // "procesada"
-            }
-          }
-        }
-      });
-      if(typeof response !== "object") return;
+      const response = await LswUtils.openAddNoteDialog();
+      if(typeof response !== "object") {
+        return;
+      }
       await this.$lsw.database.insert("Nota", response);
       await this.loadNotes();
     }
@@ -26982,6 +27138,9 @@ Vue.component("LswNotes", {
     try {
       this.$trace("lsw-notes.mounted");
       await this.loadNotes();
+      if(this.autoDialog) {
+        this.openAddNoteDialog();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -27015,7 +27174,6 @@ rel correr
   // Change this component at your convenience:
   Vue.component("App", {
     template: `<div>
-
     <div class="position_fixed top_auto left_auto"
         style="right: 8px; bottom: 8px;">
         <button class="danger_button"
@@ -27023,71 +27181,11 @@ rel correr
         <button class="danger_button"
             v-on:click="goToDocs">📘</button>
     </div>
-    <!--lsw-protolang-editor :initial-contents="initialContents" /-->
     <lsw-automensajes-viewer />
-    <template v-if="isMounted">
-        <lsw-current-accion-viewer>
-            <div class="pad_1 float_right">
-                <div class="flex_row">
-                    <div class="flex_100"></div>
-                    <div class="flex_1 pad_right_1">
-                        <button class="mini danger_button"
-                            v-on:click="\$refs.notes.loadNotes">♻️</button>
-                    </div>
-                    <div class="flex_1 pad_right_1">
-                        <button class="mini danger_button"
-                            v-on:click="\$refs.notes.openAddNoteDialog">+ 💬</button>
-                    </div>
-                    <div class="flex_1">
-                        <button class="mini danger_button"
-                            v-on:click="\$refs.notes.openAddNoteDialog">+ 🔬</button>
-                    </div>
-                </div>
-            </div>
-        </lsw-current-accion-viewer>
-    </template>
-    <div class="">
-        <lsw-notes ref="notes" />
-    </div>
+    <lsw-current-accion-viewer />
     <lsw-console-hooker />
     <lsw-windows-viewer />
     <lsw-toasts />
-    <!--
-    <button v-on:click="uploadConductometria" v-if="!conductometria.registros">Abrir conductometría</button>
-    <button v-on:click="clearConductometria" v-else>Cerrar</button>
-    <button v-on:click="openDialog">Abrir diálogo</button>
-    <button v-on:click="openDialogSequence">Abrir secuencia de diálogos</button>
-    <div style="height: 4px;"></div>
-    <pre class="conductometria_viewer_1" style="display: none;">{{ conductometria }}</pre>
-    <hr/>
-    <lsw-schema-based-form :on-submit="(v) => console.log(v)" :model="{
-        databaseId: 'lsw_default_database',
-        tableId: 'Accion',
-        rowId: 1
-    }"/>
-    <hr/>
-    <div>
-        <div class="control_form" v-xform.form="{
-            onSubmit: v => console.log(v)
-        }" ref="form">
-            <button v-on:click="() => \$refs.form.\$xform.validate()">validate</button>
-            <div class="control_user" v-xform.control="{
-                name:'user',
-                debug:1,
-                onValidate: v => {
-                    if(v === '') {
-                        throw new Error('taloco');
-                    }
-                }
-            }">
-                <input class="control_user_name" v-xform.input="{
-                    name:'*'
-                }" type="text" />
-                <div v-xform.error="{}"></div>
-            </div>
-        </div>
-    </div>
-    -->
 </div>`,
     props: {
       uuid: {

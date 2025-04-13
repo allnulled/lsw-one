@@ -10,3 +10,4 @@ src/lsw-framework/src/styles
 src/lsw-framework/src/directives
 src/bootloader
 devfiles.txt
+ping.txt

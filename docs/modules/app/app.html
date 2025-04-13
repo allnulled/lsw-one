@@ -1,5 +1,4 @@
 <div>
-
     <div class="position_fixed top_auto left_auto"
         style="right: 8px; bottom: 8px;">
         <button class="danger_button"
@@ -7,69 +6,9 @@
         <button class="danger_button"
             v-on:click="goToDocs">📘</button>
     </div>
-    <!--lsw-protolang-editor :initial-contents="initialContents" /-->
     <lsw-automensajes-viewer />
-    <template v-if="isMounted">
-        <lsw-current-accion-viewer>
-            <div class="pad_1 float_right">
-                <div class="flex_row">
-                    <div class="flex_100"></div>
-                    <div class="flex_1 pad_right_1">
-                        <button class="mini danger_button"
-                            v-on:click="$refs.notes.loadNotes">♻️</button>
-                    </div>
-                    <div class="flex_1 pad_right_1">
-                        <button class="mini danger_button"
-                            v-on:click="$refs.notes.openAddNoteDialog">+ 💬</button>
-                    </div>
-                    <div class="flex_1">
-                        <button class="mini danger_button"
-                            v-on:click="$refs.notes.openAddNoteDialog">+ 🔬</button>
-                    </div>
-                </div>
-            </div>
-        </lsw-current-accion-viewer>
-    </template>
-    <div class="">
-        <lsw-notes ref="notes" />
-    </div>
+    <lsw-current-accion-viewer />
     <lsw-console-hooker />
     <lsw-windows-viewer />
     <lsw-toasts />
-    <!--
-    <button v-on:click="uploadConductometria" v-if="!conductometria.registros">Abrir conductometría</button>
-    <button v-on:click="clearConductometria" v-else>Cerrar</button>
-    <button v-on:click="openDialog">Abrir diálogo</button>
-    <button v-on:click="openDialogSequence">Abrir secuencia de diálogos</button>
-    <div style="height: 4px;"></div>
-    <pre class="conductometria_viewer_1" style="display: none;">{{ conductometria }}</pre>
-    <hr/>
-    <lsw-schema-based-form :on-submit="(v) => console.log(v)" :model="{
-        databaseId: 'lsw_default_database',
-        tableId: 'Accion',
-        rowId: 1
-    }"/>
-    <hr/>
-    <div>
-        <div class="control_form" v-xform.form="{
-            onSubmit: v => console.log(v)
-        }" ref="form">
-            <button v-on:click="() => $refs.form.$xform.validate()">validate</button>
-            <div class="control_user" v-xform.control="{
-                name:'user',
-                debug:1,
-                onValidate: v => {
-                    if(v === '') {
-                        throw new Error('taloco');
-                    }
-                }
-            }">
-                <input class="control_user_name" v-xform.input="{
-                    name:'*'
-                }" type="text" />
-                <div v-xform.error="{}"></div>
-            </div>
-        </div>
-    </div>
-    -->
 </div>

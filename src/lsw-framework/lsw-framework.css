@@ -570,7 +570,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
     text-align: right;
 }
 .main_tab_topbar_button {
-    
+    min-width: 30px;
 }
 .pad_normal {
     padding: 4px;
@@ -920,6 +920,56 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
     padding: 2px;
     padding-left: 0px;
 }
+
+.lsw_wiki .wiki_buscador input.wiki_buscador_texto {
+    background-color: white;
+    border: 1px solid #333;
+    border-radius: 2pt !important;
+}
+
+.lsw_wiki .wiki_buscador.esta_buscando input.wiki_buscador_texto {
+    background-color: rgb(233, 230, 194);
+    border: 1px solid #666;
+}
+
+.lsw_wiki .caja_de_mensaje_sobre_articulos {
+    border: 1px solid white;
+    box-shadow: 0 0 4px black;
+    border-radius: 2pt;
+    background-color: #040d20;
+    color: #0F0;
+    text-shadow: 0 0 1px black;
+    padding: 4px;
+    font-size: 10px;
+}
+
+.lsw_wiki .lista_articulos {
+    border-top: 1px solid white;
+    box-shadow: 0 0 4px black;
+}
+
+.lsw_wiki .item_articulo {
+    margin-bottom: 0px;
+    border: 1px solid white;
+    border-top: 0px solid white;
+    background-color: #260202;
+    color: white;
+    text-shadow: 1px solid blue;
+    cursor: pointer;
+}
+
+.lsw_wiki .item_articulo.activated {
+    
+}
+
+.lsw_wiki .celda_articulo {
+    padding: 4px;
+}
+
+.lsw_wiki .articulo_detalles {
+    background-color: #3d0707c2;
+    border-top: 1px solid rgb(140, 94, 94);
+}
 .lsw_agenda {}
 
 .calendar_viewer {
@@ -935,6 +985,7 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
 
 .no_tasks_message {
     padding: 8px;
+    padding-bottom: 4px;
 }
 
 .hour_separator_cell {
@@ -1359,7 +1410,7 @@ bajar(B) 100
 .tasks_viewer {
     padding: 0px;
     padding-top: 4px;
-    padding-bottom: 4px;
+    padding-bottom: 0px;
 }
 .LswAgendaAccionAdd {
 
@@ -1704,6 +1755,21 @@ select.form_control {
     }
   }
 
+  @keyframes changeColor {
+    0% {
+      color: #000;
+      box-shadow: 0 0 1px white;
+    }
+    50% {
+      color: #FFF;
+      box-shadow: 0 0 1px black;
+    }
+    100% {
+      color: #000;
+      box-shadow: 0 0 1px white;
+    }
+  }
+
 
 
 * {
@@ -1725,13 +1791,13 @@ textarea {
 
 .like_button,
 button {
-    border: 1px solid #6257a3;
+    border: 1px solid #464646;
     border-radius: 3pt;
     padding: 4px;
     font-family: Arial;
     font-size: 20px;
     cursor: pointer;
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.50);
     box-shadow: 0 0 2px black;
     box-shadow: 0 0 2px white;
     color: white;
@@ -1743,7 +1809,8 @@ button {
 }
 .like_button:hover,
 button:hover {
-    background-color: rgb(6, 6, 29);
+    /*background-color: rgb(6, 6, 29);*/
+    background-color: rgba(0, 0, 0, 0.75);
     border: 1px solid white;
     box-shadow: 0 0 2px black;
 }

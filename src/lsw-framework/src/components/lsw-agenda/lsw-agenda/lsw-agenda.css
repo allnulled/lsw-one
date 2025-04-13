@@ -13,6 +13,7 @@
 
 .no_tasks_message {
     padding: 8px;
+    padding-bottom: 4px;
 }
 
 .hour_separator_cell {
@@ -437,5 +438,5 @@ bajar(B) 100
 .tasks_viewer {
     padding: 0px;
     padding-top: 4px;
-    padding-bottom: 4px;
+    padding-bottom: 0px;
 }

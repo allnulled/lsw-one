@@ -3,7 +3,7 @@
 }
 .scrollable_panel_viewer {
     min-height: 3px;
-    max-height: 320px;
+    max-height: 460px;
     overflow: scroll;
     border-top: 3px double #333;
     border-bottom: 3px double #333;

@@ -13,12 +13,15 @@
                             </div>
                             <div class="dialog_topbar_buttons">
                                 <button
-                                    v-if="enabledWindowsSystem"
-                                    v-on:click="goHome">🔵</button>
+                                    class="mini"
+                                    v-on:click="close(dialog.id)">❌</button>
                                 <button
+                                    class="mini"
                                     v-on:click="minimize(dialog.id)">➖</button>
                                 <button
-                                    v-on:click="close(dialog.id)">❌</button>
+                                    class="mini"
+                                    v-if="enabledWindowsSystem"
+                                    v-on:click="goHome">🔵</button>
                             </div>
                         </div>
                         <div class="dialog_body">

@@ -63,20 +63,36 @@ Vue.component("LswCurrentAccionViewer", {
         tiene_estado: nextEstado
       });
       await this.loadAcciones();
-    }
+    },
+    async reloadPanel() {
+      this.$trace("lsw-current-accion-viewer.methods.reloadPanel");
+      await this.loadAcciones();
+    },
+    async openNotaUploader() {
+      this.$trace("lsw-current-accion-viewer.methods.openNotaUploader", arguments);
+      const response = await LswUtils.openAddNoteDialog();
+      if(typeof response !== "object") {
+        return;
+      }
+      await this.$lsw.database.insert("Nota", response);
+    },
+    openWikiExplorer() {
+      this.$trace("lsw-windows-main-tab.methods.openWikiExplorer", arguments);
+      this.$dialogs.open({
+        id: "wiki-explorer-" + LswRandomizer.getRandomString(5),
+        title: "Wiki explorer",
+        template: `<div class="pad_2"><lsw-wiki /></div>`,
+      });
+    },
   },
   watch: {},
   async mounted() {
     try {
       this.$trace("lsw-current-accion-viewer.mounted");
       await this.loadAcciones();
-      this.startTimer();
     } catch(error) {
       console.log(error);
     }
   },
-  unmount() {
-    this.stopTimer();
-  }
 });
 // @code.end: LswCurrentAccionViewer API

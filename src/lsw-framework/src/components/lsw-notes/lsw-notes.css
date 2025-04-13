@@ -48,4 +48,19 @@
     }
   }
 
+  @keyframes changeColor {
+    0% {
+      color: #000;
+      box-shadow: 0 0 1px white;
+    }
+    50% {
+      color: #FFF;
+      box-shadow: 0 0 1px black;
+    }
+    100% {
+      color: #000;
+      box-shadow: 0 0 1px white;
+    }
+  }
+
 

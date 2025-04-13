@@ -13,7 +13,8 @@ Aplicación de gestión del tiempo y la información + Proyecto base para el des
 - [Instrucciones para el usuario](#instrucciones-para-el-usuario)
   - [Estructura de la base de datos](#estructura-de-la-base-de-datos)
   - [Aplicaciones menores](#aplicaciones-menores)
-- [Instrucciones para el desarrollador](#instrucciones-para-el-desarrollador)
+- [Instrucciones en local](#instrucciones-en-local)
+  - [Requisitos](#requisitos)
   - [Comandos para el desarrollo](#comandos-para-el-desarrollo)
   - [Ficheros para el desarrollo](#ficheros-para-el-desarrollo)
 
@@ -74,23 +75,43 @@ Las aplicaciones menores *básicas* son:
 - **protolang**: para persistencia lógica.
 - **automensajes**: para autoinfluenciar al yo.
 
-# Instrucciones para el desarrollador
+# Instrucciones en local
 
+## Requisitos
+
+Se requieren instalados y accesibles desde línea de comandos:
+
+  - `node`
+  - `npm`
+  - `npx`
+  - `npx http-server`
+
+Se requiere también:
+
+  - ejecutar `npm install`
+  - en la carpeta [`src/lsw-framework/src/apis/lsw-reloader`](src/lsw-framework/src/apis/lsw-reloader)
+  - para que luego funcione el comando `npm run reloader`.
 
 ## Comandos para el desarrollo
+
+Usa **npm run serve** para reconstruir el JS y el CSS mientras editas.
 
 Usa **npm run build** para reconstruir el JS y el CSS.
 
 Usa **npm run dev** para reconstruir el JS y el CSS mientras editas.
+
+Usa **npm run reloader** para encender el servidor de escucha de cambios en ficheros.
+
+Usa `serve` + `dev` + `reloader` combinados para desarrollo con refresco automático.
 
 ## Ficheros para el desarrollo
 
 Tienes que:
 
 1. Ir poniendo en [devfiles.txt](devfiles.txt) los **ficheros que editas**.
-2. Ir poniendo en [dev/bundlers/distribution/bundlelist.components.js](dev/bundlers/distribution/bundlelist.components.js) los **componentes propios**.
-3. Ir poniendo en [dev/bundlers/distribution/bundlelist.css.js](dev/bundlers/distribution/bundlelist.css.js) los **estilos propios**.
-4. Ir poniendo en [dev/bundlers/distribution/bundlelist.js.js](dev/bundlers/distribution/bundlelist.js.js) los **scripts propios**.
+2. Ir poniendo en [dev/bundlers/distribution/bundlelist.components.js](dev/bundlers/distribution/bundlelist.components.js) los **componentes propios de la aplicación**.
+3. Ir poniendo en [dev/bundlers/distribution/bundlelist.css.js](dev/bundlers/distribution/bundlelist.css.js) los **estilos propios de la aplicación**.
+4. Ir poniendo en [dev/bundlers/distribution/bundlelist.js.js](dev/bundlers/distribution/bundlelist.js.js) los **scripts propios de la aplicación**.
 
 Para ir engrosando el framework:
 

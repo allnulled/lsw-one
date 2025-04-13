@@ -1,11 +1,22 @@
-<div class="lsw_notes pad_2 pad_top_0">
-    <div class="titulo_de_notas">Últimas notas:</div>
-    <div class="pad_2 pad_left_0 pad_right_0" v-if="isLoaded">
-        <div class="note_card flex_row" v-for="note, noteIndex in allNotes" v-bind:key="'note_' + noteIndex">
-            <div class="flex_1 nowrap date_cell" :title="note.tiene_fecha" style="text-align: ltr;">{{ note.tiene_fecha.split(" ")[1] || note.tiene_fecha }}</div>
-            <div class="flex_100 nowrap shortable_text" :title="note.tiene_titulo">{{ note.tiene_titulo }}</div>
-            <div class="flex_1 nowrap" :title="note.tiene_contenido">{{ note.tiene_contenido.length }}B</div>
-            <!--div class="flex_1 nowrap" :title="note.tiene_categorias">{{ note.tiene_categorias.split(";").length }}</div-->
+<div class="lsw_notes pad_0 pad_top_0">
+    <template v-if="allNotes && allNotes.length">
+        <div class="titulo_de_notas">Últimas notas:</div>
+        <div class="pad_2 pad_left_0 pad_right_0"
+            v-if="isLoaded">
+            <div class="note_card flex_row"
+                v-for="note, noteIndex in allNotes"
+                v-bind:key="'note_' + noteIndex">
+                <div class="flex_1 nowrap date_cell"
+                    :title="note.tiene_fecha"
+                    style="text-align: ltr;">{{ note.tiene_fecha.split(" ")[1] || note.tiene_fecha }}</div>
+                <div class="flex_100 nowrap shortable_text"
+                    :title="note.tiene_titulo">{{ note.tiene_titulo }}</div>
+                <div class="flex_1 nowrap"
+                    :title="note.tiene_contenido">{{ note.tiene_contenido.length }}B</div>
+                <!--div class="flex_1 nowrap" :title="note.tiene_categorias">{{ note.tiene_categorias.split(";").length }}</div-->
+            </div>
         </div>
-    </div>
+    </template>
+    <div class=""
+        v-else>No hay notas actualmente.</div>
 </div>

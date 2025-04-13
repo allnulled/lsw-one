@@ -4,13 +4,10 @@
     bottom: 9px;
     left: 9px;
     right: auto;
-    background-color: transparent;
     padding: 0px;
-    border: 1px solid #000;
+    border: 0px solid #000;
     border-radius: 3pt;
-    background-color: #AFFF00;
-    box-shadow: 0 0 4px black;
-    cursor: pointer;
+    cursor: default;
 }
 .lsw_windows_pivot_button:hover {
 }
@@ -20,7 +17,9 @@
     min-width: 22px;
     vertical-align: middle;
     border: none;
-    background-color: transparent;
+    background-color: transparent !important;
+    cursor: pointer;
+    opacity: 0.6;
 }
 
 .lsw_windows_pivot_button > button:hover {
@@ -28,4 +27,9 @@
 }
 .lsw_windows_pivot_button:hover > button {
     
+}
+.lsw_time_box {
+    text-decoration: underline;
+    color: red;
+    text-shadow: 0 0 2px white;
 }

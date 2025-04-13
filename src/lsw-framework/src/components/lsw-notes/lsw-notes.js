@@ -63,9 +63,6 @@ Vue.component("LswNotes", {
               <div class="pad_right_1">
                 <button class="mini" v-on:click="validate">➕ Añadir</button>
               </div>
-              <div>
-                <button class="mini" v-on:click="cancel">❌ Cancelar</button>
-              </div>
             </div>
           </div>
         </div>`,

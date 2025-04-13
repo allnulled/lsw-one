@@ -17,13 +17,15 @@ textarea {
 
 .like_button,
 button {
-    border: 1px solid black;
+    border: 1px solid #6257a3;
     border-radius: 3pt;
     padding: 4px;
     font-family: Arial;
     font-size: 20px;
     cursor: pointer;
     background-color: black;
+    box-shadow: 0 0 2px black;
+    box-shadow: 0 0 2px white;
     color: white;
     margin-bottom: 0px;
     min-width: 32px;
@@ -33,7 +35,9 @@ button {
 }
 .like_button:hover,
 button:hover {
-    background-color: #336;
+    background-color: rgb(6, 6, 29);
+    border: 1px solid white;
+    box-shadow: 0 0 2px black;
 }
 button.activated {
     background-color: #33B;

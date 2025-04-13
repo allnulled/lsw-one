@@ -1,25 +1,28 @@
 <div class="lsw_current_accion_viewer">
-    <div class="flex_row centered pad_left_1 pad_top_1">
-        <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'despues'}"
-                v-on:click="() => selectSection('despues')">🕐⏩</button>
+    <div class="flex_row pad_left_1 pad_right_1 centered width_100">
+        <div class="flex_1 pad_left_1">
+            <button class="mini"
+                :class="{activated: selectedSection === 'despues'}"
+                v-on:click="() => selectSection('despues')">🕐 ⏩</button>
         </div>
-        <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'antes'}"
-                v-on:click="() => selectSection('antes')">🕐⏪</button>
+        <div class="flex_1 pad_left_1">
+            <button class="mini"
+                :class="{activated: selectedSection === 'antes'}"
+                v-on:click="() => selectSection('antes')">🕐 ⏪</button>
         </div>
-        <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'calendario'}"
+        <div class="flex_1 pad_left_1">
+            <button class="mini"
+                :class="{activated: selectedSection === 'calendario'}"
                 v-on:click="() => selectSection('calendario')">📆</button>
         </div>
-        <div class="pad_left_1 flex_100">
-            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, false, true) }}
+        <div class="flex_100">
+
         </div>
-        <div class="pad_left_1">
+        <div class="flex_1 pad_left_1">
             <slot />
         </div>
     </div>
-    <div class="scrollable_panel_viewer pad_2" v-if="selectedSection !== 'none'">
+    <div class="scrollable_panel_viewer pad_2 margin_bottom_2" v-if="selectedSection !== 'none'">
         <div class="as_card">
             <div class="pad_2"
                 v-if="selectedSection === 'antes'">

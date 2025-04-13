@@ -106,7 +106,7 @@ Vue.component("LswWindowsMainTab", {
                 </div>
             </div>
             <div class="dialog_footer">
-                <button class="" v-on:click="viewer.toggleState">Minimize</button>
+                <button class="mini" v-on:click="viewer.toggleState">➖ Minimize</button>
             </div>
         </div>
 </div>`,

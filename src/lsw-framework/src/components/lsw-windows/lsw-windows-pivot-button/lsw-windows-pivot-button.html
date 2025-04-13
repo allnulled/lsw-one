@@ -1,3 +1,10 @@
-<div class="lsw_windows_pivot_button" v-on:click="onClick">
-    <button id="windows_pivot_button" class="">🔵</button>
+<div class="lsw_windows_pivot_button">
+    <div class="flex_row centered">
+        <div class="">
+            <button id="windows_pivot_button" v-on:click="onClick" class="">🔵</button>
+        </div>
+        <div class="pad_left_1 lsw_time_box">
+            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, true, true).replace(/ /g, "~") }}
+        </div>
+    </div>
 </div>

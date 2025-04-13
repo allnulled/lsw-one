@@ -7,7 +7,6 @@ Vue.component("LswCurrentAccionViewer", {
   data() {
     this.$trace("lsw-current-accion-viewer.data");
     return {
-      currentDate: new Date(),
       selectedSection: 'none', // 'antes', 'despues'
       accionesAntes: false,
       accionesDespues: false,
@@ -64,15 +63,6 @@ Vue.component("LswCurrentAccionViewer", {
         tiene_estado: nextEstado
       });
       await this.loadAcciones();
-    },
-    startTimer() {
-      this.timerId = setTimeout(() => {
-        this.currentDate = new Date();
-        this.startTimer();
-      }, 1000);
-    },
-    stopTimer() {
-      clearTimeout(this.timerId);
     }
   },
   watch: {},

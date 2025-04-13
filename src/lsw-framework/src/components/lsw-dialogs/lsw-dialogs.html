@@ -14,9 +14,9 @@
                             <div class="dialog_topbar_buttons">
                                 <button
                                     v-if="enabledWindowsSystem"
-                                    v-on:click="goHome">☰</button>
+                                    v-on:click="goHome">🔵</button>
                                 <button
-                                    v-on:click="minimize(dialog.id)">💡</button>
+                                    v-on:click="minimize(dialog.id)">➖</button>
                                 <button
                                     v-on:click="close(dialog.id)">❌</button>
                             </div>
@@ -26,16 +26,16 @@
                         </div>
                         <div class="dialog_footer">
                             <button v-if="dialog && dialog.acceptButton"
-                                class=""
+                                class="mini"
                                 v-on:click="() => dialog.acceptButton.callback ? dialog.acceptButton.callback($refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : resolve(dialog.id).close()">{{
-                                dialog.acceptButton.text || "Accept" }}</button>
+                                dialog.acceptButton.text || "✔️ Aceptar" }}</button>
                             <button v-if="dialog && dialog.cancelButton"
-                                class=""
+                                class="mini"
                                 v-on:click="() => dialog.cancelButton.callback ? dialog.cancelButton.callback($refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : close(dialog.id)">{{
-                                dialog.cancelButton.text || "Cancel" }}</button>
+                                dialog.cancelButton.text || "❌ Cancelar" }}</button>
                             <button v-else
-                                class=""
-                                v-on:click="() => close(dialog.id)">{{ dialog?.cancelButton?.text || "Cancel" }}</button>
+                                class="mini"
+                                v-on:click="() => close(dialog.id)">{{ dialog?.cancelButton?.text || "❌ Cancelar" }}</button>
                         </div>
                     </div>
                 </template>

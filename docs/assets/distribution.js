@@ -22042,9 +22042,9 @@ Vue.component('LswDataImplorer', {
                             <div class="dialog_topbar_buttons">
                                 <button
                                     v-if="enabledWindowsSystem"
-                                    v-on:click="goHome">☰</button>
+                                    v-on:click="goHome">🔵</button>
                                 <button
-                                    v-on:click="minimize(dialog.id)">💡</button>
+                                    v-on:click="minimize(dialog.id)">➖</button>
                                 <button
                                     v-on:click="close(dialog.id)">❌</button>
                             </div>
@@ -22054,16 +22054,16 @@ Vue.component('LswDataImplorer', {
                         </div>
                         <div class="dialog_footer">
                             <button v-if="dialog && dialog.acceptButton"
-                                class=""
+                                class="mini"
                                 v-on:click="() => dialog.acceptButton.callback ? dialog.acceptButton.callback(\$refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : resolve(dialog.id).close()">{{
-                                dialog.acceptButton.text || "Accept" }}</button>
+                                dialog.acceptButton.text || "✔️ Aceptar" }}</button>
                             <button v-if="dialog && dialog.cancelButton"
-                                class=""
+                                class="mini"
                                 v-on:click="() => dialog.cancelButton.callback ? dialog.cancelButton.callback(\$refs['currentDialogComponent_' + dialog_index][0], dialog, dialog.id, this) : close(dialog.id)">{{
-                                dialog.cancelButton.text || "Cancel" }}</button>
+                                dialog.cancelButton.text || "❌ Cancelar" }}</button>
                             <button v-else
-                                class=""
-                                v-on:click="() => close(dialog.id)">{{ dialog?.cancelButton?.text || "Cancel" }}</button>
+                                class="mini"
+                                v-on:click="() => close(dialog.id)">{{ dialog?.cancelButton?.text || "❌ Cancelar" }}</button>
                         </div>
                     </div>
                 </template>
@@ -22370,7 +22370,7 @@ Vue.component("LswWindowsMainTab", {
                 </div>
                 <div class="dialog_topbar_buttons">
                     <button v-if="\$consoleHooker?.is_shown === false" style="white-space: nowrap;flex: 1; margin-right: 4px;" v-on:click="() => \$consoleHooker?.show()">💻</button
-                    ><button v-on:click="viewer.toggleState">💡</button>
+                    ><button v-on:click="viewer.toggleState">🔵</button>
                 </div>
             </div>
             <div class="dialog_body">
@@ -22390,7 +22390,7 @@ Vue.component("LswWindowsMainTab", {
                 </div>
             </div>
             <div class="dialog_footer">
-                <button class="" v-on:click="viewer.toggleState">🔹</button>
+                <button class="" v-on:click="viewer.toggleState">🔵</button>
             </div>
         </div>
 </div>`,
@@ -22494,8 +22494,15 @@ Vue.component("LswWindowsViewer", {
 // @code.start: LswWindowsPivotButton API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsPivotButton component
 // Change this component at your convenience:
 Vue.component("LswWindowsPivotButton", {
-  template: `<div class="lsw_windows_pivot_button" v-on:click="onClick">
-    <button id="windows_pivot_button" class="">🔵</button>
+  template: `<div class="lsw_windows_pivot_button">
+    <div class="flex_row centered">
+        <div class="">
+            <button id="windows_pivot_button" v-on:click="onClick" class="">🔵</button>
+        </div>
+        <div class="pad_left_1 lsw_time_box">
+            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, true, true).replace(/ /g, "~") }}
+        </div>
+    </div>
 </div>`,
   props: {
     viewer: {
@@ -22504,17 +22511,35 @@ Vue.component("LswWindowsPivotButton", {
     }
   },
   data() {
+    this.$trace("lsw-windows-pivot-button.data");
     return {
-      
+      currentDate: new Date(),
     };
   },
   methods: {
+    startTimer() {
+      this.$trace("lsw-windows-pivot-button.methods.startTimer");
+      this.timerId = setTimeout(() => {
+        this.currentDate = new Date();
+        this.startTimer();
+      }, 1000);
+    },
+    stopTimer() {
+      this.$trace("lsw-windows-pivot-button.methods.stopTimer");
+      clearTimeout(this.timerId);
+    },
     onClick(event) {
+      this.$trace("lsw-windows-pivot-button.methods.onClick");
       this.viewer.toggleState();
     }
   },
   mounted() {
-    
+    this.$trace("lsw-windows-pivot-button.mounter");
+    this.startTimer();
+  },
+  unmount() {
+    this.$trace("lsw-windows-pivot-button.mounter");
+    this.stopTimer();
   }
 });
 // @code.end: LswWindowsPivotButton API
@@ -26939,9 +26964,6 @@ Vue.component("LswNotes", {
               <div class="pad_right_1">
                 <button class="mini" v-on:click="validate">➕ Añadir</button>
               </div>
-              <div>
-                <button class="mini" v-on:click="cancel">❌ Cancelar</button>
-              </div>
             </div>
           </div>
         </div>`,
@@ -27031,23 +27053,27 @@ rel correr
     <!--lsw-protolang-editor :initial-contents="initialContents" /-->
     <lsw-automensajes-viewer />
     <template v-if="isMounted">
-        <lsw-current-accion-viewer keep-alive>
+        <lsw-current-accion-viewer>
             <div class="pad_1 float_right">
                 <div class="flex_row">
                     <div class="flex_100"></div>
                     <div class="flex_1 pad_right_1">
-                        <button class="danger_button"
+                        <button class="mini danger_button"
                             v-on:click="\$refs.notes.loadNotes">♻️</button>
                     </div>
+                    <div class="flex_1 pad_right_1">
+                        <button class="mini danger_button"
+                            v-on:click="\$refs.notes.openAddNoteDialog">+ 💬</button>
+                    </div>
                     <div class="flex_1">
-                        <button class="danger_button"
-                            v-on:click="\$refs.notes.openAddNoteDialog">+</button>
+                        <button class="mini danger_button"
+                            v-on:click="\$refs.notes.openAddNoteDialog">+ 🔬</button>
                     </div>
                 </div>
             </div>
         </lsw-current-accion-viewer>
     </template>
-    <div class="pad_top_2" keep-alive>
+    <div class="">
         <lsw-notes ref="notes" />
     </div>
     <lsw-console-hooker />
@@ -40475,7 +40501,7 @@ LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled
 // @code.start: LswAutomensajesViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAutomensajesViewer API » LswAutomensajesViewer component
 Vue.component("LswAutomensajesViewer", {
   template: `<div class="lsw_automensajes_viewer">
-    <div class="pad_1 pad_top_2 pad_left_2">
+    <div class="pad_0 pad_top_2 pad_left_2 pad_right_2">
         <div class="automensaje_block" v-on:click="refreshAutomessaging">
             <template v-if="selectedAutomensaje">
                 <span style="text-decoration: underline;">{{ selectedAutomensaje.tiene_contenido }}</span> * {{ automessagingSeconds }}s
@@ -40554,27 +40580,30 @@ Vue.component("LswAutomensajesViewer", {
 // @code.start: LswCurrentAccionViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswCurrentAccionViewer API » LswCurrentAccionViewer component
 Vue.component("LswCurrentAccionViewer", {
   template: `<div class="lsw_current_accion_viewer">
-    <div class="flex_row centered pad_left_1 pad_top_1">
-        <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'despues'}"
-                v-on:click="() => selectSection('despues')">🕐⏩</button>
+    <div class="flex_row pad_left_1 pad_right_1 centered width_100">
+        <div class="flex_1 pad_left_1">
+            <button class="mini"
+                :class="{activated: selectedSection === 'despues'}"
+                v-on:click="() => selectSection('despues')">🕐 ⏩</button>
         </div>
-        <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'antes'}"
-                v-on:click="() => selectSection('antes')">🕐⏪</button>
+        <div class="flex_1 pad_left_1">
+            <button class="mini"
+                :class="{activated: selectedSection === 'antes'}"
+                v-on:click="() => selectSection('antes')">🕐 ⏪</button>
         </div>
-        <div class="pad_left_1">
-            <button :class="{activated: selectedSection === 'calendario'}"
+        <div class="flex_1 pad_left_1">
+            <button class="mini"
+                :class="{activated: selectedSection === 'calendario'}"
                 v-on:click="() => selectSection('calendario')">📆</button>
         </div>
-        <div class="pad_left_1 flex_100">
-            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, false, true) }}
+        <div class="flex_100">
+
         </div>
-        <div class="pad_left_1">
+        <div class="flex_1 pad_left_1">
             <slot />
         </div>
     </div>
-    <div class="scrollable_panel_viewer pad_2" v-if="selectedSection !== 'none'">
+    <div class="scrollable_panel_viewer pad_2 margin_bottom_2" v-if="selectedSection !== 'none'">
         <div class="as_card">
             <div class="pad_2"
                 v-if="selectedSection === 'antes'">
@@ -40640,7 +40669,6 @@ Vue.component("LswCurrentAccionViewer", {
   data() {
     this.$trace("lsw-current-accion-viewer.data");
     return {
-      currentDate: new Date(),
       selectedSection: 'none', // 'antes', 'despues'
       accionesAntes: false,
       accionesDespues: false,
@@ -40697,15 +40725,6 @@ Vue.component("LswCurrentAccionViewer", {
         tiene_estado: nextEstado
       });
       await this.loadAcciones();
-    },
-    startTimer() {
-      this.timerId = setTimeout(() => {
-        this.currentDate = new Date();
-        this.startTimer();
-      }, 1000);
-    },
-    stopTimer() {
-      clearTimeout(this.timerId);
     }
   },
   watch: {},

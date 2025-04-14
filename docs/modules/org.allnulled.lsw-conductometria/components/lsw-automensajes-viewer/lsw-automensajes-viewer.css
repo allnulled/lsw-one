@@ -8,6 +8,7 @@
     background-color: #ce2a2a;
     color: #FFF;
     padding: 10px;
+    padding-top: 13px;
     font-weight: bold;
     text-shadow: 0 0 1px black;
     text-align: center;
@@ -15,6 +16,7 @@
     transition: background-color 1s linear;
     cursor: pointer;
     font-size: 12px;
+    min-height: var(--button_height);
 }
 
 .automensaje_block:hover {

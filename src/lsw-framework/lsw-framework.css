@@ -522,11 +522,12 @@ table.lsw_table_itself>thead>tr>th.button_header {
     top: 0;
     left: 0;
     right: 0;
-    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 46px);
     background-color: rgba(255,255,255,0.6);
     display: flex;
     flex-direction: column;
     height: 100%;
+    height: auto;
     border: 1px solid black;
 }
 .dialog_window .dialog_topbar {
@@ -556,7 +557,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .lsw_windows_main_tab {
     position: fixed;
     top: 5px;
-    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 46px);
     left: 5px;
     right: 5px;
     background-color: #FFFFFF66;
@@ -579,19 +580,24 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .dialog_title {
     
 }
+
+.process_manager_window {
+    bottom: calc(env(safe-area-inset-bottom, 0) + 8px);
+}
 .windows_viewer {
     z-index: 100;
 }
 .lsw_windows_pivot_button {
     position: fixed;
     top: auto;
-    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 46px + 8px);
     left: 9px;
     right: auto;
     padding: 0px;
     border: 0px solid #000;
     border-radius: 3pt;
     cursor: default;
+    z-index: -1;
 }
 .lsw_windows_pivot_button:hover {
 
@@ -624,7 +630,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
     top: auto;
     left: 30px;
     right: 30px;
-    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 46px);
 }
 .lsw_toasts .toasts_box {
     position: relative;
@@ -632,7 +638,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .lsw_toasts .toasts_box > .toast_list {
     position: absolute;
     top: auto;
-    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 46px);
     left: 0;
     right: 0;
 }
@@ -1793,6 +1799,10 @@ select.form_control {
 
 
 
+:root {
+    --button_height: 42px;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -1823,8 +1833,8 @@ button {
     box-shadow: 0 0 2px white;
     color: white;
     margin-bottom: 0px;
-    min-width: 32px;
-    min-height: 32px;
+    min-width: var(--button_height);
+    min-height: var(--button_height);
     white-space: nowrap;
     overflow: hidden;
 }
@@ -1842,11 +1852,12 @@ button.mini {
     padding: 4px;
     padding-right: 4px;
     padding-left: 4px;
-    min-width: 32px;
+    min-width: var(--button_height);
     font-size: 13px !important;
 }
 button.bright_border {
-    border: 1px solid #227C86;
+    border-color: yellow;
+    box-shadow: 0 0 4px black;
 }
 button > span.button_text {
     font-size: 13px !important;
@@ -1961,7 +1972,7 @@ table.tabla_de_conductometria .minibutton {
 .home_bottom_panel {
     position: fixed;
     top: auto;
-    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 46px + 8px);
     left: auto;
     right: 8px;
 }

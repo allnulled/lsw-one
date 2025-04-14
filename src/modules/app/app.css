@@ -1,3 +1,7 @@
+:root {
+    --button_height: 42px;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -28,8 +32,8 @@ button {
     box-shadow: 0 0 2px white;
     color: white;
     margin-bottom: 0px;
-    min-width: 32px;
-    min-height: 32px;
+    min-width: var(--button_height);
+    min-height: var(--button_height);
     white-space: nowrap;
     overflow: hidden;
 }
@@ -47,11 +51,12 @@ button.mini {
     padding: 4px;
     padding-right: 4px;
     padding-left: 4px;
-    min-width: 32px;
+    min-width: var(--button_height);
     font-size: 13px !important;
 }
 button.bright_border {
-    border: 1px solid #227C86;
+    border-color: yellow;
+    box-shadow: 0 0 4px black;
 }
 button > span.button_text {
     font-size: 13px !important;
@@ -166,7 +171,7 @@ table.tabla_de_conductometria .minibutton {
 .home_bottom_panel {
     position: fixed;
     top: auto;
-    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 46px + 8px);
     left: auto;
     right: 8px;
 }

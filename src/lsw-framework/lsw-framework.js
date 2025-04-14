@@ -22462,7 +22462,7 @@ Vue.component('LswDataImplorer', {
 // Change this component at your convenience:
 Vue.component("LswWindowsMainTab", {
   template: `<div class="lsw_windows_main_tab">
-        <div class="dialog_window" v-bind:key="'main_dialog'" :style="{ zIndex: 501 }">
+        <div class="dialog_window process_manager_window" v-bind:key="'main_dialog'" :style="{ zIndex: 501 }">
             <div class="dialog_topbar">
                 <div class="dialog_title">
                     <div>Process manager</div>
@@ -26678,7 +26678,7 @@ Vue.component("LswSchemaBasedForm", {
                 v-if="isLoaded">
                 <div class="">
                     <div class="position_relative">
-                        <div class="pad_left_1 schema_form_title_box nowrap schema_form_title_text">
+                        <div class="pad_left_1 schema_form_title_box nowrap schema_form_title_text pad_top_2 pad_bottom_2">
                             <div class="flex_row">
                                 <div class="flex_100">
                                     <div class="title_box_one_line">

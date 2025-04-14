@@ -27242,6 +27242,8 @@ rel correr
   // Change this component at your convenience:
   Vue.component("App", {
     template: `<div>
+    <lsw-automensajes-viewer />
+    <lsw-current-accion-viewer />
     <div class="position_fixed top_auto left_auto"
         style="right: 8px; bottom: 8px;">
         <button class="danger_button"
@@ -27249,8 +27251,6 @@ rel correr
         <button class="danger_button"
             v-on:click="goToDocs">📘</button>
     </div>
-    <lsw-automensajes-viewer />
-    <lsw-current-accion-viewer />
     <lsw-console-hooker />
     <lsw-windows-viewer />
     <lsw-toasts />

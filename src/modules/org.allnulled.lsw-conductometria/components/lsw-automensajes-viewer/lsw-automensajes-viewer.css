@@ -6,14 +6,15 @@
     border-radius:2pt;
     box-shadow: 0 0 4px black;
     background-color: #ce2a2a;
-    color: #CCC;
+    color: #FFF;
     padding: 10px;
-    text-shadow: 0 0 1px white;
+    font-weight: bold;
+    text-shadow: 0 0 1px black;
     text-align: center;
-    animation: changeMiddle 50s infinite linear, changeColor 10s infinite linear;
+    animation: changeMiddle2 30s infinite linear;
     transition: background-color 1s linear;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .automensaje_block:hover {

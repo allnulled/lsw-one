@@ -24,16 +24,40 @@
 
 @keyframes changeMiddle {
     0% {
-      background-color: #00806e;
+      background-color: #26ff0070;
     }
-    33% {
-      background-color: #ff5500;
+    25% {
+      background-color: #ffbb0070;
     }
-    66% {
-      background-color: #5533ff;
+    50% {
+      background-color: #0084ff70;
+    }
+    75% {
+      background-color: #9000ff70;
     }
     100% {
-      background-color: #00806e;
+      background-color: #26ff0070;
+    }
+  }
+
+  @keyframes changeMiddle2 {
+    0% {
+      background-color: #0a44b970;
+    }
+    12% {
+      background-color: #ab09b470;
+    }
+    25% {
+      background-color: #9f020270;
+    }
+    50% {
+      background-color: #9c9c0670;
+    }
+    75% {
+      background-color: #01410d70;
+    }
+    100% {
+      background-color: #0a44b970;
     }
   }
 

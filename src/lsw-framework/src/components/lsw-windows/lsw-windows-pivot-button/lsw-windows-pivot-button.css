@@ -1,15 +1,16 @@
 .lsw_windows_pivot_button {
     position: fixed;
     top: auto;
-    bottom: 9px;
+    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
     left: 9px;
-    right: auto;
+    right: 0px;
     padding: 0px;
     border: 0px solid #000;
     border-radius: 3pt;
     cursor: default;
 }
 .lsw_windows_pivot_button:hover {
+
 }
 
 .lsw_windows_pivot_button > button {

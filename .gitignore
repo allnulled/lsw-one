@@ -1,2 +1,4 @@
 node_modules
 dev/documentation/documentator/src/translations/output
+**.jpg
+**.png

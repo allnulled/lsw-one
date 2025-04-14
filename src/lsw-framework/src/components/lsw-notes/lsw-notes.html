@@ -1,8 +1,7 @@
 <div class="lsw_notes pad_0 pad_top_0">
     <template v-if="allNotes && allNotes.length">
-        <div class="pad_2 pad_left_0 pad_right_0"
+        <div class="lista_articulos"
             v-if="isLoaded">
-
             <template v-for="articulo, articuloIndex in allNotes">
                 <div class="item_articulo"
                     :class="{activated: openedNotes.indexOf(articulo.id) !== -1}"

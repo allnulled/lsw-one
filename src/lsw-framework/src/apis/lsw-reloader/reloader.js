@@ -1,3 +1,9 @@
+const fs = require("fs");
+const path = require("path");
+const child_process = require("child_process");
+const PROJECT_ROOT_DIR = path.resolve(__dirname, "../../../../..");
+const distributionJsPath = path.resolve(PROJECT_ROOT_DIR + "/src/assets/distribution.js");
+
 module.exports = function (outterOptions = {}) {
 
   const defaultOptions = {
@@ -33,38 +39,19 @@ module.exports = function (outterOptions = {}) {
   });
 
   const directorioActual = options.directory;
-  console.log("[*] Escuchando:", directorioActual);
-
-  const watcher = chokidar.watch(directorioActual, {
-    persistent: true,
-    ignoreInitial: false,
-    depth: Infinity,
-    cwd: directorioActual,
-    recursive: true
-  });
   
-  watcher.on('change', (ruta) => {
+  console.log("[*] Escuchando:", distributionJsPath);
+  console.log("[*] ¿Existe acaso?", fs.existsSync(distributionJsPath));
+  const watcher = chokidar.watch(distributionJsPath);
+  
+  watcher.on('change', async (relativeRuta) => {
     
-    if (ruta.includes("/dist/")) {
-      return;
-    }
-
-    if (ruta.includes("/node_modules/")) {
-      return;
-    }
-
-    if (ruta.includes("/.git/")) {
-      return;
-    }
-
-    if(!options.filter(ruta)) {
-      return;
-    }
-
+    const ruta = path.resolve(directorioActual, relativeRuta);
     console.log(`Cambios han habido en el archivo: ${ruta}`);
     io.emit("refrescar");
+
   });
-  
+
   watcher.on('error', error => {
     console.error('Error en el observador:', error);
   });

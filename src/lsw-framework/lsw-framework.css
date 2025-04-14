@@ -612,8 +612,9 @@ table.lsw_table_itself>thead>tr>th.button_header {
 }
 .lsw_time_box {
     text-decoration: underline;
-    color: red;
+    color: blue;
     text-shadow: 0 0 2px white;
+    text-align: center;
 }
 .lsw_toasts {
     position: fixed;

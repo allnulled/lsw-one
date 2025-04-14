@@ -40797,7 +40797,7 @@ Vue.component("LswCurrentAccionViewer", {
             </div>
         </div>
     </div>
-    <div class="scrollable_panel_viewer margin_bottom_1"
+    <div class=""
         v-if="selectedSection !== 'none'">
         <div class="pad_1"
             v-if="selectedSection === 'antes'">

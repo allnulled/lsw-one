@@ -138,10 +138,78 @@
             border: 1px solid white;
             padding: 12px;
         }
+
+        #lsw_background_main {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #lsw_background_main_image_container {
+            position: relative;
+            margin: 0 auto;
+            height: 100%;
+        }
+
+        #lsw_background_main_image {
+            max-width: auto;
+            height: 100%;
+        }
+
+        #lsw_background_main_filter {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background-color: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(1px);
+            /* este es el blur real */
+            -webkit-backdrop-filter: blur(20px);
+            /* para Safari */
+        }
     </style>
+    <script>
+        window.addEventListener("load", function () {
+            const allImages = [
+                "assets/images/playa1.jpg",
+                "assets/images/playa2.jpg",
+                "assets/images/montania1.jpg",
+            ];
+            let currentImageIndex = 0;
+            let backgroundImage = document.body.querySelector("#lsw_background_main_image");
+            const changeBackgroundImage = function () {
+                if (backgroundImage === null) {
+                    backgroundImage = document.body.querySelector("#lsw_background_main_image");
+                }
+                if (backgroundImage === null) {
+                    return;
+                }
+                currentImageIndex++;
+                if (currentImageIndex >= allImages.length) {
+                    currentImageIndex = 0;
+                }
+                const currentImage = allImages[currentImageIndex];
+                backgroundImage.setAttribute("src", currentImage);
+            };
+            setInterval(changeBackgroundImage, 1000 * 30);
+        });
+    </script>
 </head>
 
 <body>
+    <div id="lsw_background_main">
+        <img id="lsw_background_main_image"
+            src="assets/images/playa1.jpg" />
+    </div>
+    <div id="lsw_background_main_filter"></div>
     <div id="app"></div>
     <div id="intersitial">
         <pre style="display:none;text-align:center;">Van <span id="intersitial_modules_loaded"></span>/<span
@@ -160,7 +228,8 @@
                 <div class="l2">
                     <div class="l3">
                         <div class="l4">
-                            <div style="border-bottom: 1px solid #CCC;">Bienvenido a <a style="font-weight: bold; color: rgb(182, 182, 239)" href="https://github.com/allnulled/lsw-one">lsw-one</a></div>
+                            <div style="border-bottom: 1px solid #CCC;">Bienvenido a <a style="font-weight: bold; color: rgb(182, 182, 239)"
+                                    href="https://github.com/allnulled/lsw-one">lsw-one</a></div>
                             <div id="caja_para_hora"></div>
                         </div>
                     </div>

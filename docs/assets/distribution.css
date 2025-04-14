@@ -523,7 +523,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
     left: 0;
     right: 0;
     bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
-    background-color: rgba(255,255,255,0.85);
+    background-color: rgba(255,255,255,0.4);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -587,7 +587,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
     top: auto;
     bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
     left: 9px;
-    right: 0px;
+    right: auto;
     padding: 0px;
     border: 0px solid #000;
     border-radius: 3pt;
@@ -624,7 +624,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
     top: auto;
     left: 30px;
     right: 30px;
-    bottom: 10px;
+    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
 }
 .lsw_toasts .toasts_box {
     position: relative;
@@ -632,7 +632,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .lsw_toasts .toasts_box > .toast_list {
     position: absolute;
     top: auto;
-    bottom: 0;
+    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
     left: 0;
     right: 0;
 }
@@ -1842,7 +1842,7 @@ button.mini {
     padding: 4px;
     padding-right: 4px;
     padding-left: 4px;
-    min-width: 20px;
+    min-width: 32px;
     font-size: 13px !important;
 }
 button.bright_border {
@@ -1958,8 +1958,51 @@ table.tabla_de_conductometria .minibutton {
     overflow: scroll;
 }
 
+.home_bottom_panel {
+    position: fixed;
+    top: auto;
+    bottom: calc(env(safe-area-inset-bottom, 0) + 55px);
+    left: auto;
+    right: 8px;
+}
 
+.home_mobile_off_panel_container {
+    position: fixed;
+    top: auto;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: calc(env(safe-area-inset-bottom, 0) + 47px);
+}
+.home_mobile_off_panel {
+    height: 100%;
+    background-color: #000000D8;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: space-around;
+    justify-content: space-around;
+    box-shadow: 0 0 14px black;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    border-right: 1px solid #333;
+}
 
+.mobile_off_panel_cell {
+    flex: 1;
+    text-align: center;
+    border-left: 1px solid #333;
+    height: 100%;
+    padding-top: 8px;
+    min-width: 60px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.mobile_off_panel_cell:hover {
+    background-color: #181830D8;
+}
 
 
 /* WIDGET CLASSES */
@@ -2137,9 +2180,15 @@ table.tabla_de_conductometria .minibutton {
 }
 
 .danger_button {
-    background-color: rgb(49, 9, 9);
+    background-color: rgba(141, 6, 6, 0.5);
+    border-color: rgb(43, 2, 2);
+    box-shadow: 0 0 2px white;
+}
+.danger_button:hover {
+    background-color: rgba(86, 3, 3, 0.85);
     border-color: red;
 }
+
 .as_card {
     border: 1px solid #333;
     border-radius: 2pt;

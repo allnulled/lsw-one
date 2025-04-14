@@ -27244,8 +27244,7 @@ rel correr
     template: `<div>
     <lsw-automensajes-viewer />
     <lsw-current-accion-viewer />
-    <div class="position_fixed top_auto left_auto"
-        style="right: 8px; bottom: 8px;">
+    <div class="home_bottom_panel">
         <button class="danger_button"
             v-on:click="resetDatabase">⭕️</button>
         <button class="danger_button"
@@ -27254,6 +27253,13 @@ rel correr
     <lsw-console-hooker />
     <lsw-windows-viewer />
     <lsw-toasts />
+    <div class="home_mobile_off_panel_container">
+        <div class="home_mobile_off_panel">
+            <div class="mobile_off_panel_cell">🟡</div>
+            <div class="mobile_off_panel_cell">🔵</div>
+            <div class="mobile_off_panel_cell">🔴</div>
+        </div>
+    </div>
 </div>`,
     props: {
       uuid: {

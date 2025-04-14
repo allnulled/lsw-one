@@ -4,17 +4,6 @@
 
 .lsw_notes {}
 
-.lsw_notes .titulo_de_notas {
-    border: 1px solid #C1C630;
-    border-radius: 2pt;
-    box-shadow: 0 0 3px black;
-    background-color: var(--middle-color);
-    color: white;
-    padding: 12px;
-    animation: changeMiddle 160s infinite linear;
-    transition: background-color 1s linear;
-}
-
 .note_card > div {
     border-left: 1px solid white;
     padding: 4px;
@@ -50,16 +39,16 @@
 
   @keyframes changeColor {
     0% {
-      color: #000;
-      box-shadow: 0 0 1px white;
-    }
-    50% {
       color: #FFF;
       box-shadow: 0 0 1px black;
     }
+    50% {
+      color: #9a9898;
+      box-shadow: 0 0 1px black;
+    }
     100% {
-      color: #000;
-      box-shadow: 0 0 1px white;
+      color: #FFF;
+      box-shadow: 0 0 1px black;
     }
   }
 

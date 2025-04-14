@@ -20,6 +20,7 @@ Vue.component("LswNotes", {
     return {
       isLoaded: false,
       allNotes: false,
+      openedNotes: [],
       currentError: this.error,
     };
   },
@@ -27,6 +28,15 @@ Vue.component("LswNotes", {
     setError(error = undefined) {
       this.$trace("lsw-notes.methods.setError");
       this.currentError = error;
+    },
+    toggleNote(noteId) {
+      this.$trace("lsw-notes.methods.toggleNote");
+      const pos = this.openedNotes.indexOf(noteId);
+      if(pos === -1) {
+        this.openedNotes.push(noteId);
+      } else {
+        this.openedNotes.splice(pos, 1);
+      }
     },
     async loadNotes() {
       this.$trace("lsw-notes.methods.loadNotes");

@@ -84,6 +84,14 @@ Vue.component("LswCurrentAccionViewer", {
         template: `<div class="pad_2"><lsw-wiki /></div>`,
       });
     },
+    async openArticuloUploader() {
+      this.$trace("lsw-windows-main-tab.methods.openArticuloUploader", arguments);
+      const response = await LswUtils.openAddArticuloDialog();
+      if(typeof response !== "object") {
+        return;
+      }
+      await this.$lsw.database.insert("Articulo", response);
+    }
   },
   watch: {},
   async mounted() {

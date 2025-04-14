@@ -16845,6 +16845,58 @@ return Store;
     });
     return response;
   };
+
+  LswUtils.openAddArticuloDialog = async function () {
+    const response = await Vue.prototype.$lsw.dialogs.open({
+      title: "Nuevo artículo",
+      template: `
+        <div class="">
+          <lsw-schema-based-form
+            :model="{
+              databaseId:'lsw_default_database',
+              tableId:'Articulo',
+              rowId: -1,
+            }"
+            :on-submit="validate"
+          />
+        </div>
+      `,
+      factory: {
+        methods: {
+          validate(value) {
+            console.log("Validating:", value);
+            this.value = value;
+            const isValidFecha = LswTimer.parser.parse(this.value.tiene_fecha);
+            const isValidContenido = this.value.tiene_contenido.trim() !== "";
+            const isValidTitulo = this.value.tiene_titulo.trim() !== "";
+            if (!isValidTitulo) {
+              window.alert("Necesita un título la nota.");
+              return this.$refs.titulo.focus();
+            }
+            if (!isValidContenido) {
+              window.alert("Necesita un contenido la nota.");
+              return this.$refs.contenido.focus();
+            }
+            if (!isValidFecha) {
+              window.alert("Necesita una fecha válida la nota.");
+              return this.$refs.fecha.focus();
+            }
+            return this.accept();
+          }
+        },
+        data: {
+          value: {
+            tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date(), false, false, true),
+            tiene_titulo: "",
+            tiene_categorias: "",
+            tiene_contenido: "",
+            tiene_estado: "creada", // "procesada"
+          }
+        }
+      }
+    });
+    return response;
+  };
   // @code.end: LswUtils
 
   return LswUtils;
@@ -24368,104 +24420,96 @@ Vue.component("LswAgenda", {
                 </div>
             </div>
         </div>
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="() => selectSubmenu1('reports')">📊</button>
-        </div>
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="() => selectSubmenu1('settings')">⚙️</button>
-        </div>
         <div class="flex_100"></div>
     </div>
 
     <div class="calendar_main_panel">
         <div v-if="selectedContext === 'accion.add'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Añadir acción'}]" />
             </div>
             <lsw-agenda-accion-add :initial-data="selectedContextParameters.values" />
         </div>
         <div v-else-if="selectedContext === 'accion.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar acción'}]" />
             </div>
             <lsw-agenda-accion-search />
         </div>
         <div v-else-if="selectedContext === 'concepto.add'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Añadir concepto'}]" />
             </div>
             <lsw-agenda-concepto-add />
         </div>
         <div v-else-if="selectedContext === 'concepto.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar concepto'}]" />
             </div>
             <lsw-agenda-concepto-search />
         </div>
         <div v-else-if="selectedContext === 'limitador.add'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Añadir límite'}]" />
             </div>
             <lsw-agenda-limitador-add />
         </div>
         <div v-else-if="selectedContext === 'limitador.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar límite'}]" />
             </div>
             <lsw-agenda-limitador-search />
         </div>
         <div v-else-if="selectedContext === 'impresion.add'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Añadir impresión'}]" />
             </div>
             <lsw-agenda-impresion-add />
         </div>
         <div v-else-if="selectedContext === 'impresion.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar impresión'}]" />
             </div>
             <lsw-agenda-impresion-search />
         </div>
         <div v-else-if="selectedContext === 'propagacion.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar propagación'}]" />
             </div>
             <lsw-agenda-propagacion-search />
         </div>
         <div v-else-if="selectedContext === 'postimpresion.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar postimpresión'}]" />
             </div>
             <lsw-agenda-postimpresion-search />
         </div>
         <div v-else-if="selectedContext === 'infraccion.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar infracción'}]" />
             </div>
             <lsw-agenda-infraccion-search />
         </div>
         <div v-else-if="selectedContext === 'evento.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar evento'}]" />
             </div>
             <lsw-agenda-evento-search />
         </div>
         <div v-else-if="selectedContext === 'propagador.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar propagador'}]" />
             </div>
@@ -24473,8 +24517,7 @@ Vue.component("LswAgenda", {
         </div>
     </div>
     <div v-if="selectedContext === 'agenda'">
-        <div class="breadcrumb_box"
-            style="">
+        <div class="breadcrumb_box">
             <lsw-agenda-breadcrumb :agenda="this"
                 :path-items="[{label:'Día ' + \$lsw.timer.utils.formatDatestringFromDate(selectedDate, true),noop:true}]" />
         </div>
@@ -24908,7 +24951,7 @@ Vue.component("LswAgendaBreadcrumb", {
   name: "LswAgendaBreadcrumb",
   template: `<div class="lsw_agenda_breadcrumb">
     <div class="flex_row centered">
-        <div class="right_padded_1">
+        <div class="pad_right_1">
             <button v-on:click="() => goToSection('agenda')">📆</button>
         </div>
         <div class="agenda_breadcrumb flex_100" style="align-self: stretch;padding-top: 10px;">
@@ -26911,7 +26954,7 @@ Vue.component("LswSchemaBasedForm", {
           ensureModel.to.have.uniquelyKeys(["connection", "databaseId", "tableId", "rowId", "row", "databaseExplorer"]);
           ensureModel.to.have.keys(["databaseId", "tableId"]);
           const correctOption = $ensure.$or({
-            "has connection and rowId": () => ensureModel.to.have.key("rowId"),
+            "has connection and rowId (set -1 for new instances)": () => ensureModel.to.have.key("rowId"),
             "has row": () => ensureModel.to.have.key("row"),
           });
           if (!checkModel.to.have.key("rowId")) {
@@ -27062,21 +27105,37 @@ Vue.component("LswSchemaBasedForm", {
 Vue.component("LswNotes", {
   template: `<div class="lsw_notes pad_0 pad_top_0">
     <template v-if="allNotes && allNotes.length">
-        <div class="titulo_de_notas">Últimas notas:</div>
         <div class="pad_2 pad_left_0 pad_right_0"
             v-if="isLoaded">
-            <div class="note_card flex_row"
-                v-for="note, noteIndex in allNotes"
-                v-bind:key="'note_' + noteIndex">
-                <div class="flex_1 nowrap date_cell"
-                    :title="note.tiene_fecha"
-                    style="text-align: ltr;">{{ note.tiene_fecha.split(" ")[1] || note.tiene_fecha }}</div>
-                <div class="flex_100 nowrap shortable_text"
-                    :title="note.tiene_titulo">{{ note.tiene_titulo }}</div>
-                <div class="flex_1 nowrap"
-                    :title="note.tiene_contenido">{{ note.tiene_contenido.length }}B</div>
-                <!--div class="flex_1 nowrap" :title="note.tiene_categorias">{{ note.tiene_categorias.split(";").length }}</div-->
-            </div>
+
+            <template v-for="articulo, articuloIndex in allNotes">
+                <div class="item_articulo"
+                    :class="{activated: openedNotes.indexOf(articulo.id) !== -1}"
+                    v-on:click="() => toggleNote(articulo.id)"
+                    v-bind:key="'articulo_de_wiki_' + articulo.id">
+                    <div class="flex_column">
+                        <div class="flex_1 flex_row">
+                            <div class="celda_articulo flex_1">
+                                {{ articuloIndex + 1 }}.
+                            </div>
+                            <div class="celda_articulo flex_100">
+                                {{ articulo.tiene_titulo }}
+                            </div>
+                            <div class="celda_articulo flex_1">
+                                {{ articulo.tiene_contenido?.length }}B
+                            </div>
+                        </div>
+                        <div class="flex_1"
+                            class="articulo_detalles"
+                            v-if="openedNotes.indexOf(articulo.id) !== -1">
+                            <div class="celda_articulo">
+                                {{ articulo.tiene_contenido }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
         </div>
     </template>
     <div class=""
@@ -27101,6 +27160,7 @@ Vue.component("LswNotes", {
     return {
       isLoaded: false,
       allNotes: false,
+      openedNotes: [],
       currentError: this.error,
     };
   },
@@ -27108,6 +27168,15 @@ Vue.component("LswNotes", {
     setError(error = undefined) {
       this.$trace("lsw-notes.methods.setError");
       this.currentError = error;
+    },
+    toggleNote(noteId) {
+      this.$trace("lsw-notes.methods.toggleNote");
+      const pos = this.openedNotes.indexOf(noteId);
+      if(pos === -1) {
+        this.openedNotes.push(noteId);
+      } else {
+        this.openedNotes.splice(pos, 1);
+      }
     },
     async loadNotes() {
       this.$trace("lsw-notes.methods.loadNotes");

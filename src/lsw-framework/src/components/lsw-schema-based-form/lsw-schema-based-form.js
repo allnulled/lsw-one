@@ -109,7 +109,7 @@ Vue.component("LswSchemaBasedForm", {
           ensureModel.to.have.uniquelyKeys(["connection", "databaseId", "tableId", "rowId", "row", "databaseExplorer"]);
           ensureModel.to.have.keys(["databaseId", "tableId"]);
           const correctOption = $ensure.$or({
-            "has connection and rowId": () => ensureModel.to.have.key("rowId"),
+            "has connection and rowId (set -1 for new instances)": () => ensureModel.to.have.key("rowId"),
             "has row": () => ensureModel.to.have.key("row"),
           });
           if (!checkModel.to.have.key("rowId")) {

@@ -1,20 +1,36 @@
 <div class="lsw_notes pad_0 pad_top_0">
     <template v-if="allNotes && allNotes.length">
-        <div class="titulo_de_notas">Últimas notas:</div>
         <div class="pad_2 pad_left_0 pad_right_0"
             v-if="isLoaded">
-            <div class="note_card flex_row"
-                v-for="note, noteIndex in allNotes"
-                v-bind:key="'note_' + noteIndex">
-                <div class="flex_1 nowrap date_cell"
-                    :title="note.tiene_fecha"
-                    style="text-align: ltr;">{{ note.tiene_fecha.split(" ")[1] || note.tiene_fecha }}</div>
-                <div class="flex_100 nowrap shortable_text"
-                    :title="note.tiene_titulo">{{ note.tiene_titulo }}</div>
-                <div class="flex_1 nowrap"
-                    :title="note.tiene_contenido">{{ note.tiene_contenido.length }}B</div>
-                <!--div class="flex_1 nowrap" :title="note.tiene_categorias">{{ note.tiene_categorias.split(";").length }}</div-->
-            </div>
+
+            <template v-for="articulo, articuloIndex in allNotes">
+                <div class="item_articulo"
+                    :class="{activated: openedNotes.indexOf(articulo.id) !== -1}"
+                    v-on:click="() => toggleNote(articulo.id)"
+                    v-bind:key="'articulo_de_wiki_' + articulo.id">
+                    <div class="flex_column">
+                        <div class="flex_1 flex_row">
+                            <div class="celda_articulo flex_1">
+                                {{ articuloIndex + 1 }}.
+                            </div>
+                            <div class="celda_articulo flex_100">
+                                {{ articulo.tiene_titulo }}
+                            </div>
+                            <div class="celda_articulo flex_1">
+                                {{ articulo.tiene_contenido?.length }}B
+                            </div>
+                        </div>
+                        <div class="flex_1"
+                            class="articulo_detalles"
+                            v-if="openedNotes.indexOf(articulo.id) !== -1">
+                            <div class="celda_articulo">
+                                {{ articulo.tiene_contenido }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
         </div>
     </template>
     <div class=""

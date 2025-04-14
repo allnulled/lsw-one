@@ -943,12 +943,12 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
     font-size: 10px;
 }
 
-.lsw_wiki .lista_articulos {
+.lista_articulos {
     border-top: 1px solid white;
     box-shadow: 0 0 4px black;
 }
 
-.lsw_wiki .item_articulo {
+.item_articulo {
     margin-bottom: 0px;
     border: 1px solid white;
     border-top: 0px solid white;
@@ -958,15 +958,15 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
     cursor: pointer;
 }
 
-.lsw_wiki .item_articulo.activated {
+.item_articulo.activated {
     
 }
 
-.lsw_wiki .celda_articulo {
+.celda_articulo {
     padding: 4px;
 }
 
-.lsw_wiki .articulo_detalles {
+.articulo_detalles {
     background-color: #3d0707c2;
     border-top: 1px solid rgb(140, 94, 94);
 }
@@ -1187,6 +1187,10 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
     width: 100%;
     padding: 2px;
     text-align: left;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    min-height: 20px;
+    font-size: 10px !important;
 }
 
 .hidden_menu_items>.button_cell {
@@ -1711,17 +1715,6 @@ select.form_control {
 
 .lsw_notes {}
 
-.lsw_notes .titulo_de_notas {
-    border: 1px solid #C1C630;
-    border-radius: 2pt;
-    box-shadow: 0 0 3px black;
-    background-color: var(--middle-color);
-    color: white;
-    padding: 12px;
-    animation: changeMiddle 160s infinite linear;
-    transition: background-color 1s linear;
-}
-
 .note_card > div {
     border-left: 1px solid white;
     padding: 4px;
@@ -1757,16 +1750,16 @@ select.form_control {
 
   @keyframes changeColor {
     0% {
-      color: #000;
-      box-shadow: 0 0 1px white;
-    }
-    50% {
       color: #FFF;
       box-shadow: 0 0 1px black;
     }
+    50% {
+      color: #9a9898;
+      box-shadow: 0 0 1px black;
+    }
     100% {
-      color: #000;
-      box-shadow: 0 0 1px white;
+      color: #FFF;
+      box-shadow: 0 0 1px black;
     }
   }
 

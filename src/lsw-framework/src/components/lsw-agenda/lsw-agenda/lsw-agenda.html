@@ -97,104 +97,96 @@
                 </div>
             </div>
         </div>
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="() => selectSubmenu1('reports')">📊</button>
-        </div>
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="() => selectSubmenu1('settings')">⚙️</button>
-        </div>
         <div class="flex_100"></div>
     </div>
 
     <div class="calendar_main_panel">
         <div v-if="selectedContext === 'accion.add'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Añadir acción'}]" />
             </div>
             <lsw-agenda-accion-add :initial-data="selectedContextParameters.values" />
         </div>
         <div v-else-if="selectedContext === 'accion.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar acción'}]" />
             </div>
             <lsw-agenda-accion-search />
         </div>
         <div v-else-if="selectedContext === 'concepto.add'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Añadir concepto'}]" />
             </div>
             <lsw-agenda-concepto-add />
         </div>
         <div v-else-if="selectedContext === 'concepto.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar concepto'}]" />
             </div>
             <lsw-agenda-concepto-search />
         </div>
         <div v-else-if="selectedContext === 'limitador.add'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Añadir límite'}]" />
             </div>
             <lsw-agenda-limitador-add />
         </div>
         <div v-else-if="selectedContext === 'limitador.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar límite'}]" />
             </div>
             <lsw-agenda-limitador-search />
         </div>
         <div v-else-if="selectedContext === 'impresion.add'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Añadir impresión'}]" />
             </div>
             <lsw-agenda-impresion-add />
         </div>
         <div v-else-if="selectedContext === 'impresion.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar impresión'}]" />
             </div>
             <lsw-agenda-impresion-search />
         </div>
         <div v-else-if="selectedContext === 'propagacion.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar propagación'}]" />
             </div>
             <lsw-agenda-propagacion-search />
         </div>
         <div v-else-if="selectedContext === 'postimpresion.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar postimpresión'}]" />
             </div>
             <lsw-agenda-postimpresion-search />
         </div>
         <div v-else-if="selectedContext === 'infraccion.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar infracción'}]" />
             </div>
             <lsw-agenda-infraccion-search />
         </div>
         <div v-else-if="selectedContext === 'evento.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar evento'}]" />
             </div>
             <lsw-agenda-evento-search />
         </div>
         <div v-else-if="selectedContext === 'propagador.search'">
-            <div class="breadcrumb_box">
+            <div class="breadcrumb_box pad_top_1">
                 <lsw-agenda-breadcrumb :agenda="this"
                     :path-items="[{label:'Buscar propagador'}]" />
             </div>
@@ -202,8 +194,7 @@
         </div>
     </div>
     <div v-if="selectedContext === 'agenda'">
-        <div class="breadcrumb_box"
-            style="">
+        <div class="breadcrumb_box">
             <lsw-agenda-breadcrumb :agenda="this"
                 :path-items="[{label:'Día ' + $lsw.timer.utils.formatDatestringFromDate(selectedDate, true),noop:true}]" />
         </div>

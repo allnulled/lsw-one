@@ -344,6 +344,58 @@
     });
     return response;
   };
+
+  LswUtils.openAddArticuloDialog = async function () {
+    const response = await Vue.prototype.$lsw.dialogs.open({
+      title: "Nuevo artículo",
+      template: `
+        <div class="">
+          <lsw-schema-based-form
+            :model="{
+              databaseId:'lsw_default_database',
+              tableId:'Articulo',
+              rowId: -1,
+            }"
+            :on-submit="validate"
+          />
+        </div>
+      `,
+      factory: {
+        methods: {
+          validate(value) {
+            console.log("Validating:", value);
+            this.value = value;
+            const isValidFecha = LswTimer.parser.parse(this.value.tiene_fecha);
+            const isValidContenido = this.value.tiene_contenido.trim() !== "";
+            const isValidTitulo = this.value.tiene_titulo.trim() !== "";
+            if (!isValidTitulo) {
+              window.alert("Necesita un título la nota.");
+              return this.$refs.titulo.focus();
+            }
+            if (!isValidContenido) {
+              window.alert("Necesita un contenido la nota.");
+              return this.$refs.contenido.focus();
+            }
+            if (!isValidFecha) {
+              window.alert("Necesita una fecha válida la nota.");
+              return this.$refs.fecha.focus();
+            }
+            return this.accept();
+          }
+        },
+        data: {
+          value: {
+            tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date(), false, false, true),
+            tiene_titulo: "",
+            tiene_categorias: "",
+            tiene_contenido: "",
+            tiene_estado: "creada", // "procesada"
+          }
+        }
+      }
+    });
+    return response;
+  };
   // @code.end: LswUtils
 
   return LswUtils;

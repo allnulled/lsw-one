@@ -9,6 +9,7 @@
     color: #CCC;
     padding: 10px;
     text-shadow: 0 0 1px white;
+    text-align: center;
     animation: changeMiddle 50s infinite linear, changeColor 10s infinite linear;
     transition: background-color 1s linear;
     cursor: pointer;

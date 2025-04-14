@@ -40798,7 +40798,7 @@ Vue.component("LswCurrentAccionViewer", {
     </div>
     <div class=""
         v-if="selectedSection !== 'none'">
-        <div class="pad_1"
+        <div class="pad_1 pad_top_0"
             v-if="selectedSection === 'antes'">
             <template v-if="accionesAntes && accionesAntes.length">
                 <div>Acciones anteriores:</div>
@@ -40821,7 +40821,7 @@ Vue.component("LswCurrentAccionViewer", {
             <div v-else
                 class="pad_1 pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
         </div>
-        <div class="pad_1"
+        <div class="pad_1 pad_top_0"
             v-if="selectedSection === 'despues'">
             <template v-if="accionesDespues && accionesDespues.length">
                 <div>Acciones posteriores:</div>
@@ -40845,7 +40845,7 @@ Vue.component("LswCurrentAccionViewer", {
                 class="pad_1 pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
         </div>
 
-        <div class="pad_1"
+        <div class="pad_1 pad_top_0"
             v-if="selectedSection === 'calendario'">
             <div class="">
                 <div class="pad_1 pad_top_0 pad_bottom_0">
@@ -40854,14 +40854,14 @@ Vue.component("LswCurrentAccionViewer", {
             </div>
         </div>
 
-        <div class="pad_1"
+        <div class="pad_1 pad_top_0"
             v-if="selectedSection === 'notas'">
             <div class="pad_1 pad_top_0 pad_bottom_0">
                 <lsw-notes />
             </div>
         </div>
 
-        <div class="pad_1"
+        <div class="pad_1 pad_top_0"
             v-if="selectedSection === 'articulos'">
             <div class="pad_1 pad_top_0 pad_bottom_0">
                 <lsw-wiki />

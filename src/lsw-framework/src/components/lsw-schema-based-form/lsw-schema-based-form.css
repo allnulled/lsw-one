@@ -1,7 +1,7 @@
 .lsw-schema-based-form {}
 
 .schema_form_top_panel {
-    background-color: #113;
+    padding-top: 4px;  
 }
 
 .title_box_one_line {
@@ -22,12 +22,9 @@
 }
 
 .schema_form_title_box {
-  background-color: rgb(2, 2, 32);
-  color: white;
-  padding-top: 0px;
   font-size: 14px;
   box-shadow: 0 0 4px black;
-  border: 4px double yellow;
+  background: #a4a4a445;
 }
 
 .subtitle_box {

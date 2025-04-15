@@ -22145,14 +22145,14 @@ Vue.component('LswDataImplorer', {
                             <div class="dialog_topbar_buttons">
                                 <button
                                     class="mini"
-                                    v-on:click="close(dialog.id)">❌</button>
+                                    v-if="enabledWindowsSystem"
+                                    v-on:click="goHome">🔵</button>
                                 <button
                                     class="mini"
                                     v-on:click="minimize(dialog.id)">➖</button>
                                 <button
                                     class="mini"
-                                    v-if="enabledWindowsSystem"
-                                    v-on:click="goHome">🔵</button>
+                                    v-on:click="close(dialog.id)">❌</button>
                             </div>
                         </div>
                         <div class="dialog_body">
@@ -22476,7 +22476,7 @@ Vue.component("LswWindowsMainTab", {
                 </div>
                 <div class="dialog_topbar_buttons">
                     <button class="mini" v-if="\$consoleHooker?.is_shown === false" style="white-space: nowrap;flex: 1;" v-on:click="() => \$consoleHooker?.show()">💻</button>
-                    <button class="mini" v-on:click="viewer.toggleState">🔵</button>
+                    <button class="mini" v-on:click="viewer.toggleState">❌</button>
                 </div>
             </div>
             <div class="dialog_body">
@@ -22498,7 +22498,7 @@ Vue.component("LswWindowsMainTab", {
                 </div>
             </div>
             <div class="dialog_footer">
-                <button class="" v-on:click="viewer.toggleState">🔵</button>
+                <button class="mini" v-on:click="viewer.toggleState">❌ Cancelar</button>
             </div>
         </div>
 </div>`,
@@ -26729,34 +26729,34 @@ Vue.component("LswSchemaBasedForm", {
                                     </div>
                                 </div>
                                 <div class="flex_1 flex_row centered pad_left_1 pad_right_1">
-                                    <button class="bright_border margin_right_1 nowrap" v-on:click="submitForm">⚡️</button>
                                     <button class="danger_button nowrap"
                                         v-if="isUpdateOperation"
-                                        v-on:click="deleteRow">❌ #{{model.rowId}}</button>
+                                        v-on:click="deleteRow">🔥 #{{model.rowId}}</button>
+                                    <button class="mini margin_left_1 nowrap" v-on:click="submitForm">⚡️</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="flex_row centered schema_form_top_panel"
-                        style="min-height: 30px;border-top: 4px double #210e64; padding: 6px;">
+                        style="">
                         <div class="flex_1 flex_row centered">
-                            <button class="bright_border margin_left_1 nowrap"
+                            <button class="mini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos propios'}"
                                 v-on:click="() => selectSection('campos propios')">🧱</button>
-                            <button class="bright_border margin_left_1 nowrap"
+                            <button class="mini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos reflejos'}"
                                 v-on:click="() => selectSection('campos reflejos')">↔️</button>
                         </div>
                         <div class="flex_100"></div>
                         <div class="flex_1 flex_row centered">
-                            <button class="bright_border margin_right_1 nowrap"
+                            <button class="mini margin_right_1 nowrap"
                                 v-on:click="validateForm">✅</button>
-                            <button class="bright_border margin_right_1 nowrap"
+                            <button class="mini margin_right_1 nowrap"
                                 :class="{activated: isShowingFormInfo}"
                                 v-on:click="toggleFormInfo">ℹ️</button>
-                            <button class="bright_border margin_right_1 nowrap"
+                            <button class="mini margin_right_1 nowrap"
                                 v-on:click="openEditables">🔓*</button>
-                            <button class="bright_border margin_right_1 nowrap"
+                            <button class="mini margin_right_1 nowrap"
                                 v-on:click="closeEditables">🔒*</button>
                         </div>
                     </div>
@@ -26810,18 +26810,18 @@ Vue.component("LswSchemaBasedForm", {
                                 style="background-color: #333333; padding-top: 6px; padding-bottom: 4px;">
                                 <div class="flex_1 flex_row centered"
                                     v-if="isUpdateOperation">
-                                    <button class="margin_left_1 nowrap danger_button"
-                                        v-on:click="deleteRow">❌ #{{model.rowId}}</button>
+                                    <button class="mini margin_left_1 nowrap danger_button"
+                                        v-on:click="deleteRow">🔥 #{{model.rowId}}</button>
                                 </div>
                                 <div class="flex_100"></div>
                                 <div class="flex_1 flex_row centered pad_right_1">
-                                    <button class="bright_border margin_left_1 nowrap"
+                                    <button class="mini margin_left_1 nowrap"
                                         v-on:click="submitForm">⚡️ Enviar</button>
-                                    <button class="bright_border margin_left_1 nowrap"
+                                    <button class="mini margin_left_1 nowrap"
                                         v-on:click="validateForm">✅ Validar</button>
-                                    <button class="bright_border margin_left_1 nowrap"
+                                    <button class="mini margin_left_1 nowrap"
                                         v-on:click="openEditables">🔓*</button>
-                                    <button class="bright_border margin_left_1 nowrap"
+                                    <button class="mini margin_left_1 nowrap"
                                         v-on:click="closeEditables">🔒*</button>
                                 </div>
                             </div>

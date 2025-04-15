@@ -35,9 +35,13 @@
     text-shadow: 0 0 2px white;
     text-align: center;
     margin-left: 5px;
-    border-radius: 2pt;
+    border-radius: 0pt;
     box-shadow: 0 0 2px black;
-    border: 1px solid #222;
-    background-color: #05290173;
+    border: 0px solid #222;
+    border-radius: 8pt;
+    background-color: #FFFFFF30;
     padding: 3px;
+    padding-left: 18px;
+    padding-right: 18px;
+    text-align: center;
 }

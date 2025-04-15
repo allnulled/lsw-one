@@ -1325,20 +1325,27 @@
     return `${hora}:${minuto}`;
   };
 
-  Timeformat_utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false) {
+  Timeformat_utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false, setOnlyHour = false) {
     if(typeof dateObject === "undefined") {
       return undefined;
     }
     const anio = ("" + (dateObject.getFullYear() ?? 0)).padStart(4, '0');
     const mes = ("" + ((dateObject.getMonth() ?? 0) + 1)).padStart(2, '0');
     const dia = ("" + (dateObject.getDate() ?? 0)).padStart(2, '0');
+    if(setUntilDay && setOnlyHour) {
+      throw new Error("Contradictory parameters on «setUntilDay» and «setOnlyHour»");
+    }
     if(setUntilDay) {
       return `${anio}/${mes}/${dia}`;
     }
     const hora = ("" + (dateObject.getHours() ?? 0)).padStart(2, '0');
     const minuto = ("" + (dateObject.getMinutes() ?? 0)).padStart(2, '0');
     const segundo = setSeconds ? ("" + (dateObject.getSeconds() ?? 0)).padStart(2, '0') : false;
-    return `${anio}/${mes}/${dia} ${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
+    const laHora = `${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
+    if(setOnlyHour) {
+      return laHora;
+    }
+    return `${anio}/${mes}/${dia} ${laHora}`;
   };
 
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {

@@ -116,6 +116,8 @@ module.exports = [
   `${basepath}/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer`,
   // WIKI:
   `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki`,
+  // CLOCKWATCHER:
+  `${basepath}/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher`,
   // AGENDA:
   `${basepath}/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda`,
   `${basepath}/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add`,

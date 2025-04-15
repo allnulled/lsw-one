@@ -15846,20 +15846,27 @@ return Store;
     return `${hora}:${minuto}`;
   };
 
-  Timeformat_utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false) {
+  Timeformat_utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false, setOnlyHour = false) {
     if(typeof dateObject === "undefined") {
       return undefined;
     }
     const anio = ("" + (dateObject.getFullYear() ?? 0)).padStart(4, '0');
     const mes = ("" + ((dateObject.getMonth() ?? 0) + 1)).padStart(2, '0');
     const dia = ("" + (dateObject.getDate() ?? 0)).padStart(2, '0');
+    if(setUntilDay && setOnlyHour) {
+      throw new Error("Contradictory parameters on «setUntilDay» and «setOnlyHour»");
+    }
     if(setUntilDay) {
       return `${anio}/${mes}/${dia}`;
     }
     const hora = ("" + (dateObject.getHours() ?? 0)).padStart(2, '0');
     const minuto = ("" + (dateObject.getMinutes() ?? 0)).padStart(2, '0');
     const segundo = setSeconds ? ("" + (dateObject.getSeconds() ?? 0)).padStart(2, '0') : false;
-    return `${anio}/${mes}/${dia} ${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
+    const laHora = `${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
+    if(setOnlyHour) {
+      return laHora;
+    }
+    return `${anio}/${mes}/${dia} ${laHora}`;
   };
 
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
@@ -22646,9 +22653,9 @@ Vue.component("LswWindowsPivotButton", {
         <div class="">
             <button id="windows_pivot_button" v-on:click="onClick" class="">🔵</button>
         </div>
-        <div class="pad_left_1 lsw_time_box">
+        <!--div class="lsw_time_box">
             {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, true, true).replace(/ /g, "~") }}
-        </div>
+        </div-->
     </div>
 </div>`,
   props: {
@@ -22660,34 +22667,15 @@ Vue.component("LswWindowsPivotButton", {
   data() {
     this.$trace("lsw-windows-pivot-button.data");
     return {
-      currentDate: new Date(),
+      
     };
   },
   methods: {
-    startTimer() {
-      this.$trace("lsw-windows-pivot-button.methods.startTimer");
-      this.timerId = setTimeout(() => {
-        this.currentDate = new Date();
-        this.startTimer();
-      }, 1000);
-    },
-    stopTimer() {
-      this.$trace("lsw-windows-pivot-button.methods.stopTimer");
-      clearTimeout(this.timerId);
-    },
     onClick(event) {
       this.$trace("lsw-windows-pivot-button.methods.onClick");
       this.viewer.toggleState();
-    }
+    },
   },
-  mounted() {
-    this.$trace("lsw-windows-pivot-button.mounter");
-    this.startTimer();
-  },
-  unmount() {
-    this.$trace("lsw-windows-pivot-button.mounter");
-    this.stopTimer();
-  }
 });
 // @code.end: LswWindowsPivotButton API
 // @code.start: LswToasts API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswToasts component
@@ -24345,6 +24333,55 @@ Vue.component("LswWiki", {
   }
 });
 // @code.end: LswWiki API
+// @code.start: LswWindowsMainTab API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsMainTab component
+// Change this component at your convenience:
+Vue.component("LswClockwatcher", {
+  template: `<div class="clockwatcher_component">
+    <div class="clockwatcher_layer_1">
+        <div class="clockwatcher_layer_2">
+            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, false, true, true) }}
+        </div>
+    </div>
+</div>`,
+  props: {
+    viewer: {
+      type: Object,
+      required: true
+    }
+  },
+  data() {
+    this.$trace("lsw-clockwatcher.data", arguments);
+    return {
+      currentDate: new Date(),
+    };
+  },
+  methods: {
+    onClick(event) {
+      this.$trace("lsw-clockwatcher.methods.onClick");
+      this.viewer.toggleState();
+    },
+    startTimer() {
+      this.$trace("lsw-clockwatcher.methods.startTimer");
+      this.timerId = setTimeout(() => {
+        this.currentDate = new Date();
+        this.startTimer();
+      }, 1000);
+    },
+    stopTimer() {
+      this.$trace("lsw-clockwatcher.methods.stopTimer");
+      clearTimeout(this.timerId);
+    },
+  },
+  mounted() {
+    this.$trace("lsw-clockwatcher.mounter");
+    this.startTimer();
+  },
+  unmount() {
+    this.$trace("lsw-clockwatcher.mounter");
+    this.stopTimer();
+  }
+});
+// @code.end: LswWindowsMainTab API
 // @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
 Vue.component("LswAgenda", {
   name: "LswAgenda",
@@ -27268,14 +27305,14 @@ rel correr
 `.trim();
   // Change this component at your convenience:
   Vue.component("App", {
-    template: `<div>
+    template: `<div class="app app_component position_relative">
     <lsw-automensajes-viewer />
     <lsw-current-accion-viewer />
     <div class="home_bottom_panel">
         <button class="danger_button"
-            v-on:click="resetDatabase">⭕️</button>
+        v-on:click="resetDatabase">⭕️</button>
         <button class="danger_button"
-            v-on:click="goToDocs">📘</button>
+        v-on:click="goToDocs">📘</button>
     </div>
     <lsw-console-hooker />
     <lsw-windows-viewer />
@@ -27287,6 +27324,7 @@ rel correr
             <div class="mobile_off_panel_cell">🔴</div>
         </div>
     </div>
+    <lsw-clockwatcher />
 </div>`,
     props: {
       uuid: {

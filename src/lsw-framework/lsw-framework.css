@@ -153,8 +153,8 @@ tr.fila_de_dias_de_semana > td > div {
 }
 tbody.dias_de_calendario > tr > td {
     padding: 0px;
-    border-right: 1px solid white;
-    border-bottom: 1px solid white;
+    border-right: 1px solid transparent;
+    border-bottom: 1px solid transparent;
 }
 tbody.dias_de_calendario > tr > td > span {
     display: inline-block;
@@ -526,7 +526,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
     height: auto;
     border: 1px solid black;
     border-radius: 4pt;
-    background-color: #FFFFFFAA;
+    background-color: #FFFFFFCC;
 }
 .dialog_window .dialog_topbar {
     padding: 4px;
@@ -621,11 +621,15 @@ table.lsw_table_itself>thead>tr>th.button_header {
     text-shadow: 0 0 2px white;
     text-align: center;
     margin-left: 5px;
-    border-radius: 2pt;
+    border-radius: 0pt;
     box-shadow: 0 0 2px black;
-    border: 1px solid #222;
-    background-color: #05290173;
+    border: 0px solid #222;
+    border-radius: 8pt;
+    background-color: #FFFFFF30;
     padding: 3px;
+    padding-left: 18px;
+    padding-right: 18px;
+    text-align: center;
 }
 .lsw_toasts {
     position: fixed;
@@ -981,6 +985,28 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
 .articulo_detalles {
     background-color: #3d0707c2;
     border-top: 1px solid rgb(140, 94, 94);
+}
+.clockwatcher_layer_1 {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -3;
+}
+.clockwatcher_layer_2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    font-size: 32px;
+    color: black;
+    text-shadow: 0 0 4px white;
+}
+.clockwatcher_box {
+
 }
 .lsw_agenda {}
 
@@ -1823,16 +1849,15 @@ textarea {
 .like_button,
 button {
     border: 1px solid #b1b1b1;
-    border: 1px solid #111;
-    border-radius: 0pt;
+    border: 1px solid #CCC;
+    border-radius: 4pt;
     padding: 2px;
     font-family: Arial;
     font-size: 20px;
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.50);
     background-color: rgba(255, 255, 255, 0.20);
-    box-shadow: 0 0 2px black;
-    box-shadow: 0 0 2px white;
+    
     color: black;
     margin-bottom: 0px;
     min-width: var(--button_height);
@@ -1843,7 +1868,7 @@ button {
 .like_button:hover,
 button:hover {
     /*background-color: rgb(6, 6, 29);*/
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(178, 178, 178, 0.75);
     border: 1px solid white;
     box-shadow: 0 0 2px black;
 }

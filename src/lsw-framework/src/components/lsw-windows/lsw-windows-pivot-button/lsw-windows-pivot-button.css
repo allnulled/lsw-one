@@ -10,11 +10,10 @@
     cursor: default;
     z-index: -1;
 }
-.lsw_windows_pivot_button:hover {
 
-}
+.lsw_windows_pivot_button:hover {}
 
-.lsw_windows_pivot_button > button {
+.lsw_windows_pivot_button>button {
     max-height: 22px;
     min-width: 22px;
     vertical-align: middle;
@@ -24,15 +23,21 @@
     opacity: 0.6;
 }
 
-.lsw_windows_pivot_button > button:hover {
+.lsw_windows_pivot_button>button:hover {
     background-color: transparent;
 }
-.lsw_windows_pivot_button:hover > button {
-    
-}
+
+.lsw_windows_pivot_button:hover>button {}
+
 .lsw_time_box {
     text-decoration: underline;
-    color: blue;
+    color: black;
     text-shadow: 0 0 2px white;
     text-align: center;
+    margin-left: 5px;
+    border-radius: 2pt;
+    box-shadow: 0 0 2px black;
+    border: 1px solid #222;
+    background-color: #05290173;
+    padding: 3px;
 }

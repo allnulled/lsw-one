@@ -523,12 +523,13 @@ table.lsw_table_itself>thead>tr>th.button_header {
     left: 0;
     right: 0;
     bottom: calc(env(safe-area-inset-bottom, 0) + 46px);
-    background-color: rgba(255,255,255,0.6);
     display: flex;
     flex-direction: column;
     height: 100%;
     height: auto;
     border: 1px solid black;
+    border-radius: 4pt;
+    background-color: #FFFFFFAA;
 }
 .dialog_window .dialog_topbar {
     padding: 4px;
@@ -560,7 +561,6 @@ table.lsw_table_itself>thead>tr>th.button_header {
     bottom: calc(env(safe-area-inset-bottom, 0) + 46px);
     left: 5px;
     right: 5px;
-    background-color: #FFFFFF66;
     color: black;
 }
 .lsw_windows_main_tab .main_tab_topbar {
@@ -599,11 +599,10 @@ table.lsw_table_itself>thead>tr>th.button_header {
     cursor: default;
     z-index: -1;
 }
-.lsw_windows_pivot_button:hover {
 
-}
+.lsw_windows_pivot_button:hover {}
 
-.lsw_windows_pivot_button > button {
+.lsw_windows_pivot_button>button {
     max-height: 22px;
     min-width: 22px;
     vertical-align: middle;
@@ -613,17 +612,23 @@ table.lsw_table_itself>thead>tr>th.button_header {
     opacity: 0.6;
 }
 
-.lsw_windows_pivot_button > button:hover {
+.lsw_windows_pivot_button>button:hover {
     background-color: transparent;
 }
-.lsw_windows_pivot_button:hover > button {
-    
-}
+
+.lsw_windows_pivot_button:hover>button {}
+
 .lsw_time_box {
     text-decoration: underline;
-    color: blue;
+    color: black;
     text-shadow: 0 0 2px white;
     text-align: center;
+    margin-left: 5px;
+    border-radius: 2pt;
+    box-shadow: 0 0 2px black;
+    border: 1px solid #222;
+    background-color: #05290173;
+    padding: 3px;
 }
 .lsw_toasts {
     position: fixed;

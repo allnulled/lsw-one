@@ -4,7 +4,6 @@
     bottom: calc(env(safe-area-inset-bottom, 0) + 46px);
     left: 5px;
     right: 5px;
-    background-color: #FFFFFF66;
     color: black;
 }
 .lsw_windows_main_tab .main_tab_topbar {

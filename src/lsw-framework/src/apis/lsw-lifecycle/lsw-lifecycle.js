@@ -115,6 +115,8 @@
             "Nota",
             "Propagador_de_concepto",
             "Propagador_prototipo",
+            "Lista",
+            "Recordatorio",
           ];
           Iterating_needed_tables: {
             const currentTables = Object.keys(currentSchema);
@@ -132,6 +134,7 @@
           }
         } catch (error) {
           // @OK
+          console.log("Error:", error);
         }
       }
       if (!hasNeededTables) {

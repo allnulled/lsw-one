@@ -16304,6 +16304,8 @@ return Store;
             "Nota",
             "Propagador_de_concepto",
             "Propagador_prototipo",
+            "Lista",
+            "Recordatorio",
           ];
           Iterating_needed_tables: {
             const currentTables = Object.keys(currentSchema);
@@ -16321,6 +16323,7 @@ return Store;
           }
         } catch (error) {
           // @OK
+          console.log("Error:", error);
         }
       }
       if (!hasNeededTables) {
@@ -24580,7 +24583,7 @@ Vue.component("LswAgenda", {
             <lsw-agenda-propagador-search />
         </div>
     </div>
-    <div v-if="selectedContext === 'agenda'">
+    <div class="pad_right_1" v-if="selectedContext === 'agenda'">
         <div class="breadcrumb_box">
             <lsw-agenda-breadcrumb :agenda="this"
                 :path-items="[{label:'Día ' + \$lsw.timer.utils.formatDatestringFromDate(selectedDate, true),noop:true}]" />
@@ -24597,12 +24600,12 @@ Vue.component("LswAgenda", {
             <div class="selected_day_title"
                 v-if="selectedDate">
                 <div class="flex_row centered">
-                    <div class="flex_1 margin_right_1"><button class="bright_border" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
+                    <div class="flex_1 margin_right_1"><button class="iconized_button" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
                     <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                     <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'display: none;'">
-                        <button class="bright_border" v-on:click="togglePsicodelia" :class="{activated: hasPsicodelia}">❤️</button>
-                        <button class="bright_border" v-on:click="showAllHours">🔓*</button>
-                        <button class="bright_border" v-on:click="hideAllHours">🔒*</button>
+                        <button class="iconized_button" v-on:click="togglePsicodelia" :class="{activated: hasPsicodelia}">❤️</button>
+                        <button class="iconized_button" v-on:click="showAllHours">🔓*</button>
+                        <button class="iconized_button" v-on:click="hideAllHours">🔒*</button>
                     </div>
                 </div>
             </div>
@@ -24634,7 +24637,7 @@ Vue.component("LswAgenda", {
                     <div class="hour_lapse_separator">
                         <div class="flex_row centered">
                             <div class="flex_1 pad_right_1">
-                                <button class="bright_border nowrap"
+                                <button class="iconized_button nowrap"
                                     style="margin-right: 1px;"
                                     v-on:click="() => selectHour(franja.hora)"
                                     :class="{activated: selectedForm === franja.hora}">#️⃣</button>
@@ -24647,9 +24650,9 @@ Vue.component("LswAgenda", {
                             <div class="flex_1">
                                 <div class="flex_1 flex_row centered">
                                     <span v-on:click="() => toggleHour(franja.hora)">
-                                        <button class="bright_border nowrap activated"
+                                        <button class="iconized_button nowrap activated"
                                             v-if="hiddenDateHours.indexOf(franja.hora) === -1">🔓</button>
-                                        <button class="bright_border nowrap"
+                                        <button class="iconized_button nowrap"
                                             v-else>🔒</button>
                                     </span>
                                 </div>
@@ -26736,7 +26739,7 @@ Vue.component("LswSchemaBasedForm", {
   template: `<div class="lsw_schema_form">
     <div class="lsw_schema_form_container">
         <div class="lsw_schema_form_content">
-            <div class="pad_1"
+            <div class="pad_top_1"
                 ref="schemaForm0"
                 v-xform.form="{ onSubmit, onValidate }"
                 v-if="isLoaded">
@@ -40798,140 +40801,155 @@ Vue.component("LswAutomensajesViewer", {
 // @code.start: LswCurrentAccionViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswCurrentAccionViewer API » LswCurrentAccionViewer component
 Vue.component("LswCurrentAccionViewer", {
   template: `<div class="lsw_current_accion_viewer">
-    <div class="flex_row pad_1 pad_right_2 centered width_100">
-        <div class="flex_1 pad_left_1">
-            <button class="mini section_button"
-                :class="{activated: selectedSection === 'despues'}"
-                v-on:click="() => selectSection('despues')">🕐 ⏩</button>
-        </div>
-        <div class="flex_1 pad_left_1">
-            <button class="mini section_button"
-                :class="{activated: selectedSection === 'antes'}"
-                v-on:click="() => selectSection('antes')">🕐 ⏪</button>
-        </div>
-        <div class="flex_1 pad_left_1">
-            <button class="mini section_button"
-                :class="{activated: selectedSection === 'calendario'}"
-                v-on:click="() => selectSection('calendario')">📆</button>
-        </div>
-        <div class="flex_100">
-
-        </div>
-        <div class="flex_1 pad_left_1">
+    <div class="position_relative">
+        <div class="position_absolute top_0 left_0 right_0">
             <div class="flex_row">
-                <div class="flex_1 pad_right_1">
-                    <button class="mini danger_button"
-                        v-on:click="openNotaUploader">+ 💬</button>
-                </div>
-                <div class="flex_1 pad_right_1">
-                    <button class="mini danger_button"
-                        v-on:click="openArticuloUploader">+ 🔬</button>
-                </div>
-                <div class="flex_1 pad_right_1">
-                    <button class="mini danger_button"
-                        v-on:click="openArticuloUploader">+ 💡</button>
-                </div>
                 <div class="flex_1">
-                    <button class="mini danger_button"
-                        v-on:click="openArticuloUploader">+ 💡</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="flex_row pad_left_1 pad_right_2 centered width_100">
-        <div class="flex_1 pad_left_1">
-            <button class="mini application_button"
-                :class="{activated: selectedSection === 'notas'}"
-                v-on:click="() => selectSection('notas')">💬</button>
-        </div>
-        <div class="flex_1 pad_left_1">
-            <button class="mini application_button"
-                :class="{activated: selectedSection === 'articulos'}"
-                v-on:click="() => selectSection('articulos')">🔬</button>
-        </div>
-        <div class="flex_1 pad_left_1">
-            <button class="mini application_button"
-                :class="{activated: selectedSection === 'listas'}"
-                v-on:click="() => selectSection('listas')">📝</button>
-        </div>
-        <div class="flex_1 pad_left_1">
-            <button class="mini application_button"
-                :class="{activated: selectedSection === 'recordatorios'}"
-                v-on:click="() => selectSection('recordatorios')">💡</button>
-        </div>
-        <div class="flex_100"></div>
-    </div>
-    <div class="pad_top_1"
-        v-if="selectedSection !== 'none'">
-        <div class="pad_1 pad_top_0"
-            v-if="selectedSection === 'antes'">
-            <template v-if="accionesAntes && accionesAntes.length">
-                <div>Acciones anteriores:</div>
-                <div class="tarjetas_de_accion">
-                    <div class="tarjeta_de_accion nowrap"
-                        v-for="accion, accionIndex in accionesAntes"
-                        v-bind:key="'accion_antes_' + accionIndex">
-                        <div>{{ accion.tiene_inicio }}</div>
-                        <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                        <div>{{ accion.tiene_duracion }}</div>
-                        <div class="cell_en_estado"
-                            :class="'estado_' + accion.tiene_estado"
-                            v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                        <!--div>{{ accion.tiene_parametros }}</div>
-                <div>{{ accion.tiene_resultados }}</div>
-                <div>{{ accion.tiene_comentarios }}</div-->
+                    <div class="flex_column side_panel pad_1 centered width_100">
+                        <div class="flex_1">
+                            <button class="mini side_button section_button"
+                                :class="{activated: selectedSection === 'despues'}"
+                                v-on:click="() => selectSection('despues')">🕐 ⏩</button>
+                        </div>
+                        <div class="flex_1">
+                            <button class="mini side_button section_button"
+                                :class="{activated: selectedSection === 'antes'}"
+                                v-on:click="() => selectSection('antes')">🕐 ⏪</button>
+                        </div>
+                        <div class="flex_1">
+                            <button class="mini side_button section_button"
+                                :class="{activated: selectedSection === 'calendario'}"
+                                v-on:click="() => selectSection('calendario')">📆</button>
+                        </div>
+                        <div class="flex_100">
+
+                        </div>
+                        <div class="flex_1">
+                            <button class="mini side_button danger_button"
+                                v-on:click="openNotaUploader">+ 💬</button>
+                        </div>
+                        <div class="flex_1">
+                            <button class="mini side_button danger_button"
+                                v-on:click="openArticuloUploader">+ 🔬</button>
+                        </div>
+                        <div class="flex_1">
+                            <button class="mini side_button danger_button"
+                                v-on:click="openArticuloUploader">+ 💡</button>
+                        </div>
+                        <div class="flex_1">
+                            <button class="mini side_button danger_button"
+                                v-on:click="openArticuloUploader">+ 💡</button>
+                        </div>
                     </div>
                 </div>
-            </template>
-            <div v-else
-                class="pad_1 pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
-        </div>
-        <div class="pad_1 pad_top_0"
-            v-if="selectedSection === 'despues'">
-            <template v-if="accionesDespues && accionesDespues.length">
-                <div>Acciones posteriores:</div>
-                <div class="tarjetas_de_accion">
-                    <div class="tarjeta_de_accion nowrap"
-                        v-for="accion, accionIndex in accionesDespues"
-                        v-bind:key="'accion_despues_' + accionIndex">
-                        <div>{{ accion.tiene_inicio }}</div>
-                        <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                        <div>{{ accion.tiene_duracion }}</div>
-                        <div class="cell_en_estado cursor_pointer"
-                            :class="'estado_' + accion.tiene_estado"
-                            v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                        <div>{{ accion.tiene_parametros }}</div>
-                        <div>{{ accion.tiene_resultados }}</div>
-                        <div>{{ accion.tiene_comentarios }}</div>
+                <div class="flex_100 pad_top_1">
+                    <div class="flex_row centered width_100 top_panel">
+                        <div class="flex_1 top_button_cell">
+                            <button class="mini application_button"
+                                :class="{activated: selectedSection === 'notas'}"
+                                v-on:click="() => selectSection('notas')">💬</button>
+                        </div>
+                        <div class="flex_1 top_button_cell">
+                            <button class="mini application_button"
+                                :class="{activated: selectedSection === 'articulos'}"
+                                v-on:click="() => selectSection('articulos')">🔬</button>
+                        </div>
+                        <div class="flex_1 top_button_cell">
+                            <button class="mini application_button"
+                                :class="{activated: selectedSection === 'listas'}"
+                                v-on:click="() => selectSection('listas')">📝</button>
+                        </div>
+                        <div class="flex_1 top_button_cell">
+                            <button class="mini application_button"
+                                :class="{activated: selectedSection === 'recordatorios'}"
+                                v-on:click="() => selectSection('recordatorios')">💡</button>
+                        </div>
+                        <div class="flex_100"></div>
                     </div>
+
+                    <div class="desktop_free_area">
+                        <div class="pad_top_1"
+                            v-if="selectedSection !== 'none'">
+                            <div class="pad_top_0"
+                                v-if="selectedSection === 'antes'">
+                                <template v-if="accionesAntes && accionesAntes.length">
+                                    <div>Acciones anteriores:</div>
+                                    <div class="tarjetas_de_accion">
+                                        <div class="tarjeta_de_accion nowrap"
+                                            v-for="accion, accionIndex in accionesAntes"
+                                            v-bind:key="'accion_antes_' + accionIndex">
+                                            <div>{{ accion.tiene_inicio }}</div>
+                                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                                            <div>{{ accion.tiene_duracion }}</div>
+                                            <div class="cell_en_estado"
+                                                :class="'estado_' + accion.tiene_estado"
+                                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                                                    <!--div>{{ accion.tiene_parametros }}</div>
+                                                    <div>{{ accion.tiene_resultados }}</div>
+                                                    <div>{{ accion.tiene_comentarios }}</div-->
+                                        </div>
+                                    </div>
+                                </template>
+                                <div v-else
+                                    class="pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
+                            </div>
+                            <div class="pad_top_0"
+                                v-if="selectedSection === 'despues'">
+                                <template v-if="accionesDespues && accionesDespues.length">
+                                    <div>Acciones posteriores:</div>
+                                    <div class="tarjetas_de_accion">
+                                        <div class="tarjeta_de_accion nowrap"
+                                            v-for="accion, accionIndex in accionesDespues"
+                                            v-bind:key="'accion_despues_' + accionIndex">
+                                            <div>{{ accion.tiene_inicio }}</div>
+                                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                                            <div>{{ accion.tiene_duracion }}</div>
+                                            <div class="cell_en_estado cursor_pointer"
+                                                :class="'estado_' + accion.tiene_estado"
+                                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                                            <div>{{ accion.tiene_parametros }}</div>
+                                            <div>{{ accion.tiene_resultados }}</div>
+                                            <div>{{ accion.tiene_comentarios }}</div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div v-else
+                                    class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
+                            </div>
+
+                            <div class="pad_top_0"
+                                v-if="selectedSection === 'calendario'">
+                                <div class="">
+                                    <div class="pad_top_0 pad_bottom_0">
+                                        <lsw-agenda />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pad_top_0"
+                                v-if="selectedSection === 'notas'">
+                                <div class="pad_top_0 pad_bottom_0">
+                                    <lsw-notes />
+                                </div>
+                            </div>
+
+                            <div class="pad_top_0"
+                                v-if="selectedSection === 'articulos'">
+                                <div class="pad_top_0 pad_bottom_0">
+                                    <lsw-wiki />
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End of «Free Desktop Area» -->
+
+
+
+
                 </div>
-            </template>
-            <div v-else
-                class="pad_1 pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
-        </div>
-
-        <div class="pad_1 pad_top_0"
-            v-if="selectedSection === 'calendario'">
-            <div class="">
-                <div class="pad_1 pad_top_0 pad_bottom_0">
-                    <lsw-agenda />
-                </div>
             </div>
         </div>
 
-        <div class="pad_1 pad_top_0"
-            v-if="selectedSection === 'notas'">
-            <div class="pad_1 pad_top_0 pad_bottom_0">
-                <lsw-notes />
-            </div>
-        </div>
 
-        <div class="pad_1 pad_top_0"
-            v-if="selectedSection === 'articulos'">
-            <div class="pad_1 pad_top_0 pad_bottom_0">
-                <lsw-wiki />
-            </div>
-        </div>
 
     </div>
 </div>`,
@@ -42038,6 +42056,221 @@ $proxifier.define("org.allnulled.lsw-conductometria.Articulo", {
     static getExtraAttributes() {
       return {
         readableName: "artículo"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Lista", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Lista@SchemaEntity";
+    }
+    static getName() {
+      return "Lista";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_titulo: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene título:",
+          hasDescription: "El título que se asociará a la lista",
+          hasPlaceholder: "Título de la lista",
+          hasExtraAttributes: {},
+        },
+        tiene_fecha: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasLabel: "Tiene fecha:",
+          hasDescription: "Momento en que se creó la lista",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_categorias: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene categorias:",
+          hasDescription: "El categorías de esta lista, separadas por «;» entre sí.",
+          hasPlaceholder: "Categoría 1; categoría 2; categoría 3",
+          hasExtraAttributes: {},
+        },
+        tiene_estado: {
+          isType: "text",
+          isFormType: "options",
+          isIndexed: true,
+          hasFormtypeParameters: {
+            type: "selector",
+            available: ["creada", "procesada", "dudosa", "desestimada"],
+            selectable: 1, // could be: number or "*" to all options
+            defaultValue: "creada",
+          },
+          hasValidator(v) {
+            
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene estado:",
+          hasDescription: "Estado de la lista. Puede ser «creada», «procesada», «dudosa» o «desestimada»",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_contenido: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene contenido:",
+          hasDescription: "El contenido de esta lista. Permite markdown.",
+          hasPlaceholder: "El **contenido** de tu lista.",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Lista@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "lista"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Recordatorio", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Recordatorio@SchemaEntity";
+    }
+    static getName() {
+      return "Recordatorio";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_titulo: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene título:",
+          hasDescription: "El título que se asociará a el recordatorio",
+          hasPlaceholder: "Título del recordatorio",
+          hasExtraAttributes: {},
+        },
+        tiene_fecha: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasLabel: "Tiene fecha:",
+          hasDescription: "Momento en que se creó el recordatorio",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_categorias: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene categorias:",
+          hasDescription: "El categorías de este recordatorio, separadas por «;» entre sí.",
+          hasPlaceholder: "Categoría 1; categoría 2; categoría 3",
+          hasExtraAttributes: {},
+        },
+        tiene_contenido: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene contenido:",
+          hasDescription: "El contenido de este recordatorio. Permite markdown.",
+          hasPlaceholder: "El **contenido** de tu recordatorio.",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Recordatorio@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "recordatorio"
       };
     }
   },

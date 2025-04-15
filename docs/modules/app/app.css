@@ -58,6 +58,10 @@ button.mini {
 button.bright_border {
     background-color: transparent;
 }
+button.iconized_button {
+    border: none;
+    background-color: transparent;
+}
 button > span.button_text {
     font-size: 13px !important;
 }

@@ -23,8 +23,8 @@
 
 .schema_form_title_box {
   font-size: 14px;
-  box-shadow: 0 0 4px black;
   background: #a4a4a445;
+  border: 1px solid #CCC;
 }
 
 .subtitle_box {

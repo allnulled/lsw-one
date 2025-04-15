@@ -149,7 +149,8 @@ tr.fila_de_dias_de_semana > td > div {
     color: white;
     text-align: center;
     padding: 4px;
-    border: 1px solid #111;
+    border: 1px solid transparent;
+    border-radius: 2pt;
 }
 tbody.dias_de_calendario > tr > td {
     padding: 0px;
@@ -1006,7 +1007,7 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
     text-align: center;
     font-size: 32px;
     color: black;
-    text-shadow: 0 0 4px white;
+    text-shadow: 0 0 1px white;
 }
 .clockwatcher_box {
 
@@ -1706,8 +1707,8 @@ select.form_control {
 
 .schema_form_title_box {
   font-size: 14px;
-  box-shadow: 0 0 4px black;
   background: #a4a4a445;
+  border: 1px solid #CCC;
 }
 
 .subtitle_box {
@@ -1877,6 +1878,10 @@ button.mini {
     font-size: 13px !important;
 }
 button.bright_border {
+    background-color: transparent;
+}
+button.iconized_button {
+    border: none;
     background-color: transparent;
 }
 button > span.button_text {

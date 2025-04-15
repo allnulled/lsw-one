@@ -16277,6 +16277,8 @@ return Store;
             "Nota",
             "Propagador_de_concepto",
             "Propagador_prototipo",
+            "Lista",
+            "Recordatorio",
           ];
           Iterating_needed_tables: {
             const currentTables = Object.keys(currentSchema);
@@ -16294,6 +16296,7 @@ return Store;
           }
         } catch (error) {
           // @OK
+          console.log("Error:", error);
         }
       }
       if (!hasNeededTables) {
@@ -24553,7 +24556,7 @@ Vue.component("LswAgenda", {
             <lsw-agenda-propagador-search />
         </div>
     </div>
-    <div v-if="selectedContext === 'agenda'">
+    <div class="pad_right_1" v-if="selectedContext === 'agenda'">
         <div class="breadcrumb_box">
             <lsw-agenda-breadcrumb :agenda="this"
                 :path-items="[{label:'Día ' + \$lsw.timer.utils.formatDatestringFromDate(selectedDate, true),noop:true}]" />
@@ -24570,12 +24573,12 @@ Vue.component("LswAgenda", {
             <div class="selected_day_title"
                 v-if="selectedDate">
                 <div class="flex_row centered">
-                    <div class="flex_1 margin_right_1"><button class="bright_border" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
+                    <div class="flex_1 margin_right_1"><button class="iconized_button" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
                     <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                     <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'display: none;'">
-                        <button class="bright_border" v-on:click="togglePsicodelia" :class="{activated: hasPsicodelia}">❤️</button>
-                        <button class="bright_border" v-on:click="showAllHours">🔓*</button>
-                        <button class="bright_border" v-on:click="hideAllHours">🔒*</button>
+                        <button class="iconized_button" v-on:click="togglePsicodelia" :class="{activated: hasPsicodelia}">❤️</button>
+                        <button class="iconized_button" v-on:click="showAllHours">🔓*</button>
+                        <button class="iconized_button" v-on:click="hideAllHours">🔒*</button>
                     </div>
                 </div>
             </div>
@@ -24607,7 +24610,7 @@ Vue.component("LswAgenda", {
                     <div class="hour_lapse_separator">
                         <div class="flex_row centered">
                             <div class="flex_1 pad_right_1">
-                                <button class="bright_border nowrap"
+                                <button class="iconized_button nowrap"
                                     style="margin-right: 1px;"
                                     v-on:click="() => selectHour(franja.hora)"
                                     :class="{activated: selectedForm === franja.hora}">#️⃣</button>
@@ -24620,9 +24623,9 @@ Vue.component("LswAgenda", {
                             <div class="flex_1">
                                 <div class="flex_1 flex_row centered">
                                     <span v-on:click="() => toggleHour(franja.hora)">
-                                        <button class="bright_border nowrap activated"
+                                        <button class="iconized_button nowrap activated"
                                             v-if="hiddenDateHours.indexOf(franja.hora) === -1">🔓</button>
-                                        <button class="bright_border nowrap"
+                                        <button class="iconized_button nowrap"
                                             v-else>🔒</button>
                                     </span>
                                 </div>
@@ -26709,7 +26712,7 @@ Vue.component("LswSchemaBasedForm", {
   template: `<div class="lsw_schema_form">
     <div class="lsw_schema_form_container">
         <div class="lsw_schema_form_content">
-            <div class="pad_1"
+            <div class="pad_top_1"
                 ref="schemaForm0"
                 v-xform.form="{ onSubmit, onValidate }"
                 v-if="isLoaded">

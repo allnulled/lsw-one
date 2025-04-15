@@ -27298,6 +27298,7 @@ rel correr
         </div>
     </div>
     <lsw-clockwatcher />
+    <div style="min-height: 100px;"></div>
 </div>`,
     props: {
       uuid: {

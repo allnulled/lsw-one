@@ -2,9 +2,8 @@
 
 
 .automensaje_block {
-    border: 1px solid #000000;
+    border: 1px solid #ccc;
     border-radius:4pt;
-    box-shadow: 0 0 4px white;
     background-color: #ffffff47;
     color: #000;
     padding: 10px;
@@ -22,6 +21,5 @@
 }
 
 .automensaje_block:hover {
-    background-color: black;
-    color: yellow;
+    
 }

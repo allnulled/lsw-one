@@ -40,3 +40,20 @@
 .tarjeta_de_accion > .cell_en_estado.estado_fallida {
     background-color: red;
 }
+
+.application_button {
+    background-color: rgba(81, 175, 218, 0.5);
+}
+.application_button.activated,
+.application_button:hover {
+    background-color: rgba(3, 150, 218, 0.7);
+    border: 1px solid rgb(4, 4, 54);
+}
+.section_button {
+    background-color: rgba(68, 68, 68, 0.5);
+}
+.section_button.activated,
+.section_button:hover {
+    background-color: rgba(64, 64, 64, 0.764);
+    border: 1px solid rgb(4, 4, 54);
+}

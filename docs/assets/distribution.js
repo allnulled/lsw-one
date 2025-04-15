@@ -27325,6 +27325,7 @@ rel correr
         </div>
     </div>
     <lsw-clockwatcher />
+    <div style="min-height: 100px;"></div>
 </div>`,
     props: {
       uuid: {
@@ -40799,48 +40800,68 @@ Vue.component("LswCurrentAccionViewer", {
   template: `<div class="lsw_current_accion_viewer">
     <div class="flex_row pad_1 pad_right_2 centered width_100">
         <div class="flex_1 pad_left_1">
-            <button class="mini"
+            <button class="mini section_button"
                 :class="{activated: selectedSection === 'despues'}"
                 v-on:click="() => selectSection('despues')">🕐 ⏩</button>
         </div>
         <div class="flex_1 pad_left_1">
-            <button class="mini"
+            <button class="mini section_button"
                 :class="{activated: selectedSection === 'antes'}"
                 v-on:click="() => selectSection('antes')">🕐 ⏪</button>
         </div>
         <div class="flex_1 pad_left_1">
-            <button class="mini"
+            <button class="mini section_button"
                 :class="{activated: selectedSection === 'calendario'}"
                 v-on:click="() => selectSection('calendario')">📆</button>
-        </div>
-        <div class="flex_1 pad_left_1">
-            <button class="mini"
-                :class="{activated: selectedSection === 'notas'}"
-                v-on:click="() => selectSection('notas')">💬</button>
-        </div>
-        <div class="flex_1 pad_left_1">
-            <button class="mini"
-                :class="{activated: selectedSection === 'articulos'}"
-                v-on:click="() => selectSection('articulos')">🔬</button>
         </div>
         <div class="flex_100">
 
         </div>
         <div class="flex_1 pad_left_1">
             <div class="flex_row">
-                <div class="flex_100"></div>
                 <div class="flex_1 pad_right_1">
                     <button class="mini danger_button"
                         v-on:click="openNotaUploader">+ 💬</button>
                 </div>
-                <div class="flex_1">
+                <div class="flex_1 pad_right_1">
                     <button class="mini danger_button"
                         v-on:click="openArticuloUploader">+ 🔬</button>
+                </div>
+                <div class="flex_1 pad_right_1">
+                    <button class="mini danger_button"
+                        v-on:click="openArticuloUploader">+ 💡</button>
+                </div>
+                <div class="flex_1">
+                    <button class="mini danger_button"
+                        v-on:click="openArticuloUploader">+ 💡</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class=""
+    <div class="flex_row pad_left_1 pad_right_2 centered width_100">
+        <div class="flex_1 pad_left_1">
+            <button class="mini application_button"
+                :class="{activated: selectedSection === 'notas'}"
+                v-on:click="() => selectSection('notas')">💬</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="mini application_button"
+                :class="{activated: selectedSection === 'articulos'}"
+                v-on:click="() => selectSection('articulos')">🔬</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="mini application_button"
+                :class="{activated: selectedSection === 'listas'}"
+                v-on:click="() => selectSection('listas')">📝</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="mini application_button"
+                :class="{activated: selectedSection === 'recordatorios'}"
+                v-on:click="() => selectSection('recordatorios')">💡</button>
+        </div>
+        <div class="flex_100"></div>
+    </div>
+    <div class="pad_top_1"
         v-if="selectedSection !== 'none'">
         <div class="pad_1 pad_top_0"
             v-if="selectedSection === 'antes'">

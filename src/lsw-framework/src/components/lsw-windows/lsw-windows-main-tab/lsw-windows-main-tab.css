@@ -20,8 +20,9 @@
     padding: 4px;
 }
 
-.dialog_title {
-    
+.dialog_footer,
+.dialog_topbar {
+    background-color: white;
 }
 
 .process_manager_window {

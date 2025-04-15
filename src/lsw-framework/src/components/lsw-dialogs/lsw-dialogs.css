@@ -28,6 +28,8 @@
     border: 1px solid black;
     border-radius: 4pt;
     background-color: #FFFFFFCC;
+    overflow: hidden;
+    box-shadow: 0 0 4px black;
 }
 .dialog_window .dialog_topbar {
     padding: 4px;

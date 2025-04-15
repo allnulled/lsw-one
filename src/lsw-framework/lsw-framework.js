@@ -26708,7 +26708,7 @@ Vue.component("LswSchemaBasedForm", {
   template: `<div class="lsw_schema_form">
     <div class="lsw_schema_form_container">
         <div class="lsw_schema_form_content">
-            <div class="pad_top_1"
+            <div class=""
                 ref="schemaForm0"
                 v-xform.form="{ onSubmit, onValidate }"
                 v-if="isLoaded">

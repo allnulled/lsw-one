@@ -26735,7 +26735,7 @@ Vue.component("LswSchemaBasedForm", {
   template: `<div class="lsw_schema_form">
     <div class="lsw_schema_form_container">
         <div class="lsw_schema_form_content">
-            <div class="pad_top_1"
+            <div class=""
                 ref="schemaForm0"
                 v-xform.form="{ onSubmit, onValidate }"
                 v-if="isLoaded">
@@ -40866,73 +40866,75 @@ Vue.component("LswCurrentAccionViewer", {
                     <div class="desktop_free_area">
                         <div class="pad_top_1 pad_right_1"
                             v-if="selectedSection !== 'none'">
-                            <div class="pad_top_0"
-                                v-if="selectedSection === 'antes'">
-                                <template v-if="accionesAntes && accionesAntes.length">
-                                    <div>Acciones anteriores:</div>
-                                    <div class="tarjetas_de_accion">
-                                        <div class="tarjeta_de_accion nowrap"
-                                            v-for="accion, accionIndex in accionesAntes"
-                                            v-bind:key="'accion_antes_' + accionIndex">
-                                            <div>{{ accion.tiene_inicio }}</div>
-                                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                                            <div>{{ accion.tiene_duracion }}</div>
-                                            <div class="cell_en_estado"
-                                                :class="'estado_' + accion.tiene_estado"
-                                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                                                    <!--div>{{ accion.tiene_parametros }}</div>
+                            <div class="desktop_free_available_area">
+                                <div class="pad_top_0"
+                                    v-if="selectedSection === 'antes'">
+                                    <template v-if="accionesAntes && accionesAntes.length">
+                                        <div>Acciones anteriores:</div>
+                                        <div class="tarjetas_de_accion">
+                                            <div class="tarjeta_de_accion nowrap"
+                                                v-for="accion, accionIndex in accionesAntes"
+                                                v-bind:key="'accion_antes_' + accionIndex">
+                                                <div>{{ accion.tiene_inicio }}</div>
+                                                <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                                                <div>{{ accion.tiene_duracion }}</div>
+                                                <div class="cell_en_estado"
+                                                    :class="'estado_' + accion.tiene_estado"
+                                                    v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                                                <!--div>{{ accion.tiene_parametros }}</div>
                                                     <div>{{ accion.tiene_resultados }}</div>
                                                     <div>{{ accion.tiene_comentarios }}</div-->
+                                            </div>
                                         </div>
-                                    </div>
-                                </template>
-                                <div v-else
-                                    class="pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
-                            </div>
-                            <div class="pad_top_0"
-                                v-if="selectedSection === 'despues'">
-                                <template v-if="accionesDespues && accionesDespues.length">
-                                    <div>Acciones posteriores:</div>
-                                    <div class="tarjetas_de_accion">
-                                        <div class="tarjeta_de_accion nowrap"
-                                            v-for="accion, accionIndex in accionesDespues"
-                                            v-bind:key="'accion_despues_' + accionIndex">
-                                            <div>{{ accion.tiene_inicio }}</div>
-                                            <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                                            <div>{{ accion.tiene_duracion }}</div>
-                                            <div class="cell_en_estado cursor_pointer"
-                                                :class="'estado_' + accion.tiene_estado"
-                                                v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                                            <div>{{ accion.tiene_parametros }}</div>
-                                            <div>{{ accion.tiene_resultados }}</div>
-                                            <div>{{ accion.tiene_comentarios }}</div>
+                                    </template>
+                                    <div v-else
+                                        class="pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
+                                </div>
+                                <div class="pad_top_0"
+                                    v-if="selectedSection === 'despues'">
+                                    <template v-if="accionesDespues && accionesDespues.length">
+                                        <div>Acciones posteriores:</div>
+                                        <div class="tarjetas_de_accion">
+                                            <div class="tarjeta_de_accion nowrap"
+                                                v-for="accion, accionIndex in accionesDespues"
+                                                v-bind:key="'accion_despues_' + accionIndex">
+                                                <div>{{ accion.tiene_inicio }}</div>
+                                                <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                                                <div>{{ accion.tiene_duracion }}</div>
+                                                <div class="cell_en_estado cursor_pointer"
+                                                    :class="'estado_' + accion.tiene_estado"
+                                                    v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                                                <div>{{ accion.tiene_parametros }}</div>
+                                                <div>{{ accion.tiene_resultados }}</div>
+                                                <div>{{ accion.tiene_comentarios }}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </template>
-                                <div v-else
-                                    class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
-                            </div>
+                                    </template>
+                                    <div v-else
+                                        class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
+                                </div>
 
-                            <div class="pad_top_0"
-                                v-if="selectedSection === 'calendario'">
-                                <div class="">
+                                <div class="pad_top_0"
+                                    v-if="selectedSection === 'calendario'">
+                                    <div class="">
+                                        <div class="pad_top_0 pad_bottom_0">
+                                            <lsw-agenda />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pad_top_0"
+                                    v-if="selectedSection === 'notas'">
                                     <div class="pad_top_0 pad_bottom_0">
-                                        <lsw-agenda />
+                                        <lsw-notes />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="pad_top_0"
-                                v-if="selectedSection === 'notas'">
-                                <div class="pad_top_0 pad_bottom_0">
-                                    <lsw-notes />
-                                </div>
-                            </div>
-
-                            <div class="pad_top_0"
-                                v-if="selectedSection === 'articulos'">
-                                <div class="pad_top_0 pad_bottom_0">
-                                    <lsw-wiki />
+                                <div class="pad_top_0"
+                                    v-if="selectedSection === 'articulos'">
+                                    <div class="pad_top_0 pad_bottom_0">
+                                        <lsw-wiki />
+                                    </div>
                                 </div>
                             </div>
                         </div>

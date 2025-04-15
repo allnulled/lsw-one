@@ -70,6 +70,8 @@ textarea {
     width: 100%;
     min-height:60px;
     resize: vertical;
+    background-color: #FFFFFF88;
+    border: 1px solid #CCC;
 }
 input[type="radio"],
 input[type="checkbox"] {
@@ -78,9 +80,13 @@ input[type="checkbox"] {
 input[type="text"] {
     min-height: 40px;
     outline: none;
+    background-color: #FFFFFF88;
+    border: 1px solid #CCC;
 }
 select {
     min-height: 40px;
+    background-color: #FFFFFF88;
+    border: 1px solid #CCC;
 }
 select,
 select > option {

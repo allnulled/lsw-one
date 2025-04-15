@@ -24598,7 +24598,7 @@ Vue.component("LswAgenda", {
                 v-if="selectedDate">
                 <div class="flex_row centered">
                     <div class="flex_1 margin_right_1"><button class="bright_border" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
-                    <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }} {{ selectedDate.getMonth() }}</div>
+                    <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                     <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'display: none;'">
                         <button class="bright_border" v-on:click="togglePsicodelia" :class="{activated: hasPsicodelia}">❤️</button>
                         <button class="bright_border" v-on:click="showAllHours">🔓*</button>
@@ -26756,7 +26756,7 @@ Vue.component("LswSchemaBasedForm", {
                                     </div>
                                 </div>
                                 <div class="flex_1 flex_row centered pad_left_1 pad_right_1">
-                                    <button class="danger_button nowrap"
+                                    <button class="mini danger_button nowrap"
                                         v-if="isUpdateOperation"
                                         v-on:click="deleteRow">🔥 #{{model.rowId}}</button>
                                     <button class="mini margin_left_1 nowrap" v-on:click="submitForm">⚡️</button>

@@ -17,30 +17,25 @@
 }
 
 .hour_separator_cell {
-    background-color: #113;
+    background-color: #11113388;
     color: white;
     padding: 4px;
     font-weight: bold;
 }
 
 .hour_lapse_separator {
-    background-color: #112;
+    background-color: #11113288;
     color: white;
     padding: 4px;
-    border-bottom: 1px solid #FFF;
 }
 
 .hour_lapse_list {
-    background-color: #CCC;
+    
 }
 
 .hour_task_block {
     display: block;
-    border-bottom: 1px solid #AAA;
-    border-bottom: 1px solid #AAA;
-    padding: 0px;
-    padding-left: 1px;
-    padding-right: 1px;
+    padding: 2px;
 }
 
 .hour_task_pill {
@@ -106,13 +101,12 @@
 }
 
 .hour_compromises {
-    color: rgb(112, 112, 112);
+    color: black;
+    text-shadow: 0 0 1px white;
 }
 
 .hour_table {
-    border-left: 1px solid #114;
-    border-right: 1px solid #114;
-    border-bottom: 1px solid #114;
+    
 }
 
 .pill_start,
@@ -431,7 +425,7 @@ bajar(B) 100
     background-color: #0f0f0f61;
     color: #c4e8bc;
     padding: 4px;
-    border: 1px solid black;
+    border: 0px solid black;
     font-weight: bold;
     text-shadow: 0 0 1px black;
     min-height: 35px;

@@ -21,16 +21,18 @@ textarea {
 
 .like_button,
 button {
-    border: 1px solid #464646;
-    border-radius: 3pt;
-    padding: 4px;
+    border: 1px solid #b1b1b1;
+    border: 1px solid #111;
+    border-radius: 0pt;
+    padding: 2px;
     font-family: Arial;
     font-size: 20px;
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.50);
+    background-color: rgba(255, 255, 255, 0.20);
     box-shadow: 0 0 2px black;
     box-shadow: 0 0 2px white;
-    color: white;
+    color: black;
     margin-bottom: 0px;
     min-width: var(--button_height);
     min-height: var(--button_height);

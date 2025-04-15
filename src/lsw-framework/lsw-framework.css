@@ -145,13 +145,11 @@ table.tabla_para_horas input {
     
 }
 tr.fila_de_dias_de_semana > td > div {
-    background-color: #232;
+    background-color: rgba(29, 217, 29, 0.343);
     color: white;
     text-align: center;
     padding: 4px;
-    border-bottom: 1px solid white;
-    border-right: 1px solid white;
-    border-radius: 4pt;
+    border: 1px solid #111;
 }
 tbody.dias_de_calendario > tr > td {
     padding: 0px;
@@ -160,7 +158,6 @@ tbody.dias_de_calendario > tr > td {
 }
 tbody.dias_de_calendario > tr > td > span {
     display: inline-block;
-    background-color: #BBB;
     color: black;
     width: 100%;
     height: 100%;
@@ -1411,19 +1408,17 @@ bajar(B) 100
     background-color: #555;
     color: white;
     padding: 8px;
-    border: 1px solid black;
     font-weight: bold;
 }
 
 .selected_day_title {
-    background-color: #0f0f0f;
+    background-color: #0f0f0f61;
     color: #c4e8bc;
     padding: 4px;
     border: 1px solid black;
     font-weight: bold;
     text-shadow: 0 0 1px black;
     min-height: 35px;
-    border-bottom: 1px solid #4f4f4f;
 }
 
 .tasks_viewer {
@@ -1827,16 +1822,18 @@ textarea {
 
 .like_button,
 button {
-    border: 1px solid #464646;
-    border-radius: 3pt;
-    padding: 4px;
+    border: 1px solid #b1b1b1;
+    border: 1px solid #111;
+    border-radius: 0pt;
+    padding: 2px;
     font-family: Arial;
     font-size: 20px;
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.50);
+    background-color: rgba(255, 255, 255, 0.20);
     box-shadow: 0 0 2px black;
     box-shadow: 0 0 2px white;
-    color: white;
+    color: black;
     margin-bottom: 0px;
     min-width: var(--button_height);
     min-height: var(--button_height);

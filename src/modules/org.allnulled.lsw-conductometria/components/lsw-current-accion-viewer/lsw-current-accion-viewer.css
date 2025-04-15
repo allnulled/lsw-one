@@ -71,3 +71,8 @@
 .top_panel .top_button {
     min-width: 50px;
 }
+.desktop_free_area {
+    padding-bottom: 100px;
+    max-width: 100%;
+    overflow: scroll;
+}

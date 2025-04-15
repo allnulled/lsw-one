@@ -1016,8 +1016,9 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
 
 .calendar_viewer {
     padding: 0px;
-    padding-top: 2px;
+    padding-top: 0px;
     padding-bottom: 0px;
+    margin-top: -1px;
 }
 
 .lsw_agenda .visor_de_calendario > table.tabla_de_calendario {
@@ -2338,5 +2339,10 @@ table.tabla_de_conductometria .minibutton {
 }
 .top_panel .top_button {
     min-width: 50px;
+}
+.desktop_free_area {
+    padding-bottom: 100px;
+    max-width: 100%;
+    overflow: scroll;
 }
 

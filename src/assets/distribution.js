@@ -24205,7 +24205,7 @@ Vue.component("LswWiki", {
         <div class="flex_row centered">
             <div class="flex_100">
                 <input class="width_100 wiki_buscador_texto"
-                    style="min-height: 34px;"
+                    style="min-height: 42px;"
                     v-model="searchText"
                     type="text"
                     placeholder="Buscar en artículos"
@@ -24583,11 +24583,7 @@ Vue.component("LswAgenda", {
             <lsw-agenda-propagador-search />
         </div>
     </div>
-    <div class="pad_right_1" v-if="selectedContext === 'agenda'">
-        <div class="breadcrumb_box">
-            <lsw-agenda-breadcrumb :agenda="this"
-                :path-items="[{label:'Día ' + \$lsw.timer.utils.formatDatestringFromDate(selectedDate, true),noop:true}]" />
-        </div>
+    <div class="" v-if="selectedContext === 'agenda'">
         <div class="calendar_viewer">
             <lsw-calendario ref="calendario"
                 modo="date"
@@ -40715,7 +40711,7 @@ LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled
 // @code.start: LswAutomensajesViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAutomensajesViewer API » LswAutomensajesViewer component
 Vue.component("LswAutomensajesViewer", {
   template: `<div class="lsw_automensajes_viewer">
-    <div class="pad_0 pad_top_2 pad_left_2 pad_right_2">
+    <div class="pad_0 pad_top_1 pad_left_1 pad_right_1">
         <div class="flex_row">
             <div class="flex_100">
                 <div class="automensaje_block" v-on:click="refreshAutomessaging">
@@ -40868,7 +40864,7 @@ Vue.component("LswCurrentAccionViewer", {
                     </div>
 
                     <div class="desktop_free_area">
-                        <div class="pad_top_1"
+                        <div class="pad_top_1 pad_right_1"
                             v-if="selectedSection !== 'none'">
                             <div class="pad_top_0"
                                 v-if="selectedSection === 'antes'">

@@ -1016,8 +1016,9 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
 
 .calendar_viewer {
     padding: 0px;
-    padding-top: 2px;
+    padding-top: 0px;
     padding-bottom: 0px;
+    margin-top: -1px;
 }
 
 .lsw_agenda .visor_de_calendario > table.tabla_de_calendario {

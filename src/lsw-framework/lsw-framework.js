@@ -24178,7 +24178,7 @@ Vue.component("LswWiki", {
         <div class="flex_row centered">
             <div class="flex_100">
                 <input class="width_100 wiki_buscador_texto"
-                    style="min-height: 34px;"
+                    style="min-height: 42px;"
                     v-model="searchText"
                     type="text"
                     placeholder="Buscar en artículos"
@@ -24556,11 +24556,7 @@ Vue.component("LswAgenda", {
             <lsw-agenda-propagador-search />
         </div>
     </div>
-    <div class="pad_right_1" v-if="selectedContext === 'agenda'">
-        <div class="breadcrumb_box">
-            <lsw-agenda-breadcrumb :agenda="this"
-                :path-items="[{label:'Día ' + \$lsw.timer.utils.formatDatestringFromDate(selectedDate, true),noop:true}]" />
-        </div>
+    <div class="" v-if="selectedContext === 'agenda'">
         <div class="calendar_viewer">
             <lsw-calendario ref="calendario"
                 modo="date"

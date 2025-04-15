@@ -40801,7 +40801,7 @@ Vue.component("LswCurrentAccionViewer", {
         <div class="position_absolute top_0 left_0 right_0">
             <div class="flex_row">
                 <div class="flex_1">
-                    <div class="flex_column side_panel pad_1 centered width_100">
+                    <div class="flex_column side_panel pad_1 centered width_100" style="padding-right: 2px;">
                         <div class="flex_1">
                             <button class="mini side_button section_button"
                                 :class="{activated: selectedSection === 'despues'}"
@@ -40838,7 +40838,7 @@ Vue.component("LswCurrentAccionViewer", {
                         </div>
                     </div>
                 </div>
-                <div class="flex_100 pad_top_1">
+                <div class="flex_100 pad_top_1" style="padding-left: 2px;">
                     <div class="flex_row centered width_100 top_panel">
                         <div class="flex_1 top_button_cell">
                             <button class="mini application_button"
@@ -40864,7 +40864,7 @@ Vue.component("LswCurrentAccionViewer", {
                     </div>
 
                     <div class="desktop_free_area">
-                        <div class="pad_top_1 pad_right_1"
+                        <div class="pad_top_1" style="padding-right: 6px; padding-left: 2px;"
                             v-if="selectedSection !== 'none'">
                             <div class="desktop_free_available_area">
                                 <div class="pad_top_0"

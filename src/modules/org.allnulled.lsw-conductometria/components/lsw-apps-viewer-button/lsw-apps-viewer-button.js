@@ -33,7 +33,7 @@ Vue.component("LswAppsViewerButton", {
       if(!isSame) {
         this.viewer.selectApplication(application);
       } else {
-        this.viewer.selectApplication("none");
+        // @NOTHING.
       }
       this.close();
     },

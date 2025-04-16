@@ -2,7 +2,12 @@
 Vue.component("LswFilesystemExplorer", {
   name: "LswFilesystemExplorer",
   template: $template,
-  props: {},
+  props: {
+    blockLayout: {
+      type: Boolean,
+      default: () => false,
+    }
+  },
   data() {
     this.$trace("lsw-filesystem-explorer.data");
     return {

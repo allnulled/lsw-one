@@ -1,18 +1,30 @@
 .lsw_filesystem_editor {
+    min-height: 120px;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-bottom: 0px;
+}
+.absolute_version .lsw_filesystem_editor {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 1px;
+    left: 0px;
     right: 0;
 }
 
 .lsw_filesystem_editor .editor {
-    width: calc(100% - 1px);
-    height: calc(100% - 2px);
+    width: calc(100% - 0px);
+    height: calc(100% - 0px);
     resize: none;
     border: 1px solid black;
     border-radius: 0pt;
     outline: none;
+    min-height: 180px;
+    height: 100%;
+}
+.absolute_version .lsw_filesystem_editor .editor {
+    min-height: auto;
+    height: auto;
 }
 .lsw_filesystem_editor .editor:focus {
     background-color: #E0E0E0;

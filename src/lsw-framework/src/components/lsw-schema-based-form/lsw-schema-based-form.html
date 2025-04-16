@@ -61,7 +61,7 @@
                     <div class="pestania"
                         v-if="section === 'campos propios'">
                         <div class="subtitle_box">Campos propios:</div>
-                        <table class="collapsed_table lsw_table_itself width_100">
+                        <table class="collapsed_table lsw_table_itself width_100 translucid_background">
                             <tbody>
                                 <tr v-for="column, columnId, columnCounter in columnDefinitions"
                                     v-bind:key="'schema-column-' + columnCounter"
@@ -122,7 +122,7 @@
                     <div class="pestania"
                         v-if="section === 'campos reflejos'">
                         <div class="subtitle_box">Campos reflejos:</div>
-                        <table class="collapsed_table lsw_table_itself width_100">
+                        <table class="collapsed_table lsw_table_itself width_100 translucid_background">
                             <tbody>
                                 <tr v-for="externalColumn, externalColumnId, externalColumnCounter in tableDefinition.externalProperties"
                                     v-bind:key="'schema-external-column-' + externalColumnCounter"

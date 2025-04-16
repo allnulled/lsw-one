@@ -21295,8 +21295,8 @@ Vue.component("LswTable", {
                     <button class="table_menu_div width_100"
                         v-on:click="toggleMenu"
                         :class="{activated: isShowingMenu === true}">
-                        <span v-if="hasFiltersApplying">🟠</span>
-                        <span v-else>▫️</span>
+                        <span v-if="hasFiltersApplying">🔴</span>
+                        <span v-else>⚪️</span>
                     </button>
                 </div>
             </div>
@@ -21363,7 +21363,7 @@ Vue.component("LswTable", {
         </div>
     </div>
     <div class="lsw_table_viewer">
-        <table class="collapsed_table lsw_table_itself">
+        <table class="collapsed_table lsw_table_itself translucid_background">
             <thead v-if="paginatedOutput && headers">
                 <tr class="">
                     <!--Id cell:-->
@@ -23458,7 +23458,7 @@ Vue.component("LswPageTables", {
 // @code.start: LswFilesystemExplorer API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemExplorer component
 Vue.component("LswFilesystemExplorer", {
   name: "LswFilesystemExplorer",
-  template: `<div class="lsw_filesystem_explorer">
+  template: `<div class="lsw_filesystem_explorer" :class="{absolute_version: !blockLayout}">
     <div class="current_node_box">
         <span class="previous_node_path" :class="current_node !== '/' ? '' : 'visibility_hidden'">
             <button class="previous_node_button" v-on:click="goUp"
@@ -23488,7 +23488,12 @@ Vue.component("LswFilesystemExplorer", {
         </div>
     </div>
 </div>`,
-  props: {},
+  props: {
+    blockLayout: {
+      type: Boolean,
+      default: () => false,
+    }
+  },
   data() {
     this.$trace("lsw-filesystem-explorer.data");
     return {
@@ -26795,7 +26800,7 @@ Vue.component("LswSchemaBasedForm", {
                     <div class="pestania"
                         v-if="section === 'campos propios'">
                         <div class="subtitle_box">Campos propios:</div>
-                        <table class="collapsed_table lsw_table_itself width_100">
+                        <table class="collapsed_table lsw_table_itself width_100 translucid_background">
                             <tbody>
                                 <tr v-for="column, columnId, columnCounter in columnDefinitions"
                                     v-bind:key="'schema-column-' + columnCounter"
@@ -26856,7 +26861,7 @@ Vue.component("LswSchemaBasedForm", {
                     <div class="pestania"
                         v-if="section === 'campos reflejos'">
                         <div class="subtitle_box">Campos reflejos:</div>
-                        <table class="collapsed_table lsw_table_itself width_100">
+                        <table class="collapsed_table lsw_table_itself width_100 translucid_background">
                             <tbody>
                                 <tr v-for="externalColumn, externalColumnId, externalColumnCounter in tableDefinition.externalProperties"
                                     v-bind:key="'schema-external-column-' + externalColumnCounter"
@@ -27200,7 +27205,7 @@ Vue.component("LswNotes", {
 
         </div>
     </template>
-    <div class=""
+    <div class="pad_1"
         v-else>No hay notas actualmente.</div>
 </div>`,
   props: {
@@ -40824,35 +40829,35 @@ Vue.component("LswAppsViewerButton", {
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('despues')">Tareas posteriores</button>
+                            v-on:click="() => openApplication('despues')">🕓 Tareas posteriores</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('calendario')">Calendario</button>
+                            v-on:click="() => openApplication('calendario')">📆 Calendario</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('notas')">Notas</button>
+                            v-on:click="() => openApplication('notas')">💬 Notas</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('recordatorios')">Recordatorios</button>
+                            v-on:click="() => openApplication('recordatorios')">🪧 Recordatorios</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('base de datos')">Base de datos</button>
+                            v-on:click="() => openApplication('base de datos')">📦 Base de datos</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('sistema de ficheros')">Sistema de ficheros</button>
+                            v-on:click="() => openApplication('sistema de ficheros')">📂 Sistema de ficheros</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('enciclopedia')">Enciclopedia</button>
+                            v-on:click="() => openApplication('enciclopedia')">🔬 Enciclopedia</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('antes')">Tareas anteriores</button>
+                            v-on:click="() => openApplication('antes')">🕗 Tareas anteriores</button>
                     </div>
                 </div>
             </div>
@@ -40892,7 +40897,7 @@ Vue.component("LswAppsViewerButton", {
       if(!isSame) {
         this.viewer.selectApplication(application);
       } else {
-        this.viewer.selectApplication("none");
+        // @NOTHING.
       }
       this.close();
     },
@@ -40961,26 +40966,41 @@ Vue.component("LswAppsViewerPanel", {
                         class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
                 </div>
 
-                <div class="pad_top_0"
+                <div class="pad_2"
                     v-if="selectedApplication === 'calendario'">
                     <div class="pad_top_0 pad_bottom_0">
                         <lsw-calendario />
                     </div>
                 </div>
 
-                <div class="pad_top_0"
+                <div class="pad_2"
                     v-if="selectedApplication === 'notas'">
                     <div class="pad_top_0 pad_bottom_0">
                         <lsw-notes />
                     </div>
                 </div>
 
-                <div class="pad_top_0"
-                    v-if="selectedApplication === 'articulos'">
+                <div class="pad_2"
+                    v-if="selectedApplication === 'enciclopedia'">
                     <div class="pad_top_0 pad_bottom_0">
                         <lsw-wiki />
                     </div>
                 </div>
+
+                <div class="pad_2"
+                    v-if="selectedApplication === 'base de datos'">
+                    <div class="pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'sistema de ficheros'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-filesystem-explorer :block-layout="true" />
+                    </div>
+                </div>
+
             </div>
         </div>
     </div><!-- End of «Free Desktop Area» -->

@@ -50,26 +50,41 @@
                         class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
                 </div>
 
-                <div class="pad_top_0"
+                <div class="pad_2"
                     v-if="selectedApplication === 'calendario'">
                     <div class="pad_top_0 pad_bottom_0">
                         <lsw-calendario />
                     </div>
                 </div>
 
-                <div class="pad_top_0"
+                <div class="pad_2"
                     v-if="selectedApplication === 'notas'">
                     <div class="pad_top_0 pad_bottom_0">
                         <lsw-notes />
                     </div>
                 </div>
 
-                <div class="pad_top_0"
-                    v-if="selectedApplication === 'articulos'">
+                <div class="pad_2"
+                    v-if="selectedApplication === 'enciclopedia'">
                     <div class="pad_top_0 pad_bottom_0">
                         <lsw-wiki />
                     </div>
                 </div>
+
+                <div class="pad_2"
+                    v-if="selectedApplication === 'base de datos'">
+                    <div class="pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'sistema de ficheros'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-filesystem-explorer :block-layout="true" />
+                    </div>
+                </div>
+
             </div>
         </div>
     </div><!-- End of «Free Desktop Area» -->

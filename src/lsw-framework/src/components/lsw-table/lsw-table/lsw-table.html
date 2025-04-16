@@ -17,8 +17,8 @@
                     <button class="table_menu_div width_100"
                         v-on:click="toggleMenu"
                         :class="{activated: isShowingMenu === true}">
-                        <span v-if="hasFiltersApplying">🟠</span>
-                        <span v-else>▫️</span>
+                        <span v-if="hasFiltersApplying">🔴</span>
+                        <span v-else>⚪️</span>
                     </button>
                 </div>
             </div>
@@ -85,7 +85,7 @@
         </div>
     </div>
     <div class="lsw_table_viewer">
-        <table class="collapsed_table lsw_table_itself">
+        <table class="collapsed_table lsw_table_itself translucid_background">
             <thead v-if="paginatedOutput && headers">
                 <tr class="">
                     <!--Id cell:-->

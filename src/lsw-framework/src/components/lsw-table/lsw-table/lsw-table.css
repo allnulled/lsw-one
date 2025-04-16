@@ -138,7 +138,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 
 .lsw_table_top_panel {
     background-color: #CCC;
-    padding: 4px;
+    padding: 0px;
     border: 1px solid #88888888;
     margin-bottom: 4px;
 }

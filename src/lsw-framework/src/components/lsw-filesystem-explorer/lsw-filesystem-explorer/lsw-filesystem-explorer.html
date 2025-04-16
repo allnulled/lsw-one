@@ -1,4 +1,4 @@
-<div class="lsw_filesystem_explorer">
+<div class="lsw_filesystem_explorer" :class="{absolute_version: !blockLayout}">
     <div class="current_node_box">
         <span class="previous_node_path" :class="current_node !== '/' ? '' : 'visibility_hidden'">
             <button class="previous_node_button" v-on:click="goUp"

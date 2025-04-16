@@ -27283,12 +27283,12 @@ rel correr
   // Change this component at your convenience:
   Vue.component("App", {
     template: `<div class="app app_component position_relative">
-    <lsw-automensajes-viewer />
+    <lsw-automensajes-viewer ref="desktop" />
     <div class="home_bottom_panel">
-        <button class="danger_button"
-        v-on:click="resetDatabase">⭕️</button>
-        <button class="danger_button"
-        v-on:click="goToDocs">📘</button>
+        <button class="" v-on:click="goToAddNota">+ 💬</button>
+        <button class="" v-on:click="goToAddArticulo">+ 🔬</button>
+        <button class="" v-on:click="goToAddRecordatorio">+ 🪧</button>
+        <button class="" v-on:click="goToAddAccion">+ 📅</button>
     </div>
     <lsw-console-hooker />
     <lsw-windows-viewer />
@@ -27349,7 +27349,23 @@ rel correr
         } catch (error) {
           console.log(error);
         }
-      }
+      },
+      goToAddNota() {
+        this.$trace("App.methods.goToAddNota");
+        this.$refs.desktop.selectApplication("nueva nota");
+      },
+      goToAddArticulo() {
+        this.$trace("App.methods.goToAddArticulo");
+        this.$refs.desktop.selectApplication("nuevo articulo");
+      },
+      goToAddRecordatorio() {
+        this.$trace("App.methods.goToAddRecordatorio");
+        this.$refs.desktop.selectApplication("nuevo recordatorio");
+      },
+      goToAddAccion() {
+        this.$trace("App.methods.goToAddAccion");
+        this.$refs.desktop.selectApplication("nueva accion");
+      },
     },
     mounted() {
       console.log("[*] Application mounted.");
@@ -27365,5 +27381,5 @@ rel correr
       }
     }
   });
-})();
+})(); 
 });

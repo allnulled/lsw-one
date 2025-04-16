@@ -58,6 +58,10 @@ Vue.component("LswAutomensajesViewer", {
       this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
       this.$lsw.windows.hide();
       this.$refs.appPanel.selectApplication("none");
+    },
+    selectApplication(application) {
+      this.$trace("LswAutomensajesViewer.methods.selectApplication", arguments);
+      this.$refs.appPanel.selectApplication(application);
     }
   },
   watch: {},

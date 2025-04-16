@@ -27,8 +27,8 @@ Vue.component("LswAppsViewerButton", {
       this.$trace("lsw-apps-viewer-button.close");
       this.isOpened = false;
     },
-    openApplication(application) {
-      this.$trace("lsw-apps-viewer-button.methods.openApplication");
+    selectApplication(application) {
+      this.$trace("lsw-apps-viewer-button.methods.selectApplication");
       const isSame = this.selectedApplication === application
       if(!isSame) {
         this.selectedApplication = application;

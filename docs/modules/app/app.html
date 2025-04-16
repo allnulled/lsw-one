@@ -1,10 +1,10 @@
 <div class="app app_component position_relative">
-    <lsw-automensajes-viewer />
+    <lsw-automensajes-viewer ref="desktop" />
     <div class="home_bottom_panel">
-        <button class="danger_button"
-        v-on:click="resetDatabase">⭕️</button>
-        <button class="danger_button"
-        v-on:click="goToDocs">📘</button>
+        <button class="" v-on:click="goToAddNota">+ 💬</button>
+        <button class="" v-on:click="goToAddArticulo">+ 🔬</button>
+        <button class="" v-on:click="goToAddRecordatorio">+ 🪧</button>
+        <button class="" v-on:click="goToAddAccion">+ 📅</button>
     </div>
     <lsw-console-hooker />
     <lsw-windows-viewer />

@@ -16,11 +16,7 @@ Vue.component("LswAppsViewerPanel", {
   methods: {
     selectApplication(section) {
       this.$trace("lsw-apps-viewer-panel.methods.selectApplication");
-      if (this.selectedApplication === section) {
-        this.selectedApplication = "none";
-      } else {
-        this.selectedApplication = section;
-      }
+      this.selectedApplication = section;
       Cargas_segun_aplicacion: {
         if (["antes", "despues"].indexOf(section) !== -1) {
           this.loadAcciones();
@@ -43,7 +39,6 @@ Vue.component("LswAppsViewerPanel", {
         console.log(accion.tiene_inicio);
         try {
           const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
-          console.log(dateAccion);
           if (dateAccion >= estaHora) {
             accionesDespues.push(accion);
           } else {

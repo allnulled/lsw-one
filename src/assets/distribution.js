@@ -27310,12 +27310,12 @@ rel correr
   // Change this component at your convenience:
   Vue.component("App", {
     template: `<div class="app app_component position_relative">
-    <lsw-automensajes-viewer />
+    <lsw-automensajes-viewer ref="desktop" />
     <div class="home_bottom_panel">
-        <button class="danger_button"
-        v-on:click="resetDatabase">⭕️</button>
-        <button class="danger_button"
-        v-on:click="goToDocs">📘</button>
+        <button class="" v-on:click="goToAddNota">+ 💬</button>
+        <button class="" v-on:click="goToAddArticulo">+ 🔬</button>
+        <button class="" v-on:click="goToAddRecordatorio">+ 🪧</button>
+        <button class="" v-on:click="goToAddAccion">+ 📅</button>
     </div>
     <lsw-console-hooker />
     <lsw-windows-viewer />
@@ -27376,7 +27376,23 @@ rel correr
         } catch (error) {
           console.log(error);
         }
-      }
+      },
+      goToAddNota() {
+        this.$trace("App.methods.goToAddNota");
+        this.$refs.desktop.selectApplication("nueva nota");
+      },
+      goToAddArticulo() {
+        this.$trace("App.methods.goToAddArticulo");
+        this.$refs.desktop.selectApplication("nuevo articulo");
+      },
+      goToAddRecordatorio() {
+        this.$trace("App.methods.goToAddRecordatorio");
+        this.$refs.desktop.selectApplication("nuevo recordatorio");
+      },
+      goToAddAccion() {
+        this.$trace("App.methods.goToAddAccion");
+        this.$refs.desktop.selectApplication("nueva accion");
+      },
     },
     mounted() {
       console.log("[*] Application mounted.");
@@ -27392,7 +27408,7 @@ rel correr
       }
     }
   });
-})();
+})(); 
 });
 
 /*!
@@ -40796,6 +40812,10 @@ Vue.component("LswAutomensajesViewer", {
       this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
       this.$lsw.windows.hide();
       this.$refs.appPanel.selectApplication("none");
+    },
+    selectApplication(application) {
+      this.$trace("LswAutomensajesViewer.methods.selectApplication", arguments);
+      this.$refs.appPanel.selectApplication(application);
     }
   },
   watch: {},
@@ -40838,39 +40858,43 @@ Vue.component("LswAppsViewerButton", {
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('despues')">🕓 Tareas posteriores</button>
+                            v-on:click="() => selectApplication('despues')">🕓 Tareas posteriores</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('calendario')">📆 Calendario</button>
+                            v-on:click="() => selectApplication('calendario')">📆 Calendario</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('enciclopedia')">🔬 Enciclopedia</button>
+                            v-on:click="() => selectApplication('enciclopedia')">🔬 Enciclopedia</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('recordatorios')">🪧 Recordatorios</button>
+                            v-on:click="() => selectApplication('recordatorios')">🪧 Recordatorios</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('notas')">💬 Notas</button>
+                            v-on:click="() => selectApplication('notas')">💬 Notas</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('base de datos')">📦 Base de datos</button>
+                            v-on:click="() => selectApplication('base de datos')">📦 Base de datos</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('sistema de ficheros')">📂 Sistema de ficheros</button>
+                            v-on:click="() => selectApplication('sistema de ficheros')">📂 Sistema de ficheros</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('automensajes')">📫 Automensajes</button>
+                            v-on:click="() => selectApplication('automensajes')">📫 Automensajes</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('antes')">🕗 Tareas anteriores</button>
+                            v-on:click="() => selectApplication('automensajes')">📫 Listas</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => selectApplication('antes')">🕗 Tareas anteriores</button>
                     </div>
                 </div>
             </div>
@@ -40903,8 +40927,8 @@ Vue.component("LswAppsViewerButton", {
       this.$trace("lsw-apps-viewer-button.methods.close");
       this.isOpened = false;
     },
-    openApplication(application) {
-      this.$trace("lsw-apps-viewer-button.methods.openApplication");
+    selectApplication(application) {
+      this.$trace("lsw-apps-viewer-button.methods.selectApplication");
       console.log(this.viewer);
       const isSame = this.viewer.selectedApplication === application;
       if(!isSame) {
@@ -40933,7 +40957,8 @@ Vue.component("LswAppsViewerPanel", {
             v-if="selectedApplication !== 'none'">
             <div class="desktop_free_available_area">
                 <div class="pad_1"
-                    v-if="selectedApplication === 'antes'">
+                    v-if="selectedApplication === 'antes'"
+                    v-bind:key="'app_acciones_anteriores'">
                     <template v-if="accionesAntes && accionesAntes.length">
                         <div>Acciones anteriores:</div>
                         <div class="tarjetas_de_accion">
@@ -40956,7 +40981,8 @@ Vue.component("LswAppsViewerPanel", {
                         class="pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
                 </div>
                 <div class="pad_1"
-                    v-if="selectedApplication === 'despues'">
+                    v-if="selectedApplication === 'despues'"
+                    v-bind:key="'app_acciones_posteriores'">
                     <template v-if="accionesDespues && accionesDespues.length">
                         <div>Acciones posteriores:</div>
                         <div class="tarjetas_de_accion">
@@ -40980,48 +41006,133 @@ Vue.component("LswAppsViewerPanel", {
                 </div>
 
                 <div class="pad_2"
-                    v-if="selectedApplication === 'calendario'">
+                    v-if="selectedApplication === 'calendario'"
+                    v-bind:key="'app_calendario'">
                     <div class="pad_top_0 pad_bottom_0">
                         <lsw-agenda />
                     </div>
                 </div>
 
                 <div class="pad_2"
-                    v-if="selectedApplication === 'notas'">
+                    v-if="selectedApplication === 'notas'"
+                    v-bind:key="'app_nueva_nota'">
                     <div class="pad_top_0 pad_bottom_0">
-                        <lsw-notes />
+                        <lsw-database-explorer
+                            initial-page="lsw-page-rows"
+                            :initial-args="{database: 'lsw_default_database',table:'Nota'}"
+                            :show-breadcrumb="false" />
                     </div>
                 </div>
 
                 <div class="pad_2"
-                    v-if="selectedApplication === 'enciclopedia'">
+                    v-if="selectedApplication === 'enciclopedia'"
+                    v-bind:key="'enciclopedia'">
                     <div class="pad_top_0 pad_bottom_0">
                         <lsw-wiki />
                     </div>
                 </div>
 
                 <div class="pad_2"
-                    v-if="selectedApplication === 'base de datos'">
+                    v-if="selectedApplication === 'base de datos'"
+                    v-bind:key="'base de datos'">
                     <div class="pad_top_0 pad_bottom_0">
                         <lsw-database-explorer />
                     </div>
                 </div>
 
                 <div class="pad_0"
-                    v-if="selectedApplication === 'sistema de ficheros'">
+                    v-if="selectedApplication === 'sistema de ficheros'"
+                    v-bind:key="'sistema de ficheros'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
                         <lsw-filesystem-explorer :block-layout="true" />
                     </div>
                 </div>
 
                 <div class="pad_0"
-                    v-if="selectedApplication === 'automensajes'">
+                    v-if="selectedApplication === 'automensajes'"
+                    v-bind:key="'automensajes'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
                         <lsw-database-explorer
                             initial-page="lsw-page-rows"
                             :initial-args="{database: 'lsw_default_database',table:'Automensaje'}"
                             :show-breadcrumb="false" />
+                    </div>
+                </div>
 
+                <div class="pad_0"
+                    v-if="selectedApplication === 'recordatorios'"
+                    v-bind:key="'recordatorios'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer
+                            initial-page="lsw-page-rows"
+                            :initial-args="{database: 'lsw_default_database',table:'Recordatorio'}"
+                            :show-breadcrumb="false" />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'listas'"
+                    v-bind:key="'listas'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer
+                            initial-page="lsw-page-rows"
+                            :initial-args="{database: 'lsw_default_database',table:'Lista'}"
+                            :show-breadcrumb="false" />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'nuevo recordatorio'"
+                    v-bind:key="'nuevo recordatorio'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer
+                            initial-page="lsw-page-row"
+                            :initial-args="{database: 'lsw_default_database',table:'Recordatorio',rowId:-1}"
+                            :show-breadcrumb="false" />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'nueva lista'"
+                    v-bind:key="'nueva lista'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer
+                            initial-page="lsw-page-row"
+                            :initial-args="{database: 'lsw_default_database',table:'Lista',rowId:-1}"
+                            :show-breadcrumb="false" />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'nueva nota'"
+                    v-bind:key="'nueva nota'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer
+                            initial-page="lsw-page-row"
+                            :initial-args="{database: 'lsw_default_database',table:'Nota',rowId:-1}"
+                            :show-breadcrumb="false" />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'nuevo articulo'"
+                    v-bind:key="'nuevo articulo'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer
+                            initial-page="lsw-page-row"
+                            :initial-args="{database: 'lsw_default_database',table:'Articulo',rowId:-1}"
+                            :show-breadcrumb="false" />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'nueva accion'"
+                    v-bind:key="'nuevo accion'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer
+                            initial-page="lsw-page-row"
+                            :initial-args="{database: 'lsw_default_database',table:'Accion',rowId:-1}"
+                            :show-breadcrumb="false" />
                     </div>
                 </div>
 
@@ -41044,11 +41155,7 @@ Vue.component("LswAppsViewerPanel", {
   methods: {
     selectApplication(section) {
       this.$trace("lsw-apps-viewer-panel.methods.selectApplication");
-      if (this.selectedApplication === section) {
-        this.selectedApplication = "none";
-      } else {
-        this.selectedApplication = section;
-      }
+      this.selectedApplication = section;
       Cargas_segun_aplicacion: {
         if (["antes", "despues"].indexOf(section) !== -1) {
           this.loadAcciones();
@@ -41071,7 +41178,6 @@ Vue.component("LswAppsViewerPanel", {
         console.log(accion.tiene_inicio);
         try {
           const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
-          console.log(dateAccion);
           if (dateAccion >= estaHora) {
             accionesDespues.push(accion);
           } else {

@@ -24,11 +24,11 @@
 .schema_form_title_box {
   font-size: 14px;
   background: #a4a4a445;
-  border: 1px solid #CCC;
+  border: 1px solid #transparent;
 }
 
 .subtitle_box {
-    background-color: #333;
+    background-color: #33333388;
     color: white;
     padding: 8px;
     font-weight: bold;

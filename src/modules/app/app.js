@@ -70,7 +70,23 @@ rel correr
         } catch (error) {
           console.log(error);
         }
-      }
+      },
+      goToAddNota() {
+        this.$trace("App.methods.goToAddNota");
+        this.$refs.desktop.selectApplication("nueva nota");
+      },
+      goToAddArticulo() {
+        this.$trace("App.methods.goToAddArticulo");
+        this.$refs.desktop.selectApplication("nuevo articulo");
+      },
+      goToAddRecordatorio() {
+        this.$trace("App.methods.goToAddRecordatorio");
+        this.$refs.desktop.selectApplication("nuevo recordatorio");
+      },
+      goToAddAccion() {
+        this.$trace("App.methods.goToAddAccion");
+        this.$refs.desktop.selectApplication("nueva accion");
+      },
     },
     mounted() {
       console.log("[*] Application mounted.");
@@ -86,4 +102,4 @@ rel correr
       }
     }
   });
-})();
+})(); 

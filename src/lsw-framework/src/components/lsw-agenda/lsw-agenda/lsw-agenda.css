@@ -258,6 +258,15 @@
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.3);
 }
+.hidden_menu_absolute_layer {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: auto;
+    right: auto;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.3);
+}
 
 
 .form_label {

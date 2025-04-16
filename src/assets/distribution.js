@@ -27306,7 +27306,6 @@ rel correr
   Vue.component("App", {
     template: `<div class="app app_component position_relative">
     <lsw-automensajes-viewer />
-    <lsw-current-accion-viewer />
     <div class="home_bottom_panel">
         <button class="danger_button"
         v-on:click="resetDatabase">⭕️</button>
@@ -40711,8 +40710,11 @@ LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled
 // @code.start: LswAutomensajesViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAutomensajesViewer API » LswAutomensajesViewer component
 Vue.component("LswAutomensajesViewer", {
   template: `<div class="lsw_automensajes_viewer">
-    <div class="pad_0 pad_top_1 pad_left_1 pad_right_1">
+    <div class="pad_0 pad_top_1 pad_right_1">
         <div class="flex_row">
+            <div class="flex_1 pad_right_1 pad_left_1" v-if="isMounted">
+                <lsw-apps-viewer-button :viewer="\$refs.appPanel" />
+            </div>
             <div class="flex_100">
                 <div class="automensaje_block" v-on:click="refreshAutomessaging">
                     <template v-if="selectedAutomensaje">
@@ -40728,11 +40730,15 @@ Vue.component("LswAutomensajesViewer", {
             </div>
         </div>
     </div>
+    <div class="pad_1">
+        <lsw-apps-viewer-panel ref="appPanel" />
+    </div>
 </div>`,
   props: {},
   data() {
     this.$trace("lsw-automensajes-viewer.data");
     return {
+      isMounted: false,
       automensajes: [],
       selectedAutomensaje: undefined,
       automessagingId: undefined,
@@ -40784,6 +40790,7 @@ Vue.component("LswAutomensajesViewer", {
       this.$trace("lsw-automensajes-viewer.mounted");
       this.$window.$autom = this;
       this.startAutomessaging();
+      this.isMounted = true;
     } catch(error) {
       console.log(error);
     }
@@ -40794,190 +40801,220 @@ Vue.component("LswAutomensajesViewer", {
   }
 });
 // @code.end: LswAutomensajesViewer API
-// @code.start: LswCurrentAccionViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswCurrentAccionViewer API » LswCurrentAccionViewer component
-Vue.component("LswCurrentAccionViewer", {
-  template: `<div class="lsw_current_accion_viewer">
+// @code.start: LswAppsViewerButton API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAppsViewerButton API » LswAppsViewerButton component
+Vue.component("LswAppsViewerButton", {
+  template: `<div class="lsw_apps_viewer_button">
+    <div class="lsw_apps_button">
+        <button v-on:click="open">🌍</button>
+    </div>
     <div class="position_relative">
-        <div class="position_absolute top_0 left_0 right_0">
-            <div class="flex_row">
-                <div class="flex_1">
-                    <div class="flex_column side_panel pad_1 centered width_100" style="padding-right: 2px;">
-                        <div class="flex_1">
-                            <button class="mini side_button section_button"
-                                :class="{activated: selectedSection === 'despues'}"
-                                v-on:click="() => selectSection('despues')">🕐 ⏩</button>
+        <div class="hidden_menu"
+            v-if="isOpened">
+            <div class="hidden_menu_fixed_layer"></div>
+            <div class="hidden_menu_box">
+                <div class="hidden_menu_items">
+                    <div class="title">
+                        <div class="flex_100 pad_left_1 pad_right_1">
+                            Aplicaciones instaladas
                         </div>
                         <div class="flex_1">
-                            <button class="mini side_button section_button"
-                                :class="{activated: selectedSection === 'antes'}"
-                                v-on:click="() => selectSection('antes')">🕐 ⏪</button>
-                        </div>
-                        <div class="flex_1">
-                            <button class="mini side_button section_button"
-                                :class="{activated: selectedSection === 'calendario'}"
-                                v-on:click="() => selectSection('calendario')">📆</button>
-                        </div>
-                        <div class="flex_100">
-
-                        </div>
-                        <div class="flex_1">
-                            <button class="mini side_button danger_button"
-                                v-on:click="openNotaUploader">+ 💬</button>
-                        </div>
-                        <div class="flex_1">
-                            <button class="mini side_button danger_button"
-                                v-on:click="openArticuloUploader">+ 🔬</button>
-                        </div>
-                        <div class="flex_1">
-                            <button class="mini side_button danger_button"
-                                v-on:click="openArticuloUploader">+ 💡</button>
-                        </div>
-                        <div class="flex_1">
-                            <button class="mini side_button danger_button"
-                                v-on:click="openArticuloUploader">+ 💡</button>
+                            <button class="supermini"
+                                v-on:click="close">❌</button>
                         </div>
                     </div>
-                </div>
-                <div class="flex_100 pad_top_1" style="padding-left: 2px;">
-                    <div class="flex_row centered width_100 top_panel">
-                        <div class="flex_1 top_button_cell">
-                            <button class="mini application_button"
-                                :class="{activated: selectedSection === 'notas'}"
-                                v-on:click="() => selectSection('notas')">💬</button>
-                        </div>
-                        <div class="flex_1 top_button_cell">
-                            <button class="mini application_button"
-                                :class="{activated: selectedSection === 'articulos'}"
-                                v-on:click="() => selectSection('articulos')">🔬</button>
-                        </div>
-                        <div class="flex_1 top_button_cell">
-                            <button class="mini application_button"
-                                :class="{activated: selectedSection === 'listas'}"
-                                v-on:click="() => selectSection('listas')">📝</button>
-                        </div>
-                        <div class="flex_1 top_button_cell">
-                            <button class="mini application_button"
-                                :class="{activated: selectedSection === 'recordatorios'}"
-                                v-on:click="() => selectSection('recordatorios')">💡</button>
-                        </div>
-                        <div class="flex_100"></div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('despues')">Tareas posteriores</button>
                     </div>
-
-                    <div class="desktop_free_area">
-                        <div class="pad_top_1" style="padding-right: 6px; padding-left: 2px;"
-                            v-if="selectedSection !== 'none'">
-                            <div class="desktop_free_available_area">
-                                <div class="pad_top_0"
-                                    v-if="selectedSection === 'antes'">
-                                    <template v-if="accionesAntes && accionesAntes.length">
-                                        <div>Acciones anteriores:</div>
-                                        <div class="tarjetas_de_accion">
-                                            <div class="tarjeta_de_accion nowrap"
-                                                v-for="accion, accionIndex in accionesAntes"
-                                                v-bind:key="'accion_antes_' + accionIndex">
-                                                <div>{{ accion.tiene_inicio }}</div>
-                                                <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                                                <div>{{ accion.tiene_duracion }}</div>
-                                                <div class="cell_en_estado"
-                                                    :class="'estado_' + accion.tiene_estado"
-                                                    v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                                                <!--div>{{ accion.tiene_parametros }}</div>
-                                                    <div>{{ accion.tiene_resultados }}</div>
-                                                    <div>{{ accion.tiene_comentarios }}</div-->
-                                            </div>
-                                        </div>
-                                    </template>
-                                    <div v-else
-                                        class="pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
-                                </div>
-                                <div class="pad_top_0"
-                                    v-if="selectedSection === 'despues'">
-                                    <template v-if="accionesDespues && accionesDespues.length">
-                                        <div>Acciones posteriores:</div>
-                                        <div class="tarjetas_de_accion">
-                                            <div class="tarjeta_de_accion nowrap"
-                                                v-for="accion, accionIndex in accionesDespues"
-                                                v-bind:key="'accion_despues_' + accionIndex">
-                                                <div>{{ accion.tiene_inicio }}</div>
-                                                <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                                                <div>{{ accion.tiene_duracion }}</div>
-                                                <div class="cell_en_estado cursor_pointer"
-                                                    :class="'estado_' + accion.tiene_estado"
-                                                    v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                                                <div>{{ accion.tiene_parametros }}</div>
-                                                <div>{{ accion.tiene_resultados }}</div>
-                                                <div>{{ accion.tiene_comentarios }}</div>
-                                            </div>
-                                        </div>
-                                    </template>
-                                    <div v-else
-                                        class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
-                                </div>
-
-                                <div class="pad_top_0"
-                                    v-if="selectedSection === 'calendario'">
-                                    <div class="">
-                                        <div class="pad_top_0 pad_bottom_0">
-                                            <lsw-agenda />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pad_top_0"
-                                    v-if="selectedSection === 'notas'">
-                                    <div class="pad_top_0 pad_bottom_0">
-                                        <lsw-notes />
-                                    </div>
-                                </div>
-
-                                <div class="pad_top_0"
-                                    v-if="selectedSection === 'articulos'">
-                                    <div class="pad_top_0 pad_bottom_0">
-                                        <lsw-wiki />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- End of «Free Desktop Area» -->
-
-
-
-
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('calendario')">Calendario</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('notas')">Notas</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('recordatorios')">Recordatorios</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('base de datos')">Base de datos</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('sistema de ficheros')">Sistema de ficheros</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('enciclopedia')">Enciclopedia</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('antes')">Tareas anteriores</button>
+                    </div>
                 </div>
             </div>
         </div>
-
-
-
     </div>
+
 </div>`,
   props: {
-    
+    viewer: {
+      type: Object,
+      required: true,
+    }
   },
   data() {
-    this.$trace("lsw-current-accion-viewer.data");
+    this.$trace("lsw-apps-viewer-button.data");
     return {
-      selectedSection: 'none', // 'antes', 'despues'
+      isOpened: false,
+    };
+  },
+  methods: {
+    toggleOpen() {
+      this.$trace("lsw-apps-viewer-button.methods.toggleOpen");
+      this.isOpened = !this.isOpened;
+    },
+    open() {
+      this.$trace("lsw-apps-viewer-button.methods.open");
+      this.isOpened = true;
+    },
+    close() {
+      this.$trace("lsw-apps-viewer-button.methods.close");
+      this.isOpened = false;
+    },
+    openApplication(application) {
+      this.$trace("lsw-apps-viewer-button.methods.openApplication");
+      console.log(this.viewer);
+      const isSame = this.viewer.selectedApplication === application;
+      if(!isSame) {
+        this.viewer.selectApplication(application);
+      } else {
+        this.viewer.selectApplication("none");
+      }
+      this.close();
+    },
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-apps-viewer-button.mounted");
+    } catch (error) {
+      console.log(error);
+    }
+  },
+});
+// @code.end: LswAppsViewerButton API
+// @code.start: LswAppsViewerPanel API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAppsViewer API » LswAppsViewerPanel component
+Vue.component("LswAppsViewerPanel", {
+  template: `<div class="lsw_apps_viewer_panel">
+    <div class="desktop_free_area">
+        <div class=""
+            v-if="selectedApplication !== 'none'">
+            <div class="desktop_free_available_area">
+                <div class="pad_1"
+                    v-if="selectedApplication === 'antes'">
+                    <template v-if="accionesAntes && accionesAntes.length">
+                        <div>Acciones anteriores:</div>
+                        <div class="tarjetas_de_accion">
+                            <div class="tarjeta_de_accion nowrap"
+                                v-for="accion, accionIndex in accionesAntes"
+                                v-bind:key="'accion_antes_' + accionIndex">
+                                <div>{{ accion.tiene_inicio }}</div>
+                                <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                                <div>{{ accion.tiene_duracion }}</div>
+                                <div class="cell_en_estado"
+                                    :class="'estado_' + accion.tiene_estado"
+                                    v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                                <!--div>{{ accion.tiene_parametros }}</div>
+                                    <div>{{ accion.tiene_resultados }}</div>
+                                    <div>{{ accion.tiene_comentarios }}</div-->
+                            </div>
+                        </div>
+                    </template>
+                    <div v-else
+                        class="pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
+                </div>
+                <div class="pad_1"
+                    v-if="selectedApplication === 'despues'">
+                    <template v-if="accionesDespues && accionesDespues.length">
+                        <div>Acciones posteriores:</div>
+                        <div class="tarjetas_de_accion">
+                            <div class="tarjeta_de_accion nowrap"
+                                v-for="accion, accionIndex in accionesDespues"
+                                v-bind:key="'accion_despues_' + accionIndex">
+                                <div>{{ accion.tiene_inicio }}</div>
+                                <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                                <div>{{ accion.tiene_duracion }}</div>
+                                <div class="cell_en_estado cursor_pointer"
+                                    :class="'estado_' + accion.tiene_estado"
+                                    v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                                <div>{{ accion.tiene_parametros }}</div>
+                                <div>{{ accion.tiene_resultados }}</div>
+                                <div>{{ accion.tiene_comentarios }}</div>
+                            </div>
+                        </div>
+                    </template>
+                    <div v-else
+                        class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
+                </div>
+
+                <div class="pad_top_0"
+                    v-if="selectedApplication === 'calendario'">
+                    <div class="pad_top_0 pad_bottom_0">
+                        <lsw-calendario />
+                    </div>
+                </div>
+
+                <div class="pad_top_0"
+                    v-if="selectedApplication === 'notas'">
+                    <div class="pad_top_0 pad_bottom_0">
+                        <lsw-notes />
+                    </div>
+                </div>
+
+                <div class="pad_top_0"
+                    v-if="selectedApplication === 'articulos'">
+                    <div class="pad_top_0 pad_bottom_0">
+                        <lsw-wiki />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- End of «Free Desktop Area» -->
+</div>`,
+  props: {
+
+  },
+  data() {
+    this.$trace("lsw-apps-viewer-panel.data");
+    return {
+      isOpened: false,
+      selectedApplication: 'despues', // 'antes', 'despues'
       accionesAntes: false,
       accionesDespues: false,
     };
   },
   methods: {
-    selectSection(section) {
-      this.$trace("lsw-current-accion-viewer.selectSection");
-      if(this.selectedSection === section) {
-        this.selectedSection = "none";
+    selectApplication(section) {
+      this.$trace("lsw-apps-viewer-panel.methods.selectApplication");
+      if (this.selectedApplication === section) {
+        this.selectedApplication = "none";
       } else {
-        this.selectedSection = section;
+        this.selectedApplication = section;
       }
-      if(["antes", "despues"].indexOf(section) !== -1) {
-        this.loadAcciones();
-      } else {
-        this.$forceUpdate(true);
+      Cargas_segun_aplicacion: {
+        if (["antes", "despues"].indexOf(section) !== -1) {
+          this.loadAcciones();
+        } else {
+          this.$forceUpdate(true);
+        }
       }
     },
     async loadAcciones() {
-      this.$trace("lsw-current-accion-viewer.loadAcciones");
+      this.$trace("lsw-apps-viewer-panel.methods.loadAcciones");
       const output = await this.$lsw.database.selectMany("Accion");
       const estaHora = (() => {
         const d = new Date();
@@ -40991,7 +41028,7 @@ Vue.component("LswCurrentAccionViewer", {
         try {
           const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
           console.log(dateAccion);
-          if(dateAccion >= estaHora) {
+          if (dateAccion >= estaHora) {
             accionesDespues.push(accion);
           } else {
             accionesAntes.push(accion);
@@ -41005,8 +41042,8 @@ Vue.component("LswCurrentAccionViewer", {
       this.$forceUpdate(true);
     },
     async alternarEstado(accion) {
-      this.$trace("lsw-current-accion-viewer.methods.alternarEstado");
-      const nextEstado = accion.tiene_estado === "pendiente" ? "completada" : 
+      this.$trace("lsw-apps-viewer-panel.methods.alternarEstado");
+      const nextEstado = accion.tiene_estado === "pendiente" ? "completada" :
         accion.tiene_estado === "completada" ? "fallida" : "pendiente";
       await this.$lsw.database.update("Accion", accion.id, {
         ...accion,
@@ -41015,13 +41052,13 @@ Vue.component("LswCurrentAccionViewer", {
       await this.loadAcciones();
     },
     async reloadPanel() {
-      this.$trace("lsw-current-accion-viewer.methods.reloadPanel");
+      this.$trace("lsw-apps-viewer-panel.methods.reloadPanel");
       await this.loadAcciones();
     },
     async openNotaUploader() {
-      this.$trace("lsw-current-accion-viewer.methods.openNotaUploader", arguments);
+      this.$trace("lsw-apps-viewer-panel.methods.openNotaUploader", arguments);
       const response = await LswUtils.openAddNoteDialog();
-      if(typeof response !== "object") {
+      if (typeof response !== "object") {
         return;
       }
       await this.$lsw.database.insert("Nota", response);
@@ -41037,7 +41074,7 @@ Vue.component("LswCurrentAccionViewer", {
     async openArticuloUploader() {
       this.$trace("lsw-windows-main-tab.methods.openArticuloUploader", arguments);
       const response = await LswUtils.openAddArticuloDialog();
-      if(typeof response !== "object") {
+      if (typeof response !== "object") {
         return;
       }
       await this.$lsw.database.insert("Articulo", response);
@@ -41046,14 +41083,14 @@ Vue.component("LswCurrentAccionViewer", {
   watch: {},
   async mounted() {
     try {
-      this.$trace("lsw-current-accion-viewer.mounted");
+      this.$trace("lsw-apps-viewer-panel.mounted");
       await this.loadAcciones();
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   },
 });
-// @code.end: LswCurrentAccionViewer API
+// @code.end: LswAppsViewerPanel API
 // @code.start: LswProtolangEditor API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswProtolangEditor API » LswProtolangEditor component
 Vue.component("LswProtolangEditor", {
   template: `<div class="lsw_protolang_editor">

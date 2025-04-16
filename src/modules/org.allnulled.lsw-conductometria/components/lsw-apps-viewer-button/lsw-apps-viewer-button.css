@@ -71,16 +71,3 @@
 .top_panel .top_button {
     min-width: 50px;
 }
-.desktop_free_area {
-    padding-bottom: 100px;
-    max-width: 100%;
-    overflow: scroll;
-}
-.desktop_free_available_area {
-    border: 1px solid 1px solid #939393;
-    border-radius: 2pt;
-    padding: 4px;
-    background-color: rgba(170, 170, 170, 0.409);
-    min-height: 230px;
-    box-shadow: 0 0 4px white;
-}

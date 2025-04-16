@@ -13,7 +13,6 @@
     text-shadow: 0 0 1px white;
     text-align: center;
     /*animation: changeMiddle2 30s infinite linear;*/
-
     transition: background-color 0.2s linear;
     cursor: pointer;
     font-size: 12px;

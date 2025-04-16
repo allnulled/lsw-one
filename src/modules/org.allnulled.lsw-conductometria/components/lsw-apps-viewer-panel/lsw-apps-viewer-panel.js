@@ -1,33 +1,36 @@
-// @code.start: LswAppsViewerButton API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAppsViewerButton API » LswAppsViewerButton component
-Vue.component("LswAppsViewerButton", {
+// @code.start: LswAppsViewerPanel API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAppsViewer API » LswAppsViewerPanel component
+Vue.component("LswAppsViewerPanel", {
   template: $template,
   props: {
-    
+
   },
   data() {
-    this.$trace("lsw-apps-viewer-button.data");
+    this.$trace("lsw-apps-viewer-panel.data");
     return {
-      selectedSection: 'none', // 'antes', 'despues'
+      isOpened: false,
+      selectedApplication: 'despues', // 'antes', 'despues'
       accionesAntes: false,
       accionesDespues: false,
     };
   },
   methods: {
-    selectSection(section) {
-      this.$trace("lsw-apps-viewer-button.selectSection");
-      if(this.selectedSection === section) {
-        this.selectedSection = "none";
+    selectApplication(section) {
+      this.$trace("lsw-apps-viewer-panel.methods.selectApplication");
+      if (this.selectedApplication === section) {
+        this.selectedApplication = "none";
       } else {
-        this.selectedSection = section;
+        this.selectedApplication = section;
       }
-      if(["antes", "despues"].indexOf(section) !== -1) {
-        this.loadAcciones();
-      } else {
-        this.$forceUpdate(true);
+      Cargas_segun_aplicacion: {
+        if (["antes", "despues"].indexOf(section) !== -1) {
+          this.loadAcciones();
+        } else {
+          this.$forceUpdate(true);
+        }
       }
     },
     async loadAcciones() {
-      this.$trace("lsw-apps-viewer-button.loadAcciones");
+      this.$trace("lsw-apps-viewer-panel.methods.loadAcciones");
       const output = await this.$lsw.database.selectMany("Accion");
       const estaHora = (() => {
         const d = new Date();
@@ -41,7 +44,7 @@ Vue.component("LswAppsViewerButton", {
         try {
           const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
           console.log(dateAccion);
-          if(dateAccion >= estaHora) {
+          if (dateAccion >= estaHora) {
             accionesDespues.push(accion);
           } else {
             accionesAntes.push(accion);
@@ -55,8 +58,8 @@ Vue.component("LswAppsViewerButton", {
       this.$forceUpdate(true);
     },
     async alternarEstado(accion) {
-      this.$trace("lsw-apps-viewer-button.methods.alternarEstado");
-      const nextEstado = accion.tiene_estado === "pendiente" ? "completada" : 
+      this.$trace("lsw-apps-viewer-panel.methods.alternarEstado");
+      const nextEstado = accion.tiene_estado === "pendiente" ? "completada" :
         accion.tiene_estado === "completada" ? "fallida" : "pendiente";
       await this.$lsw.database.update("Accion", accion.id, {
         ...accion,
@@ -65,13 +68,13 @@ Vue.component("LswAppsViewerButton", {
       await this.loadAcciones();
     },
     async reloadPanel() {
-      this.$trace("lsw-apps-viewer-button.methods.reloadPanel");
+      this.$trace("lsw-apps-viewer-panel.methods.reloadPanel");
       await this.loadAcciones();
     },
     async openNotaUploader() {
-      this.$trace("lsw-apps-viewer-button.methods.openNotaUploader", arguments);
+      this.$trace("lsw-apps-viewer-panel.methods.openNotaUploader", arguments);
       const response = await LswUtils.openAddNoteDialog();
-      if(typeof response !== "object") {
+      if (typeof response !== "object") {
         return;
       }
       await this.$lsw.database.insert("Nota", response);
@@ -87,7 +90,7 @@ Vue.component("LswAppsViewerButton", {
     async openArticuloUploader() {
       this.$trace("lsw-windows-main-tab.methods.openArticuloUploader", arguments);
       const response = await LswUtils.openAddArticuloDialog();
-      if(typeof response !== "object") {
+      if (typeof response !== "object") {
         return;
       }
       await this.$lsw.database.insert("Articulo", response);
@@ -96,11 +99,11 @@ Vue.component("LswAppsViewerButton", {
   watch: {},
   async mounted() {
     try {
-      this.$trace("lsw-apps-viewer-button.mounted");
+      this.$trace("lsw-apps-viewer-panel.mounted");
       await this.loadAcciones();
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   },
 });
-// @code.end: LswAppsViewerButton API
+// @code.end: LswAppsViewerPanel API

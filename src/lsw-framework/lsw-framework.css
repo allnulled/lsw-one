@@ -591,7 +591,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .lsw_windows_pivot_button {
     position: fixed;
     top: auto;
-    bottom: calc(env(safe-area-inset-bottom, 0) + 46px + 8px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 46px + 13px);
     left: 9px;
     right: auto;
     padding: 0px;
@@ -1272,6 +1272,15 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.3);
 }
+.hidden_menu_absolute_layer {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: auto;
+    right: auto;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.3);
+}
 
 
 .form_label {
@@ -1878,6 +1887,12 @@ button.mini {
     min-width: var(--button_height);
     font-size: 13px !important;
 }
+button.supermini {
+    min-width: auto;
+    min-height: auto;
+    padding: 4px;
+    font-size: 12px !important;
+}
 button.bright_border {
     background-color: transparent;
 }
@@ -2004,9 +2019,9 @@ table.tabla_de_conductometria .minibutton {
 .home_bottom_panel {
     position: fixed;
     top: auto;
-    bottom: calc(env(safe-area-inset-bottom, 0) + 46px + 8px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 46px + 13px);
     left: auto;
-    right: 8px;
+    right: 9px;
 }
 
 .home_mobile_off_panel_container {

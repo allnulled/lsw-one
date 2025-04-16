@@ -1,0 +1,57 @@
+<div class="lsw_apps_viewer_button">
+    <div class="lsw_apps_button">
+        <button v-on:click="open">🌍</button>
+    </div>
+    <div class="position_relative">
+        <div class="hidden_menu"
+            v-if="isOpened">
+            <div class="hidden_menu_fixed_layer"></div>
+            <div class="hidden_menu_box">
+                <div class="hidden_menu_items">
+                    <div class="title">
+                        <div class="flex_100 pad_left_1 pad_right_1">
+                            Aplicaciones instaladas
+                        </div>
+                        <div class="flex_1">
+                            <button class="supermini"
+                                v-on:click="close">❌</button>
+                        </div>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('despues')">Tareas posteriores</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('calendario')">Calendario</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('notas')">Notas</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('recordatorios')">Recordatorios</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('base de datos')">Base de datos</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('sistema de ficheros')">Sistema de ficheros</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('enciclopedia')">Enciclopedia</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('antes')">Tareas anteriores</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

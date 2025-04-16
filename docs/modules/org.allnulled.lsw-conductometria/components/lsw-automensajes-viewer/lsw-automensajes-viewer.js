@@ -5,6 +5,7 @@ Vue.component("LswAutomensajesViewer", {
   data() {
     this.$trace("lsw-automensajes-viewer.data");
     return {
+      isMounted: false,
       automensajes: [],
       selectedAutomensaje: undefined,
       automessagingId: undefined,
@@ -56,6 +57,7 @@ Vue.component("LswAutomensajesViewer", {
       this.$trace("lsw-automensajes-viewer.mounted");
       this.$window.$autom = this;
       this.startAutomessaging();
+      this.isMounted = true;
     } catch(error) {
       console.log(error);
     }

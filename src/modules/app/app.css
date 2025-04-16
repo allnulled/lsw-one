@@ -55,6 +55,12 @@ button.mini {
     min-width: var(--button_height);
     font-size: 13px !important;
 }
+button.supermini {
+    min-width: auto;
+    min-height: auto;
+    padding: 4px;
+    font-size: 12px !important;
+}
 button.bright_border {
     background-color: transparent;
 }
@@ -181,9 +187,9 @@ table.tabla_de_conductometria .minibutton {
 .home_bottom_panel {
     position: fixed;
     top: auto;
-    bottom: calc(env(safe-area-inset-bottom, 0) + 46px + 8px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 46px + 13px);
     left: auto;
-    right: 8px;
+    right: 9px;
 }
 
 .home_mobile_off_panel_container {

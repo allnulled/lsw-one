@@ -27279,7 +27279,6 @@ rel correr
   Vue.component("App", {
     template: `<div class="app app_component position_relative">
     <lsw-automensajes-viewer />
-    <lsw-current-accion-viewer />
     <div class="home_bottom_panel">
         <button class="danger_button"
         v-on:click="resetDatabase">⭕️</button>

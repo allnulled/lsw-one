@@ -22484,7 +22484,7 @@ Vue.component("LswWindowsMainTab", {
             </div>
             <div class="dialog_body">
                 <div class="main_tab_topbar">
-                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📓</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📆</button>
                     <button class="mini main_tab_topbar_button" v-on:click="openWiki">🔬</button>
                     <button class="mini main_tab_topbar_button" v-on:click="openRest">📦</button>
                     <button class="mini main_tab_topbar_button" v-on:click="openFilesystem">📂</button>

@@ -10,6 +10,10 @@ Vue.component("LswAutomensajesViewer", {
       selectedAutomensaje: undefined,
       automessagingId: undefined,
       automessagingSeconds: 0,
+      simboloActual: "♠️",
+      // simboloActual: LswRandomizer.getRandomItem("🌅🌄🌠🎇🎆🌇🌆🏙🌃🌌🌉🌁".split("")),
+      
+      // simboloActual: LswRandomizer.getRandomItem("🐶🐱🐵🐗🐴🐌🐜🌋🏭🏢🏬🏣🚀🛸🚁🎲🎯🎳🎮🗽🗼🛟🎱🐞🌝🌛🌜🌚🌕🌖🌗🌘🌑🌒🌓🌔🌙🌎🌍🌏🪐💫⭐️🌟✨⚡️☄️💥🔥🌪🌈🐉🐲🐦‍🔥🌵🎄🌲🌳🌴🪹🪺🪵🌱🌿🍀🍁🍄🍄‍🟫🌾💐🌷🪷🌹🥀🌺🎪🤹🤹‍♂️🤹‍♀️🎭🎨🎼🎹🥁🪘🪇🎷🎺🪗🎸🪕🎻🪈♟🎰🧩🚗🚕🚙🎬🎤🎧💧💦🫧☔️☂️🌊🍏🍎🍐🍊🍋🍋‍🟩🍌🍉🍇🍓🫐🍈🍒🍑🥭🍍🥥🥝🍅🍆🥑🥦🫛".split("")),
     };
   },
   methods: {
@@ -50,12 +54,17 @@ Vue.component("LswAutomensajesViewer", {
       this.stopAutomessaging();
       this.startAutomessaging();
     },
+    goToDesktop() {
+      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
+      this.$lsw.windows.hide();
+      this.$refs.appPanel.selectApplication("none");
+    }
   },
   watch: {},
   async mounted() {
     try {
       this.$trace("lsw-automensajes-viewer.mounted");
-      this.$window.$autom = this;
+      this.$window.$automensajesUi = this;
       this.startAutomessaging();
       this.isMounted = true;
     } catch(error) {

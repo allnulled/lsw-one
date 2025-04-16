@@ -22511,7 +22511,7 @@ Vue.component("LswWindowsMainTab", {
             </div>
             <div class="dialog_body">
                 <div class="main_tab_topbar">
-                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📓</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openAgenda">📆</button>
                     <button class="mini main_tab_topbar_button" v-on:click="openWiki">🔬</button>
                     <button class="mini main_tab_topbar_button" v-on:click="openRest">📦</button>
                     <button class="mini main_tab_topbar_button" v-on:click="openFilesystem">📂</button>
@@ -40731,7 +40731,7 @@ Vue.component("LswAutomensajesViewer", {
                 </div>
             </div>
             <div class="flex_1 pad_left_1">
-                <button v-on:click="() => \$lsw.windows.toggleState()">🔵</button>
+                <button v-on:click="goToDesktop">{{ simboloActual }}</button>
             </div>
         </div>
     </div>
@@ -40748,6 +40748,10 @@ Vue.component("LswAutomensajesViewer", {
       selectedAutomensaje: undefined,
       automessagingId: undefined,
       automessagingSeconds: 0,
+      simboloActual: "♠️",
+      // simboloActual: LswRandomizer.getRandomItem("🌅🌄🌠🎇🎆🌇🌆🏙🌃🌌🌉🌁".split("")),
+      
+      // simboloActual: LswRandomizer.getRandomItem("🐶🐱🐵🐗🐴🐌🐜🌋🏭🏢🏬🏣🚀🛸🚁🎲🎯🎳🎮🗽🗼🛟🎱🐞🌝🌛🌜🌚🌕🌖🌗🌘🌑🌒🌓🌔🌙🌎🌍🌏🪐💫⭐️🌟✨⚡️☄️💥🔥🌪🌈🐉🐲🐦‍🔥🌵🎄🌲🌳🌴🪹🪺🪵🌱🌿🍀🍁🍄🍄‍🟫🌾💐🌷🪷🌹🥀🌺🎪🤹🤹‍♂️🤹‍♀️🎭🎨🎼🎹🥁🪘🪇🎷🎺🪗🎸🪕🎻🪈♟🎰🧩🚗🚕🚙🎬🎤🎧💧💦🫧☔️☂️🌊🍏🍎🍐🍊🍋🍋‍🟩🍌🍉🍇🍓🫐🍈🍒🍑🥭🍍🥥🥝🍅🍆🥑🥦🫛".split("")),
     };
   },
   methods: {
@@ -40788,12 +40792,17 @@ Vue.component("LswAutomensajesViewer", {
       this.stopAutomessaging();
       this.startAutomessaging();
     },
+    goToDesktop() {
+      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
+      this.$lsw.windows.hide();
+      this.$refs.appPanel.selectApplication("none");
+    }
   },
   watch: {},
   async mounted() {
     try {
       this.$trace("lsw-automensajes-viewer.mounted");
-      this.$window.$autom = this;
+      this.$window.$automensajesUi = this;
       this.startAutomessaging();
       this.isMounted = true;
     } catch(error) {
@@ -40837,11 +40846,15 @@ Vue.component("LswAppsViewerButton", {
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('notas')">💬 Notas</button>
+                            v-on:click="() => openApplication('enciclopedia')">🔬 Enciclopedia</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
                             v-on:click="() => openApplication('recordatorios')">🪧 Recordatorios</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => openApplication('notas')">💬 Notas</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
@@ -40853,7 +40866,7 @@ Vue.component("LswAppsViewerButton", {
                     </div>
                     <div class="button_cell">
                         <button class="mini"
-                            v-on:click="() => openApplication('enciclopedia')">🔬 Enciclopedia</button>
+                            v-on:click="() => openApplication('automensajes')">📫 Automensajes</button>
                     </div>
                     <div class="button_cell">
                         <button class="mini"
@@ -40969,7 +40982,7 @@ Vue.component("LswAppsViewerPanel", {
                 <div class="pad_2"
                     v-if="selectedApplication === 'calendario'">
                     <div class="pad_top_0 pad_bottom_0">
-                        <lsw-calendario />
+                        <lsw-agenda />
                     </div>
                 </div>
 
@@ -40998,6 +41011,17 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'sistema de ficheros'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
                         <lsw-filesystem-explorer :block-layout="true" />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'automensajes'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer
+                            initial-page="lsw-page-rows"
+                            :initial-args="{database: 'lsw_default_database',table:'Automensaje'}"
+                            :show-breadcrumb="false" />
+
                     </div>
                 </div>
 

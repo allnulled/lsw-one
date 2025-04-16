@@ -1,5 +1,8 @@
+.filesystem_ui {
+    min-height: 230px;
+}
 .lsw_filesystem_editor {
-    min-height: 120px;
+    min-height: 230px;
     padding-left: 1px;
     padding-right: 1px;
     padding-bottom: 0px;
@@ -19,7 +22,7 @@
     border: 1px solid black;
     border-radius: 0pt;
     outline: none;
-    min-height: 180px;
+    min-height: 230px;
     height: 100%;
 }
 .absolute_version .lsw_filesystem_editor .editor {

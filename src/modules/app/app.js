@@ -87,6 +87,10 @@ rel correr
         this.$trace("App.methods.goToAddAccion");
         this.$refs.desktop.selectApplication("nueva accion");
       },
+      goToCalendario() {
+        this.$trace("App.methods.goToCalendario");
+        this.$refs.desktop.selectApplication("calendario");
+      }
     },
     mounted() {
       console.log("[*] Application mounted.");

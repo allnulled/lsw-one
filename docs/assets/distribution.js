@@ -27315,7 +27315,7 @@ rel correr
         <button class="" v-on:click="goToAddNota">+ 💬</button>
         <button class="" v-on:click="goToAddArticulo">+ 🔬</button>
         <button class="" v-on:click="goToAddRecordatorio">+ 🪧</button>
-        <button class="" v-on:click="goToAddAccion">+ 📅</button>
+        <button class="" v-on:click="goToCalendario">+ 📅</button>
     </div>
     <lsw-console-hooker />
     <lsw-windows-viewer />
@@ -27393,6 +27393,10 @@ rel correr
         this.$trace("App.methods.goToAddAccion");
         this.$refs.desktop.selectApplication("nueva accion");
       },
+      goToCalendario() {
+        this.$trace("App.methods.goToCalendario");
+        this.$refs.desktop.selectApplication("calendario");
+      }
     },
     mounted() {
       console.log("[*] Application mounted.");

@@ -1,10 +1,15 @@
 # TODOs
 
-Estamos con estos:
+[ ] Mejorar diálogos espontáneos de:
+  [ ] Nota
+  [ ] Artículo
+  [ ] Recordatorio
+  [ ] Acción
+  [ ] Lista
 
-[ ] Arreglar que se resetee la base de datos cuando no encuentre las tablas, automátic.
-  [ ] Bueno, el flujo.
-
-[ ] Wiki
-
-[ ] Wiki
+[ ] Mejorar tablas espontáneas de:
+  [ ] Nota
+  [ ] Artículo
+  [ ] Recordatorio
+  [ ] Acción
+  [ ] Lista

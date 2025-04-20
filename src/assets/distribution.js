@@ -12040,6 +12040,14 @@ if (process?.env?.NODE_ENV === "test") {
       });
     }
 
+    static querySelectorFirst(selector, matchingText = false) {
+      const all = document.querySelectorAll(selector);
+      const matched = Array.from(all).filter(element => {
+        return element.textContent.trim().toLowerCase() === matchingText.toLowerCase();
+      });
+      return matched.length ? matched[0] : null;
+    }
+
   };
   // @code.end: LswDom class
 
@@ -15853,9 +15861,6 @@ return Store;
     const anio = ("" + (dateObject.getFullYear() ?? 0)).padStart(4, '0');
     const mes = ("" + ((dateObject.getMonth() ?? 0) + 1)).padStart(2, '0');
     const dia = ("" + (dateObject.getDate() ?? 0)).padStart(2, '0');
-    if(setUntilDay && setOnlyHour) {
-      throw new Error("Contradictory parameters on «setUntilDay» and «setOnlyHour»");
-    }
     if(setUntilDay) {
       return `${anio}/${mes}/${dia}`;
     }
@@ -15868,6 +15873,8 @@ return Store;
     }
     return `${anio}/${mes}/${dia} ${laHora}`;
   };
+
+  Timeformat_utils.fromDateToDatestring = Timeformat_utils.formatDatestringFromDate;
 
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
     const momentoBrute = Timeformat_parser.parse(momentoText)[0];
@@ -15889,6 +15896,8 @@ return Store;
     console.log("Z", date);
     return date;
   };
+
+  Timeformat_utils.fromDatestringToDate = Timeformat_utils.getDateFromMomentoText;
   
   Timeformat_utils.formatDatetimeFromMomento = function (momentoBrute, setMeridian = false) {
     const momento = Timeformat_utils.toPlainObject(momentoBrute);
@@ -21240,6 +21249,10 @@ Vue.component("LswCalendario", {
     propagar_cambio() {
       this.$trace("lsw-calendario.methods.propagar_cambio");
       if (typeof this.alCambiarValor === "function") {
+        // Si es carga inicial, no propagamos el evento:
+        if(this.es_carga_inicial) {
+          return;
+        }
         this.alCambiarValor(this.fecha_seleccionada, this);
       }
     },
@@ -21266,7 +21279,9 @@ Vue.component("LswCalendario", {
     this.$trace("lsw-calendario.mounted");
     try {
       this.fecha_seleccionada = this.valor_inicial_adaptado;
-      this.es_carga_inicial = false;
+      this.$nextTick(() => {
+        this.es_carga_inicial = false;
+      });
     } catch (error) {
       console.log(error);
       throw error;
@@ -41056,10 +41071,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'automensajes'"
                     v-bind:key="'automensajes'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-rows"
-                            :initial-args="{database: 'lsw_default_database',table:'Automensaje'}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-table-automensajes />
                     </div>
                 </div>
 
@@ -41067,10 +41079,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'recordatorios'"
                     v-bind:key="'recordatorios'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-rows"
-                            :initial-args="{database: 'lsw_default_database',table:'Recordatorio'}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-table-recordatorios />
                     </div>
                 </div>
 
@@ -41078,10 +41087,8 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'listas'"
                     v-bind:key="'listas'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-rows"
-                            :initial-args="{database: 'lsw_default_database',table:'Lista'}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-table-lista />
+
                     </div>
                 </div>
 
@@ -41089,10 +41096,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'nuevo recordatorio'"
                     v-bind:key="'nuevo recordatorio'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-row"
-                            :initial-args="{database: 'lsw_default_database',table:'Recordatorio',rowId:-1}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-form-recordatorio />
                     </div>
                 </div>
 
@@ -41100,10 +41104,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'nueva lista'"
                     v-bind:key="'nueva lista'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-row"
-                            :initial-args="{database: 'lsw_default_database',table:'Lista',rowId:-1}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-form-lista />
                     </div>
                 </div>
 
@@ -41111,10 +41112,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'nueva nota'"
                     v-bind:key="'nueva nota'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-row"
-                            :initial-args="{database: 'lsw_default_database',table:'Nota',rowId:-1}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-form-nota />
                     </div>
                 </div>
 
@@ -41122,10 +41120,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'nuevo articulo'"
                     v-bind:key="'nuevo articulo'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-row"
-                            :initial-args="{database: 'lsw_default_database',table:'Articulo',rowId:-1}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-form-articulo />
                     </div>
                 </div>
 
@@ -41133,10 +41128,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'nueva accion'"
                     v-bind:key="'nuevo accion'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-row"
-                            :initial-args="{database: 'lsw_default_database',table:'Accion',rowId:-1}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-form-accion />
                     </div>
                 </div>
 
@@ -41329,6 +41321,350 @@ Vue.component("LswProtolangEditor", {
   }
 });
 // @code.end: LswProtolangEditor API
+// @code.start: LswSpontaneousFormAccion API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormAccion API » LswSpontaneousFormAccion component
+Vue.component("LswSpontaneousFormAccion", {
+  template: `<div class="lsw_spontaneos_form_accion">
+    Form of accion
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-form-accion.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-form-accion.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousFormAccion API
+// @code.start: LswSpontaneousFormArticulo API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormArticulo API » LswSpontaneousFormAccion component
+Vue.component("LswSpontaneousFormArticulo", {
+  template: `<div class="lsw_spontaneos_form_articulo">
+    Form of articulo
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-form-articulo.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-form-articulo.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousFormArticulo API
+// @code.start: LswSpontaneousFormLista API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormLista API » LswSpontaneousFormAccion component
+Vue.component("LswSpontaneousFormLista", {
+  template: `<div class="lsw_spontaneos_form_lista">
+    Form of lista
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-form-lista.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-form-lista.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousFormLista API
+// @code.start: LswSpontaneousFormNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormNota API » LswSpontaneousFormAccion component
+Vue.component("LswSpontaneousFormNota", {
+  template: `<div class="lsw_spontaneos_form_nota pad_1">
+    <h3 class="margin_bottom_1px">Nota nueva:</h3>
+    <div class="flex_row">
+        <div class="flex_100">
+            <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" />
+            <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de nota." style="min-height: 230px;" v-model="tiene_contenido" v-focus spellcheck="false" ref="tiene_contenido"></textarea>
+            <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de nota" v-model="tiene_titulo" />
+            <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias"></textarea>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="mini" style="height: 100%; min-width: 30px;" v-on:click="addNota">🟢</button>
+        </div>
+    </div>
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-form-nota.data");
+    return this.getInitialData({
+
+    });
+  },
+  methods: {
+    getInitialData(extendedWith = {}) {
+      return Object.assign({
+        tiene_titulo: "",
+        tiene_contenido: "",
+        tiene_fecha: LswTimer.utils.fromDateToDatestring(new Date()),
+        tiene_categorias: "",
+      }, extendedWith);
+    },
+    async addNota() {
+      this.$trace("lsw-spontaneous-form-nota.methods.addNota");
+      const nota = {
+        tiene_titulo: this.tiene_titulo,
+        tiene_contenido: this.tiene_contenido,
+        tiene_fecha: this.tiene_fecha,
+        tiene_categorias: this.tiene_categorias,
+      };
+      if(nota.tiene_titulo.trim() === "") {
+        nota.tiene_titulo = `(*) ${nota.tiene_contenido.substr(0,30)}`;
+      }
+      await this.$lsw.database.insert("Nota", nota);
+      Object.assign(this, this.getInitialData());
+      this.$forceUpdate(true);
+      this.focusContenidos();
+    },
+    focusContenidos() {
+      this.$trace("lsw-spontaneous-form-nota.methods.addNota");
+      this.$refs.tiene_contenido.focus();
+    }
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-form-nota.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousFormNota API
+// @code.start: LswSpontaneousFormRecordatorio API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormRecordatorio API » LswSpontaneousFormAccion component
+Vue.component("LswSpontaneousFormRecordatorio", {
+  template: `<div class="lsw_spontaneos_form_recordatorio">
+    Form of recordatorio
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-form-recordatorio.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-form-recordatorio.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousFormRecordatorio API
+// @code.start: LswSpontaneousTableAccion API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableAccion API » LswSpontaneousTableAccion component
+Vue.component("LswSpontaneousTableAccion", {
+  template: `<div class="lsw_spontaneos_table_accion">
+    Table of accion
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-table-accion.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-table-accion.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousTableAccion API
+// @code.start: LswSpontaneousTableArticulo API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableArticulo API » LswSpontaneousTableArticulo component
+Vue.component("LswSpontaneousTableArticulo", {
+  template: `<div class="lsw_spontaneos_table_articulo">
+    Table of articulo
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-table-articulo.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-table-articulo.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousTableArticulo API
+// @code.start: LswSpontaneousTableLista API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableLista API » LswSpontaneousTableLista component
+Vue.component("LswSpontaneousTableLista", {
+  template: `<div class="lsw_spontaneos_table_lista">
+    Table of lista
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-table-lista.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-table-lista.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousTableLista API
+// @code.start: LswSpontaneousTableNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableNota API » LswSpontaneousTableNota component
+Vue.component("LswSpontaneousTableNota", {
+  template: `<div class="lsw_spontaneos_table_nota">
+    Table of nota
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-table-nota.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-table-nota.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousTableNota API
+// @code.start: LswSpontaneousTableRecordatorio API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableRecordatorio API » LswSpontaneousTableRecordatorio component
+Vue.component("LswSpontaneousTableRecordatorio", {
+  template: `<div class="lsw_spontaneos_table_recordatorio">
+    Table of recordatorio
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-table-recordatorio.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-table-recordatorio.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousTableRecordatorio API
+// @code.start: LswFastDateControl API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswFastDateControl API » LswFastDateControl component
+Vue.component("LswFastDatetimeControl", {
+  template: `<div class="lsw_fast_datetime_control">
+    <div class="flex_row">
+        <div class="flex_1">
+            <button :class="{activated: isEditable}" v-on:click="toggleEditable">📅</button>
+        </div>
+        <div class="flex_100 pad_left_1">
+            <input class="width_100" type="text" v-model="value" />
+        </div>
+    </div>
+    <div class="" v-if="isEditable">
+        <lsw-calendario
+            :modo="mode"
+            :valor-inicial="value"
+            :al-cambiar-valor="setValue"
+        />
+    </div>
+</div>`,
+  props: {
+    mode: {
+      type: String,
+      default: () => "datetime", // can also be: "date"
+    },
+    initialValue: {
+      type: [Date, String],
+      default: null,
+    },
+    onChangeDate: {
+      type: Function,
+      default: () => {}
+    }
+  },
+  data() {
+    this.$trace("lsw-fast-datetime-control.data");
+    return {
+      value: this.adaptDate(this.initialValue || new Date()),
+      isEditable: false,
+    };
+  },
+  methods: {
+    adaptDate(dateInput) {
+      this.$trace("lsw-fast-date-control.methods.adaptDate");
+      if(dateInput instanceof Date) {
+        return LswTimer.utils.fromDateToDatestring(dateInput, this.mode === "date");
+      }
+      return dateInput;
+    },
+    getValue() {
+      this.$trace("lsw-fast-date-control.methods.getValue");
+      return this.value;
+    },
+    toggleEditable() {
+      this.$trace("lsw-fast-datetime-control.methods.toggleEditable");
+      this.isEditable = !this.isEditable;
+    },
+    showEditable() {
+      this.$trace("lsw-fast-datetime-control.methods.showEditable");
+      this.isEditable = true;
+    },
+    hideEditable() {
+      this.$trace("lsw-fast-datetime-control.methods.hideEditable");
+      this.isEditable = false;
+    },
+    setValue(v) {
+      this.$trace("lsw-fast-datetime-control.methods.propagateValue");
+      this.value = this.adaptDate(v);
+      this.onChangeDate(this.value, this);
+      this.hideEditable();
+    }
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-fast-datetime-control.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswFastDateControl API
 $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -42526,5 +42862,13 @@ try {
   console.error(error);
   console.log("[!] Boot failed");
 }
-LswLifecycle.start().then(console.log).catch(console.error);
+LswLifecycle.start().then(output => {
+  console.log("[*] App lifecycle ended.");
+  
+  Work_relocation: {
+    LswDom.querySelectorFirst(".home_bottom_panel > button", "+ 💬").click();
+  }
+
+
+}).catch(console.error);
 });

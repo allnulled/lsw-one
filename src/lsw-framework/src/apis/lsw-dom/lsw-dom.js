@@ -62,6 +62,14 @@
       });
     }
 
+    static querySelectorFirst(selector, matchingText = false) {
+      const all = document.querySelectorAll(selector);
+      const matched = Array.from(all).filter(element => {
+        return element.textContent.trim().toLowerCase() === matchingText.toLowerCase();
+      });
+      return matched.length ? matched[0] : null;
+    }
+
   };
   // @code.end: LswDom class
 

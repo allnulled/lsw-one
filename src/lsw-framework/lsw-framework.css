@@ -1886,6 +1886,7 @@ textarea {
     font-family: Arial;
     font-size: 13px;
     min-height: 40px;
+    min-height: var(--button_height);
 }
 
 .like_button,
@@ -1970,6 +1971,7 @@ input[type="checkbox"] {
 
 input[type="text"] {
     min-height: 40px;
+    min-height: var(--button_height);
     outline: none;
     background-color: #FFFFFF88;
     border: 1px solid #CCC;
@@ -1977,6 +1979,7 @@ input[type="text"] {
 
 select {
     min-height: 40px;
+    min-height: var(--button_height);
     background-color: #FFFFFF88;
     border: 1px solid #CCC;
 }
@@ -2483,4 +2486,7 @@ table.tabla_de_conductometria .minibutton {
 .font_white {
     color: white;
     text-shadow: 0 0 1px black;
+}
+.margin_bottom_1px {
+    margin-bottom: 4px;
 }

@@ -12013,6 +12013,14 @@ if (process?.env?.NODE_ENV === "test") {
       });
     }
 
+    static querySelectorFirst(selector, matchingText = false) {
+      const all = document.querySelectorAll(selector);
+      const matched = Array.from(all).filter(element => {
+        return element.textContent.trim().toLowerCase() === matchingText.toLowerCase();
+      });
+      return matched.length ? matched[0] : null;
+    }
+
   };
   // @code.end: LswDom class
 
@@ -15826,9 +15834,6 @@ return Store;
     const anio = ("" + (dateObject.getFullYear() ?? 0)).padStart(4, '0');
     const mes = ("" + ((dateObject.getMonth() ?? 0) + 1)).padStart(2, '0');
     const dia = ("" + (dateObject.getDate() ?? 0)).padStart(2, '0');
-    if(setUntilDay && setOnlyHour) {
-      throw new Error("Contradictory parameters on «setUntilDay» and «setOnlyHour»");
-    }
     if(setUntilDay) {
       return `${anio}/${mes}/${dia}`;
     }
@@ -15841,6 +15846,8 @@ return Store;
     }
     return `${anio}/${mes}/${dia} ${laHora}`;
   };
+
+  Timeformat_utils.fromDateToDatestring = Timeformat_utils.formatDatestringFromDate;
 
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
     const momentoBrute = Timeformat_parser.parse(momentoText)[0];
@@ -15862,6 +15869,8 @@ return Store;
     console.log("Z", date);
     return date;
   };
+
+  Timeformat_utils.fromDatestringToDate = Timeformat_utils.getDateFromMomentoText;
   
   Timeformat_utils.formatDatetimeFromMomento = function (momentoBrute, setMeridian = false) {
     const momento = Timeformat_utils.toPlainObject(momentoBrute);
@@ -21213,6 +21222,10 @@ Vue.component("LswCalendario", {
     propagar_cambio() {
       this.$trace("lsw-calendario.methods.propagar_cambio");
       if (typeof this.alCambiarValor === "function") {
+        // Si es carga inicial, no propagamos el evento:
+        if(this.es_carga_inicial) {
+          return;
+        }
         this.alCambiarValor(this.fecha_seleccionada, this);
       }
     },
@@ -21239,7 +21252,9 @@ Vue.component("LswCalendario", {
     this.$trace("lsw-calendario.mounted");
     try {
       this.fecha_seleccionada = this.valor_inicial_adaptado;
-      this.es_carga_inicial = false;
+      this.$nextTick(() => {
+        this.es_carga_inicial = false;
+      });
     } catch (error) {
       console.log(error);
       throw error;

@@ -99,10 +99,7 @@
                     v-if="selectedApplication === 'automensajes'"
                     v-bind:key="'automensajes'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-rows"
-                            :initial-args="{database: 'lsw_default_database',table:'Automensaje'}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-table-automensajes />
                     </div>
                 </div>
 
@@ -110,10 +107,7 @@
                     v-if="selectedApplication === 'recordatorios'"
                     v-bind:key="'recordatorios'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-rows"
-                            :initial-args="{database: 'lsw_default_database',table:'Recordatorio'}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-table-recordatorios />
                     </div>
                 </div>
 
@@ -121,10 +115,8 @@
                     v-if="selectedApplication === 'listas'"
                     v-bind:key="'listas'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-rows"
-                            :initial-args="{database: 'lsw_default_database',table:'Lista'}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-table-lista />
+
                     </div>
                 </div>
 
@@ -132,10 +124,7 @@
                     v-if="selectedApplication === 'nuevo recordatorio'"
                     v-bind:key="'nuevo recordatorio'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-row"
-                            :initial-args="{database: 'lsw_default_database',table:'Recordatorio',rowId:-1}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-form-recordatorio />
                     </div>
                 </div>
 
@@ -143,10 +132,7 @@
                     v-if="selectedApplication === 'nueva lista'"
                     v-bind:key="'nueva lista'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-row"
-                            :initial-args="{database: 'lsw_default_database',table:'Lista',rowId:-1}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-form-lista />
                     </div>
                 </div>
 
@@ -154,10 +140,7 @@
                     v-if="selectedApplication === 'nueva nota'"
                     v-bind:key="'nueva nota'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-row"
-                            :initial-args="{database: 'lsw_default_database',table:'Nota',rowId:-1}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-form-nota />
                     </div>
                 </div>
 
@@ -165,10 +148,7 @@
                     v-if="selectedApplication === 'nuevo articulo'"
                     v-bind:key="'nuevo articulo'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-row"
-                            :initial-args="{database: 'lsw_default_database',table:'Articulo',rowId:-1}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-form-articulo />
                     </div>
                 </div>
 
@@ -176,10 +156,7 @@
                     v-if="selectedApplication === 'nueva accion'"
                     v-bind:key="'nuevo accion'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-row"
-                            :initial-args="{database: 'lsw_default_database',table:'Accion',rowId:-1}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-form-accion />
                     </div>
                 </div>
 

@@ -362,6 +362,10 @@ Vue.component("LswCalendario", {
     propagar_cambio() {
       this.$trace("lsw-calendario.methods.propagar_cambio");
       if (typeof this.alCambiarValor === "function") {
+        // Si es carga inicial, no propagamos el evento:
+        if(this.es_carga_inicial) {
+          return;
+        }
         this.alCambiarValor(this.fecha_seleccionada, this);
       }
     },
@@ -388,7 +392,9 @@ Vue.component("LswCalendario", {
     this.$trace("lsw-calendario.mounted");
     try {
       this.fecha_seleccionada = this.valor_inicial_adaptado;
-      this.es_carga_inicial = false;
+      this.$nextTick(() => {
+        this.es_carga_inicial = false;
+      });
     } catch (error) {
       console.log(error);
       throw error;

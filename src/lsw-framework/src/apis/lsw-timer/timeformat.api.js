@@ -41,6 +41,8 @@
     return `${anio}/${mes}/${dia} ${laHora}`;
   };
 
+  Timeformat_utils.fromDateToDatestring = Timeformat_utils.formatDatestringFromDate;
+
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
     const momentoBrute = Timeformat_parser.parse(momentoText)[0];
     console.log(momentoBrute);
@@ -61,6 +63,8 @@
     console.log("Z", date);
     return date;
   };
+
+  Timeformat_utils.fromDatestringToDate = Timeformat_utils.getDateFromMomentoText;
   
   Timeformat_utils.formatDatetimeFromMomento = function (momentoBrute, setMeridian = false) {
     const momento = Timeformat_utils.toPlainObject(momentoBrute);

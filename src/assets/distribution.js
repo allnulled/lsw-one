@@ -41597,6 +41597,31 @@ Vue.component("LswSpontaneousTableNota", {
                     </div>
                 </div>
             </div>
+            <div class="flex_row centered pad_top_1">
+                <div class="flex_1">
+                    <button class="supermini"
+                        v-on:click="goToFirstPage">⏪</button>
+                </div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini"
+                        v-on:click="goToPreviousPage">⬅️</button>
+                </div>
+                <div class="flex_100 text_align_center">
+                    <span>
+                        {{ currentPage+1 }}/{{ totalPages }}
+                    </span>
+                    <button class="supermini" v-on:click="loadNotes">🛜</button>
+    
+                </div>
+                <div class="flex_1">
+                    <button class="supermini"
+                        v-on:click="goToNextPage">➡️</button>
+                </div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini"
+                        v-on:click="goToLastPage">⏩</button>
+                </div>
+            </div>
         </div>
         <div class="pad_top_1" v-else-if="currentNotas === false">
             <div>Cargando notas. Un momento, por favor...</div>

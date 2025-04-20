@@ -5,7 +5,7 @@
     <div class="position_relative">
         <div class="hidden_menu"
             v-if="isOpened">
-            <div class="hidden_menu_fixed_layer"></div>
+            <div class="hidden_menu_fixed_layer" v-on:click="close"></div>
             <div class="hidden_menu_box">
                 <div class="hidden_menu_items">
                     <div class="title">

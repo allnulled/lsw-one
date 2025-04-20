@@ -8,6 +8,7 @@
     text-shadow: 0 0 1px black;
 }
 
+.hideBreadcrumb > div > h3,
 .hideBreadcrumb > div > .database_breadcrumb {
     display: none;
 }

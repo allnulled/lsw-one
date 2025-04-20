@@ -25831,16 +25831,16 @@ Vue.component("LswControlLabel", {
         </div>
         <div class="flex_1 pad_left_1 flex_row">
             <template v-if="parentFormtype && (parentFormtype.isEditable === true)">
-                <button class="margin_left_1" v-on:click="() => parentFormtype.validate()" v-if="settings.column?.hasValidator || true">
+                <button class="supermini margin_left_1" v-on:click="() => parentFormtype.validate()" v-if="settings.column?.hasValidator || true">
                     ✅
                 </button>
             </template>
-            <button class="margin_left_1" :class="{activated: isShowingDescription}" v-on:click="() => toggleDescription()">ℹ️</button>
+            <button class="supermini margin_left_1" :class="{activated: isShowingDescription}" v-on:click="() => toggleDescription()">ℹ️</button>
             <template v-if="parentFormtype && (parentFormtype.isEditable === true)">
-                <button class="margin_left_1 button_to_uneditable activated" v-on:click="makeUneditable">🔓</button>
+                <button class="supermini margin_left_1 button_to_uneditable activated" v-on:click="makeUneditable">🔓</button>
             </template>
             <template v-else>
-                <button class="margin_left_1 button_to_editable" v-on:click="makeEditable">🔒</button>
+                <button class="supermini margin_left_1 button_to_editable" v-on:click="makeEditable">🔒</button>
             </template>
         </div>
     </div>
@@ -26778,7 +26778,7 @@ Vue.component("LswSchemaBasedForm", {
                                     <button class="mini danger_button nowrap"
                                         v-if="isUpdateOperation"
                                         v-on:click="deleteRow">🔥 #{{model.rowId}}</button>
-                                    <button class="mini margin_left_1 nowrap" v-on:click="submitForm">⚡️</button>
+                                    <button class="margin_left_1 nowrap" v-on:click="submitForm">⚡️</button>
                                 </div>
                             </div>
                         </div>
@@ -26786,23 +26786,23 @@ Vue.component("LswSchemaBasedForm", {
                     <div class="flex_row centered schema_form_top_panel"
                         style="">
                         <div class="flex_1 flex_row centered">
-                            <button class="mini margin_left_1 nowrap"
+                            <button class="supermini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos propios'}"
                                 v-on:click="() => selectSection('campos propios')">🧱</button>
-                            <button class="mini margin_left_1 nowrap"
+                            <button class="supermini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos reflejos'}"
                                 v-on:click="() => selectSection('campos reflejos')">↔️</button>
                         </div>
                         <div class="flex_100"></div>
                         <div class="flex_1 flex_row centered">
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 v-on:click="validateForm">✅</button>
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 :class="{activated: isShowingFormInfo}"
                                 v-on:click="toggleFormInfo">ℹ️</button>
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 v-on:click="openEditables">🔓*</button>
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 v-on:click="closeEditables">🔒*</button>
                         </div>
                     </div>
@@ -26814,7 +26814,7 @@ Vue.component("LswSchemaBasedForm", {
                 <div class="lsw_table_viewer" style="padding: 0px; min-height: 0%;">
                     <div class="pestania"
                         v-if="section === 'campos propios'">
-                        <div class="subtitle_box">Campos propios:</div>
+                        <!--div class="subtitle_box">Campos propios:</div-->
                         <table class="collapsed_table lsw_table_itself width_100 translucid_background">
                             <tbody>
                                 <tr v-for="column, columnId, columnCounter in columnDefinitions"
@@ -27337,9 +27337,9 @@ rel correr
     <lsw-toasts />
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
-            <div class="mobile_off_panel_cell">🟡</div>
-            <div class="mobile_off_panel_cell">🔵</div>
-            <div class="mobile_off_panel_cell">🔴</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToCalendario">📅</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToAddNota">+ 💬</div>
         </div>
     </div>
     <lsw-clockwatcher />
@@ -27411,7 +27411,15 @@ rel correr
       goToCalendario() {
         this.$trace("App.methods.goToCalendario");
         this.$refs.desktop.selectApplication("calendario");
-      }
+      },
+      goToDesktop() {
+        this.$trace("App.methods.goToDesktop");
+        this.$refs.desktop.selectApplication("none");
+      },
+      goToNotas() {
+        this.$trace("App.methods.goToNotas");
+        this.$refs.desktop.selectApplication("notas");
+      },
     },
     mounted() {
       console.log("[*] Application mounted.");
@@ -40863,7 +40871,7 @@ Vue.component("LswAppsViewerButton", {
     <div class="position_relative">
         <div class="hidden_menu"
             v-if="isOpened">
-            <div class="hidden_menu_fixed_layer"></div>
+            <div class="hidden_menu_fixed_layer" v-on:click="close"></div>
             <div class="hidden_menu_box">
                 <div class="hidden_menu_items">
                     <div class="title">
@@ -41024,34 +41032,33 @@ Vue.component("LswAppsViewerPanel", {
                         class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
                 </div>
 
-                <div class="pad_2"
+                <div class="pad_1"
                     v-if="selectedApplication === 'calendario'"
                     v-bind:key="'app_calendario'">
                     <div class="pad_top_0 pad_bottom_0">
+                        <h3 class="margin_bottom_1">Calendario:</h3>
                         <lsw-agenda />
                     </div>
                 </div>
 
-                <div class="pad_2"
+                <div class="pad_1"
                     v-if="selectedApplication === 'notas'"
                     v-bind:key="'app_nueva_nota'">
                     <div class="pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-rows"
-                            :initial-args="{database: 'lsw_default_database',table:'Nota'}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-table-nota />
                     </div>
                 </div>
 
-                <div class="pad_2"
+                <div class="pad_1"
                     v-if="selectedApplication === 'enciclopedia'"
                     v-bind:key="'enciclopedia'">
                     <div class="pad_top_0 pad_bottom_0">
+                        <h3 class="margin_bottom_1">Enciclopedia:</h3>
                         <lsw-wiki />
                     </div>
                 </div>
 
-                <div class="pad_2"
+                <div class="pad_1"
                     v-if="selectedApplication === 'base de datos'"
                     v-bind:key="'base de datos'">
                     <div class="pad_top_0 pad_bottom_0">
@@ -41542,19 +41549,171 @@ Vue.component("LswSpontaneousTableLista", {
 // @code.start: LswSpontaneousTableNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableNota API » LswSpontaneousTableNota component
 Vue.component("LswSpontaneousTableNota", {
   template: `<div class="lsw_spontaneos_table_nota">
-    Table of nota
+    <h3>Tabla de notas:</h3>
+    <div class="pad_top_1">
+        <div class="flex_row centered">
+            <div class="flex_1">
+                <button class="supermini"
+                    v-on:click="goToFirstPage">⏪</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="goToPreviousPage">⬅️</button>
+            </div>
+            <div class="flex_100 text_align_center">
+                <span>
+                    {{ currentPage+1 }}/{{ totalPages }}
+                </span>
+                <button class="supermini" v-on:click="loadNotes">🛜</button>
+
+            </div>
+            <div class="flex_1">
+                <button class="supermini"
+                    v-on:click="goToNextPage">➡️</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="goToLastPage">⏩</button>
+            </div>
+        </div>
+        <div v-if="currentNotas && currentNotas.length" class="pad_bottom_0">
+            <div class="pad_top_1" v-for="nota, notaIndex in currentNotas" v-bind:key="'nota-' + notaIndex">
+                <button class="supermini width_100 text_align_left" v-on:click="toggleNota(nota.id)"
+                    :class="{activated: selectedNotas.indexOf(nota.id) !== -1}">
+                    <div class="flex_row">
+                        <div class="flex_1">#{{ nota.id }}</div>
+                        <div class="flex_100 shortable_text pad_left_1 pad_right_1">{{ nota.tiene_titulo }}</div>
+                        <div class="flex_1">[{{ nota.tiene_contenido?.length }}B]</div>
+                    </div>
+                </button>
+                <div class="pad_top_1" v-if="selectedNotas.indexOf(nota.id) !== -1">
+                    <div class="position_relative" style="min-height: 50px;">
+                        <div class="pad_1">
+                            {{ nota.tiene_contenido }}
+                        </div>
+                        <div class="position_absolute top_0 right_0 pad_right_1 pad_top_1">
+                            <button class="supermini" v-on:click="() => goToEditNota(nota.id)">✏️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pad_top_1" v-else-if="currentNotas === false">
+            <div>Cargando notas. Un momento, por favor...</div>
+        </div>
+        <div class="pad_top_1" v-else>
+            <div>No se encontraron notas.</div>
+        </div>
+    </div>
 </div>`,
   props: {},
   data() {
     this.$trace("lsw-spontaneous-table-nota.data");
-    return {};
+    return {
+      allNotas: false,
+      currentNotas: false,
+      currentPage: 0,
+      totalPages: 0,
+      currentItemsPerPage: 100,
+      selectedNotas: [],
+    };
   },
-  methods: {},
+  methods: {
+    toggleNota(notaId) {
+      this.$trace("lsw-spontaneous-table-nota.methods.toggleNota");
+      const pos = this.selectedNotas.indexOf(notaId);
+      if(pos === -1) {
+        this.selectedNotas.push(notaId);
+      } else {
+        this.selectedNotas.splice(pos, 1);
+      }
+    },
+    goToNextPage() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToNextPage");
+      if((this.currentPage+1) < this.totalPages) {
+        this.currentPage++;
+        this.synchronizePagination();
+      }
+    },
+    goToFirstPage() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToFirstPage");
+      this.currentPage = 0;
+      this.synchronizePagination();
+    },
+    goToLastPage() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToLastPage");
+      this.currentPage = (this.totalPages-1);
+      this.synchronizePagination();
+    },
+    goToPreviousPage() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToPreviousPage");
+      if(this.currentPage > 0) {
+        this.currentPage--;
+        this.synchronizePagination();
+      }
+    },
+    async loadNotes() {
+      this.$trace("lsw-spontaneous-table-nota.methods.loadNotes");
+      this.allNotas = await this.$lsw.database.selectMany("Nota");
+      this.synchronizePagination();
+    },
+    synchronizePagination() {
+      this.$trace("lsw-spontaneous-table-nota.methods.synchronizePagination");
+      this.totalPages = (() => {
+        const totalFullPages = Math.floor(this.allNotas.length / this.currentItemsPerPage);
+        const totalResidualPages = this.allNotas.length % this.currentItemsPerPage ? 1 : 0;
+        return totalFullPages + totalResidualPages;
+      })();
+      this.currentNotas = (() => {
+        const paginatedNotas = [];
+        const minIndex = this.currentPage * this.currentItemsPerPage;
+        const maxIndex = (this.currentPage+1) * this.currentItemsPerPage;
+        console.log(minIndex, maxIndex);
+        for(let index=0; index<this.allNotas.length; index++) {
+          const nota = this.allNotas[index];
+          console.log(index);
+          const validByMin = index >= minIndex;
+          const validByMax = index < maxIndex;
+          const isValid = validByMin && validByMax;
+          if(isValid) {
+            paginatedNotas.push(nota);
+          }
+        }
+        console.log(paginatedNotas);
+        return paginatedNotas;
+      })();
+    },
+    goToEditNota(notaId) {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToEditNota");
+      this.$lsw.dialogs.open({
+        title: "Actualizar nota",
+        template: `
+          <div>
+            <lsw-database-explorer
+              :show-breadcrumb="false"
+              initial-page="lsw-page-row"
+              :initial-args="{
+                database: 'lsw_default_database',
+                table: 'Nota',
+                rowId: notaId,
+              }"
+            />
+          </div>
+        `,
+        factory: {
+          data: {
+            notaId,
+          }
+        }
+      });
+    }
+  },
   watch: {},
   mounted() {
     try {
       this.$trace("lsw-spontaneous-table-nota.mounted");
-      // 
+      this.loadNotes();
+      this.$window.sptt_notas = this;
     } catch(error) {
       console.log(error);
     }
@@ -42866,7 +43025,8 @@ LswLifecycle.start().then(output => {
   console.log("[*] App lifecycle ended.");
   
   Work_relocation: {
-    LswDom.querySelectorFirst(".home_bottom_panel > button", "+ 💬").click();
+    // LswDom.querySelectorFirst(".home_bottom_panel > button", "+ 💬").click();
+    LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "💬").click();
   }
 
 

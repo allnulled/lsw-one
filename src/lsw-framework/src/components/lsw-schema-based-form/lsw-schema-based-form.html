@@ -24,7 +24,7 @@
                                     <button class="mini danger_button nowrap"
                                         v-if="isUpdateOperation"
                                         v-on:click="deleteRow">🔥 #{{model.rowId}}</button>
-                                    <button class="mini margin_left_1 nowrap" v-on:click="submitForm">⚡️</button>
+                                    <button class="margin_left_1 nowrap" v-on:click="submitForm">⚡️</button>
                                 </div>
                             </div>
                         </div>
@@ -32,23 +32,23 @@
                     <div class="flex_row centered schema_form_top_panel"
                         style="">
                         <div class="flex_1 flex_row centered">
-                            <button class="mini margin_left_1 nowrap"
+                            <button class="supermini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos propios'}"
                                 v-on:click="() => selectSection('campos propios')">🧱</button>
-                            <button class="mini margin_left_1 nowrap"
+                            <button class="supermini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos reflejos'}"
                                 v-on:click="() => selectSection('campos reflejos')">↔️</button>
                         </div>
                         <div class="flex_100"></div>
                         <div class="flex_1 flex_row centered">
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 v-on:click="validateForm">✅</button>
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 :class="{activated: isShowingFormInfo}"
                                 v-on:click="toggleFormInfo">ℹ️</button>
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 v-on:click="openEditables">🔓*</button>
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 v-on:click="closeEditables">🔒*</button>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                 <div class="lsw_table_viewer" style="padding: 0px; min-height: 0%;">
                     <div class="pestania"
                         v-if="section === 'campos propios'">
-                        <div class="subtitle_box">Campos propios:</div>
+                        <!--div class="subtitle_box">Campos propios:</div-->
                         <table class="collapsed_table lsw_table_itself width_100 translucid_background">
                             <tbody>
                                 <tr v-for="column, columnId, columnCounter in columnDefinitions"

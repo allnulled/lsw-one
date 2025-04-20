@@ -738,6 +738,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
     text-shadow: 0 0 1px black;
 }
 
+.hideBreadcrumb > div > h3,
 .hideBreadcrumb > div > .database_breadcrumb {
     display: none;
 }
@@ -1928,6 +1929,11 @@ button.mini {
     padding-left: 4px;
     min-width: var(--button_height);
     font-size: 13px !important;
+}
+
+button.supermini {
+    min-width: 25px;
+    min-height: 25px;
 }
 
 button.supermini {

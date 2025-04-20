@@ -90,7 +90,15 @@ rel correr
       goToCalendario() {
         this.$trace("App.methods.goToCalendario");
         this.$refs.desktop.selectApplication("calendario");
-      }
+      },
+      goToDesktop() {
+        this.$trace("App.methods.goToDesktop");
+        this.$refs.desktop.selectApplication("none");
+      },
+      goToNotas() {
+        this.$trace("App.methods.goToNotas");
+        this.$refs.desktop.selectApplication("notas");
+      },
     },
     mounted() {
       console.log("[*] Application mounted.");

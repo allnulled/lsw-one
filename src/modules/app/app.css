@@ -64,6 +64,11 @@ button.mini {
 }
 
 button.supermini {
+    min-width: 25px;
+    min-height: 25px;
+}
+
+button.supermini {
     min-width: auto;
     min-height: auto;
     padding: 4px;

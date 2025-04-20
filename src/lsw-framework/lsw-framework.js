@@ -25804,16 +25804,16 @@ Vue.component("LswControlLabel", {
         </div>
         <div class="flex_1 pad_left_1 flex_row">
             <template v-if="parentFormtype && (parentFormtype.isEditable === true)">
-                <button class="margin_left_1" v-on:click="() => parentFormtype.validate()" v-if="settings.column?.hasValidator || true">
+                <button class="supermini margin_left_1" v-on:click="() => parentFormtype.validate()" v-if="settings.column?.hasValidator || true">
                     ✅
                 </button>
             </template>
-            <button class="margin_left_1" :class="{activated: isShowingDescription}" v-on:click="() => toggleDescription()">ℹ️</button>
+            <button class="supermini margin_left_1" :class="{activated: isShowingDescription}" v-on:click="() => toggleDescription()">ℹ️</button>
             <template v-if="parentFormtype && (parentFormtype.isEditable === true)">
-                <button class="margin_left_1 button_to_uneditable activated" v-on:click="makeUneditable">🔓</button>
+                <button class="supermini margin_left_1 button_to_uneditable activated" v-on:click="makeUneditable">🔓</button>
             </template>
             <template v-else>
-                <button class="margin_left_1 button_to_editable" v-on:click="makeEditable">🔒</button>
+                <button class="supermini margin_left_1 button_to_editable" v-on:click="makeEditable">🔒</button>
             </template>
         </div>
     </div>
@@ -26751,7 +26751,7 @@ Vue.component("LswSchemaBasedForm", {
                                     <button class="mini danger_button nowrap"
                                         v-if="isUpdateOperation"
                                         v-on:click="deleteRow">🔥 #{{model.rowId}}</button>
-                                    <button class="mini margin_left_1 nowrap" v-on:click="submitForm">⚡️</button>
+                                    <button class="margin_left_1 nowrap" v-on:click="submitForm">⚡️</button>
                                 </div>
                             </div>
                         </div>
@@ -26759,23 +26759,23 @@ Vue.component("LswSchemaBasedForm", {
                     <div class="flex_row centered schema_form_top_panel"
                         style="">
                         <div class="flex_1 flex_row centered">
-                            <button class="mini margin_left_1 nowrap"
+                            <button class="supermini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos propios'}"
                                 v-on:click="() => selectSection('campos propios')">🧱</button>
-                            <button class="mini margin_left_1 nowrap"
+                            <button class="supermini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos reflejos'}"
                                 v-on:click="() => selectSection('campos reflejos')">↔️</button>
                         </div>
                         <div class="flex_100"></div>
                         <div class="flex_1 flex_row centered">
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 v-on:click="validateForm">✅</button>
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 :class="{activated: isShowingFormInfo}"
                                 v-on:click="toggleFormInfo">ℹ️</button>
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 v-on:click="openEditables">🔓*</button>
-                            <button class="mini margin_right_1 nowrap"
+                            <button class="supermini margin_right_1 nowrap"
                                 v-on:click="closeEditables">🔒*</button>
                         </div>
                     </div>
@@ -26787,7 +26787,7 @@ Vue.component("LswSchemaBasedForm", {
                 <div class="lsw_table_viewer" style="padding: 0px; min-height: 0%;">
                     <div class="pestania"
                         v-if="section === 'campos propios'">
-                        <div class="subtitle_box">Campos propios:</div>
+                        <!--div class="subtitle_box">Campos propios:</div-->
                         <table class="collapsed_table lsw_table_itself width_100 translucid_background">
                             <tbody>
                                 <tr v-for="column, columnId, columnCounter in columnDefinitions"
@@ -27310,9 +27310,9 @@ rel correr
     <lsw-toasts />
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
-            <div class="mobile_off_panel_cell">🟡</div>
-            <div class="mobile_off_panel_cell">🔵</div>
-            <div class="mobile_off_panel_cell">🔴</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToCalendario">📅</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToAddNota">+ 💬</div>
         </div>
     </div>
     <lsw-clockwatcher />
@@ -27384,7 +27384,15 @@ rel correr
       goToCalendario() {
         this.$trace("App.methods.goToCalendario");
         this.$refs.desktop.selectApplication("calendario");
-      }
+      },
+      goToDesktop() {
+        this.$trace("App.methods.goToDesktop");
+        this.$refs.desktop.selectApplication("none");
+      },
+      goToNotas() {
+        this.$trace("App.methods.goToNotas");
+        this.$refs.desktop.selectApplication("notas");
+      },
     },
     mounted() {
       console.log("[*] Application mounted.");

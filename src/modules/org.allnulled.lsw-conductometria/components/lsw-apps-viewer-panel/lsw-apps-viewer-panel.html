@@ -52,34 +52,33 @@
                         class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
                 </div>
 
-                <div class="pad_2"
+                <div class="pad_1"
                     v-if="selectedApplication === 'calendario'"
                     v-bind:key="'app_calendario'">
                     <div class="pad_top_0 pad_bottom_0">
+                        <h3 class="margin_bottom_1">Calendario:</h3>
                         <lsw-agenda />
                     </div>
                 </div>
 
-                <div class="pad_2"
+                <div class="pad_1"
                     v-if="selectedApplication === 'notas'"
                     v-bind:key="'app_nueva_nota'">
                     <div class="pad_top_0 pad_bottom_0">
-                        <lsw-database-explorer
-                            initial-page="lsw-page-rows"
-                            :initial-args="{database: 'lsw_default_database',table:'Nota'}"
-                            :show-breadcrumb="false" />
+                        <lsw-spontaneous-table-nota />
                     </div>
                 </div>
 
-                <div class="pad_2"
+                <div class="pad_1"
                     v-if="selectedApplication === 'enciclopedia'"
                     v-bind:key="'enciclopedia'">
                     <div class="pad_top_0 pad_bottom_0">
+                        <h3 class="margin_bottom_1">Enciclopedia:</h3>
                         <lsw-wiki />
                     </div>
                 </div>
 
-                <div class="pad_2"
+                <div class="pad_1"
                     v-if="selectedApplication === 'base de datos'"
                     v-bind:key="'base de datos'">
                     <div class="pad_top_0 pad_bottom_0">

@@ -157,6 +157,7 @@ module.exports = [
   `${basepath}/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form`,
   // NOTAS:
   `${basepath}/lsw-framework/src/components/lsw-notes/lsw-notes`,
+  `${basepath}/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page`,
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // APIs Componente:
   `${basepath}/lsw-framework/src/lsw-api.js`,

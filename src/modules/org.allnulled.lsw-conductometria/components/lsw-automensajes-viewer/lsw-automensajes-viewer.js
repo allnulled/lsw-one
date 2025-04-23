@@ -50,12 +50,13 @@ Vue.component("LswAutomensajesViewer", {
       clearTimeout(this.automessagingId);
     },
     async refreshAutomessaging() {
-      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
+      this.$trace("LswAutomensajesViewer.methods.refreshAutomessaging", arguments);
       this.stopAutomessaging();
       this.startAutomessaging();
+      this.$window.changeBackgroundImage();
     },
     goToDesktop() {
-      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
+      this.$trace("LswAutomensajesViewer.methods.goToDesktop", arguments);
       this.$lsw.windows.hide();
       this.$refs.appPanel.selectApplication("none");
     },

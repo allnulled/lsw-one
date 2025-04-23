@@ -1,11 +1,11 @@
 .markdown_text {
     padding: 6px;
     margin: 0px;
-    background-color: rgba(56, 58, 157, 0.4);
-    color: #d0d3d9;
-    text-shadow: 0 0 1px black;
-    border: 1px solid rgb(8, 22, 62);
-    border-radius: 5pt;
+    background-color: rgba(19, 3, 43, 0.4);
+    color: #FFF;
+    text-shadow: 0 0 1px #fff;
+    border: 3px double rgb(170, 133, 133);
+    border-radius: 3pt;
     box-shadow: 0 0 4px black;
 }
 
@@ -15,4 +15,15 @@
 
 .markdown_text>p:last-child {
     margin-bottom: 0px;
+}
+
+.nota_button {
+    color: black;
+    text-shadow: 0 0 1px white;
+    background-color: rgba(200, 200, 200, 0.5);
+}
+
+.nota_title_text {
+    font-weight: bold;
+    text-decoration: underline;
 }

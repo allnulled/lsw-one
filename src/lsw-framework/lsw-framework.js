@@ -27283,6 +27283,30 @@ Vue.component("LswNotes", {
   }
 });
 // @code.end: LswNotes API
+// @code.start: LswConfigurationsPage API | @$section: Vue.js (v2) Components » LswConfigurationsPage component
+// Change this component at your convenience:
+Vue.component("LswConfigurationsPage", {
+  template: `<div class="configurations_page">
+    Configurations page.
+</div>`,
+  props: {
+    
+  },
+  data() {
+    this.$trace("lsw-configurations-page.data", arguments);
+    return {
+      
+    };
+  },
+  methods: {
+
+  },
+  mounted() {
+    this.$trace("lsw-configurations-page.mounter");
+    
+  },
+});
+// @code.end: LswConfigurationsPage API
 
 (() => {
   let isFirstTime = true;

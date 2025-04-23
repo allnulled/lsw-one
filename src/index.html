@@ -231,7 +231,7 @@
             const allImages = hasInternet ? allOnlineImages : allOfflineImages;
             let currentImageIndex = 0;
             let backgroundImage = document.body.querySelector("#lsw_background_main_image");
-            const changeBackgroundImage = function () {
+            window.changeBackgroundImage = function () {
                 if (backgroundImage === null) {
                     backgroundImage = document.body.querySelector("#lsw_background_main_image");
                 }
@@ -243,7 +243,8 @@
                     currentImageIndex = 0;
                 }
                 // const currentImage = allImages[currentImageIndex];
-                const currentImage = getRandomItemFromList(allImages);
+                const srcImage = backgroundImage.getAttribute("src");
+                const currentImage = getRandomItemFromList(allImages.filter(image => image !== srcImage));
                 backgroundImage.setAttribute("src", currentImage);
             };
             setInterval(changeBackgroundImage, 1000 * 15);

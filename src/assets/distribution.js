@@ -27310,6 +27310,30 @@ Vue.component("LswNotes", {
   }
 });
 // @code.end: LswNotes API
+// @code.start: LswConfigurationsPage API | @$section: Vue.js (v2) Components » LswConfigurationsPage component
+// Change this component at your convenience:
+Vue.component("LswConfigurationsPage", {
+  template: `<div class="configurations_page">
+    Configurations page.
+</div>`,
+  props: {
+    
+  },
+  data() {
+    this.$trace("lsw-configurations-page.data", arguments);
+    return {
+      
+    };
+  },
+  methods: {
+
+  },
+  mounted() {
+    this.$trace("lsw-configurations-page.mounter");
+    
+  },
+});
+// @code.end: LswConfigurationsPage API
 
 (() => {
   let isFirstTime = true;
@@ -40843,12 +40867,13 @@ Vue.component("LswAutomensajesViewer", {
       clearTimeout(this.automessagingId);
     },
     async refreshAutomessaging() {
-      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
+      this.$trace("LswAutomensajesViewer.methods.refreshAutomessaging", arguments);
       this.stopAutomessaging();
       this.startAutomessaging();
+      this.$window.changeBackgroundImage();
     },
     goToDesktop() {
-      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
+      this.$trace("LswAutomensajesViewer.methods.goToDesktop", arguments);
       this.$lsw.windows.hide();
       this.$refs.appPanel.selectApplication("none");
     },
@@ -41598,18 +41623,18 @@ Vue.component("LswSpontaneousTableNota", {
         </div>
         <div v-if="currentNotas && currentNotas.length" class="pad_bottom_0">
             <div class="pad_top_1" v-for="nota, notaIndex in currentNotas" v-bind:key="'nota-' + notaIndex">
-                <button class="supermini width_100 text_align_left" v-on:click="toggleNota(nota.id)"
+                <button class="supermini nota_button width_100 text_align_left" v-on:click="toggleNota(nota.id)"
                     :class="{activated: selectedNotas.indexOf(nota.id) !== -1}">
                     <div class="flex_row">
-                        <div class="flex_1">#{{ nota.id }}</div>
-                        <div class="flex_100 shortable_text pad_left_1 pad_right_1">{{ nota.tiene_titulo }}</div>
-                        <div class="flex_1 pad_left_1 pad_right_1">{ {{ nota.tiene_fecha }} }</div>
-                        <div class="flex_1">[{{ nota.tiene_contenido?.length }}B]</div>
+                        <div class="flex_1 monospace">#{{ nota.id }}</div>
+                        <div class="flex_100 shortable_text nota_title_text pad_left_1 pad_right_1" style="font-size: 11px;">{{ nota.tiene_titulo }}</div>
+                        <div class="flex_1 pad_left_1 pad_right_1 monospace">| {{ nota.tiene_fecha }} | </div>
+                        <div class="flex_1 monospace text_align_right" style="min-width: 30px;">{{ nota.tiene_contenido?.length }}B</div>
                     </div>
                 </button>
                 <div class="pad_top_1" v-if="selectedNotas.indexOf(nota.id) !== -1">
                     <div class="position_relative">
-                        <div class="markdown_text" v-html="\$window.marked.parse(nota.tiene_contenido)"></div>
+                        <div class="markdown_text" v-html="\$window.marked.parse(nota.tiene_contenido)" style="font-size: 11px;"></div>
                         <div class="position_absolute top_0 right_0 pad_right_1 pad_top_1">
                             <button class="supermini" v-on:click="() => goToEditNota(nota.id)">✏️</button>
                         </div>

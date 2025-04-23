@@ -14,8 +14,7 @@
         }">
             <div class="flex_row">
                 <div class="pad_right_1">
-                    <button v-on:click="toggleDetails"
-                        disabled>⌛️</button>
+                    <button v-on:click="toggleDetails">⌛️</button>
                 </div>
                 <input class="flex_100"
                     type="text"
@@ -24,6 +23,25 @@
                     v-bind="settings?.input?.props || {}"
                     v-xform.input="{name: '*'}"
                     ref="textInput" />
+            </div>
+            <div class="duration_control_details_panel" v-if="isShowingDetails">
+                <div class="duration_control_option" v-on:click="() => setValue('1min')">1min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('5min')">5min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('10min')">10min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('15min')">15min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('20min')">20min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('30min')">30min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('40min')">40min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('45min')">45min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('50min')">50min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('1h')">1h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('2h')">2h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('3h')">3h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('4h')">4h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('5h')">5h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('6h')">6h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('7h')">7h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('8h')">8h</div>
             </div>
             <lsw-control-error />
         </div>

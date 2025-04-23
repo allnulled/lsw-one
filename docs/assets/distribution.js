@@ -24696,10 +24696,8 @@ Vue.component("LswAgenda", {
                                 :class="{is_completed: tarea.tiene_estado === 'completada', is_failed: tarea.tiene_estado === 'fallida', is_pending: tarea.tiene_estado === 'pendiente'}"
                                 v-bind:key="'franja_horaria_' + franjaIndex + '_tarea_' + tareaIndex">
                                 <div class="hour_task_pill pill">
-                                    <div class="flex_1 hour_task_dragger pill_start"
-                                        style="padding-top: 4px;">
-                                        <div class=""
-                                            style="min-width: 20px;padding-left: 3px;padding-top: 2px;">❗️</div>
+                                    <div class="flex_1 hour_task_dragger pill_start">
+                                        <div class="">❗️</div>
                                     </div>
                                     <div class="flex_1 hour_task_details_start pill_middle">
                                         <div class="lighted_cell" :class="{psicodelic_cell: hasPsicodelia}">{{ \$lsw.timer.utils.formatHourFromMomentoCode(tarea.tiene_inicio, true) ?? '💩' }}
@@ -24712,7 +24710,7 @@ Vue.component("LswAgenda", {
                                         <div class="lighted_cell" style="text-overflow: ellipsis; overflow: clip; max-width: 100%;">{{ tarea.en_concepto || '🤔' }}</div>
                                     </div>
                                     <div class="flex_1 hour_task_editer pill_middle button_pill_cell">
-                                        <button class="mini" v-on:click="() => openUpdateTaskDialog(tarea)"
+                                        <button class="" v-on:click="() => openUpdateTaskDialog(tarea)"
                                             :class="{activated: selectedForm === tarea.id}">#️⃣</button>
                                     </div>
                                     <div class="flex_1 hour_task_editer pill_end button_pill_cell">
@@ -26284,8 +26282,7 @@ Vue.component("LswDurationControl", {
         }">
             <div class="flex_row">
                 <div class="pad_right_1">
-                    <button v-on:click="toggleDetails"
-                        disabled>⌛️</button>
+                    <button v-on:click="toggleDetails">⌛️</button>
                 </div>
                 <input class="flex_100"
                     type="text"
@@ -26294,6 +26291,25 @@ Vue.component("LswDurationControl", {
                     v-bind="settings?.input?.props || {}"
                     v-xform.input="{name: '*'}"
                     ref="textInput" />
+            </div>
+            <div class="duration_control_details_panel" v-if="isShowingDetails">
+                <div class="duration_control_option" v-on:click="() => setValue('1min')">1min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('5min')">5min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('10min')">10min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('15min')">15min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('20min')">20min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('30min')">30min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('40min')">40min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('45min')">45min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('50min')">50min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('1h')">1h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('2h')">2h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('3h')">3h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('4h')">4h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('5h')">5h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('6h')">6h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('7h')">7h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('8h')">8h</div>
             </div>
             <lsw-control-error />
         </div>
@@ -26313,7 +26329,7 @@ Vue.component("LswDurationControl", {
       uuid: LswRandomizer.getRandomString(5),
       value,
       isEditable: true,
-      isShowingDetails: false,
+      isShowingDetails: true,
       submitError: false,
       validateError: false,
     };
@@ -26345,13 +26361,9 @@ Vue.component("LswDurationControl", {
       this.$trace("lsw-duration-control.methods.toggleDetails");
       this.isShowingDetails = !this.isShowingDetails;
     },
-    increasePosition(pos) {
-      this.$trace("lsw-duration-control.methods.increasePosition");
-
-    },
-    decreasePosition(pos) {
-      this.$trace("lsw-duration-control.methods.decreasePosition");
-
+    setValue(v) {
+      this.$trace("lsw-duration-control.methods.setValue");
+      this.value = v;
     }
   },
   watch: {},
@@ -27337,9 +27349,9 @@ rel correr
     <lsw-toasts />
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
-            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToCalendario">📅</div>
             <div class="mobile_off_panel_cell" v-on:click="goToAddNota">+ 💬</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToCalendario">📅</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
         </div>
     </div>
     <lsw-clockwatcher />
@@ -41119,7 +41131,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'nueva nota'"
                     v-bind:key="'nueva nota'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-spontaneous-form-nota />
+                        <lsw-spontaneous-form-nota :on-submitted="() => selectApplication('notas')" />
                     </div>
                 </div>
 
@@ -41400,7 +41412,7 @@ Vue.component("LswSpontaneousFormNota", {
     <h3 class="margin_bottom_1px">Nota nueva:</h3>
     <div class="flex_row">
         <div class="flex_100">
-            <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" />
+            <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
             <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de nota." style="min-height: 230px;" v-model="tiene_contenido" v-focus spellcheck="false" ref="tiene_contenido"></textarea>
             <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de nota" v-model="tiene_titulo" />
             <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias"></textarea>
@@ -41410,7 +41422,12 @@ Vue.component("LswSpontaneousFormNota", {
         </div>
     </div>
 </div>`,
-  props: {},
+  props: {
+    onSubmitted: {
+      type: Function,
+      default: () => {}
+    }
+  },
   data() {
     this.$trace("lsw-spontaneous-form-nota.data");
     return this.getInitialData({
@@ -41435,12 +41452,15 @@ Vue.component("LswSpontaneousFormNota", {
         tiene_categorias: this.tiene_categorias,
       };
       if(nota.tiene_titulo.trim() === "") {
-        nota.tiene_titulo = `(*) ${nota.tiene_contenido.substr(0,30)}`;
+        nota.tiene_titulo = `${nota.tiene_contenido.substr(0,30)}...`;
       }
-      await this.$lsw.database.insert("Nota", nota);
+      const notaId = await this.$lsw.database.insert("Nota", nota);
       Object.assign(this, this.getInitialData());
       this.$forceUpdate(true);
       this.focusContenidos();
+      if(this.onSubmitted) {
+        this.onSubmitted(notaId, nota, this);
+      }
     },
     focusContenidos() {
       this.$trace("lsw-spontaneous-form-nota.methods.addNota");
@@ -41583,14 +41603,13 @@ Vue.component("LswSpontaneousTableNota", {
                     <div class="flex_row">
                         <div class="flex_1">#{{ nota.id }}</div>
                         <div class="flex_100 shortable_text pad_left_1 pad_right_1">{{ nota.tiene_titulo }}</div>
+                        <div class="flex_1 pad_left_1 pad_right_1">{ {{ nota.tiene_fecha }} }</div>
                         <div class="flex_1">[{{ nota.tiene_contenido?.length }}B]</div>
                     </div>
                 </button>
                 <div class="pad_top_1" v-if="selectedNotas.indexOf(nota.id) !== -1">
-                    <div class="position_relative" style="min-height: 50px;">
-                        <div class="pad_1">
-                            {{ nota.tiene_contenido }}
-                        </div>
+                    <div class="position_relative">
+                        <div class="markdown_text" v-html="\$window.marked.parse(nota.tiene_contenido)"></div>
                         <div class="position_absolute top_0 right_0 pad_right_1 pad_top_1">
                             <button class="supermini" v-on:click="() => goToEditNota(nota.id)">✏️</button>
                         </div>
@@ -41679,7 +41698,9 @@ Vue.component("LswSpontaneousTableNota", {
     },
     async loadNotes() {
       this.$trace("lsw-spontaneous-table-nota.methods.loadNotes");
-      this.allNotas = await this.$lsw.database.selectMany("Nota");
+      const allNotas = await this.$lsw.database.selectMany("Nota");
+      const sortedNotas = allNotas.reverse();
+      this.allNotas = sortedNotas;
       this.synchronizePagination();
     },
     synchronizePagination() {

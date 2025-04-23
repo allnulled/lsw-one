@@ -24669,10 +24669,8 @@ Vue.component("LswAgenda", {
                                 :class="{is_completed: tarea.tiene_estado === 'completada', is_failed: tarea.tiene_estado === 'fallida', is_pending: tarea.tiene_estado === 'pendiente'}"
                                 v-bind:key="'franja_horaria_' + franjaIndex + '_tarea_' + tareaIndex">
                                 <div class="hour_task_pill pill">
-                                    <div class="flex_1 hour_task_dragger pill_start"
-                                        style="padding-top: 4px;">
-                                        <div class=""
-                                            style="min-width: 20px;padding-left: 3px;padding-top: 2px;">❗️</div>
+                                    <div class="flex_1 hour_task_dragger pill_start">
+                                        <div class="">❗️</div>
                                     </div>
                                     <div class="flex_1 hour_task_details_start pill_middle">
                                         <div class="lighted_cell" :class="{psicodelic_cell: hasPsicodelia}">{{ \$lsw.timer.utils.formatHourFromMomentoCode(tarea.tiene_inicio, true) ?? '💩' }}
@@ -24685,7 +24683,7 @@ Vue.component("LswAgenda", {
                                         <div class="lighted_cell" style="text-overflow: ellipsis; overflow: clip; max-width: 100%;">{{ tarea.en_concepto || '🤔' }}</div>
                                     </div>
                                     <div class="flex_1 hour_task_editer pill_middle button_pill_cell">
-                                        <button class="mini" v-on:click="() => openUpdateTaskDialog(tarea)"
+                                        <button class="" v-on:click="() => openUpdateTaskDialog(tarea)"
                                             :class="{activated: selectedForm === tarea.id}">#️⃣</button>
                                     </div>
                                     <div class="flex_1 hour_task_editer pill_end button_pill_cell">
@@ -26257,8 +26255,7 @@ Vue.component("LswDurationControl", {
         }">
             <div class="flex_row">
                 <div class="pad_right_1">
-                    <button v-on:click="toggleDetails"
-                        disabled>⌛️</button>
+                    <button v-on:click="toggleDetails">⌛️</button>
                 </div>
                 <input class="flex_100"
                     type="text"
@@ -26267,6 +26264,25 @@ Vue.component("LswDurationControl", {
                     v-bind="settings?.input?.props || {}"
                     v-xform.input="{name: '*'}"
                     ref="textInput" />
+            </div>
+            <div class="duration_control_details_panel" v-if="isShowingDetails">
+                <div class="duration_control_option" v-on:click="() => setValue('1min')">1min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('5min')">5min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('10min')">10min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('15min')">15min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('20min')">20min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('30min')">30min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('40min')">40min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('45min')">45min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('50min')">50min</div>
+                <div class="duration_control_option" v-on:click="() => setValue('1h')">1h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('2h')">2h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('3h')">3h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('4h')">4h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('5h')">5h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('6h')">6h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('7h')">7h</div>
+                <div class="duration_control_option" v-on:click="() => setValue('8h')">8h</div>
             </div>
             <lsw-control-error />
         </div>
@@ -26286,7 +26302,7 @@ Vue.component("LswDurationControl", {
       uuid: LswRandomizer.getRandomString(5),
       value,
       isEditable: true,
-      isShowingDetails: false,
+      isShowingDetails: true,
       submitError: false,
       validateError: false,
     };
@@ -26318,13 +26334,9 @@ Vue.component("LswDurationControl", {
       this.$trace("lsw-duration-control.methods.toggleDetails");
       this.isShowingDetails = !this.isShowingDetails;
     },
-    increasePosition(pos) {
-      this.$trace("lsw-duration-control.methods.increasePosition");
-
-    },
-    decreasePosition(pos) {
-      this.$trace("lsw-duration-control.methods.decreasePosition");
-
+    setValue(v) {
+      this.$trace("lsw-duration-control.methods.setValue");
+      this.value = v;
     }
   },
   watch: {},
@@ -27310,9 +27322,9 @@ rel correr
     <lsw-toasts />
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
-            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToCalendario">📅</div>
             <div class="mobile_off_panel_cell" v-on:click="goToAddNota">+ 💬</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToCalendario">📅</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
         </div>
     </div>
     <lsw-clockwatcher />

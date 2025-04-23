@@ -49,7 +49,9 @@ Vue.component("LswSpontaneousTableNota", {
     },
     async loadNotes() {
       this.$trace("lsw-spontaneous-table-nota.methods.loadNotes");
-      this.allNotas = await this.$lsw.database.selectMany("Nota");
+      const allNotas = await this.$lsw.database.selectMany("Nota");
+      const sortedNotas = allNotas.reverse();
+      this.allNotas = sortedNotas;
       this.synchronizePagination();
     },
     synchronizePagination() {

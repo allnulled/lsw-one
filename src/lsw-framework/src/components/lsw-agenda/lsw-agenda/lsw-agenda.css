@@ -57,12 +57,10 @@
 
 .lighted_cell {
     border: 1px solid white;
-    padding: 0px;
-    padding-top: 11px;
-    padding-left: 4px;
-    padding-right: 4px;
-    padding-bottom: 4px;
+    padding: 1px;
     height: 100%;
+    color: #333;
+    text-shadow: 0 0 1px white;
 }
 
 .psicodelic_cell {
@@ -79,6 +77,12 @@
 .hour_task_pill>.pill_end.button_pill_cell>button {
     border-top-right-radius: 2pt;
     border-bottom-right-radius: 2pt;
+}
+.button_pill_cell>button {
+    min-height: auto !important;
+    min-height: auto !important;
+    height: auto !important;
+    font-size: 12px !important;
 }
 
 .hour_task_dragger {
@@ -102,9 +106,8 @@
 }
 
 .hour_compromises {
-    color: black;
-    text-shadow: 0 0 1px white;
-}
+    color: white;
+    text-shadow: 0 0 1px black;}
 
 .hour_table {
     
@@ -442,7 +445,7 @@ bajar(B) 100
     border: 0px solid black;
     font-weight: bold;
     text-shadow: 0 0 1px black;
-    min-height: 35px;
+    min-height: auto;
 }
 
 .tasks_viewer {

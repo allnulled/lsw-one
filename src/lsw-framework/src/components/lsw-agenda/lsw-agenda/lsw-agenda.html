@@ -286,10 +286,8 @@
                                 :class="{is_completed: tarea.tiene_estado === 'completada', is_failed: tarea.tiene_estado === 'fallida', is_pending: tarea.tiene_estado === 'pendiente'}"
                                 v-bind:key="'franja_horaria_' + franjaIndex + '_tarea_' + tareaIndex">
                                 <div class="hour_task_pill pill">
-                                    <div class="flex_1 hour_task_dragger pill_start"
-                                        style="padding-top: 4px;">
-                                        <div class=""
-                                            style="min-width: 20px;padding-left: 3px;padding-top: 2px;">❗️</div>
+                                    <div class="flex_1 hour_task_dragger pill_start">
+                                        <div class="">❗️</div>
                                     </div>
                                     <div class="flex_1 hour_task_details_start pill_middle">
                                         <div class="lighted_cell" :class="{psicodelic_cell: hasPsicodelia}">{{ $lsw.timer.utils.formatHourFromMomentoCode(tarea.tiene_inicio, true) ?? '💩' }}
@@ -302,7 +300,7 @@
                                         <div class="lighted_cell" style="text-overflow: ellipsis; overflow: clip; max-width: 100%;">{{ tarea.en_concepto || '🤔' }}</div>
                                     </div>
                                     <div class="flex_1 hour_task_editer pill_middle button_pill_cell">
-                                        <button class="mini" v-on:click="() => openUpdateTaskDialog(tarea)"
+                                        <button class="" v-on:click="() => openUpdateTaskDialog(tarea)"
                                             :class="{activated: selectedForm === tarea.id}">#️⃣</button>
                                     </div>
                                     <div class="flex_1 hour_task_editer pill_end button_pill_cell">

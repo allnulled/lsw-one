@@ -1,7 +1,12 @@
 // @code.start: LswSpontaneousFormNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormNota API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormNota", {
   template: $template,
-  props: {},
+  props: {
+    onSubmitted: {
+      type: Function,
+      default: () => {}
+    }
+  },
   data() {
     this.$trace("lsw-spontaneous-form-nota.data");
     return this.getInitialData({
@@ -26,12 +31,15 @@ Vue.component("LswSpontaneousFormNota", {
         tiene_categorias: this.tiene_categorias,
       };
       if(nota.tiene_titulo.trim() === "") {
-        nota.tiene_titulo = `(*) ${nota.tiene_contenido.substr(0,30)}`;
+        nota.tiene_titulo = `${nota.tiene_contenido.substr(0,30)}...`;
       }
-      await this.$lsw.database.insert("Nota", nota);
+      const notaId = await this.$lsw.database.insert("Nota", nota);
       Object.assign(this, this.getInitialData());
       this.$forceUpdate(true);
       this.focusContenidos();
+      if(this.onSubmitted) {
+        this.onSubmitted(notaId, nota, this);
+      }
     },
     focusContenidos() {
       this.$trace("lsw-spontaneous-form-nota.methods.addNota");

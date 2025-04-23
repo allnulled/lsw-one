@@ -15,7 +15,7 @@ Vue.component("LswDurationControl", {
       uuid: LswRandomizer.getRandomString(5),
       value,
       isEditable: true,
-      isShowingDetails: false,
+      isShowingDetails: true,
       submitError: false,
       validateError: false,
     };
@@ -47,13 +47,9 @@ Vue.component("LswDurationControl", {
       this.$trace("lsw-duration-control.methods.toggleDetails");
       this.isShowingDetails = !this.isShowingDetails;
     },
-    increasePosition(pos) {
-      this.$trace("lsw-duration-control.methods.increasePosition");
-
-    },
-    decreasePosition(pos) {
-      this.$trace("lsw-duration-control.methods.decreasePosition");
-
+    setValue(v) {
+      this.$trace("lsw-duration-control.methods.setValue");
+      this.value = v;
     }
   },
   watch: {},

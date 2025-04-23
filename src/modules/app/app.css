@@ -80,8 +80,10 @@ button.bright_border {
 }
 
 button.iconized_button {
-    border: none;
+    border: 1px solid #FFF3;
     background-color: transparent;
+    min-height: auto;
+    font-size: 12px;
 }
 
 button>span.button_text {
@@ -625,6 +627,7 @@ table.tabla_de_conductometria .minibutton {
     color: white;
     text-shadow: 0 0 1px black;
 }
+
 .margin_bottom_1px {
     margin-bottom: 4px;
 }

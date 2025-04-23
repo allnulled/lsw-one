@@ -1713,6 +1713,9 @@ select.form_control {
 .lsw_long_text_control {
     
 }
+.lsw_long_text_control_textarea {
+    min-height: 260px;
+}
 .lsw_date_control {
     
 }
@@ -2524,4 +2527,8 @@ table.tabla_de_conductometria .minibutton {
 .monospace {
     font-family: monospace;
     font-size: 10px;
+}
+
+.smallest_font {
+    font-size: 9px;
 }

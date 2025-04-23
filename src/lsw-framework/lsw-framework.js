@@ -26077,7 +26077,7 @@ Vue.component("LswLongTextControl", {
             }
         }">
             <div class="flex_row">
-                <textarea class="flex_100 nowrap"
+                <textarea class="flex_100 nowrap lsw_long_text_control_textarea"
                     type="text"
                     v-model="value"
                     v-on="settings?.input?.events || {}"

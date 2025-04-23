@@ -636,3 +636,7 @@ table.tabla_de_conductometria .minibutton {
     font-family: monospace;
     font-size: 10px;
 }
+
+.smallest_font {
+    font-size: 9px;
+}

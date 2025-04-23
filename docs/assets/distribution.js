@@ -26104,7 +26104,7 @@ Vue.component("LswLongTextControl", {
             }
         }">
             <div class="flex_row">
-                <textarea class="flex_100 nowrap"
+                <textarea class="flex_100 nowrap lsw_long_text_control_textarea"
                     type="text"
                     v-model="value"
                     v-on="settings?.input?.events || {}"
@@ -41626,10 +41626,10 @@ Vue.component("LswSpontaneousTableNota", {
                 <button class="supermini nota_button width_100 text_align_left" v-on:click="toggleNota(nota.id)"
                     :class="{activated: selectedNotas.indexOf(nota.id) !== -1}">
                     <div class="flex_row">
-                        <div class="flex_1 monospace">#{{ nota.id }}</div>
+                        <div class="flex_1 smallest_font">#{{ nota.id }}</div>
                         <div class="flex_100 shortable_text nota_title_text pad_left_1 pad_right_1" style="font-size: 11px;">{{ nota.tiene_titulo }}</div>
-                        <div class="flex_1 pad_left_1 pad_right_1 monospace">| {{ nota.tiene_fecha }} | </div>
-                        <div class="flex_1 monospace text_align_right" style="min-width: 30px;">{{ nota.tiene_contenido?.length }}B</div>
+                        <div class="flex_1 pad_left_1 pad_right_1 smallest_font">{{ nota.tiene_fecha }} |</div>
+                        <div class="flex_1 smallest_font text_align_right" style="min-width: 20px;">{{ nota.tiene_contenido?.length }}B</div>
                     </div>
                 </button>
                 <div class="pad_top_1" v-if="selectedNotas.indexOf(nota.id) !== -1">

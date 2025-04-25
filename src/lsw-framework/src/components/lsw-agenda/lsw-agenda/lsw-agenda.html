@@ -210,11 +210,13 @@
             <div class="selected_day_title"
                 v-if="selectedDate">
                 <div class="flex_row centered">
-                    <div class="flex_1 margin_right_1"><button class="iconized_button" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
+                    <div class="flex_1 margin_right_1">
+                        <button class="iconized_button" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button>
+                    </div>
                     <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
-                    <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'display: none;'">
+                    <div class="flex_1 nowrap">
                         <button class="iconized_button" v-on:click="randomizeDay">+ 🎲</button>
-                        <button class="iconized_button" v-on:click="cleanRandomizeDays">🔥 🎲</button>
+                        <button class="iconized_button" v-on:click="cleanRandomizedDays">🔥 🎲</button>
                         <button class="iconized_button" v-on:click="showAllHours" style="display: none;">🔓*</button>
                         <button class="iconized_button" v-on:click="hideAllHours" style="display: none;">🔒*</button>
                     </div>

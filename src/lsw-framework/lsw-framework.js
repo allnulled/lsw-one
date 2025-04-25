@@ -16114,9 +16114,7 @@ return Store;
 
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
     const momentoBrute = Timeformat_parser.parse(momentoText)[0];
-    console.log(momentoBrute);
     const date = new Date();
-    console.log(1, date);
     if (momentoBrute.anio) {
       date.setFullYear(momentoBrute.anio);
       if (momentoBrute.mes === 0) {
@@ -16129,7 +16127,6 @@ return Store;
     date.setMinutes(momentoBrute.minuto || 0);
     date.setSeconds(momentoBrute.segundo || 0);
     date.setMilliseconds(0);
-    console.log("Z", date);
     return date;
   };
 
@@ -16196,7 +16193,6 @@ return Store;
         throw new Error(`Expression of type «${mainExpression.tipo}» is not valid. ${errorMessage}`);
       }
     } catch (error) {
-      console.log(text);
       throw new Error(errorMessage);
     }
     return true;
@@ -16602,7 +16598,7 @@ return Store;
       }
       $lswSchema.loadSchemaByProxies("SchemaEntity");
       const databaseSchema = await $lswSchema.getDatabaseSchemaForLsw();
-      console.log("[*] Creating database from schema by proxies:", Object.keys(databaseSchema).join(", "));
+      console.log("[*] Creating database from schema by proxies:", "\n - " + Object.keys(databaseSchema).join("\n - "));
       await LswDatabase.createDatabase("lsw_default_database", databaseSchema);
       return await this.hooks.emit("app:load_schema");
     },
@@ -22510,14 +22506,14 @@ Vue.component('LswDataImplorer', {
     },
     watch: {
       opened(newValue) {
-        this.$trace("lsw-dialogs.watch.opened", ["too long object"]);
+        this.$trace("lsw-dialogs.watch.opened", []);
         this.openedLength = (typeof newValue !== "object") ? 0 : Object.keys(newValue).length;
         this._refreshMinimizedLength(newValue);
       }
     },
     methods: {
       open(parametricObject = {}) {
-        this.$trace("lsw-dialogs.methods.open", arguments);
+        this.$trace("lsw-dialogs.methods.open", []);
         if (typeof parametricObject !== "object") {
           throw new Error(`Required argument «parametricObject» to be an object on «LswDialogs.methods.open»`);
         }
@@ -22579,7 +22575,7 @@ Vue.component('LswDataImplorer', {
           name: componentId,
           template,
           data(component, ...args) {
-            this.$trace(`lsw-dialogs.[${componentId}].data`, ["too long object"]);
+            this.$trace(`lsw-dialogs.[${componentId}].data`, []);
             const preData = dialogComponentData.call(this);
             if (typeof preData.value === "undefined") {
               preData.value = "";
@@ -22741,7 +22737,7 @@ Vue.component('LswDataImplorer', {
         this._refreshMinimizedLength();
       },
       _refreshMinimizedLength(newValue = this.opened, ...args) {
-        this.$trace("lsw-dialogs.methods._refreshMinimizedLength", ["too long object", ...args]);
+        this.$trace("lsw-dialogs.methods._refreshMinimizedLength", []);
         this.notMinimizedLength = Object.keys(newValue).reduce((out, k) => {
           const v = newValue[k];
           if (v.minimized === false) {
@@ -22752,21 +22748,20 @@ Vue.component('LswDataImplorer', {
         this.$forceUpdate(true);
       },
       goHome(...args) {
-        this.$trace("lsw-dialogs.methods.goHome", [...args]);
+        this.$trace("lsw-dialogs.methods.goHome", []);
         this.$window.LswWindows.show();
       },
       onOpen(callback, ...args) {
-        this.$trace("lsw-dialogs.methods.onOpen", [callback, ...args]);
+        this.$trace("lsw-dialogs.methods.onOpen", []);
         this.hookOnOpen = callback;
       },
       onClose(callback, ...args) {
-        this.$trace("lsw-dialogs.methods.onClose", [callback, ...args]);
+        this.$trace("lsw-dialogs.methods.onClose", []);
         this.hookOnClose = callback;
       }
     },
     mounted(...args) {
-      this.$trace("lsw-dialogs.mounted", [...args]);
-      console.log("MONTANDOSE DIALOGOOOOS");
+      this.$trace("lsw-dialogs.mounted", []);
       if(Vue.prototype.$dialogs) {
         throw new Error("Cannot install «lsw-dialogs» as global on «Vue.prototype.$dialogs» because it is another instance mounted on «LswDialogs.mounted»");
       }
@@ -24662,7 +24657,7 @@ Vue.component("LswClockwatcher", {
     }
   },
   data() {
-    this.$trace("lsw-clockwatcher.data", arguments);
+    this.$trace("lsw-clockwatcher.data");
     return {
       currentDate: new Date(),
     };
@@ -24909,11 +24904,13 @@ Vue.component("LswAgenda", {
             <div class="selected_day_title"
                 v-if="selectedDate">
                 <div class="flex_row centered">
-                    <div class="flex_1 margin_right_1"><button class="iconized_button" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
+                    <div class="flex_1 margin_right_1">
+                        <button class="iconized_button" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button>
+                    </div>
                     <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
-                    <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'display: none;'">
+                    <div class="flex_1 nowrap">
                         <button class="iconized_button" v-on:click="randomizeDay">+ 🎲</button>
-                        <button class="iconized_button" v-on:click="cleanRandomizeDays">🔥 🎲</button>
+                        <button class="iconized_button" v-on:click="cleanRandomizedDays">🔥 🎲</button>
                         <button class="iconized_button" v-on:click="showAllHours" style="display: none;">🔓*</button>
                         <button class="iconized_button" v-on:click="hideAllHours" style="display: none;">🔒*</button>
                     </div>
@@ -25118,7 +25115,7 @@ Vue.component("LswAgenda", {
     async loadDateTasks(newDate, calendario) {
       this.$trace("lsw-agenda.methods.loadDateTasks");
       this.isLoading = true;
-      console.log("Loading date tasks of: " + newDate);
+      console.log("[*] Loading date tasks of: " + LswTimer.utils.fromDateToDatestring(newDate));
       try {
         this.selectedDate = newDate;
         const selectedDate = this.selectedDate;
@@ -25149,9 +25146,9 @@ Vue.component("LswAgenda", {
           } catch (error) {
             return -1;
           }
-          if(inicio1 < inicio2) {
+          if (inicio1 < inicio2) {
             return -1;
-          } else if(inicio1 > inicio2) {
+          } else if (inicio1 > inicio2) {
             return 1;
           } else {
             return -1;
@@ -25283,11 +25280,100 @@ Vue.component("LswAgenda", {
       });
       this.refreshTasks();
     },
-    async cleanRandomizeDays() {
-      this.$trace("lsw-agenda.methods.cleanRandomizeDays");
+    sameDayPendingAndAutogeneratedFilter(currentDate) {
+      return (accion) => {
+        try {
+          const accionDate = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
+          const sameYear = currentDate.getFullYear() === accionDate.getFullYear();
+          const sameMonth = currentDate.getMonth() === accionDate.getMonth();
+          const sameDay = currentDate.getDate() === accionDate.getDate();
+          const isPendiente = accion.tiene_estado === "pendiente";
+          const isAutogenerated = accion.tiene_parametros.startsWith("[*autogenerada]");
+          const isValid = sameYear && sameMonth && sameDay && isPendiente && isAutogenerated;
+          if(isValid) {
+            console.log("!!!", accion.en_concepto);
+          } else {
+            console.log("sameYear, sameMonth, sameDay, isPendiente");
+            console.log("Fallo:", sameYear, sameMonth, sameDay, isPendiente, isAutogenerated);
+          }
+          return isValid;
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+      }
+    },
+    async cleanRandomizedDays() {
+      this.$trace("lsw-agenda.methods.cleanRandomizedDays");
+      const currentDate = this.selectedDate || new Date();
+      const filterAutogeneratedPendingOfCurrentDate = this.sameDayPendingAndAutogeneratedFilter(currentDate);
+      const matchedAcciones = await this.$lsw.database.selectMany("Accion", filterAutogeneratedPendingOfCurrentDate);
+      if(!matchedAcciones.length) {
+        return this.$lsw.toasts.send({
+          title: "No hay acciones randomizadas",
+          text: "Niniguna acción fue eliminada por ello."
+        });
+      }
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Eliminar registros randomizados",
+        template: `<div>
+          <div class="pad_1">
+            <div>¿Estás seguro que quieres eliminar los registros randomizados?</div>
+            <div>Se eliminarán {{ accionesToDelete.length }} registros de acciones randomizados de hoy.</div>
+            <hr />
+            <div class="flex_row pad_1">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button v-on:click="() => accept(true)" class="supermini danger_button">Eliminar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button v-on:click="cancel" class="supermini">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>`,
+        factory: {
+          data: {
+            accionesToDelete: matchedAcciones
+          }
+        }
+      });
+      if(respuesta !== true) return;
+      await this.$lsw.database.deleteMany("Accion", filterAutogeneratedPendingOfCurrentDate);
+      await this.loadDateTasks(currentDate);
     },
     async randomizeDay() {
       this.$trace("lsw-agenda.methods.randomizeDay");
+      const DURACION_DE_BLOQUES = await this.$dialogs.open({
+        title: "Cuestionario de randomizar día",
+        template: `<div>
+          <div class="pad_1 pad_bottom_0">
+            <div class="pad_1 pad_bottom_0">¿Con qué duración quieres las acciones de randomizado de día?</div>
+            <div class="pad_1 pad_top_2 pad_bottom_0">
+              <lsw-duration-control ref="duracion" :settings="{name:'duracion'}" :skip-label="true" :initial-value="'15min'" />
+            </div>
+          </div>
+          <hr />
+          <div class="text_align_right pad_right_1">
+            <button class="supermini danger_button" v-on:click="submit">Randomizar día</button>
+            <button class="supermini" v-on:click="cancel">Cancelar</button>
+          </div>
+        </div>`,
+        factory: {
+          methods: {
+            submit() {
+              this.$trace("Dialogs.randomizar_dia.methos.submit");
+              const valor = this.$refs.duracion.value;
+              const ast = LswTimer.parser.parse(valor);
+              const esValido = (valor.trim() !== "") && (typeof ast[0] === "object") && (ast[0].tipo === "Duracion");
+              if (!esValido) return;
+              this.value = valor;
+              return this.accept();
+            }
+          }
+        }
+      });
+      if (typeof DURACION_DE_BLOQUES !== "string") return;
       const currentDate = this.selectedDate;
       const accionesDelDia = await this.$lsw.database.select("Accion", accion => {
         try {
@@ -25295,18 +25381,24 @@ Vue.component("LswAgenda", {
           const sameYear = currentDate.getFullYear() === accionDate.getFullYear();
           const sameMonth = currentDate.getMonth() === accionDate.getMonth();
           const sameDay = currentDate.getDate() === accionDate.getDate();
-          const sameDate = sameYear && sameMonth && sameDay;
-          return sameDate;
+          const isNotPendiente = accion.tiene_estado !== "pendiente";
+          const isValid = sameYear && sameMonth && sameDay && isNotPendiente;
+          return isValid;
         } catch (error) {
           console.log(error);
           return false;
         }
       });
-      const accionesAutogeneradas = LswAgendaRandomizer.generar(LswAgendaRandomizerReglas, accionesDelDia, new Date(), "15min");
+      const accionesAutogeneradas = LswAgendaRandomizer.generar(LswAgendaRandomizerReglas, accionesDelDia, new Date(), DURACION_DE_BLOQUES);
       accionesAutogeneradas.forEach(accion => {
+        delete accion.id;
+        accion.tiene_estado = "pendiente";
         accion.tiene_parametros = ("[*autogenerada] " + (accion.tiene_parametros.replace(/^\[\*autogenerada\]/g, ""))).trim();
       });
-      console.log(accionesAutogeneradas);
+      Insertar_rows: {
+        await this.$lsw.database.insertMany("Accion", accionesAutogeneradas);
+        await this.loadDateTasks(this.selectedDate);
+      }
     }
   },
   watch: {
@@ -26192,7 +26284,7 @@ Vue.component("LswControlLabel", {
                 </template>
             </div>
         </div>
-        <div class="flex_1 pad_left_1 flex_row">
+        <div class="flex_1 pad_left_1 flex_row" v-if="settings.columns">
             <template v-if="parentFormtype && (parentFormtype.isEditable === true)">
                 <button class="supermini margin_left_1" v-on:click="() => parentFormtype.validate()" v-if="settings.column?.hasValidator || true">
                     ✅
@@ -26633,14 +26725,16 @@ Vue.component("LswDateControl", {
 Vue.component("LswDurationControl", {
   template: `<div class="lsw_duration_control lsw_formtype lsw_form_control">
     <lsw-control-label :settings="settings"
-        :parent-formtype="this" />
+        :parent-formtype="this"
+        v-if="settings.skipLabel === false"
+    />
     <lsw-error-viewer v-if="validateError" :error="validateError" />
     <lsw-error-viewer v-if="submitError" :error="submitError" />
     <div v-show="isEditable" v-else>
         <div ref="controller"
             v-xform.control="{
             name: settings.name,
-            onValidate: settings.column.hasValidator || \$noop,
+            onValidate: settings?.column?.hasValidator || \$noop,
             onSetError: () => {
                 isEditable = true;
             }
@@ -26685,11 +26779,15 @@ Vue.component("LswDurationControl", {
       type: Object,
       default: () => ({})
     },
+    skipLabel: {
+      type: Boolean,
+      default: () => false,
+    }
   },
   data() {
     this.$trace("lsw-duration-control.data");
     this.validateSettings();
-    const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
+    const value = this.settings?.initialValue || this.settings?.column?.hasDefaultValue || "";
     return {
       uuid: LswRandomizer.getRandomString(5),
       value,

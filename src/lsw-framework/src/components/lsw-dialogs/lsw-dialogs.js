@@ -86,14 +86,14 @@
     },
     watch: {
       opened(newValue) {
-        this.$trace("lsw-dialogs.watch.opened", ["too long object"]);
+        this.$trace("lsw-dialogs.watch.opened", []);
         this.openedLength = (typeof newValue !== "object") ? 0 : Object.keys(newValue).length;
         this._refreshMinimizedLength(newValue);
       }
     },
     methods: {
       open(parametricObject = {}) {
-        this.$trace("lsw-dialogs.methods.open", arguments);
+        this.$trace("lsw-dialogs.methods.open", []);
         if (typeof parametricObject !== "object") {
           throw new Error(`Required argument «parametricObject» to be an object on «LswDialogs.methods.open»`);
         }
@@ -155,7 +155,7 @@
           name: componentId,
           template,
           data(component, ...args) {
-            this.$trace(`lsw-dialogs.[${componentId}].data`, ["too long object"]);
+            this.$trace(`lsw-dialogs.[${componentId}].data`, []);
             const preData = dialogComponentData.call(this);
             if (typeof preData.value === "undefined") {
               preData.value = "";
@@ -317,7 +317,7 @@
         this._refreshMinimizedLength();
       },
       _refreshMinimizedLength(newValue = this.opened, ...args) {
-        this.$trace("lsw-dialogs.methods._refreshMinimizedLength", ["too long object", ...args]);
+        this.$trace("lsw-dialogs.methods._refreshMinimizedLength", []);
         this.notMinimizedLength = Object.keys(newValue).reduce((out, k) => {
           const v = newValue[k];
           if (v.minimized === false) {
@@ -328,21 +328,20 @@
         this.$forceUpdate(true);
       },
       goHome(...args) {
-        this.$trace("lsw-dialogs.methods.goHome", [...args]);
+        this.$trace("lsw-dialogs.methods.goHome", []);
         this.$window.LswWindows.show();
       },
       onOpen(callback, ...args) {
-        this.$trace("lsw-dialogs.methods.onOpen", [callback, ...args]);
+        this.$trace("lsw-dialogs.methods.onOpen", []);
         this.hookOnOpen = callback;
       },
       onClose(callback, ...args) {
-        this.$trace("lsw-dialogs.methods.onClose", [callback, ...args]);
+        this.$trace("lsw-dialogs.methods.onClose", []);
         this.hookOnClose = callback;
       }
     },
     mounted(...args) {
-      this.$trace("lsw-dialogs.mounted", [...args]);
-      console.log("MONTANDOSE DIALOGOOOOS");
+      this.$trace("lsw-dialogs.mounted", []);
       if(Vue.prototype.$dialogs) {
         throw new Error("Cannot install «lsw-dialogs» as global on «Vue.prototype.$dialogs» because it is another instance mounted on «LswDialogs.mounted»");
       }

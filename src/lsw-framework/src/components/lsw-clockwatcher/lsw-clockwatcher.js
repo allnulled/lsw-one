@@ -9,7 +9,7 @@ Vue.component("LswClockwatcher", {
     }
   },
   data() {
-    this.$trace("lsw-clockwatcher.data", arguments);
+    this.$trace("lsw-clockwatcher.data");
     return {
       currentDate: new Date(),
     };

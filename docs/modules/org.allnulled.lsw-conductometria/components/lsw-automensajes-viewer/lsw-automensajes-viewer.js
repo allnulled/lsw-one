@@ -18,33 +18,31 @@ Vue.component("LswAutomensajesViewer", {
   },
   methods: {
     procedureForPicas() {
-      this.$trace("LswAutomensajesViewer.methods.procedureForPicas", arguments);
+      this.$trace("LswAutomensajesViewer.methods.procedureForPicas", []);
       this.selectApplication("despues");
     },
     async loadAutomensajes() {
-      this.$trace("LswAutomensajesViewer.methods.loadAutomensajes", arguments);
+      this.$trace("LswAutomensajesViewer.methods.loadAutomensajes", []);
       const automensajes = await this.$lsw.database.selectMany("Automensaje");
       this.automensajes = automensajes;
     },
     async sendAutomessage() {
-      this.$trace("LswAutomensajesViewer.methods.sendAutomessage", arguments);
-      console.log(this.automensajes);
+      this.$trace("LswAutomensajesViewer.methods.sendAutomessage", []);
       const availableAutomensajes = this.automensajes.filter(a => {
         if((typeof this.selectedAutomensaje !== "object") || (typeof this.selectedAutomensaje.tiene_contenido !== "string")) return true;
         return a.tiene_contenido !== this.selectedAutomensaje.tiene_contenido;
       });
-      console.log(availableAutomensajes);
       this.selectedAutomensaje = LswRandomizer.getRandomItem(availableAutomensajes);
       this.continueAutomessaging();
     },
     async startAutomessaging() {
-      this.$trace("LswAutomensajesViewer.methods.startAutomessaging", arguments);
+      this.$trace("LswAutomensajesViewer.methods.startAutomessaging", []);
       await this.loadAutomensajes();
       await this.sendAutomessage();
       await this.continueAutomessaging();
     },
     async continueAutomessaging() {
-      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", arguments);
+      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", []);
       clearTimeout(this.automessagingId);
       this.automessagingSeconds = LswRandomizer.getRandomIntegerBetween(5,15);
       this.automessagingId = setTimeout(() => this.sendAutomessage(), this.automessagingSeconds * 1000);
@@ -54,18 +52,18 @@ Vue.component("LswAutomensajesViewer", {
       clearTimeout(this.automessagingId);
     },
     async refreshAutomessaging() {
-      this.$trace("LswAutomensajesViewer.methods.refreshAutomessaging", arguments);
+      this.$trace("LswAutomensajesViewer.methods.refreshAutomessaging", []);
       this.stopAutomessaging();
       this.startAutomessaging();
       this.$window.changeBackgroundImage();
     },
     goToDesktop() {
-      this.$trace("LswAutomensajesViewer.methods.goToDesktop", arguments);
+      this.$trace("LswAutomensajesViewer.methods.goToDesktop", []);
       this.$lsw.windows.hide();
       this.$refs.appPanel.selectApplication("none");
     },
     selectApplication(application) {
-      this.$trace("LswAutomensajesViewer.methods.selectApplication", arguments);
+      this.$trace("LswAutomensajesViewer.methods.selectApplication", []);
       this.$refs.appPanel.selectApplication(application);
     }
   },

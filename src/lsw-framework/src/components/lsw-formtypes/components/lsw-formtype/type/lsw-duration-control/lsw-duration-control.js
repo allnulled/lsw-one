@@ -6,11 +6,15 @@ Vue.component("LswDurationControl", {
       type: Object,
       default: () => ({})
     },
+    skipLabel: {
+      type: Boolean,
+      default: () => false,
+    }
   },
   data() {
     this.$trace("lsw-duration-control.data");
     this.validateSettings();
-    const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
+    const value = this.settings?.initialValue || this.settings?.column?.hasDefaultValue || "";
     return {
       uuid: LswRandomizer.getRandomString(5),
       value,

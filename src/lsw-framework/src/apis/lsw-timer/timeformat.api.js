@@ -45,9 +45,7 @@
 
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
     const momentoBrute = Timeformat_parser.parse(momentoText)[0];
-    console.log(momentoBrute);
     const date = new Date();
-    console.log(1, date);
     if (momentoBrute.anio) {
       date.setFullYear(momentoBrute.anio);
       if (momentoBrute.mes === 0) {
@@ -60,7 +58,6 @@
     date.setMinutes(momentoBrute.minuto || 0);
     date.setSeconds(momentoBrute.segundo || 0);
     date.setMilliseconds(0);
-    console.log("Z", date);
     return date;
   };
 
@@ -127,7 +124,6 @@
         throw new Error(`Expression of type «${mainExpression.tipo}» is not valid. ${errorMessage}`);
       }
     } catch (error) {
-      console.log(text);
       throw new Error(errorMessage);
     }
     return true;

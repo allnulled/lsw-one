@@ -142,7 +142,7 @@
       }
       $lswSchema.loadSchemaByProxies("SchemaEntity");
       const databaseSchema = await $lswSchema.getDatabaseSchemaForLsw();
-      console.log("[*] Creating database from schema by proxies:", Object.keys(databaseSchema).join(", "));
+      console.log("[*] Creating database from schema by proxies:", "\n - " + Object.keys(databaseSchema).join("\n - "));
       await LswDatabase.createDatabase("lsw_default_database", databaseSchema);
       return await this.hooks.emit("app:load_schema");
     },

@@ -12463,7 +12463,49 @@ if (process?.env?.NODE_ENV === "test") {
       }
     }
 
-    static generar(reglas = {}, accionesPrevias = [], horaInicio = new Date(), duracionMinima = "20min") {
+    static elegirMixto(pesos, rangoDePeso = 1.0) {
+      const claves = Object.keys(pesos);
+      if (claves.length === 0) return null;
+    
+      const usarPeso = Math.random() < rangoDePeso;
+    
+      if (usarPeso) {
+        // Elección ponderada como antes
+        const entradas = Object.entries(pesos);
+        const total = entradas.reduce((suma, [_, peso]) => suma + peso, 0);
+        if (total === 0) return null;
+    
+        const umbral = Math.random() * total;
+        let acumulado = 0;
+    
+        for (const [clave, peso] of entradas) {
+          acumulado += peso;
+          if (umbral < acumulado) return clave;
+        }
+        return claves.at(-1); // fallback raro, por si hay error de redondeo
+      } else {
+        // Elección uniforme entre claves
+        const indice = Math.floor(Math.random() * claves.length);
+        return claves[indice];
+      }
+    }    
+
+    static elegirConPeso(pesos) {
+      const entradas = Object.entries(pesos);
+      const total = entradas.reduce((suma, [_, peso]) => suma + peso, 0);
+      const umbral = Math.random() * total;
+    
+      let acumulado = 0;
+      for (const [clave, peso] of entradas) {
+        acumulado += peso;
+        if (umbral < acumulado) return clave;
+      }
+    
+      return null; // Por si acaso todo es cero
+    }
+    
+
+    static generar(reglas = {}, accionesPrevias = [], horaInicio = new Date(), duracionMinima = "20min", tasaDePeso = 0.6) {
       this.trace("generar", arguments);
       const ahora = new Date(horaInicio);
       ahora.setSeconds(0, 0); // limpia segundos y ms
@@ -12472,13 +12514,13 @@ if (process?.env?.NODE_ENV === "test") {
       const finDelDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), 23, 59, 59, 999);
       const duracionMilisegundos = this._duracionAMilisegundos(duracionMinima);
     
-      const conceptos = Object.keys(reglas);
       const acciones = [];
     
       let cursor = new Date(inicio);
       while (cursor <= finDelDia) {
         console.log("cursor:", LswTimer.utils.fromDateToDatestring(cursor));
-        const concepto = conceptos[Math.floor(Math.random() * conceptos.length)];
+        
+        const concepto = this.elegirMixto(reglas, tasaDePeso);
         acciones.push({
           en_concepto: concepto,
           tiene_estado: "pendiente",

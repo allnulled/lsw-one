@@ -117,7 +117,7 @@ Vue.component("LswConfigurationsPage", {
       const confirmation = await this.$dialogs.open({
         title: "Resetear la base de datos",
         template: `<div class="pad_1">
-          <div class="text_align_center">
+          <div class="text_align_center" style="min-height: 90px;">
             <div class="pad_1 font_weight_bold">¡CUIDADO!</div>
             <div class="pad_1 pad_top_0">¿Seguro que quieres resetear la base de datos?</div>
             <div class="pad_1 pad_top_0">Considera que perderás todos los datos.</div>

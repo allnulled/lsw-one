@@ -11,7 +11,10 @@
         <div class="margin_top_1">
             <button class="supermini margin_right_1" v-on:click="startExportarAJson">Exportar a JSON</button>
             <button class="supermini margin_right_1" v-on:click="startImportarDeJson">Importar de JSON</button>
-            <button class="supermini margin_right_1 danger_button" v-on:click="startResetearBaseDeDatos">Resetear</button>
+        </div>
+        <hr />
+        <div class="text_align_right">
+            <button class="supermini danger_button" v-on:click="startResetearBaseDeDatos">Resetear</button>
         </div>
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'preferencias'">

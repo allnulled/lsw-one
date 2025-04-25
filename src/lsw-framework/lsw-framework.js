@@ -24733,21 +24733,26 @@ Vue.component("LswAgenda", {
                                 Insertar info
                             </div>
                             <div class="flex_1">
-                                <button class="mini" v-on:click="() => selectSubmenu1('none')">❌</button>
+                                <button class="mini"
+                                    v-on:click="() => selectSubmenu1('none')">❌</button>
                             </div>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('accion.add', { initialValues: { tiene_inicio: selectedDate } })">Crear
+                            <button class="mini"
+                                v-on:click="() => selectContext('accion.add', { initialValues: { tiene_inicio: selectedDate } })">Crear
                                 acción</button>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('concepto.add')">Crear concepto</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('concepto.add')">Crear concepto</button>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('limitador.add')">Crear limitador</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('limitador.add')">Crear limitador</button>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('impresion.add')">Crear impresión</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('impresion.add')">Crear impresión</button>
                         </div>
                     </div>
                 </div>
@@ -24768,42 +24773,52 @@ Vue.component("LswAgenda", {
                                 Buscar info
                             </div>
                             <div class="flex_1">
-                                <button class="mini" v-on:click="() => selectSubmenu1('none')">❌</button>
+                                <button class="mini"
+                                    v-on:click="() => selectSubmenu1('none')">❌</button>
                             </div>
                         </div>
                         <div class="separator">
                             <div class="flex_100 pad_left_1 pad_right_1">Tablas físicas:</div>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('concepto.search')">Buscar por concepto</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('concepto.search')">Buscar por concepto</button>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('propagador.search')">Buscar por propagador</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('propagador.search')">Buscar por propagador</button>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('limitador.search')">Buscar por límite</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('limitador.search')">Buscar por límite</button>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('impresion.search')">Buscar por impresión</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('impresion.search')">Buscar por impresión</button>
                         </div>
                         <div class="separator">
                             <div class="flex_100"
                                 style="padding-left: 4px;">Tablas virtuales:</div>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('propagacion.search')">Buscar por propagación</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('propagacion.search')">Buscar por propagación</button>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('infraccion.search')">Buscar por infracción</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('infraccion.search')">Buscar por infracción</button>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('postimpresion.search')">Buscar por postimpresión</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('postimpresion.search')">Buscar por postimpresión</button>
                         </div>
                         <div class="button_cell">
-                            <button class="mini" v-on:click="() => selectContext('evento.search')">Buscar por evento</button>
+                            <button class="mini"
+                                v-on:click="() => selectContext('evento.search')">Buscar por evento</button>
                         </div>
                     </div>
                 </div>
@@ -24910,8 +24925,10 @@ Vue.component("LswAgenda", {
             <lsw-agenda-propagador-search />
         </div>
     </div>
-    <div class="" v-if="selectedContext === 'agenda'">
-        <div class="calendar_viewer" v-if="isCalendarioSelected">
+    <div class=""
+        v-if="selectedContext === 'agenda'">
+        <div class="calendar_viewer"
+            v-if="isCalendarioSelected">
             <lsw-calendario ref="calendario"
                 modo="date"
                 :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
@@ -24925,20 +24942,27 @@ Vue.component("LswAgenda", {
                 v-if="selectedDate">
                 <div class="flex_row centered">
                     <div class="flex_1 margin_right_1">
-                        <button class="iconized_button" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button>
+                        <button class="iconized_button"
+                            v-on:click="() => selectAccion('new')"
+                            :class="{activated: selectedAccion === 'new'}">#️⃣</button>
                     </div>
                     <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                     <div class="flex_1 nowrap">
-                        <button class="iconized_button" v-on:click="randomizeDay">+ 🎲</button>
-                        <button class="iconized_button" v-on:click="cleanRandomizedDays">🔥 🎲</button>
-                        <button class="iconized_button" v-on:click="showAllHours" style="display: none;">🔓*</button>
-                        <button class="iconized_button" v-on:click="hideAllHours" style="display: none;">🔒*</button>
+                        <button class="iconized_button"
+                            v-on:click="randomizeDay">+ 🎲</button>
+                        <button class="iconized_button"
+                            v-on:click="cleanRandomizedDays">🔥 🎲</button>
+                        <button class="iconized_button"
+                            v-on:click="showAllHours"
+                            style="display: none;">🔓*</button>
+                        <button class="iconized_button"
+                            v-on:click="hideAllHours"
+                            style="display: none;">🔒*</button>
                     </div>
                 </div>
             </div>
-            <div v-if="selectedForm === 'new'">
-                <lsw-schema-based-form
-                    :on-submit="v => onInsertTask(v)"
+            <div v-if="selectedAccion === 'new'">
+                <lsw-schema-based-form :on-submit="v => onInsertTask(v)"
                     :on-delete-row="refreshTasks"
                     :overriden-values="{
                         tiene_inicio: \$lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
@@ -24959,18 +24983,42 @@ Vue.component("LswAgenda", {
             <div v-if="(!isLoading) && selectedDateTasksSorted && selectedDateTasksSorted.length">
                 <div class="hour_task_block"
                     :class="{is_completed: accion.tiene_estado === 'completada', is_failed: accion.tiene_estado === 'fallida', is_pending: accion.tiene_estado === 'pendiente'}"
-                    v-for="accion, accionIndex in selectedDateTasksSorted" v-bind:key="'accion_' + accionIndex">
+                    v-for="accion, accionIndex in selectedDateTasksSorted"
+                    v-bind:key="'accion_' + accionIndex">
                     <div class="accion_row flex_row centered">
-                        <div class="flex_1 celda_de_hora">{{ \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩' }}</div>
+                        <div class="flex_1 celda_de_hora">{{ \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                            }}</div>
                         <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                         <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
-                        <div class="flex_100 celda_de_concepto shortable_text"
-                            v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                        <div class="flex_100">
+                            <div class="celda_de_concepto pad_left_1 pad_right_1 shortable_text"
+                                v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                            </div>
                         </div>
                         <div class="flex_1">
-                            <button class="supermini danger_button" style="padding: 1px; padding-left: 4px; padding-right: 4px;" v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
+                            <button class="supermini"
+                                :class="{activated: selectedAccion === accion.id}"
+                                style="padding: 1px; padding-left: 4px; padding-right: 4px;"
+                                v-on:click="(e) => selectAccion(accion.id)">#️⃣</button>
+                        </div>
+                        <div class="flex_1">
+                            <button class="supermini danger_button"
+                                style="padding: 1px; padding-left: 4px; padding-right: 4px;"
+                                v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
                         </div>
                     </div>
+                    <lsw-schema-based-form v-if="selectedAccion === accion.id"
+                        :on-submit="v => onUpdateTask(v, accion)"
+                        :on-delete-row="refreshTasks"
+                        :overriden-values="{
+                            tiene_inicio: accion.tiene_inicio
+                        }"
+                        :model="{
+                            connection: \$lsw.database,
+                            databaseId: 'lsw_default_database',
+                            rowId: accion.id,
+                            tableId: 'Accion',
+                        }" />
                 </div>
             </div>
             <!--div class="box_for_date_details"
@@ -25079,6 +25127,7 @@ Vue.component("LswAgenda", {
       isLoading: false,
       isCalendarioSelected: true,
       hasPsicodelia: true,
+      selectedAccion: undefined,
       selectedContext: "agenda",
       selectedSubmenu1: 'calendario',
       selectedDate: undefined,
@@ -25090,6 +25139,14 @@ Vue.component("LswAgenda", {
     };
   },
   methods: {
+    selectAccion(accionId) {
+      this.$trace("lsw-agenda.methods.selectAccion");
+      if(this.selectedAccion === accionId) {
+        this.selectedAccion = undefined;
+      } else {
+        this.selectedAccion = accionId;
+      }
+    },
     showAllHours() {
       this.$trace("lsw-agenda.methods.showAllHours");
       this.hiddenDateHours = [];
@@ -25256,7 +25313,6 @@ Vue.component("LswAgenda", {
           </div>
         `,
       });
-      console.log(confirmed);
       if (!confirmed) return false;
       await this.$lsw.database.delete("Accion", tarea.id);
       this.selectedForm = undefined;
@@ -27810,7 +27866,10 @@ Vue.component("LswConfigurationsPage", {
         <div class="margin_top_1">
             <button class="supermini margin_right_1" v-on:click="startExportarAJson">Exportar a JSON</button>
             <button class="supermini margin_right_1" v-on:click="startImportarDeJson">Importar de JSON</button>
-            <button class="supermini margin_right_1 danger_button" v-on:click="startResetearBaseDeDatos">Resetear</button>
+        </div>
+        <hr />
+        <div class="text_align_right">
+            <button class="supermini danger_button" v-on:click="startResetearBaseDeDatos">Resetear</button>
         </div>
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'preferencias'">
@@ -27933,7 +27992,7 @@ Vue.component("LswConfigurationsPage", {
       const confirmation = await this.$dialogs.open({
         title: "Resetear la base de datos",
         template: `<div class="pad_1">
-          <div class="text_align_center">
+          <div class="text_align_center" style="min-height: 90px;">
             <div class="pad_1 font_weight_bold">¡CUIDADO!</div>
             <div class="pad_1 pad_top_0">¿Seguro que quieres resetear la base de datos?</div>
             <div class="pad_1 pad_top_0">Considera que perderás todos los datos.</div>

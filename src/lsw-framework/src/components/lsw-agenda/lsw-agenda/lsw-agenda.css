@@ -119,14 +119,15 @@
     align-self: stretch;
     justify-self: stretch;
 
-    align-contents: stretch;
-    justify-contents: stretch;
 }
 
 .accion_row > div {
     padding: 0px;
     padding-left: 4px;
-    padding-right: 4px;
+}
+
+.accion_row > div:first-child {
+    padding-left: 0px;
 }
 
 .hour_task_block.is_failed .celda_de_concepto {

@@ -10,6 +10,7 @@ Vue.component("LswAgenda", {
       isLoading: false,
       isCalendarioSelected: true,
       hasPsicodelia: true,
+      selectedAccion: undefined,
       selectedContext: "agenda",
       selectedSubmenu1: 'calendario',
       selectedDate: undefined,
@@ -21,6 +22,14 @@ Vue.component("LswAgenda", {
     };
   },
   methods: {
+    selectAccion(accionId) {
+      this.$trace("lsw-agenda.methods.selectAccion");
+      if(this.selectedAccion === accionId) {
+        this.selectedAccion = undefined;
+      } else {
+        this.selectedAccion = accionId;
+      }
+    },
     showAllHours() {
       this.$trace("lsw-agenda.methods.showAllHours");
       this.hiddenDateHours = [];
@@ -187,7 +196,6 @@ Vue.component("LswAgenda", {
           </div>
         `,
       });
-      console.log(confirmed);
       if (!confirmed) return false;
       await this.$lsw.database.delete("Accion", tarea.id);
       this.selectedForm = undefined;

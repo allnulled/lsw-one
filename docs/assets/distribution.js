@@ -12463,7 +12463,7 @@ if (process?.env?.NODE_ENV === "test") {
       }
     }
 
-    static generar(reglas = {}, accionesPrevias = [], horaActual = new Date()) {
+    static generar(reglas = {}, accionesPrevias = [], horaActual = new Date(), duracionMinima = "10min") {
       this.trace("generar", arguments);
       $ensure({ reglas }, 1).to.be.object();
       $ensure({ accionesPrevias }, 1).to.be.array();
@@ -12492,7 +12492,7 @@ if (process?.env?.NODE_ENV === "test") {
           const puede = this._evaluarRegla(horaCursor, concepto, regla, ultima, acciones.concat(accionesGeneradas));
 
           if (puede && metas[concepto] > usados[concepto]) {
-            const duracion = this._obtenerDuracionMinima(regla);
+            const duracion = this._obtenerDuracionMinima(regla, duracionMinima);
             const nuevaAccion = {
               en_concepto: concepto,
               tiene_estado: "pendiente",
@@ -12556,13 +12556,13 @@ if (process?.env?.NODE_ENV === "test") {
       return true;
     }
 
-    static _obtenerDuracionMinima(regla) {
+    static _obtenerDuracionMinima(regla, duracionPorDefecto = "12min") {
       this.trace("_obtenerDuracionMinima", arguments);
       const reglas = Array.isArray(regla) ? regla : [regla];
       for (const r of reglas) {
         if (r.minimo) return r.minimo;
       }
-      return "12min";
+      return duracionPorDefecto;
     }
 
     static _duracionAMs(str) {
@@ -12620,6 +12620,55 @@ if (process?.env?.NODE_ENV === "test") {
   }
 
   return LswAgendaRandomizer;
+
+});
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswAgendaRandomizerReglas'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswAgendaRandomizerReglas'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+
+  const reglas = {
+    "Trackeo de números de conducta/agenda": [{ porcion: 500 }],
+    "Trackeo de conceptos/relaciones": [{ porcion: 500 }],
+    "Trackeo de ideas/notas": [{ porcion: 1 }],
+    "Programación de interfaces gráficas": [{ porcion: 500 }],
+    "Arquitectura por patrones": [{ porcion: 200 }],
+    "Arquitectura de la realidad": [{ porcion: 200 }],
+    "Arquitectura del yo": [{ porcion: 200 }],
+    "Lenguajes formales": [{ porcion: 1 }],
+    "Investigación de cocina/nutrición/química": [{ porcion: 200 }],
+    "Investigación de nutrición": [{ porcion: 1 }],
+    "Investigación de química": [{ porcion: 1 }],
+    "Investigación de física": [{ porcion: 1 }],
+    "Investigación de matemáticas": [{ porcion: 1 }],
+    "Investigación de geometría": [{ porcion: 1 }],
+    "Investigación de canvas/perspectiva": [{ porcion: 1 }],
+    "Investigación de medicina/biología/fisiología": [{ porcion: 100 }],
+    "Investigación de musculación/flexibilidad": [{ porcion: 100 }],
+    "Investigación de las emociones": [{ porcion: 100 }],
+    "Cocinar/Comer": [{ cada: "6h", minimo: "1h" }],
+    "Pasarlo bien con la perrillo": [{ cada: "6h", minimo: "1h" }],
+    "Cuidados de plantas": [{ porcion: 1 }],
+    "Cuidados del hogar": [{ porcion: 1 }],
+    "Actividad física": [{ porcion: 500 }, { nunca_despues_de: "comer", durante: "2h" }, { cada: "24h", minimo: "20min" }],
+    "Optimización de RAM": [{ porcion: 500 }],
+    "Autocontrol/Autobservación/Autoanálisis": [{ porcion: 500 }],
+    "Meditación/Relajación": [{ porcion: 500 }],
+    "Paisajismo": [{ cada: "3h", minimo: "20min" }],
+    "Dibujo 3D/Perspectiva/Geometría/Mates": [{ porcion: 1 }],
+    "Dibujo artístico/anime/abstracto/esquemista/conceptualista": [{ porcion: 1 }],
+    "Reflexión/Diálogo interno": [{ porcion: 500 }],
+  };
+
+  return reglas;
 
 });
 (function (factory) {
@@ -16089,7 +16138,7 @@ return Store;
   };
 
   Timeformat_utils.fromDateToDatestring = Timeformat_utils.formatDatestringFromDate;
-
+  
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
     const momentoBrute = Timeformat_parser.parse(momentoText)[0];
     console.log(momentoBrute);
@@ -21115,6 +21164,10 @@ Vue.component("LswCalendario", {
       type: Function,
       default: () => { }
     },
+    alIniciar: {
+      type: Function,
+      default: () => { }
+    },
   },
   data() {
     try {
@@ -21496,6 +21549,9 @@ Vue.component("LswCalendario", {
       this.$nextTick(() => {
         this.es_carga_inicial = false;
       });
+      if(this.alIniciar) {
+        this.alIniciar(this.fecha_seleccionada, this);
+      }
     } catch (error) {
       console.log(error);
       throw error;
@@ -22828,9 +22884,9 @@ Vue.component("LswWindowsMainTab", {
       this.$trace("lsw-windows-main-tab.methods.openNoteUploader", arguments);
       this.viewer.hide();
       this.$dialogs.open({
-        id: "note-uploader-" + this.getRandomString(5),
-        title: "Note uploader",
-        template: `<div class="pad_2"><lsw-notes /></div>`,
+        id: "notas-" + this.getRandomString(5),
+        title: "Notas",
+        template: `<div class="pad_2"><lsw-spontaneous-table-notas /></div>`,
       });
     },
     openConfigurationsPage() {
@@ -23708,7 +23764,7 @@ Vue.component("LswFilesystemExplorer", {
     </div>
     <div class="filesystem_ui">
         <div class="leftside">
-            <lsw-filesystem-buttons-panel :explorer="this" ref="panelLeft" />
+            <lsw-filesystem-buttons-panel :explorer="this" ref="panelLeft" orientation="column" />
         </div>
         <div class="middleside">
             <div class="headerside">
@@ -23723,7 +23779,7 @@ Vue.component("LswFilesystemExplorer", {
             </div>
         </div>
         <div class="rightside">
-            <lsw-filesystem-buttons-panel :explorer="this" ref="panelRight" />
+            <lsw-filesystem-buttons-panel :explorer="this" ref="panelRight" orientation="column" />
         </div>
     </div>
 </div>`,
@@ -23816,10 +23872,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(filename)">Crear fichero</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(filename)">Crear fichero</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -23854,10 +23910,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(filename)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(filename)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -23888,10 +23944,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -23918,10 +23974,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -23960,10 +24016,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(new_filename)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(new_filename)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -24022,10 +24078,6 @@ Vue.component("LswFilesystemExplorer", {
       this.current_node_is_directory = false;
       const allButtonsOnFile = [
         {
-          text: "➜",
-          classes: "reversed",
-          click: () => this.goUp(),
-        }, {
           text: "💾",
           click: () => this.processToSaveFile(),
         }, {
@@ -24035,7 +24087,7 @@ Vue.component("LswFilesystemExplorer", {
           text: "🔄",
           click: () => this.processToLoadFile(),
         }, {
-          text: "📄 ❌",
+          text: "📄 🔥",
           classes: "danger_button",
           click: () => this.processToDeleteFile(),
         }
@@ -24047,7 +24099,12 @@ Vue.component("LswFilesystemExplorer", {
           click: () => this.processToExecuteFile(),
         });
       }
-      this.$refs.panelTop.setButtons(...allButtonsOnFile);
+      this.$refs.panelTop.setButtons({
+        text: "➜",
+        classes: "reversed",
+        click: () => this.goUp(),
+      });
+      this.$refs.panelRight.setButtons(...allButtonsOnFile);
       this.$nextTick(() => {
         this.is_ready = true;
       });
@@ -24057,14 +24114,23 @@ Vue.component("LswFilesystemExplorer", {
       this.is_ready = false;
       this.current_node_is_directory = true;
       this.current_node_is_file = false;
-      this.$refs.panelTop.setButtons({
+      if(this.current_node === "/") {
+        this.$refs.panelTop.setButtons();
+      } else {
+        this.$refs.panelTop.setButtons({
+          text: "➜",
+          classes: "reversed",
+          click: () => this.goUp(),
+        });
+      }
+      this.$refs.panelRight.setButtons({
         text: "📄+",
         click: () => this.processToCreateFile(),
       }, {
         text: "📁+",
         click: () => this.processToCreateDirectory(),
       }, {
-        text: "📁 ❌",
+        text: "📁 🔥",
         classes: "danger_button",
         click: () => this.processToDeleteDirectory()
       });
@@ -24177,9 +24243,9 @@ Vue.component("LswFilesystemExplorer", {
 Vue.component("LswFilesystemButtonsPanel", {
   name: "LswFilesystemButtonsPanel",
   template: `<div class="lsw_filesystem_buttons_panel">
-    <div class="buttons_panel centered" :class="'flex_' + orientation">
-        <div class="flex_1 pad_right_1" v-for="button, buttonIndex in buttons" v-bind:key="'button_index_' + buttonIndex">
-            <button class="nowrap" :class="button.classes || ''" v-on:click="button.click">{{ button.text }}</button>
+    <div class="buttons_panel centered" :class="'flex_' + orientation + ' orientation_' + orientation">
+        <div class="button_cell flex_1" v-for="button, buttonIndex in buttons" v-bind:key="'button_index_' + buttonIndex">
+            <button class="mini nowrap" :class="button.classes || ''" v-on:click="button.click">{{ button.text }}</button>
         </div>
         <div class="flex_100"></div>
     </div>
@@ -24274,7 +24340,7 @@ Vue.component("LswFilesystemTreeviewer", {
                 </td>
                 <td></td>
                 <td>
-                    <button style="visibility: hidden;" v-on:click="() => deleteNode(subnodeIndex)">❌</button>
+                    <button class="supermini" style="visibility: hidden;" v-on:click="() => deleteNode(subnodeIndex)">❌</button>
                 </td>
             </tr>
             <template v-for="subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes">
@@ -24286,10 +24352,10 @@ Vue.component("LswFilesystemTreeviewer", {
                             <a class="filename_link" href="javascript:void(0)"><b>{{ subnodeIndex }}</b></a>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
+                            <button class="supermini nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 ❌</button>
+                            <button class="supermini danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 🔥</button>
                         </td>
                     </template>
                     <template v-else-if="typeof subnode === 'string'">
@@ -24298,10 +24364,10 @@ Vue.component("LswFilesystemTreeviewer", {
                             <a class="filename_link" href="javascript:void(0)">{{ subnodeIndex }}</a>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
+                            <button class="supermini nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📄 ❌</button>
+                            <button class="supermini danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📄 🔥</button>
                         </td>
                     </template>
                 </tr>
@@ -24344,10 +24410,10 @@ Vue.component("LswFilesystemTreeviewer", {
             <div class="flex_row centered">
               <div class="flex_100"></div>
               <div class="flex_1 pad_right_1">
-                <button class="danger_button nowrap" v-on:click="() => accept(true)">Sí, eliminar</button>
+                <button class="supermini danger_button nowrap" v-on:click="() => accept(true)">Sí, eliminar</button>
               </div>
               <div class="flex_1">
-                <button class="" v-on:click="() => accept(false)">Salir</button>
+                <button class="supermini" v-on:click="() => accept(false)">Cancelar</button>
               </div>
             </div>
           </div>
@@ -24404,10 +24470,10 @@ Vue.component("LswFilesystemTreeviewer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="" v-on:click="() => accept(newFilename)">Renombrar</button>
+              <button class="supermini" v-on:click="() => accept(newFilename)">Renombrar</button>
             </div>
             <div class="flex_1">
-              <button class="" v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini" v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -24684,8 +24750,7 @@ Vue.component("LswAgenda", {
                 <div class="hidden_menu_box">
                     <div class="hidden_menu_items">
                         <div class="title">
-                            <div class="flex_100"
-                                style="padding-left: 4px;">
+                            <div class="flex_100 pad_left_1 pad_right_1">
                                 Buscar info
                             </div>
                             <div class="flex_1">
@@ -24693,8 +24758,7 @@ Vue.component("LswAgenda", {
                             </div>
                         </div>
                         <div class="separator">
-                            <div class="flex_100"
-                                style="padding-left: 4px;">Tablas físicas:</div>
+                            <div class="flex_100 pad_left_1 pad_right_1">Tablas físicas:</div>
                         </div>
                         <div class="button_cell">
                             <button class="mini" v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
@@ -24732,6 +24796,11 @@ Vue.component("LswAgenda", {
             </div>
         </div>
         <div class="flex_100"></div>
+        <div class="flex_1">
+            <button class="width_100 nowrap"
+                v-on:click="() => toggleSubmenu1('calendario')"
+                :class="{activated: selectedSubmenu1 === 'calendario'}">📅</button>
+        </div>
     </div>
 
     <div class="calendar_main_panel">
@@ -24828,9 +24897,10 @@ Vue.component("LswAgenda", {
         </div>
     </div>
     <div class="" v-if="selectedContext === 'agenda'">
-        <div class="calendar_viewer">
+        <div class="calendar_viewer" v-if="selectedSubmenu1 === 'calendario'">
             <lsw-calendario ref="calendario"
                 modo="date"
+                :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
                 :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)" />
         </div>
         <div class="limitador_viewer">
@@ -24843,7 +24913,7 @@ Vue.component("LswAgenda", {
                     <div class="flex_1 margin_right_1"><button class="iconized_button" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
                     <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                     <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'display: none;'">
-                        <button class="iconized_button" v-on:click="togglePsicodelia" :class="{activated: hasPsicodelia}">❤️</button>
+                        <button class="iconized_button" v-on:click="randomizeDay">🎲</button>
                         <button class="iconized_button" v-on:click="showAllHours">🔓*</button>
                         <button class="iconized_button" v-on:click="hideAllHours">🔒*</button>
                     </div>
@@ -24975,7 +25045,7 @@ Vue.component("LswAgenda", {
       isLoading: false,
       hasPsicodelia: true,
       selectedContext: "agenda",
-      selectedSubmenu1: 'none',
+      selectedSubmenu1: 'calendario',
       selectedDate: undefined,
       selectedDateTasks: undefined,
       selectedDateTasksFormattedPerHour: undefined,
@@ -25001,6 +25071,14 @@ Vue.component("LswAgenda", {
     selectSubmenu1(id) {
       this.$trace("lsw-agenda.methods.selectSubmenu1");
       this.selectedSubmenu1 = id;
+    },
+    toggleSubmenu1(id) {
+      this.$trace("lsw-agenda.methods.selectSubmenu1");
+      if(this.selectedSubmenu1 === id) {
+        this.selectedSubmenu1 = "none";
+      } else {
+        this.selectedSubmenu1 = id;
+      }
     },
     togglePsicodelia() {
       this.$trace("lsw-agenda.methods.togglePsicodelia");
@@ -25116,8 +25194,8 @@ Vue.component("LswAgenda", {
             <div class="pad_2">¿Seguro que quieres eliminar el registro?</div>
             <hr class="margin_0" />
             <div class="pad_2 text_align_right">
-              <button class="danger_button" v-on:click="() => accept(true)">Eliminar</button>
-              <button class="" v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini danger_button" v-on:click="() => accept(true)">Eliminar</button>
+              <button class="supermini " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         `,
@@ -25166,6 +25244,28 @@ Vue.component("LswAgenda", {
         tiene_estado: siguienteEstado
       });
       this.refreshTasks();
+    },
+    async randomizeDay() {
+      this.$trace("lsw-agenda.methods.randomizeDay");
+      const currentDate = this.selectedDate;
+      const accionesDelDia = await this.$lsw.database.select("Accion", accion => {
+        try {
+          const accionDate = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
+          const sameYear = currentDate.getFullYear() === accionDate.getFullYear();
+          const sameMonth = currentDate.getMonth() === accionDate.getMonth();
+          const sameDay = currentDate.getDate() === accionDate.getDate();
+          const sameDate = sameYear && sameMonth && sameDay;
+          return sameDate;
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+      });
+      const accionesAutogeneradas = LswAgendaRandomizer.generar(LswAgendaRandomizerReglas, accionesDelDia, new Date(), "15min");
+      accionesAutogeneradas.forEach(accion => {
+        accion.tiene_parametros = ("[*autogenerada] " + (accion.tiene_parametros.replace(/^\[\*autogenerada\]/g, ""))).trim();
+      });
+      console.log(accionesAutogeneradas);
     }
   },
   watch: {
@@ -27383,8 +27483,8 @@ Vue.component("LswSchemaBasedForm", {
             <div class="pad_2">¿Seguro que quieres eliminar el registro?</div>
             <hr class="margin_0" />
             <div class="pad_2 text_align_right">
-              <button class="danger_button" v-on:click="() => accept(true)">Eliminar</button>
-              <button class="" v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini danger_button" v-on:click="() => accept(true)">Eliminar</button>
+              <button class="supermini " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         `,
@@ -27555,7 +27655,7 @@ Vue.component("LswConfigurationsPage", {
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'preferencias'">
         <h3>Configuraciones » Preferencias de usuario</h3>
-        <div>Por ahora, esta sección está vacía.</div>
+        <div class="pad_1 margin_top_1">Por ahora, esta sección está vacía.</div>
     </div>
 </div>`,
   props: {
@@ -43472,12 +43572,37 @@ try {
 LswLifecycle.start().then(async output => {
   console.log("[*] App lifecycle ended.");
   
+  const goTo = {
+    async aniadirNota() {
+      LswDom.querySelectorFirst(".home_bottom_panel > button", "+ 💬").click();
+    },
+    async verNotas() {
+      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "💬").click();
+    },
+    async calendario() {
+      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
+    },
+    async abrirNavegacionRapida() {
+      LswDom.querySelectorFirst(".lsw_apps_button > button", "🌍").click();
+    },
+    async abrirTareasPosterioresDeNavegacionRapida() {
+      LswDom.querySelectorFirst(".lsw_apps_viewer_button button", "🕓 Tareas posteriores").click();
+    },
+    async configuraciones() {
+      LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
+    },
+  }
+
   Work_relocation: {
-    // LswDom.querySelectorFirst(".home_bottom_panel > button", "+ 💬").click();
-    // LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "💬").click();
-    LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
-    await LswDom.waitForMilliseconds(100);
-    LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
+      await LswDom.waitForMilliseconds(100);
+      await goTo.calendario();
+      return;
+      await LswDom.waitForMilliseconds(100);
+      await goTo.abrirNavegacionRapida();
+      await LswDom.waitForMilliseconds(100);
+      await goTo.abrirTareasPosterioresDeNavegacionRapida();
   }
 
 

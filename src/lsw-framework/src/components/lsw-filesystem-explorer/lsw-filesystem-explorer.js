@@ -20,7 +20,7 @@ Vue.component("LswFilesystemButtonsPanel", {
   template: `<div class="lsw_filesystem_buttons_panel">
     <div class="buttons_panel centered" :class="'flex_' + orientation">
         <div class="flex_1 pad_right_1" v-for="button, buttonIndex in buttons" v-bind:key="'button_index_' + buttonIndex">
-            <button class="nowrap" :class="button.classes || ''" v-on:click="button.click">{{ button.text }}</button>
+            <button class="supermini nowrap" :class="button.classes || ''" v-on:click="button.click">{{ button.text }}</button>
         </div>
         <div class="flex_100"></div>
     </div>
@@ -102,7 +102,7 @@ Vue.component("LswFilesystemExplorer", {
   template: `<div class="lsw_filesystem_explorer">
     <div class="current_node_box">
         <span class="previous_node_path" :class="current_node !== '/' ? '' : 'visibility_hidden'">
-            <button class="previous_node_button" v-on:click="goUp"
+            <button class="supermini previous_node_button" v-on:click="goUp"
             style="transform: rotate(180deg); margin: 1px;">➜</button>
         </span>
         <span class="current_node_path">{{ current_node_basedir }}</span>
@@ -213,10 +213,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(filename)">Crear fichero</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(filename)">Crear fichero</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -251,10 +251,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(filename)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(filename)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -285,10 +285,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -315,10 +315,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -357,10 +357,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(new_filename)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(new_filename)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -432,7 +432,7 @@ Vue.component("LswFilesystemExplorer", {
           text: "🔄",
           click: () => this.processToLoadFile(),
         }, {
-          text: "📄 ❌",
+          text: "📄 🔥",
           classes: "danger_button",
           click: () => this.processToDeleteFile(),
         }
@@ -461,7 +461,7 @@ Vue.component("LswFilesystemExplorer", {
         text: "📁+",
         click: () => this.processToCreateDirectory(),
       }, {
-        text: "📁 ❌",
+        text: "📁 🔥",
         classes: "danger_button",
         click: () => this.processToDeleteDirectory()
       });
@@ -596,10 +596,10 @@ Vue.component("LswFilesystemTreeviewer", {
                             <a class="filename_link" href="javascript:void(0)"><b>{{ subnodeIndex }}</b></a>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
+                            <button class="supermini nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 ❌</button>
+                            <button class="supermini danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 🔥</button>
                         </td>
                     </template>
                     <template v-else-if="typeof subnode === 'string'">
@@ -608,10 +608,10 @@ Vue.component("LswFilesystemTreeviewer", {
                             <a class="filename_link" href="javascript:void(0)">{{ subnodeIndex }}</a>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
+                            <button class="supermini nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📄 ❌</button>
+                            <button class="supermini danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📄 🔥</button>
                         </td>
                     </template>
                 </tr>
@@ -654,10 +654,10 @@ Vue.component("LswFilesystemTreeviewer", {
             <div class="flex_row centered">
               <div class="flex_100"></div>
               <div class="flex_1 pad_right_1">
-                <button class="danger_button nowrap" v-on:click="() => accept(true)">Sí, eliminar</button>
+                <button class="supermini danger_button nowrap" v-on:click="() => accept(true)">Sí, eliminar</button>
               </div>
               <div class="flex_1">
-                <button class="" v-on:click="() => accept(false)">Salir</button>
+                <button class="supermini " v-on:click="() => accept(false)">Salir</button>
               </div>
             </div>
           </div>
@@ -714,10 +714,10 @@ Vue.component("LswFilesystemTreeviewer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="" v-on:click="() => accept(newFilename)">Renombrar</button>
+              <button class="supermini " v-on:click="() => accept(newFilename)">Renombrar</button>
             </div>
             <div class="flex_1">
-              <button class="" v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,

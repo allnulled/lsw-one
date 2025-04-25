@@ -22,7 +22,7 @@
       }
     }
 
-    static generar(reglas = {}, accionesPrevias = [], horaActual = new Date()) {
+    static generar(reglas = {}, accionesPrevias = [], horaActual = new Date(), duracionMinima = "10min") {
       this.trace("generar", arguments);
       $ensure({ reglas }, 1).to.be.object();
       $ensure({ accionesPrevias }, 1).to.be.array();
@@ -51,7 +51,7 @@
           const puede = this._evaluarRegla(horaCursor, concepto, regla, ultima, acciones.concat(accionesGeneradas));
 
           if (puede && metas[concepto] > usados[concepto]) {
-            const duracion = this._obtenerDuracionMinima(regla);
+            const duracion = this._obtenerDuracionMinima(regla, duracionMinima);
             const nuevaAccion = {
               en_concepto: concepto,
               tiene_estado: "pendiente",
@@ -115,13 +115,13 @@
       return true;
     }
 
-    static _obtenerDuracionMinima(regla) {
+    static _obtenerDuracionMinima(regla, duracionPorDefecto = "12min") {
       this.trace("_obtenerDuracionMinima", arguments);
       const reglas = Array.isArray(regla) ? regla : [regla];
       for (const r of reglas) {
         if (r.minimo) return r.minimo;
       }
-      return "12min";
+      return duracionPorDefecto;
     }
 
     static _duracionAMs(str) {

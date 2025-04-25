@@ -845,11 +845,11 @@ table.top_aligned > tbody > tr > td {
 /* Start: Bordes de 1 sola línea entre paneles: */
 .lsw_filesystem_explorer .rightside {
     border-left: 1px solid black;
-    min-width: 48px;
+    min-width: 50px;
 }
 .lsw_filesystem_explorer .leftside {
     border-right: 1px solid black;
-    min-width: 48px;
+    min-width: 50px;
 }
 .lsw_filesystem_explorer .bodyside {
     border-top: 1px solid black;
@@ -869,6 +869,11 @@ table.top_aligned > tbody > tr > td {
 .lsw_filesystem_buttons_panel > .buttons_panel {
     width: 100%;
     height: 100%;
+}
+.lsw_filesystem_buttons_panel > .buttons_panel.orientation_column > .button_cell {
+    padding-top: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 .filesystem_ui {
     min-height: 230px;
@@ -919,7 +924,7 @@ table.top_aligned > tbody > tr > td {
     color: white;
 }
 .treeviewer_row:nth-last-child(odd) {
-    background-color: rgba(6, 6, 15, 0.7);
+    background-color: rgba(28, 28, 102, 0.7);
     color: white;
 }
 .treeviewer_row .filename_link {
@@ -2029,6 +2034,14 @@ h3 {
     color: black;
     text-shadow: 0 0 1px white;
     font-weight: normal;
+}
+
+hr {
+    min-height: 1px;
+    border: none;
+    border-bottom: 1px solid #222;
+    margin-top: 4px;
+    margin-bottom: 4px;
 }
 
 /* API de Conductometria */

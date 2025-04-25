@@ -68,9 +68,9 @@ Vue.component("LswWindowsMainTab", {
       this.$trace("lsw-windows-main-tab.methods.openNoteUploader", arguments);
       this.viewer.hide();
       this.$dialogs.open({
-        id: "note-uploader-" + this.getRandomString(5),
-        title: "Note uploader",
-        template: `<div class="pad_2"><lsw-notes /></div>`,
+        id: "notas-" + this.getRandomString(5),
+        title: "Notas",
+        template: `<div class="pad_2"><lsw-spontaneous-table-notas /></div>`,
       });
     },
     openConfigurationsPage() {

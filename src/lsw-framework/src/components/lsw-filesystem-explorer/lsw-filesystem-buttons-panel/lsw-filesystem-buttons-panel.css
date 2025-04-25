@@ -8,3 +8,8 @@
     width: 100%;
     height: 100%;
 }
+.lsw_filesystem_buttons_panel > .buttons_panel.orientation_column > .button_cell {
+    padding-top: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+}

@@ -219,8 +219,8 @@ Vue.component("LswSchemaBasedForm", {
             <div class="pad_2">¿Seguro que quieres eliminar el registro?</div>
             <hr class="margin_0" />
             <div class="pad_2 text_align_right">
-              <button class="danger_button" v-on:click="() => accept(true)">Eliminar</button>
-              <button class="" v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini danger_button" v-on:click="() => accept(true)">Eliminar</button>
+              <button class="supermini " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         `,

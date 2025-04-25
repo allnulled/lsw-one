@@ -10,7 +10,7 @@ Vue.component("LswAgenda", {
       isLoading: false,
       hasPsicodelia: true,
       selectedContext: "agenda",
-      selectedSubmenu1: 'none',
+      selectedSubmenu1: 'calendario',
       selectedDate: undefined,
       selectedDateTasks: undefined,
       selectedDateTasksFormattedPerHour: undefined,
@@ -36,6 +36,14 @@ Vue.component("LswAgenda", {
     selectSubmenu1(id) {
       this.$trace("lsw-agenda.methods.selectSubmenu1");
       this.selectedSubmenu1 = id;
+    },
+    toggleSubmenu1(id) {
+      this.$trace("lsw-agenda.methods.selectSubmenu1");
+      if(this.selectedSubmenu1 === id) {
+        this.selectedSubmenu1 = "none";
+      } else {
+        this.selectedSubmenu1 = id;
+      }
     },
     togglePsicodelia() {
       this.$trace("lsw-agenda.methods.togglePsicodelia");
@@ -151,8 +159,8 @@ Vue.component("LswAgenda", {
             <div class="pad_2">¿Seguro que quieres eliminar el registro?</div>
             <hr class="margin_0" />
             <div class="pad_2 text_align_right">
-              <button class="danger_button" v-on:click="() => accept(true)">Eliminar</button>
-              <button class="" v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini danger_button" v-on:click="() => accept(true)">Eliminar</button>
+              <button class="supermini " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         `,
@@ -201,6 +209,28 @@ Vue.component("LswAgenda", {
         tiene_estado: siguienteEstado
       });
       this.refreshTasks();
+    },
+    async randomizeDay() {
+      this.$trace("lsw-agenda.methods.randomizeDay");
+      const currentDate = this.selectedDate;
+      const accionesDelDia = await this.$lsw.database.select("Accion", accion => {
+        try {
+          const accionDate = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
+          const sameYear = currentDate.getFullYear() === accionDate.getFullYear();
+          const sameMonth = currentDate.getMonth() === accionDate.getMonth();
+          const sameDay = currentDate.getDate() === accionDate.getDate();
+          const sameDate = sameYear && sameMonth && sameDay;
+          return sameDate;
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+      });
+      const accionesAutogeneradas = LswAgendaRandomizer.generar(LswAgendaRandomizerReglas, accionesDelDia, new Date(), "15min");
+      accionesAutogeneradas.forEach(accion => {
+        accion.tiene_parametros = ("[*autogenerada] " + (accion.tiene_parametros.replace(/^\[\*autogenerada\]/g, ""))).trim();
+      });
+      console.log(accionesAutogeneradas);
     }
   },
   watch: {

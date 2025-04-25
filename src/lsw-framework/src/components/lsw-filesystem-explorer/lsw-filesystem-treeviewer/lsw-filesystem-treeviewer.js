@@ -36,10 +36,10 @@ Vue.component("LswFilesystemTreeviewer", {
             <div class="flex_row centered">
               <div class="flex_100"></div>
               <div class="flex_1 pad_right_1">
-                <button class="danger_button nowrap" v-on:click="() => accept(true)">Sí, eliminar</button>
+                <button class="supermini danger_button nowrap" v-on:click="() => accept(true)">Sí, eliminar</button>
               </div>
               <div class="flex_1">
-                <button class="" v-on:click="() => accept(false)">Salir</button>
+                <button class="supermini" v-on:click="() => accept(false)">Cancelar</button>
               </div>
             </div>
           </div>
@@ -96,10 +96,10 @@ Vue.component("LswFilesystemTreeviewer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="" v-on:click="() => accept(newFilename)">Renombrar</button>
+              <button class="supermini" v-on:click="() => accept(newFilename)">Renombrar</button>
             </div>
             <div class="flex_1">
-              <button class="" v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini" v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,

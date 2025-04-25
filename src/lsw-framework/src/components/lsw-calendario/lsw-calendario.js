@@ -14,6 +14,10 @@ Vue.component("LswCalendario", {
       type: Function,
       default: () => { }
     },
+    alIniciar: {
+      type: Function,
+      default: () => { }
+    },
   },
   data() {
     try {
@@ -395,6 +399,9 @@ Vue.component("LswCalendario", {
       this.$nextTick(() => {
         this.es_carga_inicial = false;
       });
+      if(this.alIniciar) {
+        this.alIniciar(this.fecha_seleccionada, this);
+      }
     } catch (error) {
       console.log(error);
       throw error;

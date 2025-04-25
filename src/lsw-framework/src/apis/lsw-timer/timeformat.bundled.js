@@ -1346,7 +1346,7 @@
   };
 
   Timeformat_utils.fromDateToDatestring = Timeformat_utils.formatDatestringFromDate;
-
+  
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
     const momentoBrute = Timeformat_parser.parse(momentoText)[0];
     console.log(momentoBrute);

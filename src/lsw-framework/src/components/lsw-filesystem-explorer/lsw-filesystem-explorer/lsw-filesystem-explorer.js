@@ -91,10 +91,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(filename)">Crear fichero</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(filename)">Crear fichero</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -129,10 +129,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(filename)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(filename)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -163,10 +163,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -193,10 +193,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered pad_1">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(true)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -235,10 +235,10 @@ Vue.component("LswFilesystemExplorer", {
           <div class="flex_row centered">
             <div class="flex_100"></div>
             <div class="flex_1 pad_right_1">
-              <button class="nowrap danger_button" v-on:click="() => accept(new_filename)">Sí, seguro</button>
+              <button class="supermini nowrap danger_button" v-on:click="() => accept(new_filename)">Sí, seguro</button>
             </div>
             <div class="flex_1">
-              <button class="nowrap " v-on:click="() => accept(false)">Cancelar</button>
+              <button class="supermini nowrap " v-on:click="() => accept(false)">Cancelar</button>
             </div>
           </div>
         </div>`,
@@ -297,10 +297,6 @@ Vue.component("LswFilesystemExplorer", {
       this.current_node_is_directory = false;
       const allButtonsOnFile = [
         {
-          text: "➜",
-          classes: "reversed",
-          click: () => this.goUp(),
-        }, {
           text: "💾",
           click: () => this.processToSaveFile(),
         }, {
@@ -310,7 +306,7 @@ Vue.component("LswFilesystemExplorer", {
           text: "🔄",
           click: () => this.processToLoadFile(),
         }, {
-          text: "📄 ❌",
+          text: "📄 🔥",
           classes: "danger_button",
           click: () => this.processToDeleteFile(),
         }
@@ -322,7 +318,12 @@ Vue.component("LswFilesystemExplorer", {
           click: () => this.processToExecuteFile(),
         });
       }
-      this.$refs.panelTop.setButtons(...allButtonsOnFile);
+      this.$refs.panelTop.setButtons({
+        text: "➜",
+        classes: "reversed",
+        click: () => this.goUp(),
+      });
+      this.$refs.panelRight.setButtons(...allButtonsOnFile);
       this.$nextTick(() => {
         this.is_ready = true;
       });
@@ -332,14 +333,23 @@ Vue.component("LswFilesystemExplorer", {
       this.is_ready = false;
       this.current_node_is_directory = true;
       this.current_node_is_file = false;
-      this.$refs.panelTop.setButtons({
+      if(this.current_node === "/") {
+        this.$refs.panelTop.setButtons();
+      } else {
+        this.$refs.panelTop.setButtons({
+          text: "➜",
+          classes: "reversed",
+          click: () => this.goUp(),
+        });
+      }
+      this.$refs.panelRight.setButtons({
         text: "📄+",
         click: () => this.processToCreateFile(),
       }, {
         text: "📁+",
         click: () => this.processToCreateDirectory(),
       }, {
-        text: "📁 ❌",
+        text: "📁 🔥",
         classes: "danger_button",
         click: () => this.processToDeleteDirectory()
       });

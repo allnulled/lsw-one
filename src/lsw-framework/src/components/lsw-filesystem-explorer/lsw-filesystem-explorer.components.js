@@ -456,7 +456,7 @@ Vue.component("LswFilesystemExplorer", {
         text: "📁+",
         click: () => this.processToCreateDirectory(),
       }, {
-        text: "📁 ❌",
+        text: "📁 🔥",
         classes: "danger_button",
         click: () => this.processToDeleteDirectory()
       });
@@ -594,7 +594,7 @@ Vue.component("LswFilesystemTreeviewer", {
                             <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 ❌</button>
+                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 🔥</button>
                         </td>
                     </template>
                     <template v-else-if="typeof subnode === 'string'">

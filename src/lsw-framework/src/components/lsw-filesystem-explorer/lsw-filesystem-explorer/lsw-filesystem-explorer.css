@@ -92,11 +92,11 @@
 /* Start: Bordes de 1 sola línea entre paneles: */
 .lsw_filesystem_explorer .rightside {
     border-left: 1px solid black;
-    min-width: 48px;
+    min-width: 50px;
 }
 .lsw_filesystem_explorer .leftside {
     border-right: 1px solid black;
-    min-width: 48px;
+    min-width: 50px;
 }
 .lsw_filesystem_explorer .bodyside {
     border-top: 1px solid black;

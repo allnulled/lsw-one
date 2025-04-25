@@ -11,7 +11,7 @@
                 </td>
                 <td></td>
                 <td>
-                    <button style="visibility: hidden;" v-on:click="() => deleteNode(subnodeIndex)">❌</button>
+                    <button class="supermini" style="visibility: hidden;" v-on:click="() => deleteNode(subnodeIndex)">❌</button>
                 </td>
             </tr>
             <template v-for="subnode, subnodeIndex, subnodeCounter in explorer.current_node_subnodes">
@@ -23,10 +23,10 @@
                             <a class="filename_link" href="javascript:void(0)"><b>{{ subnodeIndex }}</b></a>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
+                            <button class="supermini nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 ❌</button>
+                            <button class="supermini danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📁 🔥</button>
                         </td>
                     </template>
                     <template v-else-if="typeof subnode === 'string'">
@@ -35,10 +35,10 @@
                             <a class="filename_link" href="javascript:void(0)">{{ subnodeIndex }}</a>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
+                            <button class="supermini nowrap" v-on:click="() => renameNode(subnodeIndex)">↔️</button>
                         </td>
                         <td style="padding: 2px;">
-                            <button class="danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📄 ❌</button>
+                            <button class="supermini danger_button nowrap" v-on:click="() => deleteNode(subnodeIndex)">📄 🔥</button>
                         </td>
                     </template>
                 </tr>

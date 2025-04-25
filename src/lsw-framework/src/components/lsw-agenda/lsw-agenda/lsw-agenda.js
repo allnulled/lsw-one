@@ -349,7 +349,15 @@ Vue.component("LswAgenda", {
           return false;
         }
       });
-      const accionesAutogeneradas = LswAgendaRandomizer.generar(LswAgendaRandomizerReglas, accionesDelDia, new Date(), DURACION_DE_BLOQUES);
+      const horaInicio = new Date(this.selectedDate);
+      const momentoAhora = new Date();
+      if(horaInicio.getDate() === momentoAhora.getDate()) {
+        horaInicio.setHours(momentoAhora.getHours());
+      }
+      horaInicio.setMinutes(0);
+      horaInicio.setSeconds(0);
+      horaInicio.setMilliseconds(0);
+      const accionesAutogeneradas = LswAgendaRandomizer.generar(LswAgendaRandomizerReglas, accionesDelDia, horaInicio, DURACION_DE_BLOQUES);
       accionesAutogeneradas.forEach(accion => {
         delete accion.id;
         accion.tiene_estado = "pendiente";

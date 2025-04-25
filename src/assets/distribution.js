@@ -12463,8 +12463,40 @@ if (process?.env?.NODE_ENV === "test") {
       }
     }
 
-    static generar(reglas = {}, accionesPrevias = [], horaActual = new Date(), duracionMinima = "10min") {
+    static generar(reglas = {}, accionesPrevias = [], horaInicio = new Date(), duracionMinima = "20min") {
       this.trace("generar", arguments);
+      const ahora = new Date(horaInicio);
+      ahora.setSeconds(0, 0); // limpia segundos y ms
+    
+      const inicio = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), horaInicio.getHours(), 0, 0, 0);
+      const finDelDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), 23, 59, 59, 999);
+      const duracionMilisegundos = this._duracionAMilisegundos(duracionMinima);
+    
+      const conceptos = Object.keys(reglas);
+      const acciones = [];
+    
+      let cursor = new Date(inicio);
+      while (cursor <= finDelDia) {
+        console.log("cursor:", LswTimer.utils.fromDateToDatestring(cursor));
+        const concepto = conceptos[Math.floor(Math.random() * conceptos.length)];
+        acciones.push({
+          en_concepto: concepto,
+          tiene_estado: "pendiente",
+          tiene_inicio: this._formatearFecha(cursor),
+          tiene_duracion: duracionMinima,
+          tiene_parametros: "",
+          tiene_resultados: "",
+          tiene_comentarios: "",
+          id: this._generarIdUnico()
+        });
+        cursor = new Date(cursor.getTime() + duracionMilisegundos);
+      }
+    
+      return acciones;
+    }    
+
+    static generarComplejo(reglas = {}, accionesPrevias = [], horaActual = new Date(), duracionMinima = "10min") {
+      this.trace("generarComplejo", arguments);
       $ensure({ reglas }, 1).to.be.object();
       $ensure({ accionesPrevias }, 1).to.be.array();
       $ensure({ horaActual }, 1).to.be.instanceOf(Date);
@@ -12475,8 +12507,9 @@ if (process?.env?.NODE_ENV === "test") {
       const accionesGeneradas = [];
       const finDelDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), 23, 59, 59, 999);
       let horaCursor = new Date(ahora);
-
-      const totalBloques = Math.floor((finDelDia - ahora) / (10 * 60 * 1000));
+      horaCursor.setMinutes(0);
+      const tamanoBloqueMs = this._duracionAMilisegundos(duracionMinima);
+      const totalBloques = Math.floor((finDelDia - ahora) / tamanoBloqueMs);
       const { usados, metas } = this._bloquesPorConcepto(reglas, acciones, totalBloques);
 
       while (horaCursor <= finDelDia) {
@@ -12504,7 +12537,7 @@ if (process?.env?.NODE_ENV === "test") {
               id: this._generarIdUnico()
             };
             accionesGeneradas.push(nuevaAccion);
-            const bloquesUsados = Math.round(this._duracionAMs(duracion) / 600000);
+            const bloquesUsados = Math.round(this._duracionAMilisegundos(duracion) / 600000);
             usados[concepto] += bloquesUsados;
             horaCursor = this._avanzarTiempo(horaCursor, duracion);
             accionGenerada = true;
@@ -12525,7 +12558,7 @@ if (process?.env?.NODE_ENV === "test") {
       return {
         ...accion,
         _inicio: new Date(accion.tiene_inicio),
-        _duracionMs: this._duracionAMs(accion.tiene_duracion)
+        _duracionMilisegundos: this._duracionAMilisegundos(accion.tiene_duracion)
       };
     }
 
@@ -12542,12 +12575,12 @@ if (process?.env?.NODE_ENV === "test") {
       for (const r of reglas) {
         if (r.nunca_despues_de) {
           const ultimaOtra = this._ultimaAccionDe(r.nunca_despues_de, generadas);
-          if (ultimaOtra && hora - ultimaOtra._inicio < this._duracionAMs(r.durante)) {
+          if (ultimaOtra && hora - ultimaOtra._inicio < this._duracionAMilisegundos(r.durante)) {
             return false;
           }
         }
         if (r.cada && ultima) {
-          const msMin = this._duracionAMs(r.cada);
+          const msMin = this._duracionAMilisegundos(r.cada);
           if (hora - ultima._inicio < msMin) {
             return false;
           }
@@ -12565,8 +12598,8 @@ if (process?.env?.NODE_ENV === "test") {
       return duracionPorDefecto;
     }
 
-    static _duracionAMs(str) {
-      this.trace("_duracionAMs", arguments, [str]);
+    static _duracionAMilisegundos(str) {
+      this.trace("_duracionAMilisegundos", arguments, [str]);
       const partes = str.match(/((\d+)\s*h)?\s*((\d+)\s*min)?/i);
       const horas = partes?.[2] ? parseInt(partes[2]) : 0;
       const minutos = partes?.[4] ? parseInt(partes[4]) : 0;
@@ -12575,14 +12608,14 @@ if (process?.env?.NODE_ENV === "test") {
 
     static _avanzarTiempo(date, duracionStr) {
       this.trace("_avanzarTiempo", arguments, [date, duracionStr]);
-      const ms = this._duracionAMs(duracionStr);
+      const ms = this._duracionAMilisegundos(duracionStr);
       date.setTime(date.getTime() + ms);
       return new Date(date);
     }
 
     static _formatearFecha(date) {
       this.trace("_formatearFecha", arguments);
-      return date.toISOString().slice(0, 16).replace("T", " ").replace(/-/g, "/");
+      return LswTimer.utils.fromDateToDatestring(date);
     }
 
     static _generarIdUnico() {
@@ -12605,7 +12638,7 @@ if (process?.env?.NODE_ENV === "test") {
       for (const concepto in reglas) {
         usados[concepto] = accionesTotales
           .filter(a => a.en_concepto === concepto)
-          .reduce((suma, a) => suma + Math.round(a._duracionMs / 600000), 0); // bloques de 10min
+          .reduce((suma, a) => suma + Math.round(a._duracionMilisegundos / 600000), 0); // bloques de 10min
       }
 
       const metas = {};
@@ -25493,7 +25526,15 @@ Vue.component("LswAgenda", {
           return false;
         }
       });
-      const accionesAutogeneradas = LswAgendaRandomizer.generar(LswAgendaRandomizerReglas, accionesDelDia, new Date(), DURACION_DE_BLOQUES);
+      const horaInicio = new Date(this.selectedDate);
+      const momentoAhora = new Date();
+      if(horaInicio.getDate() === momentoAhora.getDate()) {
+        horaInicio.setHours(momentoAhora.getHours());
+      }
+      horaInicio.setMinutes(0);
+      horaInicio.setSeconds(0);
+      horaInicio.setMilliseconds(0);
+      const accionesAutogeneradas = LswAgendaRandomizer.generar(LswAgendaRandomizerReglas, accionesDelDia, horaInicio, DURACION_DE_BLOQUES);
       accionesAutogeneradas.forEach(accion => {
         delete accion.id;
         accion.tiene_estado = "pendiente";

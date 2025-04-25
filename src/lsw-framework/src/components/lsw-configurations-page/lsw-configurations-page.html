@@ -1,3 +1,21 @@
 <div class="configurations_page">
-    Configurations page.
+    <div class="flex_row centered">
+        <div class="flex_1 nowrap pad_right_2">📌</div>
+        <select class="flex_100" v-model="selectedSection">
+            <option value="datos">Base de datos</option>
+            <option value="preferencias">Preferencias de usuario</option>
+        </select>
+    </div>
+    <div class="section margin_top_1" v-if="selectedSection === 'datos'">
+        <h3>Configuraciones » Base de datos</h3>
+        <div class="margin_top_1">
+            <button class="supermini margin_right_1" v-on:click="startExportarAJson">Exportar a JSON</button>
+            <button class="supermini margin_right_1" v-on:click="startImportarDeJson">Importar de JSON</button>
+            <button class="supermini margin_right_1 danger_button" v-on:click="startResetearBaseDeDatos">Resetear</button>
+        </div>
+    </div>
+    <div class="section margin_top_1" v-if="selectedSection === 'preferencias'">
+        <h3>Configuraciones » Preferencias de usuario</h3>
+        <div>Por ahora, esta sección está vacía.</div>
+    </div>
 </div>

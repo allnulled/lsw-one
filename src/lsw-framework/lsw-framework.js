@@ -12021,6 +12021,12 @@ if (process?.env?.NODE_ENV === "test") {
       return matched.length ? matched[0] : null;
     }
 
+    static waitForMilliseconds(ms) {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, ms);
+      });
+    }
+
   };
   // @code.end: LswDom class
 
@@ -12404,6 +12410,189 @@ if (process?.env?.NODE_ENV === "test") {
 
   return LswRandomizer;
   // @code.end: LswRandomizer class
+
+});
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswAgendaRandomizer'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswAgendaRandomizer'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+
+  class LswAgendaRandomizer {
+
+    static isTracing = false;
+
+    static trace(method, args = [], extras = false) {
+      if (this.isTracing) {
+        console.log(`[trace] LswAgendaRandomizer.${method}: ${Array.from(args).length}`);
+        console.log(`[trace] Extra parameters:`, extras);
+      }
+    }
+
+    static generar(reglas = {}, accionesPrevias = [], horaActual = new Date()) {
+      this.trace("generar", arguments);
+      $ensure({ reglas }, 1).to.be.object();
+      $ensure({ accionesPrevias }, 1).to.be.array();
+      $ensure({ horaActual }, 1).to.be.instanceOf(Date);
+      const ahora = new Date(horaActual);
+      ahora.setMinutes(0);
+      const acciones = accionesPrevias.map(this._normalizarAccion.bind(this));
+      const accionesPosibles = Object.keys(reglas);
+      const accionesGeneradas = [];
+      const finDelDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), 23, 59, 59, 999);
+      let horaCursor = new Date(ahora);
+
+      const totalBloques = Math.floor((finDelDia - ahora) / (10 * 60 * 1000));
+      const { usados, metas } = this._bloquesPorConcepto(reglas, acciones, totalBloques);
+
+      while (horaCursor <= finDelDia) {
+        const conceptosOrdenados = accionesPosibles
+          .slice()
+          .sort((a, b) => (metas[b] - usados[b]) - (metas[a] - usados[a]));
+
+        let accionGenerada = false;
+
+        for (const concepto of conceptosOrdenados) {
+          const regla = reglas[concepto];
+          const ultima = this._ultimaAccionDe(concepto, acciones.concat(accionesGeneradas));
+          const puede = this._evaluarRegla(horaCursor, concepto, regla, ultima, acciones.concat(accionesGeneradas));
+
+          if (puede && metas[concepto] > usados[concepto]) {
+            const duracion = this._obtenerDuracionMinima(regla);
+            const nuevaAccion = {
+              en_concepto: concepto,
+              tiene_estado: "pendiente",
+              tiene_inicio: this._formatearFecha(horaCursor),
+              tiene_duracion: duracion,
+              tiene_parametros: "",
+              tiene_resultados: "",
+              tiene_comentarios: "",
+              id: this._generarIdUnico()
+            };
+            accionesGeneradas.push(nuevaAccion);
+            const bloquesUsados = Math.round(this._duracionAMs(duracion) / 600000);
+            usados[concepto] += bloquesUsados;
+            horaCursor = this._avanzarTiempo(horaCursor, duracion);
+            accionGenerada = true;
+            break;
+          }
+        }
+
+        if (!accionGenerada) {
+          horaCursor = this._avanzarTiempo(horaCursor, "12min");
+        }
+      }
+
+      return accionesGeneradas;
+    }
+
+    static _normalizarAccion(accion) {
+      this.trace("_normalizarAccion", arguments);
+      return {
+        ...accion,
+        _inicio: new Date(accion.tiene_inicio),
+        _duracionMs: this._duracionAMs(accion.tiene_duracion)
+      };
+    }
+
+    static _ultimaAccionDe(concepto, lista) {
+      this.trace("_ultimaAccionDe", arguments);
+      return [...lista]
+        .filter(a => a.en_concepto === concepto)
+        .sort((a, b) => b._inicio - a._inicio)[0];
+    }
+
+    static _evaluarRegla(hora, concepto, regla, ultima, generadas) {
+      this.trace("_evaluarRegla", arguments);
+      const reglas = Array.isArray(regla) ? regla : [regla];
+      for (const r of reglas) {
+        if (r.nunca_despues_de) {
+          const ultimaOtra = this._ultimaAccionDe(r.nunca_despues_de, generadas);
+          if (ultimaOtra && hora - ultimaOtra._inicio < this._duracionAMs(r.durante)) {
+            return false;
+          }
+        }
+        if (r.cada && ultima) {
+          const msMin = this._duracionAMs(r.cada);
+          if (hora - ultima._inicio < msMin) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    static _obtenerDuracionMinima(regla) {
+      this.trace("_obtenerDuracionMinima", arguments);
+      const reglas = Array.isArray(regla) ? regla : [regla];
+      for (const r of reglas) {
+        if (r.minimo) return r.minimo;
+      }
+      return "12min";
+    }
+
+    static _duracionAMs(str) {
+      this.trace("_duracionAMs", arguments, [str]);
+      const partes = str.match(/((\d+)\s*h)?\s*((\d+)\s*min)?/i);
+      const horas = partes?.[2] ? parseInt(partes[2]) : 0;
+      const minutos = partes?.[4] ? parseInt(partes[4]) : 0;
+      return (horas * 60 + minutos) * 60 * 1000;
+    }
+
+    static _avanzarTiempo(date, duracionStr) {
+      this.trace("_avanzarTiempo", arguments, [date, duracionStr]);
+      const ms = this._duracionAMs(duracionStr);
+      date.setTime(date.getTime() + ms);
+      return new Date(date);
+    }
+
+    static _formatearFecha(date) {
+      this.trace("_formatearFecha", arguments);
+      return date.toISOString().slice(0, 16).replace("T", " ").replace(/-/g, "/");
+    }
+
+    static _generarIdUnico() {
+      this.trace("_generarIdUnico", arguments);
+      return Math.floor(Math.random() * 1e9);
+    }
+
+    static _bloquesPorConcepto(reglas, accionesTotales, bloquesDisponibles) {
+      const porciones = {};
+      let total = 0;
+
+      for (const concepto in reglas) {
+        const r = Array.isArray(reglas[concepto]) ? reglas[concepto] : [reglas[concepto]];
+        const p = r.find(x => x.porcion)?.porcion || 0;
+        porciones[concepto] = p;
+        total += p;
+      }
+
+      const usados = {};
+      for (const concepto in reglas) {
+        usados[concepto] = accionesTotales
+          .filter(a => a.en_concepto === concepto)
+          .reduce((suma, a) => suma + Math.round(a._duracionMs / 600000), 0); // bloques de 10min
+      }
+
+      const metas = {};
+      for (const concepto in reglas) {
+        metas[concepto] = total
+          ? Math.round((porciones[concepto] / total) * bloquesDisponibles)
+          : 0;
+      }
+
+      return { usados, metas };
+    }
+  }
+
+  return LswAgendaRandomizer;
 
 });
 (function (factory) {
@@ -12882,6 +13071,31 @@ if (process?.env?.NODE_ENV === "test") {
           }
         };
       });
+    }
+
+    static async exportDatabase(dbName) {
+      this.trace("Browsie.exportDatabase", arguments);
+      const schema = await this.getSchema(dbName);
+      const storeIds = Object.keys(schema);
+      const allData = {};
+      for(let indexStore=0; indexStore<storeIds.length; indexStore++) {
+        const storeId = storeIds[indexStore];
+        const storeData = await this.getAllDataFromStore(dbName, storeId);
+        allData[storeId] = storeData;
+      }
+      return allData;
+    }
+
+    static async importToDatabase(dbName, storesData = {}) {
+      this.trace("Browsie.importToDatabase", arguments);
+      const storeIds = Object.keys(storesData);
+      const connection = await this.open(dbName);
+      for(let indexStore=0; indexStore<storeIds.length; indexStore++) {
+        const storeId = storeIds[indexStore];
+        const allData = storesData[storeId];
+        console.log(`[*] Importing store «${storeId}»`);
+        await connection.insertMany(storeId, allData);
+      }
     }
 
     // Obtener todos los datos de un store
@@ -22505,6 +22719,7 @@ Vue.component("LswWindowsMainTab", {
                     <button class="mini main_tab_topbar_button" v-on:click="openFilesystem">📂</button>
                     <button class="mini main_tab_topbar_button" v-on:click="openAutomessages">📫</button>
                     <button class="mini main_tab_topbar_button" v-on:click="openNoteUploader">💬</button>
+                    <button class="mini main_tab_topbar_button" v-on:click="openConfigurationsPage">🔧</button>
                 </div>
                 <div class="pad_normal" v-if="!Object.keys(\$lsw.dialogs.opened).length">
                     <span>No processes found right now.</span>
@@ -22589,6 +22804,15 @@ Vue.component("LswWindowsMainTab", {
         id: "note-uploader-" + this.getRandomString(5),
         title: "Note uploader",
         template: `<div class="pad_2"><lsw-notes /></div>`,
+      });
+    },
+    openConfigurationsPage() {
+      this.$trace("lsw-windows-main-tab.methods.openConfigurationsPage", arguments);
+      this.viewer.hide();
+      this.$dialogs.open({
+        id: "configurations-page-" + this.getRandomString(5),
+        title: "Configurations page",
+        template: `<div class="pad_2"><lsw-configurations-page /></div>`,
       });
     }
   },
@@ -27287,7 +27511,25 @@ Vue.component("LswNotes", {
 // Change this component at your convenience:
 Vue.component("LswConfigurationsPage", {
   template: `<div class="configurations_page">
-    Configurations page.
+    <div class="flex_row centered">
+        <div class="flex_1 nowrap pad_right_2">📌</div>
+        <select class="flex_100" v-model="selectedSection">
+            <option value="datos">Base de datos</option>
+            <option value="preferencias">Preferencias de usuario</option>
+        </select>
+    </div>
+    <div class="section margin_top_1" v-if="selectedSection === 'datos'">
+        <h3>Configuraciones » Base de datos</h3>
+        <div class="margin_top_1">
+            <button class="supermini margin_right_1" v-on:click="startExportarAJson">Exportar a JSON</button>
+            <button class="supermini margin_right_1" v-on:click="startImportarDeJson">Importar de JSON</button>
+            <button class="supermini margin_right_1 danger_button" v-on:click="startResetearBaseDeDatos">Resetear</button>
+        </div>
+    </div>
+    <div class="section margin_top_1" v-if="selectedSection === 'preferencias'">
+        <h3>Configuraciones » Preferencias de usuario</h3>
+        <div>Por ahora, esta sección está vacía.</div>
+    </div>
 </div>`,
   props: {
     
@@ -27295,11 +27537,134 @@ Vue.component("LswConfigurationsPage", {
   data() {
     this.$trace("lsw-configurations-page.data", arguments);
     return {
-      
+      selectedSection: "datos",
     };
   },
   methods: {
-
+    selectSection(seccion) {
+      this.$trace("lsw-configurations-page.methods.selectSection");
+      this.selectSection = seccion;
+    },
+    async startExportarAJson() {
+      this.$trace("lsw-configurations-page.methods.startExportarAJson");
+      const allData = await LswDatabase.exportDatabase("lsw_default_database");
+      this.$dialogs.open({
+        title: "Exportar base de datos a JSON",
+        template: `<div class="pad_1">
+          <div class="flex_row centered">
+            <div class="flex_100 pad_1">Exportación a JSON:</div>
+            <div class="flex_1 pad_1">
+              <button class="supermini nowrap" v-on:click="copyToClipboard">Copiar</button>
+            </div>
+          </div>
+          <textarea class="width_100" style="min-height: 220px;" v-model="jsonData" disabled="true"></textarea>
+          <hr />
+          <div class="pad_1 text_align_right">
+            <button class="supermini" v-on:click="cancel">Cancelar</button>
+          </div>
+        </div>`,
+        factory: {
+          data: {
+            jsonData: JSON.stringify(allData, null, 2),
+          },
+          methods: {
+            copyToClipboard() {
+              this.$trace("Dialogo.exportar_a_json.methods.copyToClipboard");
+              this.$window.navigator.clipboard.writeText(this.jsonData);
+              this.$lsw.toasts.send({
+                title: "¡Texto copiado!",
+                text: "El texto fue copiado con éxito."
+              });
+            }
+          }
+        }
+      })
+    },
+    async startImportarDeJson() {
+      this.$trace("lsw-configurations-page.methods.startImportarDeJson");
+      const resultado = await this.$dialogs.open({
+        title: "Importar JSON a base de datos",
+        template: `<div class="pad_1">
+          <div class="flex_row centered">
+            <div class="flex_100 pad_1">Importación de JSON:</div>
+          </div>
+          <textarea class="width_100" style="min-height: 220px;" v-model="value.importation" disabled="true" placeholder="Por ejemplo: {store:[{},{},{}]}"></textarea>
+          <hr />
+          <div class="pad_1 text_align_right">
+            <button class="supermini danger_button" v-on:click="sendForm">Importar</button>
+            <button class="supermini" v-on:click="cancel">Cancelar</button>
+          </div>
+        </div>`,
+        factory: {
+          data: {
+            value: {
+              importation: "",
+            }
+          },
+          methods: {
+            sendForm() {
+              this.$trace("Dialogo.importar_de_json.methods.sendForm");
+              this.validateImportation();
+              return this.accept();
+            },
+            validateImportation() {
+              this.$trace("Dialogo.importar_de_json.methods.validateImportation");
+              try {
+                JSON.parse(this.value.importation);
+              } catch (error) {
+                this.$lsw.toasts.send({
+                  title: "⛔️ Error al parsear JSON",
+                  text: `La importación se interrumpió.`
+                });
+                throw error;
+              }
+            }
+          }
+        }
+      });
+      if(typeof resultado !== "object") {
+        return false;
+      }
+      let data = undefined;
+      try {
+        data = JSON.parse(resultado.importation);
+      } catch (error) {
+        return this.$lsw.toasts.send({
+          title: "⛔️ Error al parsear JSON",
+          text: `La importación falló.`
+        });
+      }
+      // @OK:
+      await LswDatabase.importToDatabase("lsw_default_database", data);
+      return this.$lsw.toasts.send({
+        title: "👍 Importación completada",
+        text: `La importación fue un éxito.`
+      });
+    },
+    async startResetearBaseDeDatos() {
+      this.$trace("lsw-configurations-page.methods.startResetearBaseDeDatos");
+      const confirmation = await this.$dialogs.open({
+        title: "Resetear la base de datos",
+        template: `<div class="pad_1">
+          <div class="text_align_center">
+            <div class="pad_1 font_weight_bold">¡CUIDADO!</div>
+            <div class="pad_1 pad_top_0">¿Seguro que quieres resetear la base de datos?</div>
+            <div class="pad_1 pad_top_0">Considera que perderás todos los datos.</div>
+          </div>
+          <hr />
+          <div class="pad_1 text_align_right">
+            <button class="supermini danger_button" v-on:click="accept">Aceptar</button>
+            <button class="supermini" v-on:click="cancel">Cancelar</button>
+          </div>
+        </div>`,
+        factory: {
+          data: { value: {} },
+          methods: {}
+        }
+      });
+      if(typeof confirmation !== "object") return;
+      console.log("Confirmed:", confirmation);
+    },
   },
   mounted() {
     this.$trace("lsw-configurations-page.mounter");

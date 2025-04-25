@@ -70,6 +70,12 @@
       return matched.length ? matched[0] : null;
     }
 
+    static waitForMilliseconds(ms) {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, ms);
+      });
+    }
+
   };
   // @code.end: LswDom class
 

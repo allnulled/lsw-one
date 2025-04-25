@@ -34,6 +34,8 @@ module.exports = [
   `${basepath}/lsw-framework/src/apis/lsw-proxifier/proxifier.unbundled.js`,
   // LSW RANDOMIZER:
   `${basepath}/lsw-framework/src/apis/lsw-randomizer/lsw-randomizer.js`,
+  // LSW AGENDA RANDOMIZER:
+  `${basepath}/lsw-framework/src/apis/lsw-agenda-randomizer/lsw-agenda-randomizer.js`,
   // LSW ASYNCIRCUIT:
   `${basepath}/lsw-framework/src/apis/lsw-circuiter/async-circuit.js`,
   // LSW COMMANDER:

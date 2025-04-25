@@ -72,6 +72,15 @@ Vue.component("LswWindowsMainTab", {
         title: "Note uploader",
         template: `<div class="pad_2"><lsw-notes /></div>`,
       });
+    },
+    openConfigurationsPage() {
+      this.$trace("lsw-windows-main-tab.methods.openConfigurationsPage", arguments);
+      this.viewer.hide();
+      this.$dialogs.open({
+        id: "configurations-page-" + this.getRandomString(5),
+        title: "Configurations page",
+        template: `<div class="pad_2"><lsw-configurations-page /></div>`,
+      });
     }
   },
   mounted() {

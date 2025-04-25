@@ -125,6 +125,31 @@
       });
     }
 
+    static async exportDatabase(dbName) {
+      this.trace("Browsie.exportDatabase", arguments);
+      const schema = await this.getSchema(dbName);
+      const storeIds = Object.keys(schema);
+      const allData = {};
+      for(let indexStore=0; indexStore<storeIds.length; indexStore++) {
+        const storeId = storeIds[indexStore];
+        const storeData = await this.getAllDataFromStore(dbName, storeId);
+        allData[storeId] = storeData;
+      }
+      return allData;
+    }
+
+    static async importToDatabase(dbName, storesData = {}) {
+      this.trace("Browsie.importToDatabase", arguments);
+      const storeIds = Object.keys(storesData);
+      const connection = await this.open(dbName);
+      for(let indexStore=0; indexStore<storeIds.length; indexStore++) {
+        const storeId = storeIds[indexStore];
+        const allData = storesData[storeId];
+        console.log(`[*] Importing store «${storeId}»`);
+        await connection.insertMany(storeId, allData);
+      }
+    }
+
     // Obtener todos los datos de un store
     static async getAllDataFromStore(dbName, storeName) {
       this.trace("Browsie.getAllDataFromStore", arguments);

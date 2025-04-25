@@ -1918,7 +1918,7 @@ textarea {
 button {
     border: 1px solid #b1b1b1;
     border: 1px solid #CCC;
-    border: 1px solid transparent;
+    border: 1px solid #CCCC;
     border-radius: 2pt;
     padding: 2px;
     font-family: Arial;

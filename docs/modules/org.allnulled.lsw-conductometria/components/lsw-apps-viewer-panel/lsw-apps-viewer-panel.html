@@ -7,7 +7,7 @@
                     v-if="selectedApplication === 'antes'"
                     v-bind:key="'app_acciones_anteriores'">
                     <template v-if="accionesAntes && accionesAntes.length">
-                        <div>Acciones anteriores:</div>
+                        <h3 class="pad_bottom_1 margin_bottom_1">Acciones anteriores:</h3>
                         <div class="tarjetas_de_accion">
                             <div class="tarjeta_de_accion nowrap"
                                 v-for="accion, accionIndex in accionesAntes"
@@ -17,7 +17,7 @@
                                 <div>{{ accion.tiene_duracion }}</div>
                                 <div class="cell_en_estado"
                                     :class="'estado_' + accion.tiene_estado"
-                                    v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
+                                    v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{ accion.tiene_estado }} {{ getSimboloEstadoAccion(accion.tiene_estado) }}</div>
                                 <!--div>{{ accion.tiene_parametros }}</div>
                                     <div>{{ accion.tiene_resultados }}</div>
                                     <div>{{ accion.tiene_comentarios }}</div-->
@@ -31,20 +31,18 @@
                     v-if="selectedApplication === 'despues'"
                     v-bind:key="'app_acciones_posteriores'">
                     <template v-if="accionesDespues && accionesDespues.length">
-                        <div>Acciones posteriores:</div>
+                        <h3 class="pad_bottom_1 margin_bottom_1">Acciones posteriores:</h3>
                         <div class="tarjetas_de_accion">
                             <div class="tarjeta_de_accion nowrap"
                                 v-for="accion, accionIndex in accionesDespues"
                                 v-bind:key="'accion_despues_' + accionIndex">
-                                <div>{{ accion.tiene_inicio }}</div>
-                                <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                                <div>{{ accion.tiene_resultados.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                                 <div>{{ accion.tiene_duracion }}</div>
+                                <div>{{ LswTimer.utils.extractHourFromDatestring(accion.tiene_inicio) }}</div>
+                                <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
                                 <div class="cell_en_estado cursor_pointer"
                                     :class="'estado_' + accion.tiene_estado"
-                                    v-on:click="() => alternarEstado(accion)">{{ accion.tiene_estado }}</div>
-                                <div>{{ accion.tiene_parametros }}</div>
-                                <div>{{ accion.tiene_resultados }}</div>
-                                <div>{{ accion.tiene_comentarios }}</div>
+                                    v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{ accion.tiene_estado }} {{ getSimboloEstadoAccion(accion.tiene_estado) }}</div>
                             </div>
                         </div>
                     </template>

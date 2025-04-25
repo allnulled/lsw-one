@@ -25,6 +25,11 @@ Vue.component("LswAppsViewerPanel", {
         }
       }
     },
+    getSimboloEstadoAccion(estado) {
+      return (estado === "completada") ? "💚" :
+      (estado === "pendiente") ? "❓" :
+      (estado === "fallida") ? "🔥" : "";
+    },
     async loadAcciones() {
       this.$trace("lsw-apps-viewer-panel.methods.loadAcciones");
       const output = await this.$lsw.database.selectMany("Accion");
@@ -36,9 +41,10 @@ Vue.component("LswAppsViewerPanel", {
       const accionesAntes = [];
       const accionesDespues = [];
       output.forEach(accion => {
-        console.log(accion.tiene_inicio);
         try {
           const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
+          const areSameDay = LswTimer.utils.areSameDayDates(dateAccion, estaHora);
+          if(!areSameDay) return;
           if (dateAccion >= estaHora) {
             accionesDespues.push(accion);
           } else {

@@ -16080,8 +16080,8 @@ return Store;
   }
 })(function () {
 
-    // @code.start: LswTimer API | @$section: LswTimer API » LswTimer classes and functions
-    // exported to LswTimer
+  // @code.start: LswTimer API | @$section: LswTimer API » LswTimer classes and functions
+  // exported to LswTimer
   const Timeformat_utils = {};
 
   Timeformat_utils.formatHour = function (horaInput, minutoInput) {
@@ -16091,38 +16091,38 @@ return Store;
   };
 
   Timeformat_utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false, setOnlyHour = false) {
-    if(typeof dateObject === "undefined") {
+    if (typeof dateObject === "undefined") {
       return undefined;
     }
     const anio = ("" + (dateObject.getFullYear() ?? 0)).padStart(4, '0');
     const mes = ("" + ((dateObject.getMonth() ?? 0) + 1)).padStart(2, '0');
     const dia = ("" + (dateObject.getDate() ?? 0)).padStart(2, '0');
-    if(setUntilDay) {
+    if (setUntilDay) {
       return `${anio}/${mes}/${dia}`;
     }
     const hora = ("" + (dateObject.getHours() ?? 0)).padStart(2, '0');
     const minuto = ("" + (dateObject.getMinutes() ?? 0)).padStart(2, '0');
     const segundo = setSeconds ? ("" + (dateObject.getSeconds() ?? 0)).padStart(2, '0') : false;
     const laHora = `${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
-    if(setOnlyHour) {
+    if (setOnlyHour) {
       return laHora;
     }
     return `${anio}/${mes}/${dia} ${laHora}`;
   };
 
   Timeformat_utils.fromDateToDatestring = Timeformat_utils.formatDatestringFromDate;
-  
+
   Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
     const momentoBrute = Timeformat_parser.parse(momentoText)[0];
     console.log(momentoBrute);
     const date = new Date();
     console.log(1, date);
-    if(momentoBrute.anio) {
+    if (momentoBrute.anio) {
       date.setFullYear(momentoBrute.anio);
-      if(momentoBrute.mes === 0) {
+      if (momentoBrute.mes === 0) {
         throw new Error("Cannot set «mes» to «0» in momento text on «LswTimer.utils.getDateFromMomentoText»");
       }
-      date.setMonth((momentoBrute.mes-1) || 0);
+      date.setMonth((momentoBrute.mes - 1) || 0);
       date.setDate(momentoBrute.dia || 0);
     }
     date.setHours(momentoBrute.hora || 0);
@@ -16134,7 +16134,7 @@ return Store;
   };
 
   Timeformat_utils.fromDatestringToDate = Timeformat_utils.getDateFromMomentoText;
-  
+
   Timeformat_utils.formatDatetimeFromMomento = function (momentoBrute, setMeridian = false) {
     const momento = Timeformat_utils.toPlainObject(momentoBrute);
     const anio = ("" + (momento.anio ?? 0)).padStart(4, '0');
@@ -16244,69 +16244,95 @@ return Store;
     return true;
   };
 
-  Timeformat_utils.formatDateToSpanish = function(date) {
+  Timeformat_utils.formatDateToSpanish = function (date) {
     const anio = date.getFullYear();
     const month = date.getMonth();
     const day = date.getDate();
     const weekday = date.getDay();
     const diaSemana = (() => {
-      if(weekday === 0) return "Domingo";
-      if(weekday === 1) return "Lunes";
-      if(weekday === 2) return "Martes";
-      if(weekday === 3) return "Miércoles";
-      if(weekday === 4) return "Jueves";
-      if(weekday === 5) return "Viernes";
-      if(weekday === 6) return "Sábado";
+      if (weekday === 0) return "Domingo";
+      if (weekday === 1) return "Lunes";
+      if (weekday === 2) return "Martes";
+      if (weekday === 3) return "Miércoles";
+      if (weekday === 4) return "Jueves";
+      if (weekday === 5) return "Viernes";
+      if (weekday === 6) return "Sábado";
     })();
     const mes = (() => {
-      if(month === 0) return "Enero";
-      if(month === 1) return "Febrero";
-      if(month === 2) return "Marzo";
-      if(month === 3) return "Abril";
-      if(month === 4) return "Mayo";
-      if(month === 5) return "Junio";
-      if(month === 6) return "Julio";
-      if(month === 7) return "Agosto";
-      if(month === 8) return "Septiembre";
-      if(month === 9) return "Octubre";
-      if(month === 10) return "Noviembre";
-      if(month === 11) return "Diciembre";
+      if (month === 0) return "Enero";
+      if (month === 1) return "Febrero";
+      if (month === 2) return "Marzo";
+      if (month === 3) return "Abril";
+      if (month === 4) return "Mayo";
+      if (month === 5) return "Junio";
+      if (month === 6) return "Julio";
+      if (month === 7) return "Agosto";
+      if (month === 8) return "Septiembre";
+      if (month === 9) return "Octubre";
+      if (month === 10) return "Noviembre";
+      if (month === 11) return "Diciembre";
     })();
     return `${diaSemana}, ${day} de ${mes} del ${anio}`;
   }
 
-  Timeformat_utils.formatMomentoObjectToMomentoString = function(momento) {
+  Timeformat_utils.formatMomentoObjectToMomentoString = function (momento) {
     let out = "";
     const { anio = false, mes = false, dia = false, hora = false, minuto = false, segundo = false, milisegundo = false } = momento;
-    if(anio !== false) {
+    if (anio !== false) {
       out += ("" + anio).padStart(4, '0');
       out += "/";
     }
-    if(mes !== false) {
+    if (mes !== false) {
       out += ("" + mes).padStart(2, '0');
       out += "/";
     }
-    if(dia !== false) {
+    if (dia !== false) {
       out += ("" + dia).padStart(2, '0');
       out += " ";
     }
-    if(hora !== false) {
+    if (hora !== false) {
       out += ("" + hora).padStart(2, '0');
       out += ":";
     }
-    if(minuto !== false) {
+    if (minuto !== false) {
       out += ("" + minuto).padStart(2, '0');
       out += ":";
     }
-    if(segundo !== false) {
+    if (segundo !== false) {
       out += ("" + segundo).padStart(2, '0');
       out += ".";
     }
-    if(milisegundo !== false) {
+    if (milisegundo !== false) {
       out += ("" + milisegundo).padStart(3, '0');
     }
     return out.trim();
-  }
+  };
+
+  Timeformat_utils.areSameDayDates = function (date1, date2) {
+    const areSameYear = date1.getFullYear() === date2.getFullYear();
+    const areSameMonth = date1.getMonth() === date2.getMonth();
+    const areSameDate = date1.getDate() === date2.getDate();
+    const areSameDay = areSameYear && areSameMonth && areSameDate;
+    return areSameDay;
+  };
+
+  Timeformat_utils.extractHourFromDatestring = function (date) {
+    try {
+      return date.split(" ")[1];
+    } catch (error) {
+      console.log(error);
+      return date;
+    }
+  };
+
+  Timeformat_utils.extractDayFromDatestring = function (date) {
+    try {
+      return date.split(" ")[0];
+    } catch (error) {
+      console.log(error);
+      return date;
+    }
+  };
 
   return {
     parser: Timeformat_parser,

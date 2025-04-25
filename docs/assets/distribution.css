@@ -2581,26 +2581,34 @@ table.tabla_de_conductometria .minibutton {
     border-bottom: 3px double #333;
 }
 .tarjetas_de_accion {
-    border-top: 1px solid #222;
+    border-top: 0px solid #222;
     border-right: 0px solid #222;
 }
 .tarjeta_de_accion {
     display: flex;
     flex-direction: row;
     border-top: 0px solid #222;
-    border-right: 1px solid #222;
+    border-right: 0px solid #222;
 }
 .tarjeta_de_accion > div {
     white-space: no-wrap;
-    padding: 8px;
-    border: 1px solid #222;
+    padding: 2px;
+    padding-left: 8px;
+    margin-top: 1px;
+    border: 0px solid #222;
     border-right: 0px solid #222;
     border-top: 0px solid #222;
+}
+.tarjeta_de_accion > div:first-child {
+    padding-left: 0px;
 }
 .tarjeta_de_accion > .cell_en_concepto {
     
 }
 .tarjeta_de_accion > .cell_en_estado {
+    color: black;
+    text-shadow: 0 0 1px black;
+    border-radius: 8pt;
     cursor: pointer;
 }
 .tarjeta_de_accion > .cell_en_estado.estado_pendiente {

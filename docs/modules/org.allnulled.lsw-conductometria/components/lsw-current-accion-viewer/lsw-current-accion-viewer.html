@@ -72,7 +72,7 @@
                                 <div class="pad_top_0"
                                     v-if="selectedSection === 'antes'">
                                     <template v-if="accionesAntes && accionesAntes.length">
-                                        <div>Acciones anteriores:</div>
+                                        <h3>Acciones anteriores:</h3>
                                         <div class="tarjetas_de_accion">
                                             <div class="tarjeta_de_accion nowrap"
                                                 v-for="accion, accionIndex in accionesAntes"
@@ -95,7 +95,7 @@
                                 <div class="pad_top_0"
                                     v-if="selectedSection === 'despues'">
                                     <template v-if="accionesDespues && accionesDespues.length">
-                                        <div>Acciones posteriores:</div>
+                                        <h3>Acciones posteriores:</h3>
                                         <div class="tarjetas_de_accion">
                                             <div class="tarjeta_de_accion nowrap"
                                                 v-for="accion, accionIndex in accionesDespues"

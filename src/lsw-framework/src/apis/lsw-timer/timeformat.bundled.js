@@ -1556,9 +1556,24 @@
     }
   };
 
-  Timeformat_utils.extractDayFromDatestring = function (date) {
+  Timeformat_utils.fromDateToHour = function (date, addSeconds = false) {
     try {
-      return date.split(" ")[0];
+      const hora = date.getHours();
+      const minuto = date.getMinutes();
+      let out = "";
+      if (hora !== false) {
+        out += ("" + hora).padStart(2, '0');
+        out += ":";
+      }
+      if (minuto !== false) {
+        out += ("" + minuto).padStart(2, '0');
+      }
+      if(addSeconds) {
+        const segundo = date.getSeconds();
+        out += ":";
+        out += ("" + segundo).padStart(2, '0');
+      }
+      return out;
     } catch (error) {
       console.log(error);
       return date;

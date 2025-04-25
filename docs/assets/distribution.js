@@ -16348,9 +16348,24 @@ return Store;
     }
   };
 
-  Timeformat_utils.extractDayFromDatestring = function (date) {
+  Timeformat_utils.fromDateToHour = function (date, addSeconds = false) {
     try {
-      return date.split(" ")[0];
+      const hora = date.getHours();
+      const minuto = date.getMinutes();
+      let out = "";
+      if (hora !== false) {
+        out += ("" + hora).padStart(2, '0');
+        out += ":";
+      }
+      if (minuto !== false) {
+        out += ("" + minuto).padStart(2, '0');
+      }
+      if(addSeconds) {
+        const segundo = date.getSeconds();
+        out += ":";
+        out += ("" + segundo).padStart(2, '0');
+      }
+      return out;
     } catch (error) {
       console.log(error);
       return date;
@@ -23337,7 +23352,7 @@ Vue.component("LswDatabaseBreadcrumb", {
 // @code.start: LswPageDatabases API | @$section: Vue.js (v2) Components » LswPageDatabases API » LswPageDatabases API
 Vue.component("LswPageDatabases", {
   template: `<div>
-    <h3>Todas las bases de datos</h3>
+    <h3> 📦 Todas las bases de datos</h3>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb"
         :database-explorer="databaseExplorer" />
     <lsw-table v-if="databases && databases.length"
@@ -23406,6 +23421,7 @@ Vue.component("LswPageRows", {
         <span>
             <button v-on:click="goBack">⬅️</button>
         </span>
+        <span> 📦 </span>
         <span>{{ args.table }} [all]</span>
         <span>[{{ args.database }}]</span>
     </h3>
@@ -23522,6 +23538,7 @@ Vue.component("LswPageRow", {
             <span>
                 <button v-on:click="goBack">⬅️</button>
             </span>
+            <span> 📦 </span>
             <span>{{ args.table }}</span>
         </span>
         <span v-if="(args.rowId && args.rowId !== -1)">
@@ -23689,7 +23706,10 @@ Vue.component("LswPageSchema", {
 // @code.start: LswPageTables API | @$section: Vue.js (v2) Components » LswPageTables API » LswPageTables API
 Vue.component("LswPageTables", {
   template: `<div class="page_tables page">
-    <h3>Tablas de {{ args.database }}</h3>
+    <h3 class="flex_row centered">
+        <div class="flex_100">📦 Tablas de {{ args.database }}</div>
+        <button class="flex_1" style="visibility: hidden;"></button>
+    </h3>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb"
         :database-explorer="databaseExplorer" />
     <lsw-table v-if="tablesAsList && tablesAsList.length"
@@ -24969,6 +24989,7 @@ Vue.component("LswAgenda", {
                     v-for="accion, accionIndex in selectedDateTasksSorted" v-bind:key="'accion_' + accionIndex">
                     <div class="accion_row flex_row centered">
                         <div class="flex_1 celda_de_hora">{{ \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩' }}</div>
+                        <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                         <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
                         <div class="flex_100 celda_de_concepto shortable_text"
                             v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
@@ -41669,7 +41690,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-bind:key="'app_acciones_anteriores'">
                     <h3 class="pad_bottom_1 margin_bottom_1">
                         <div class="flex_row centered">
-                            <div class="flex_100">Acciones anteriores:</div>
+                            <div class="flex_100">🕓 Antes de las {{ getHoraActual() }}:</div>
                             <div class="flex_1">
                                 <button class="supermini"
                                     v-on:click="() => selectApplication('calendario')">📅</button>
@@ -41686,9 +41707,9 @@ Vue.component("LswAppsViewerPanel", {
                                 v-for="accion, accionIndex in accionesAntes"
                                 v-bind:key="'accion_antes_' + accionIndex">
                                 <div class="celda_de_hora">{{ LswTimer.utils.extractHourFromDatestring(accion.tiene_inicio) }}</div>
+                                <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                                 <div class="font_weight_bold">{{ accion.tiene_duracion }}</div>
-                                <div>{{ accion.tiene_resultados.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
-                                <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                                <div class="cell_en_concepto shortable_text flex_100">{{ accion.en_concepto }}</div>
                                 <div class="cell_en_estado"
                                     :class="'estado_' + accion.tiene_estado"
                                     v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{
@@ -41707,7 +41728,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-bind:key="'app_acciones_posteriores'">
                     <h3 class="pad_bottom_1 margin_bottom_1">
                         <div class="flex_row centered">
-                            <div class="flex_100">Acciones posteriores:</div>
+                            <div class="flex_100">🕓 Después de las {{ getHoraActual() }}:</div>
                             <div class="flex_1">
                                 <button class="supermini"
                                     v-on:click="() => selectApplication('calendario')">📅</button>
@@ -41724,9 +41745,9 @@ Vue.component("LswAppsViewerPanel", {
                                 v-for="accion, accionIndex in accionesDespues"
                                 v-bind:key="'accion_despues_' + accionIndex">
                                 <div class="celda_de_hora">{{ LswTimer.utils.extractHourFromDatestring(accion.tiene_inicio) }}</div>
+                                <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                                 <div class="font_weight_bold">{{ accion.tiene_duracion }}</div>
-                                <div>{{ accion.tiene_resultados.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
-                                <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
+                                <div class="cell_en_concepto shortable_text flex_100">{{ accion.en_concepto }}</div>
                                 <div class="cell_en_estado cursor_pointer"
                                     :class="'estado_' + accion.tiene_estado"
                                     v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{
@@ -41744,7 +41765,7 @@ Vue.component("LswAppsViewerPanel", {
                     <div class="pad_top_0 pad_bottom_0">
                         <h3 class="margin_bottom_1">
                             <div class="flex_row centered">
-                                <div class="flex_100">Calendario:</div>
+                                <div class="flex_100">📅 Calendario:</div>
                                 <div class="flex_1">
                                     <button class="supermini"
                                         v-on:click="() => selectApplication('antes')">⬅️🕓</button>
@@ -41771,7 +41792,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-if="selectedApplication === 'enciclopedia'"
                     v-bind:key="'enciclopedia'">
                     <div class="pad_top_0 pad_bottom_0">
-                        <h3 class="margin_bottom_1">Enciclopedia:</h3>
+                        <h3 class="margin_bottom_1">🔬 Enciclopedia:</h3>
                         <lsw-wiki />
                     </div>
                 </div>
@@ -41903,14 +41924,14 @@ Vue.component("LswAppsViewerPanel", {
       const output = await this.$lsw.database.selectMany("Accion");
       const estaHora = (() => {
         const d = new Date();
-        d.setHours(0);
+        d.setMinutes(0);
         return d;
       })();
       const accionesAntes = [];
       const accionesDespues = [];
       output.forEach(accion => {
         try {
-          const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
+          const dateAccion = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
           const areSameDay = LswTimer.utils.areSameDayDates(dateAccion, estaHora);
           if(!areSameDay) return;
           if (dateAccion >= estaHora) {
@@ -41922,9 +41943,45 @@ Vue.component("LswAppsViewerPanel", {
           console.log(error);
         }
       });
-      this.accionesAntes = accionesAntes;
-      this.accionesDespues = accionesDespues;
+      this.accionesAntes = accionesAntes.sort(this.getSorterOfAccionesAntes());
+      this.accionesDespues = accionesDespues.sort(this.getSorterOfAccionesDespues());
       this.$forceUpdate(true);
+    },
+    getSorterOfAccionesAntes() {
+      this.$trace("lsw-apps-viewer-panel.methods.getSorterOfAccionesAntes");
+      return function(accion1, accion2) {
+        let inicio1, inicio2;
+        try {
+          inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
+        } catch (error) {
+          return 1;
+        }
+        try {
+          inicio2 = LswTimer.utils.fromDatestringToDate(accion2.tiene_inicio);
+        } catch (error) {
+          return -1;
+        }
+        const firstIsLower = inicio1 < inicio2;
+        return firstIsLower ? 1 : -1 ;
+      };
+    },
+    getSorterOfAccionesDespues() {
+      this.$trace("lsw-apps-viewer-panel.methods.getSorterOfAccionesDespues");
+      return function(accion1, accion2) {
+        let inicio1, inicio2;
+        try {
+          inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
+        } catch (error) {
+          return 1;
+        }
+        try {
+          inicio2 = LswTimer.utils.fromDatestringToDate(accion2.tiene_inicio);
+        } catch (error) {
+          return -1;
+        }
+        const firstIsLower = inicio1 <= inicio2;
+        return firstIsLower ? -1 : 1 ;
+      };
     },
     async alternarEstado(accion) {
       this.$trace("lsw-apps-viewer-panel.methods.alternarEstado");
@@ -41963,6 +42020,10 @@ Vue.component("LswAppsViewerPanel", {
         return;
       }
       await this.$lsw.database.insert("Articulo", response);
+    },
+    getHoraActual() {
+      this.$trace("lsw-windows-main-tab.methods.getHoraActual", arguments);
+      return LswTimer.utils.fromDateToHour(new Date());
     }
   },
   watch: {},

@@ -248,6 +248,7 @@
                     v-for="accion, accionIndex in selectedDateTasksSorted" v-bind:key="'accion_' + accionIndex">
                     <div class="accion_row flex_row centered">
                         <div class="flex_1 celda_de_hora">{{ $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩' }}</div>
+                        <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                         <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
                         <div class="flex_100 celda_de_concepto shortable_text"
                             v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}

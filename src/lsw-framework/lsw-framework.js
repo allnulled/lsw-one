@@ -16321,9 +16321,24 @@ return Store;
     }
   };
 
-  Timeformat_utils.extractDayFromDatestring = function (date) {
+  Timeformat_utils.fromDateToHour = function (date, addSeconds = false) {
     try {
-      return date.split(" ")[0];
+      const hora = date.getHours();
+      const minuto = date.getMinutes();
+      let out = "";
+      if (hora !== false) {
+        out += ("" + hora).padStart(2, '0');
+        out += ":";
+      }
+      if (minuto !== false) {
+        out += ("" + minuto).padStart(2, '0');
+      }
+      if(addSeconds) {
+        const segundo = date.getSeconds();
+        out += ":";
+        out += ("" + segundo).padStart(2, '0');
+      }
+      return out;
     } catch (error) {
       console.log(error);
       return date;
@@ -23310,7 +23325,7 @@ Vue.component("LswDatabaseBreadcrumb", {
 // @code.start: LswPageDatabases API | @$section: Vue.js (v2) Components » LswPageDatabases API » LswPageDatabases API
 Vue.component("LswPageDatabases", {
   template: `<div>
-    <h3>Todas las bases de datos</h3>
+    <h3> 📦 Todas las bases de datos</h3>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb"
         :database-explorer="databaseExplorer" />
     <lsw-table v-if="databases && databases.length"
@@ -23379,6 +23394,7 @@ Vue.component("LswPageRows", {
         <span>
             <button v-on:click="goBack">⬅️</button>
         </span>
+        <span> 📦 </span>
         <span>{{ args.table }} [all]</span>
         <span>[{{ args.database }}]</span>
     </h3>
@@ -23495,6 +23511,7 @@ Vue.component("LswPageRow", {
             <span>
                 <button v-on:click="goBack">⬅️</button>
             </span>
+            <span> 📦 </span>
             <span>{{ args.table }}</span>
         </span>
         <span v-if="(args.rowId && args.rowId !== -1)">
@@ -23662,7 +23679,10 @@ Vue.component("LswPageSchema", {
 // @code.start: LswPageTables API | @$section: Vue.js (v2) Components » LswPageTables API » LswPageTables API
 Vue.component("LswPageTables", {
   template: `<div class="page_tables page">
-    <h3>Tablas de {{ args.database }}</h3>
+    <h3 class="flex_row centered">
+        <div class="flex_100">📦 Tablas de {{ args.database }}</div>
+        <button class="flex_1" style="visibility: hidden;"></button>
+    </h3>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb"
         :database-explorer="databaseExplorer" />
     <lsw-table v-if="tablesAsList && tablesAsList.length"
@@ -24942,6 +24962,7 @@ Vue.component("LswAgenda", {
                     v-for="accion, accionIndex in selectedDateTasksSorted" v-bind:key="'accion_' + accionIndex">
                     <div class="accion_row flex_row centered">
                         <div class="flex_1 celda_de_hora">{{ \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩' }}</div>
+                        <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                         <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
                         <div class="flex_100 celda_de_concepto shortable_text"
                             v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}

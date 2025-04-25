@@ -35,14 +35,14 @@ Vue.component("LswAppsViewerPanel", {
       const output = await this.$lsw.database.selectMany("Accion");
       const estaHora = (() => {
         const d = new Date();
-        d.setHours(0);
+        d.setMinutes(0);
         return d;
       })();
       const accionesAntes = [];
       const accionesDespues = [];
       output.forEach(accion => {
         try {
-          const dateAccion = LswTimer.utils.getDateFromMomentoText(accion.tiene_inicio);
+          const dateAccion = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
           const areSameDay = LswTimer.utils.areSameDayDates(dateAccion, estaHora);
           if(!areSameDay) return;
           if (dateAccion >= estaHora) {
@@ -54,9 +54,45 @@ Vue.component("LswAppsViewerPanel", {
           console.log(error);
         }
       });
-      this.accionesAntes = accionesAntes;
-      this.accionesDespues = accionesDespues;
+      this.accionesAntes = accionesAntes.sort(this.getSorterOfAccionesAntes());
+      this.accionesDespues = accionesDespues.sort(this.getSorterOfAccionesDespues());
       this.$forceUpdate(true);
+    },
+    getSorterOfAccionesAntes() {
+      this.$trace("lsw-apps-viewer-panel.methods.getSorterOfAccionesAntes");
+      return function(accion1, accion2) {
+        let inicio1, inicio2;
+        try {
+          inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
+        } catch (error) {
+          return 1;
+        }
+        try {
+          inicio2 = LswTimer.utils.fromDatestringToDate(accion2.tiene_inicio);
+        } catch (error) {
+          return -1;
+        }
+        const firstIsLower = inicio1 < inicio2;
+        return firstIsLower ? 1 : -1 ;
+      };
+    },
+    getSorterOfAccionesDespues() {
+      this.$trace("lsw-apps-viewer-panel.methods.getSorterOfAccionesDespues");
+      return function(accion1, accion2) {
+        let inicio1, inicio2;
+        try {
+          inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
+        } catch (error) {
+          return 1;
+        }
+        try {
+          inicio2 = LswTimer.utils.fromDatestringToDate(accion2.tiene_inicio);
+        } catch (error) {
+          return -1;
+        }
+        const firstIsLower = inicio1 <= inicio2;
+        return firstIsLower ? -1 : 1 ;
+      };
     },
     async alternarEstado(accion) {
       this.$trace("lsw-apps-viewer-panel.methods.alternarEstado");
@@ -95,6 +131,10 @@ Vue.component("LswAppsViewerPanel", {
         return;
       }
       await this.$lsw.database.insert("Articulo", response);
+    },
+    getHoraActual() {
+      this.$trace("lsw-windows-main-tab.methods.getHoraActual", arguments);
+      return LswTimer.utils.fromDateToHour(new Date());
     }
   },
   watch: {},

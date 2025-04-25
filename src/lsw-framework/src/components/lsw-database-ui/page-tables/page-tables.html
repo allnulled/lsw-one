@@ -1,5 +1,8 @@
 <div class="page_tables page">
-    <h3>Tablas de {{ args.database }}</h3>
+    <h3 class="flex_row centered">
+        <div class="flex_100">📦 Tablas de {{ args.database }}</div>
+        <button class="flex_1" style="visibility: hidden;"></button>
+    </h3>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb"
         :database-explorer="databaseExplorer" />
     <lsw-table v-if="tablesAsList && tablesAsList.length"

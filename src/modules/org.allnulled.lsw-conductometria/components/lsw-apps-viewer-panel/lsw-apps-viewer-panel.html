@@ -6,18 +6,32 @@
                 <div class="pad_1"
                     v-if="selectedApplication === 'antes'"
                     v-bind:key="'app_acciones_anteriores'">
+                    <h3 class="pad_bottom_1 margin_bottom_1">
+                        <div class="flex_row centered">
+                            <div class="flex_100">Acciones anteriores:</div>
+                            <div class="flex_1">
+                                <button class="supermini"
+                                    v-on:click="() => selectApplication('calendario')">📅</button>
+                            </div>
+                            <div class="flex_1 pad_left_1">
+                                <button class="supermini"
+                                    v-on:click="() => selectApplication('despues')">🕓➡️</button>
+                            </div>
+                        </div>
+                    </h3>
                     <template v-if="accionesAntes && accionesAntes.length">
-                        <h3 class="pad_bottom_1 margin_bottom_1">Acciones anteriores:</h3>
                         <div class="tarjetas_de_accion">
                             <div class="tarjeta_de_accion nowrap"
                                 v-for="accion, accionIndex in accionesAntes"
                                 v-bind:key="'accion_antes_' + accionIndex">
-                                <div>{{ accion.tiene_inicio }}</div>
+                                <div class="celda_de_hora">{{ LswTimer.utils.extractHourFromDatestring(accion.tiene_inicio) }}</div>
+                                <div class="font_weight_bold">{{ accion.tiene_duracion }}</div>
+                                <div>{{ accion.tiene_resultados.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                                 <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
-                                <div>{{ accion.tiene_duracion }}</div>
                                 <div class="cell_en_estado"
                                     :class="'estado_' + accion.tiene_estado"
-                                    v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{ accion.tiene_estado }} {{ getSimboloEstadoAccion(accion.tiene_estado) }}</div>
+                                    v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{
+                                    accion.tiene_estado }} {{ getSimboloEstadoAccion(accion.tiene_estado) }}</div>
                                 <!--div>{{ accion.tiene_parametros }}</div>
                                     <div>{{ accion.tiene_resultados }}</div>
                                     <div>{{ accion.tiene_comentarios }}</div-->
@@ -30,19 +44,32 @@
                 <div class="pad_1"
                     v-if="selectedApplication === 'despues'"
                     v-bind:key="'app_acciones_posteriores'">
+                    <h3 class="pad_bottom_1 margin_bottom_1">
+                        <div class="flex_row centered">
+                            <div class="flex_100">Acciones posteriores:</div>
+                            <div class="flex_1">
+                                <button class="supermini"
+                                    v-on:click="() => selectApplication('calendario')">📅</button>
+                            </div>
+                            <div class="flex_1 pad_left_1">
+                                <button class="supermini"
+                                    v-on:click="() => selectApplication('antes')">⬅️🕓</button>
+                            </div>
+                        </div>
+                    </h3>
                     <template v-if="accionesDespues && accionesDespues.length">
-                        <h3 class="pad_bottom_1 margin_bottom_1">Acciones posteriores:</h3>
                         <div class="tarjetas_de_accion">
                             <div class="tarjeta_de_accion nowrap"
                                 v-for="accion, accionIndex in accionesDespues"
                                 v-bind:key="'accion_despues_' + accionIndex">
+                                <div class="celda_de_hora">{{ LswTimer.utils.extractHourFromDatestring(accion.tiene_inicio) }}</div>
+                                <div class="font_weight_bold">{{ accion.tiene_duracion }}</div>
                                 <div>{{ accion.tiene_resultados.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
-                                <div>{{ accion.tiene_duracion }}</div>
-                                <div>{{ LswTimer.utils.extractHourFromDatestring(accion.tiene_inicio) }}</div>
                                 <div class="cell_en_concepto flex_100">{{ accion.en_concepto }}</div>
                                 <div class="cell_en_estado cursor_pointer"
                                     :class="'estado_' + accion.tiene_estado"
-                                    v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{ accion.tiene_estado }} {{ getSimboloEstadoAccion(accion.tiene_estado) }}</div>
+                                    v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{
+                                    accion.tiene_estado }} {{ getSimboloEstadoAccion(accion.tiene_estado) }}</div>
                             </div>
                         </div>
                     </template>
@@ -54,7 +81,19 @@
                     v-if="selectedApplication === 'calendario'"
                     v-bind:key="'app_calendario'">
                     <div class="pad_top_0 pad_bottom_0">
-                        <h3 class="margin_bottom_1">Calendario:</h3>
+                        <h3 class="margin_bottom_1">
+                            <div class="flex_row centered">
+                                <div class="flex_100">Calendario:</div>
+                                <div class="flex_1">
+                                    <button class="supermini"
+                                        v-on:click="() => selectApplication('antes')">⬅️🕓</button>
+                                </div>
+                                <div class="flex_1 pad_left_1">
+                                    <button class="supermini"
+                                        v-on:click="() => selectApplication('despues')">🕓➡️</button>
+                                </div>
+                            </div>
+                        </h3>
                         <lsw-agenda />
                     </div>
                 </div>

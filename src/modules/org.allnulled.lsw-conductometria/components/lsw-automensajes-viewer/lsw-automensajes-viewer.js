@@ -17,6 +17,10 @@ Vue.component("LswAutomensajesViewer", {
     };
   },
   methods: {
+    procedureForPicas() {
+      this.$trace("LswAutomensajesViewer.methods.procedureForPicas", arguments);
+      this.selectApplication("despues");
+    },
     async loadAutomensajes() {
       this.$trace("LswAutomensajesViewer.methods.loadAutomensajes", arguments);
       const automensajes = await this.$lsw.database.selectMany("Automensaje");

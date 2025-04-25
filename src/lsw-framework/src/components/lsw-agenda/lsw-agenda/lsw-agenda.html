@@ -213,9 +213,10 @@
                     <div class="flex_1 margin_right_1"><button class="iconized_button" v-on:click="() => selectHour('new')" :class="{activated: selectedForm === 'new'}">#️⃣</button></div>
                     <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                     <div class="flex_1 nowrap" :style="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length ? '' : 'display: none;'">
-                        <button class="iconized_button" v-on:click="randomizeDay">🎲</button>
-                        <button class="iconized_button" v-on:click="showAllHours">🔓*</button>
-                        <button class="iconized_button" v-on:click="hideAllHours">🔒*</button>
+                        <button class="iconized_button" v-on:click="randomizeDay">+ 🎲</button>
+                        <button class="iconized_button" v-on:click="cleanRandomizeDays">🔥 🎲</button>
+                        <button class="iconized_button" v-on:click="showAllHours" style="display: none;">🔓*</button>
+                        <button class="iconized_button" v-on:click="hideAllHours" style="display: none;">🔒*</button>
                     </div>
                 </div>
             </div>
@@ -239,7 +240,23 @@
                 v-if="isLoading">
                 Por favor, aguarde hasta recuperar los datos.
             </div>
-            <div class="box_for_date_details"
+            <div v-if="(!isLoading) && selectedDateTasksSorted && selectedDateTasksSorted.length">
+                <div class="hour_task_block"
+                    :class="{is_completed: accion.tiene_estado === 'completada', is_failed: accion.tiene_estado === 'fallida', is_pending: accion.tiene_estado === 'pendiente'}"
+                    v-for="accion, accionIndex in selectedDateTasksSorted" v-bind:key="'accion_' + accionIndex">
+                    <div class="accion_row flex_row centered">
+                        <div class="flex_1 celda_de_hora">{{ $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩' }}</div>
+                        <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
+                        <div class="flex_100 celda_de_concepto shortable_text"
+                            v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                        </div>
+                        <div class="flex_1">
+                            <button class="supermini danger_button" style="padding: 1px; padding-left: 4px; padding-right: 4px;" v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--div class="box_for_date_details"
                 v-else-if="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length">
                 <div class="hour_table"
                     v-for="franja, franjaIndex in selectedDateTasksFormattedPerHour"
@@ -329,7 +346,7 @@
                         </template>
                     </div>
                 </div>
-            </div>
+            </div-->
             <div class="no_tasks_message"
                 v-else>
                 No hay tareas asignadas para este día.

@@ -1087,7 +1087,6 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
 
 .hour_task_block {
     display: block;
-    padding: 2px;
 }
 
 .hour_task_pill {
@@ -1162,6 +1161,45 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
 
 .hour_table {
     
+}
+
+.accion_row {
+    align-items: stretch;
+    justify-items: stretch;
+
+    align-self: stretch;
+    justify-self: stretch;
+
+    align-contents: stretch;
+    justify-contents: stretch;
+}
+
+.accion_row > div {
+    padding: 0px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.hour_task_block.is_failed .celda_de_concepto {
+    background-color: #5a2020;
+}
+.hour_task_block.is_completed .celda_de_concepto {
+    background-color: #46c01a;
+    color: black;
+}
+.hour_task_block.is_pending .celda_de_concepto {
+    background-color: #e5df23;
+    color: black;
+
+}
+
+.celda_de_hora {}
+.celda_de_duracion {}
+.celda_de_concepto {
+    border: 1px solid black;
+    box-shadow: 0 0 2px white;
+    border-radius: 3pt;
+    cursor: pointer;
 }
 
 .pill_start,
@@ -1978,7 +2016,6 @@ button.bright_border {
 
 button.iconized_button {
     border: 1px solid #FFF3;
-    background-color: transparent;
     min-height: auto;
     font-size: 12px;
 }
@@ -2593,14 +2630,15 @@ table.tabla_de_conductometria .minibutton {
 .tarjeta_de_accion > div {
     white-space: no-wrap;
     padding: 2px;
-    padding-left: 8px;
+    padding-left: 4px;
+    padding-right: 4px;
     margin-top: 1px;
     border: 0px solid #222;
     border-right: 0px solid #222;
     border-top: 0px solid #222;
 }
 .tarjeta_de_accion > div:first-child {
-    padding-left: 0px;
+    
 }
 .tarjeta_de_accion > .cell_en_concepto {
     
@@ -2667,6 +2705,37 @@ table.tabla_de_conductometria .minibutton {
     border-radius: 2pt;
     border: 0px solid #ccc;
 }
+
+.celda_de_hora {
+    background-color: rgba(246, 0, 0, 0.4);
+    color: black;
+    text-shadow: 0 0 1px white;
+    text-align: center;
+    border-radius:3pt;
+    border: 1px solid black !important;
+    box-shadow: 0 0 2px white;
+    animation: celdaAlarmante 3s infinite;
+}
+
+.cell_en_concepto {
+    font-style: italic;
+}
+
+@keyframes celdaAlarmante {
+    0% {
+        background-color: rgba(255, 0, 0, 0.5);
+    }
+    25% {
+        background-color: rgba(255, 145, 0, 0.5);
+    }
+    50% {
+        background-color: rgba(221, 255, 0, 0.5);
+    }
+    100% {
+        background-color: rgba(255, 0, 0, 0.5);
+    }
+}
+
 
 
 

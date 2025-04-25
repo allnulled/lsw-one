@@ -81,7 +81,6 @@ button.bright_border {
 
 button.iconized_button {
     border: 1px solid #FFF3;
-    background-color: transparent;
     min-height: auto;
     font-size: 12px;
 }

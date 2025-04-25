@@ -36,7 +36,6 @@
 
 .hour_task_block {
     display: block;
-    padding: 2px;
 }
 
 .hour_task_pill {
@@ -111,6 +110,45 @@
 
 .hour_table {
     
+}
+
+.accion_row {
+    align-items: stretch;
+    justify-items: stretch;
+
+    align-self: stretch;
+    justify-self: stretch;
+
+    align-contents: stretch;
+    justify-contents: stretch;
+}
+
+.accion_row > div {
+    padding: 0px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.hour_task_block.is_failed .celda_de_concepto {
+    background-color: #5a2020;
+}
+.hour_task_block.is_completed .celda_de_concepto {
+    background-color: #46c01a;
+    color: black;
+}
+.hour_task_block.is_pending .celda_de_concepto {
+    background-color: #e5df23;
+    color: black;
+
+}
+
+.celda_de_hora {}
+.celda_de_duracion {}
+.celda_de_concepto {
+    border: 1px solid black;
+    box-shadow: 0 0 2px white;
+    border-radius: 3pt;
+    cursor: pointer;
 }
 
 .pill_start,

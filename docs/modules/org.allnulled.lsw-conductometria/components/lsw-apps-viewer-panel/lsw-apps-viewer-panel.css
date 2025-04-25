@@ -13,3 +13,33 @@
     border-radius: 2pt;
     border: 0px solid #ccc;
 }
+
+.celda_de_hora {
+    background-color: rgba(246, 0, 0, 0.4);
+    color: black;
+    text-shadow: 0 0 1px white;
+    text-align: center;
+    border-radius:3pt;
+    border: 1px solid black !important;
+    box-shadow: 0 0 2px white;
+    animation: celdaAlarmante 3s infinite;
+}
+
+.cell_en_concepto {
+    font-style: italic;
+}
+
+@keyframes celdaAlarmante {
+    0% {
+        background-color: rgba(255, 0, 0, 0.5);
+    }
+    25% {
+        background-color: rgba(255, 145, 0, 0.5);
+    }
+    50% {
+        background-color: rgba(221, 255, 0, 0.5);
+    }
+    100% {
+        background-color: rgba(255, 0, 0, 0.5);
+    }
+}

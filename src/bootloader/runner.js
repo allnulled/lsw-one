@@ -26,12 +26,12 @@ LswLifecycle.start().then(async output => {
 
   Work_relocation: {
     await LswDom.waitForMilliseconds(100);
+    await goTo.calendario();
+    return;
+    await LswDom.waitForMilliseconds(100);
     await goTo.abrirNavegacionRapida();
     await LswDom.waitForMilliseconds(100);
     await goTo.abrirTareasPosterioresDeNavegacionRapida();
-    return;
-    await LswDom.waitForMilliseconds(100);
-    await goTo.calendario();
     return;
   }
 

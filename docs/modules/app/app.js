@@ -99,6 +99,10 @@ rel correr
         this.$trace("App.methods.goToNotas");
         this.$refs.desktop.selectApplication("notas");
       },
+      clickPicas() {
+        this.$trace("App.methods.clickPicas");
+        document.querySelector("#the_picas_button").click();
+      }
     },
     mounted() {
       console.log("[*] Application mounted.");

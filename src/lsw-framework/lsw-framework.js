@@ -24990,8 +24990,8 @@ Vue.component("LswAgenda", {
                             }}</div>
                         <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                         <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
-                        <div class="flex_100">
-                            <div class="celda_de_concepto pad_left_1 pad_right_1 shortable_text"
+                        <div class="flex_100 shortable_text">
+                            <div class="celda_de_concepto pad_left_1 pad_right_1"
                                 v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
                             </div>
                         </div>

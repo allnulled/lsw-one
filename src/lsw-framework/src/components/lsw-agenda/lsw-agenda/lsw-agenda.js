@@ -8,6 +8,7 @@ Vue.component("LswAgenda", {
     return {
       counter: 0,
       isLoading: false,
+      isCalendarioSelected: true,
       hasPsicodelia: true,
       selectedContext: "agenda",
       selectedSubmenu1: 'calendario',
@@ -37,13 +38,17 @@ Vue.component("LswAgenda", {
       this.$trace("lsw-agenda.methods.selectSubmenu1");
       this.selectedSubmenu1 = id;
     },
-    toggleSubmenu1(id) {
-      this.$trace("lsw-agenda.methods.selectSubmenu1");
-      if(this.selectedSubmenu1 === id) {
-        this.selectedSubmenu1 = "none";
-      } else {
-        this.selectedSubmenu1 = id;
+    toggleCalendario() {
+      this.$trace("lsw-agenda.methods.toggleCalendario");
+      const finalState = !this.isCalendarioSelected;
+      if(this.selectedContext !== "agenda") {
+        this.selectContext("agenda");
+        this.isCalendarioSelected = true;
+        return;
+      } else if(finalState) {
+        // OK.
       }
+      this.isCalendarioSelected = finalState;
     },
     togglePsicodelia() {
       this.$trace("lsw-agenda.methods.togglePsicodelia");

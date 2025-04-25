@@ -98,8 +98,8 @@
         <div class="flex_100"></div>
         <div class="flex_1">
             <button class="width_100 nowrap"
-                v-on:click="() => toggleSubmenu1('calendario')"
-                :class="{activated: selectedSubmenu1 === 'calendario'}">📅</button>
+                v-on:click="toggleCalendario"
+                :class="{activated: isCalendarioSelected}">📅</button>
         </div>
     </div>
 
@@ -197,7 +197,7 @@
         </div>
     </div>
     <div class="" v-if="selectedContext === 'agenda'">
-        <div class="calendar_viewer" v-if="selectedSubmenu1 === 'calendario'">
+        <div class="calendar_viewer" v-if="isCalendarioSelected">
             <lsw-calendario ref="calendario"
                 modo="date"
                 :al-iniciar="(v, cal) => loadDateTasks(v, cal)"

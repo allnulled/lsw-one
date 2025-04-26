@@ -14,14 +14,23 @@
     border: 0px solid #ccc;
 }
 
+.padded_vertically_1 {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
 .celda_de_hora {
-    background-color: rgba(246, 0, 0, 0.4);
-    color: black;
-    text-shadow: 0 0 1px white;
+    background-color: rgba(246, 0, 0, 0.2);
+    color: rgb(3, 4, 18);
+    font-weight: bold;
+    text-shadow: 0 0 1px rgb(64, 211, 167);
     text-align: center;
     border-radius:3pt;
-    border: 1px solid black !important;
-    box-shadow: 0 0 2px white;
+    border: 1px solid #E8EE3B !important;
+    box-shadow: 0 0 2px black;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    cursor: pointer;
     animation: celdaAlarmante 3s infinite;
 }
 
@@ -31,15 +40,15 @@
 
 @keyframes celdaAlarmante {
     0% {
-        background-color: rgba(255, 0, 0, 0.5);
+        background-color: rgba(255, 0, 0, 0.2);
     }
     25% {
-        background-color: rgba(255, 145, 0, 0.5);
+        background-color: rgba(255, 145, 0, 0.2);
     }
     50% {
-        background-color: rgba(221, 255, 0, 0.5);
+        background-color: rgba(221, 255, 0, 0.2);
     }
     100% {
-        background-color: rgba(255, 0, 0, 0.5);
+        background-color: rgba(255, 0, 0, 0.2);
     }
 }

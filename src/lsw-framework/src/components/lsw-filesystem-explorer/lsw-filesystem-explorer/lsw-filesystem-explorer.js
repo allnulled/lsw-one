@@ -107,7 +107,7 @@ Vue.component("LswFilesystemExplorer", {
           },
         },
       });
-      if(!filename) return;
+      if (!filename) return;
       const filepath = this.$lsw.fs.resolve_path(this.$lsw.fs.get_current_directory(), filename);
       await this.$lsw.fs.write_file(filepath, "");
       this.refresh();
@@ -145,7 +145,7 @@ Vue.component("LswFilesystemExplorer", {
           },
         },
       });
-      if(!filename) return;
+      if (!filename) return;
       const filepath = this.$lsw.fs.resolve_path(this.$lsw.fs.get_current_directory(), filename);
       await this.$lsw.fs.make_directory(filepath);
       this.refresh();
@@ -176,7 +176,7 @@ Vue.component("LswFilesystemExplorer", {
           }
         }
       });
-      if(!confirmation) return;
+      if (!confirmation) return;
       await this.$lsw.fs.delete_directory(this.$lsw.fs.get_current_directory());
       this.refresh();
     },
@@ -206,7 +206,7 @@ Vue.component("LswFilesystemExplorer", {
           }
         }
       });
-      if(!confirmation) return;
+      if (!confirmation) return;
       await this.$lsw.fs.delete_file(this.current_node);
       const upperDir = (() => {
         const parts = this.current_node.split("/");
@@ -250,8 +250,8 @@ Vue.component("LswFilesystemExplorer", {
           }
         }
       });
-      if(newName === false) return;
-      if(newName.trim() === "") return;
+      if (newName === false) return;
+      if (newName.trim() === "") return;
       const allParts = this.current_node.split("/");
       allParts.pop();
       const dirPath = "/" + allParts.join("/");
@@ -262,7 +262,7 @@ Vue.component("LswFilesystemExplorer", {
     async processToExecuteFile() {
       this.$trace("lsw-filesystem-explorer.methods.processToExecuteFile");
       const editorContents = this.$refs.editor.getContents();
-      const AsyncFunction = (async function() {}).constructor;
+      const AsyncFunction = (async function () { }).constructor;
       const asyncFunction = new AsyncFunction(editorContents);
       try {
         await asyncFunction.call(this);
@@ -284,7 +284,7 @@ Vue.component("LswFilesystemExplorer", {
     },
     async processToSaveFile() {
       this.$trace("lsw-filesystem-explorer.methods.processToSaveFile");
-      if(this.$refs.editor) {
+      if (this.$refs.editor) {
         const editorContents = this.$refs.editor.getContents();
         console.log(this.current_node, editorContents);
         await this.$lsw.fs.write_file(this.current_node, editorContents);
@@ -311,7 +311,7 @@ Vue.component("LswFilesystemExplorer", {
           click: () => this.processToDeleteFile(),
         }
       ];
-      if(this.current_node.endsWith(".js")) {
+      if (this.current_node.endsWith(".js")) {
         allButtonsOnFile.push({
           text: "⚡️",
           classes: "danger_button",
@@ -333,7 +333,7 @@ Vue.component("LswFilesystemExplorer", {
       this.is_ready = false;
       this.current_node_is_directory = true;
       this.current_node_is_file = false;
-      if(this.current_node === "/") {
+      if (this.current_node === "/") {
         this.$refs.panelTop.setButtons();
       } else {
         this.$refs.panelTop.setButtons({
@@ -428,15 +428,18 @@ Vue.component("LswFilesystemExplorer", {
         const valid_keys = ["top", "bottom", "left", "right"];
         for (let index = 0; index < keys.length; index++) {
           const key = keys[index];
-          if(valid_keys.indexOf(key) === -1) {
+          if (valid_keys.indexOf(key) === -1) {
             throw new Error(`Required argument «panelOptions[${key}]» to be a valid key out of «${valid_keys.join(",")}», not «${key}» on «LswFilesystemExplorer.methods.setPanelButtons»`);
           }
           const value = panelOptions[key];
-          if(typeof value !== "object") {
+          if (typeof value !== "object") {
             throw new Error(`Required argument «panelOptions[${key}]» to be an object or array, not ${typeof value}» on «LswFilesystemExplorer.methods.setPanelButtons»`);
           }
         }
       }
+    },
+    async initializeFilesystemForLsw() {
+      await this.$lsw.fs.ensureFile("/kernel/randomizables.js", "return " + JSON.stringify([], null, 2));
     }
   },
   watch: {
@@ -451,6 +454,7 @@ Vue.component("LswFilesystemExplorer", {
       this.$lsw.fs = new LswFilesystem();
       this.$lsw.fsExplorer = this;
       await this.$lsw.fs.init();
+      await this.initializeFilesystemForLsw();
       await this.open("/");
     } catch (error) {
       console.log(error);

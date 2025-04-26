@@ -19,9 +19,19 @@ Vue.component("LswAgenda", {
       selectedDateTasksFormattedPerHour: undefined,
       selectedForm: undefined,
       hiddenDateHours: [],
+      shownAcciones: [],
     };
   },
   methods: {
+    toggleShowAccion(accionId) {
+      this.$trace("lsw-agenda.methods.toggleShowAccion");
+      const pos = this.shownAcciones.indexOf(accionId);
+      if(pos === -1) {
+        this.shownAcciones.push(accionId);
+      } else {
+        this.shownAcciones.splice(pos, 1);
+      }
+    },
     selectAccion(accionId) {
       this.$trace("lsw-agenda.methods.selectAccion");
       if(this.selectedAccion === accionId) {
@@ -75,7 +85,7 @@ Vue.component("LswAgenda", {
     },
     async loadDateTasks(newDate, calendario) {
       this.$trace("lsw-agenda.methods.loadDateTasks");
-      this.isLoading = true;
+      // this.isLoading = true;
       console.log("[*] Loading date tasks of: " + LswTimer.utils.fromDateToDatestring(newDate));
       try {
         this.selectedDate = newDate;
@@ -310,7 +320,7 @@ Vue.component("LswAgenda", {
           <div class="pad_1 pad_bottom_0">
             <div class="pad_1 pad_bottom_0">¿Con qué duración quieres las acciones de randomizado de día?</div>
             <div class="pad_1 pad_top_2 pad_bottom_0">
-              <lsw-duration-control ref="duracion" :settings="{name:'duracion'}" :skip-label="true" :initial-value="'15min'" />
+              <lsw-duration-control ref="duracion" :settings="{name:'duracion',initialValue:'15min'}" :skip-label="true" />
             </div>
           </div>
           <hr />

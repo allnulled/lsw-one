@@ -228,20 +228,20 @@
                 v-if="selectedDate">
                 <div class="flex_row centered">
                     <div class="flex_1 margin_right_1">
-                        <button class="iconized_button"
+                        <button class="iconized_button padded_vertically_1"
                             v-on:click="() => selectAccion('new')"
                             :class="{activated: selectedAccion === 'new'}">#️⃣</button>
                     </div>
                     <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                     <div class="flex_1 nowrap">
-                        <button class="iconized_button"
+                        <button class="iconized_button padded_vertically_1"
                             v-on:click="randomizeDay">+ 🎲</button>
-                        <button class="iconized_button"
+                        <button class="iconized_button padded_vertically_1"
                             v-on:click="cleanRandomizedDays">🔥 🎲</button>
-                        <button class="iconized_button"
+                        <button class="iconized_button padded_vertically_1"
                             v-on:click="showAllHours"
                             style="display: none;">🔓*</button>
-                        <button class="iconized_button"
+                        <button class="iconized_button padded_vertically_1"
                             v-on:click="hideAllHours"
                             style="display: none;">🔒*</button>
                     </div>
@@ -271,26 +271,68 @@
                     :class="{is_completed: accion.tiene_estado === 'completada', is_failed: accion.tiene_estado === 'fallida', is_pending: accion.tiene_estado === 'pendiente'}"
                     v-for="accion, accionIndex in selectedDateTasksSorted"
                     v-bind:key="'accion_' + accionIndex">
-                    <div class="accion_row flex_row centered">
-                        <div class="flex_1 celda_de_hora">{{ $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                    <div class="accion_row flex_row centered"
+                        style="padding-top: 2px;">
+                        <div class="flex_1 celda_de_hora padded_vertically_1"
+                            :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
+                            v-on:click="() => toggleShowAccion(accion.id)">{{
+                            $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
                             }}</div>
                         <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                         <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
                         <div class="flex_100 shortable_text">
-                            <div class="celda_de_concepto pad_left_1 pad_right_1"
+                            <div class="celda_de_concepto pad_left_1 pad_right_1 padded_vertically_1"
                                 v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
                             </div>
                         </div>
                         <div class="flex_1">
-                            <button class="supermini"
+                            <button class="supermini padded_vertically_1"
                                 :class="{activated: selectedAccion === accion.id}"
-                                style="padding: 1px; padding-left: 4px; padding-right: 4px;"
                                 v-on:click="(e) => selectAccion(accion.id)">#️⃣</button>
                         </div>
                         <div class="flex_1">
-                            <button class="supermini danger_button"
-                                style="padding: 1px; padding-left: 4px; padding-right: 4px;"
+                            <button class="supermini danger_button padded_vertically_1"
                                 v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
+                        </div>
+                    </div>
+                    <div class="detalles_de_accion"
+                        v-if="shownAcciones.indexOf(accion.id) !== -1">
+                        <div class="tabla_de_detalles">
+                            <div class="campo"
+                                v-if="accion.tiene_estado">
+                                <div class="clave">Estado: </div>
+                                <div class="valor">{{ accion.tiene_estado }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.en_concepto">
+                                <div class="clave">Concepto: </div>
+                                <div class="valor"><u>{{ accion.en_concepto }}</u></div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_inicio">
+                                <div class="clave">Inicio: </div>
+                                <div class="valor">{{ accion.tiene_inicio }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_duracion">
+                                <div class="clave">Duración: </div>
+                                <div class="valor">{{ accion.tiene_duracion }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_parametros">
+                                <div class="clave">Parámetros: </div>
+                                <div class="valor">{{ accion.tiene_parametros }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_comentarios">
+                                <div class="clave">Comentarios: </div>
+                                <div class="valor">{{ accion.tiene_comentarios }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_resultados">
+                                <div class="clave">Resultados: </div>
+                                <div class="valor">{{ accion.tiene_resultados }}</div>
+                            </div>
                         </div>
                     </div>
                     <lsw-schema-based-form v-if="selectedAccion === accion.id"

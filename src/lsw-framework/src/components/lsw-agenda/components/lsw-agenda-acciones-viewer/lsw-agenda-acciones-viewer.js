@@ -103,7 +103,7 @@ Vue.component("LswAgendaAccionesViewer", {
               return -1;
             }
           });
-        } else if(this.sorterStrategy === "despues") {
+        } else if (this.sorterStrategy === "despues") {
           this.selectedDateTasks = selectedDateTasks;
           const momentoActual = new Date();
           this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
@@ -135,7 +135,7 @@ Vue.component("LswAgendaAccionesViewer", {
               return -1;
             }
           });
-        } else if(this.sorterStrategy === "antes") {
+        } else if (this.sorterStrategy === "antes") {
           this.selectedDateTasks = selectedDateTasks;
           const momentoActual = new Date();
           this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
@@ -351,13 +351,15 @@ Vue.component("LswAgendaAccionesViewer", {
         momentoFinal.setSeconds(0);
         momentoFinal.setMilliseconds(0);
       }
+      const randomizableRules = await this.$lsw.fs.evaluateFileOrReturn("/kernel/agenda/randomizables.js", {});
+      const config = await this.$lsw.fs.evaluateFileOrReturn("/kernel/agenda/randomizables.config.js", {});
       const accionesAutogeneradas = LswAgendaRandomizer.generar(
-        LswAgendaRandomizerReglas,
+        randomizableRules,
         accionesDelDia,
         momentoInicio,
         duracion_de_bloques,
         momentoFinal,
-        0.6
+        config?.ratio || 0.2
       );
       accionesAutogeneradas.forEach(accion => {
         delete accion.id;
@@ -368,7 +370,27 @@ Vue.component("LswAgendaAccionesViewer", {
         await this.$lsw.database.insertMany("Accion", accionesAutogeneradas);
         await this.loadDateTasks(this.selectedDate);
       }
-    }
+    },
+    async openDeleteTaskDialog(tarea, e) {
+      this.$trace("lsw-agenda.methods.openDeleteTaskDialog");
+      const confirmed = await Vue.prototype.$dialogs.open({
+        title: "Eliminar registro",
+        template: `
+          <div>
+            <div class="pad_2">¿Seguro que quieres eliminar el registro?</div>
+            <hr class="margin_0" />
+            <div class="pad_2 text_align_right">
+              <button class="supermini danger_button" v-on:click="() => accept(true)">Eliminar</button>
+              <button class="supermini " v-on:click="() => accept(false)">Cancelar</button>
+            </div>
+          </div>
+        `,
+      });
+      if (!confirmed) return false;
+      await this.$lsw.database.delete("Accion", tarea.id);
+      this.selectedForm = undefined;
+      this.refreshTasks();
+    },
   },
   watch: {
 

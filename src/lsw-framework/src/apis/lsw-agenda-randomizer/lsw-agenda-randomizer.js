@@ -25,42 +25,16 @@
     static elegirMixto(pesos, rangoDePeso = 1.0) {
       const claves = Object.keys(pesos);
       if (claves.length === 0) return null;
-    
-      const usarPeso = Math.random() < rangoDePeso;
-    
+      
+      const usarPeso = false;
+
       if (usarPeso) {
-        // Elección ponderada como antes
-        const entradas = Object.entries(pesos);
-        const total = entradas.reduce((suma, [_, peso]) => suma + peso, 0);
-        if (total === 0) return null;
-    
-        const umbral = Math.random() * total;
-        let acumulado = 0;
-    
-        for (const [clave, peso] of entradas) {
-          acumulado += peso;
-          if (umbral < acumulado) return clave;
-        }
-        return claves.at(-1); // fallback raro, por si hay error de redondeo
+        // @TODO: esto no está valiendo ahora mismo.
       } else {
         // Elección uniforme entre claves
         const indice = Math.floor(Math.random() * claves.length);
         return claves[indice];
       }
-    }    
-
-    static elegirConPeso(pesos) {
-      const entradas = Object.entries(pesos);
-      const total = entradas.reduce((suma, [_, peso]) => suma + peso, 0);
-      const umbral = Math.random() * total;
-    
-      let acumulado = 0;
-      for (const [clave, peso] of entradas) {
-        acumulado += peso;
-        if (umbral < acumulado) return clave;
-      }
-    
-      return null; // Por si acaso todo es cero
     }
     
 

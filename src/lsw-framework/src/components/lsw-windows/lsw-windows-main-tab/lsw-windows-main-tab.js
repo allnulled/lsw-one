@@ -39,7 +39,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "filesystem-explorer-" + this.getRandomString(5),
         title: "Filesystem explorer",
-        template: `<lsw-filesystem-explorer />`,
+        template: `<lsw-filesystem-explorer  :absolute-layout="true" />`,
       });
     },
     openWiki() {

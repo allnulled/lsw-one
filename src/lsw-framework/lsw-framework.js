@@ -12439,42 +12439,16 @@ if (process?.env?.NODE_ENV === "test") {
     static elegirMixto(pesos, rangoDePeso = 1.0) {
       const claves = Object.keys(pesos);
       if (claves.length === 0) return null;
-    
-      const usarPeso = Math.random() < rangoDePeso;
-    
+      
+      const usarPeso = false;
+
       if (usarPeso) {
-        // Elección ponderada como antes
-        const entradas = Object.entries(pesos);
-        const total = entradas.reduce((suma, [_, peso]) => suma + peso, 0);
-        if (total === 0) return null;
-    
-        const umbral = Math.random() * total;
-        let acumulado = 0;
-    
-        for (const [clave, peso] of entradas) {
-          acumulado += peso;
-          if (umbral < acumulado) return clave;
-        }
-        return claves.at(-1); // fallback raro, por si hay error de redondeo
+        // @TODO: esto no está valiendo ahora mismo.
       } else {
         // Elección uniforme entre claves
         const indice = Math.floor(Math.random() * claves.length);
         return claves[indice];
       }
-    }    
-
-    static elegirConPeso(pesos) {
-      const entradas = Object.entries(pesos);
-      const total = entradas.reduce((suma, [_, peso]) => suma + peso, 0);
-      const umbral = Math.random() * total;
-    
-      let acumulado = 0;
-      for (const [clave, peso] of entradas) {
-        acumulado += peso;
-        if (umbral < acumulado) return clave;
-      }
-    
-      return null; // Por si acaso todo es cero
     }
     
 
@@ -18051,10 +18025,29 @@ return Store;
         }
       }
       const filepath2 = currentPathPart + "/" + filename;
-      const existsFilepath2 = await this.exists(currentPathPart);
+      const existsFilepath2 = await this.exists(filepath2);
       if (!existsFilepath2) {
         await this.write_file(filepath2, contents);
       }
+    }
+
+    async evaluateFile(filepath, scope = undefined) {
+      this.trace("evaluateFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      const AsyncFunction = (async function() {}).constructor;
+      const asyncFunction = new AsyncFunction(fileContents);
+      console.log("[*] Evaluating file as js:", asyncFunction.toString());
+      const result = await asyncFunction.call(scope);
+      return result;
+    }
+
+    evaluateFileOrReturn(filepath, output = null, scope = undefined) {
+      this.trace("evaluateFileOrReturn", [filepath]);
+      return this.evaluateFile(filepath, scope).catch(error => {
+        console.log("[!] Error evaluating file", error);
+        return output;
+      });
+      
     }
 
   }
@@ -22960,7 +22953,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "filesystem-explorer-" + this.getRandomString(5),
         title: "Filesystem explorer",
-        template: `<lsw-filesystem-explorer />`,
+        template: `<lsw-filesystem-explorer  :absolute-layout="true" />`,
       });
     },
     openWiki() {
@@ -23863,7 +23856,7 @@ Vue.component("LswPageTables", {
 // @code.start: LswFilesystemExplorer API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemExplorer component
 Vue.component("LswFilesystemExplorer", {
   name: "LswFilesystemExplorer",
-  template: `<div class="lsw_filesystem_explorer" :class="{absolute_version: !blockLayout}">
+  template: `<div class="lsw_filesystem_explorer" :class="{absolute_version: absoluteLayout}">
     <div class="current_node_box">
         <span class="previous_node_path" :class="current_node !== '/' ? '' : 'visibility_hidden'">
             <button class="previous_node_button" v-on:click="goUp"
@@ -23894,7 +23887,7 @@ Vue.component("LswFilesystemExplorer", {
     </div>
 </div>`,
   props: {
-    blockLayout: {
+    absoluteLayout: {
       type: Boolean,
       default: () => false,
     }
@@ -24330,7 +24323,43 @@ Vue.component("LswFilesystemExplorer", {
       }
     },
     async initializeFilesystemForLsw() {
-      await this.$lsw.fs.ensureFile("/kernel/randomizables.js", "return " + JSON.stringify([], null, 2));
+      const DEFAULT_CONFIGURATIONS = {
+        ratio: 0.2
+      };
+      const DEFAULT_ACCIONES = {
+        "Trackeo de números de conducta/agenda": [{ porcion: 500 }],
+        "Trackeo de conceptos/relaciones": [{ porcion: 500 }],
+        "Trackeo de ideas/notas": [{ porcion: 1 }],
+        "Programación de interfaces gráficas": [{ porcion: 500 }],
+        "Arquitectura por patrones": [{ porcion: 200 }],
+        "Arquitectura de la realidad": [{ porcion: 200 }],
+        "Arquitectura del yo": [{ porcion: 200 }],
+        "Lenguajes formales": [{ porcion: 1 }],
+        "Investigación de cocina/nutrición/química": [{ porcion: 200 }],
+        "Investigación de nutrición": [{ porcion: 1 }],
+        "Investigación de química": [{ porcion: 1 }],
+        "Investigación de física": [{ porcion: 1 }],
+        "Investigación de matemáticas": [{ porcion: 1 }],
+        "Investigación de geometría": [{ porcion: 1 }],
+        "Investigación de canvas/perspectiva": [{ porcion: 1 }],
+        "Investigación de medicina/biología/fisiología": [{ porcion: 100 }],
+        "Investigación de musculación/flexibilidad": [{ porcion: 100 }],
+        "Investigación de las emociones": [{ porcion: 100 }],
+        "Cocinar/Comer": [{ cada: "6h", minimo: "1h" }],
+        "Pasarlo bien con la perrillo": [{ cada: "6h", minimo: "1h" }],
+        "Cuidados de plantas": [{ porcion: 1 }],
+        "Cuidados del hogar": [{ porcion: 1 }],
+        "Actividad física": [{ porcion: 500 }, { nunca_despues_de: "comer", durante: "2h" }, { cada: "24h", minimo: "20min" }],
+        "Optimización de RAM": [{ porcion: 500 }],
+        "Autocontrol/Autobservación/Autoanálisis": [{ porcion: 500 }],
+        "Meditación/Relajación": [{ porcion: 500 }],
+        "Paisajismo": [{ cada: "3h", minimo: "20min" }],
+        "Dibujo 3D/Perspectiva/Geometría/Mates": [{ porcion: 1 }],
+        "Dibujo artístico/anime/abstracto/esquemista/conceptualista": [{ porcion: 1 }],
+        "Reflexión/Diálogo interno": [{ porcion: 500 }],
+      };
+      await this.$lsw.fs.ensureFile("/kernel/agenda/randomizables.config.js", "return " + JSON.stringify(DEFAULT_CONFIGURATIONS, null, 2) + ";");
+      await this.$lsw.fs.ensureFile("/kernel/agenda/randomizables.js", "return " + JSON.stringify(DEFAULT_ACCIONES, null, 2) + ";");
     }
   },
   watch: {
@@ -24342,9 +24371,7 @@ Vue.component("LswFilesystemExplorer", {
   async mounted() {
     try {
       this.$trace("lsw-filesystem-explorer.mounted");
-      this.$lsw.fs = new LswFilesystem();
       this.$lsw.fsExplorer = this;
-      await this.$lsw.fs.init();
       await this.initializeFilesystemForLsw();
       await this.open("/");
     } catch (error) {
@@ -25027,7 +25054,7 @@ Vue.component("LswAgenda", {
     </div>
     <div class=""
         v-if="selectedContext === 'agenda'">
-        <div class="calendar_viewer"
+        <div class="calendar_viewer pad_bottom_1"
             v-show="isCalendarioSelected">
             <lsw-calendario ref="calendario"
                 modo="date"
@@ -25692,7 +25719,7 @@ Vue.component("LswAgendaAccionesViewer", {
               return -1;
             }
           });
-        } else if(this.sorterStrategy === "despues") {
+        } else if (this.sorterStrategy === "despues") {
           this.selectedDateTasks = selectedDateTasks;
           const momentoActual = new Date();
           this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
@@ -25724,7 +25751,7 @@ Vue.component("LswAgendaAccionesViewer", {
               return -1;
             }
           });
-        } else if(this.sorterStrategy === "antes") {
+        } else if (this.sorterStrategy === "antes") {
           this.selectedDateTasks = selectedDateTasks;
           const momentoActual = new Date();
           this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
@@ -25940,13 +25967,15 @@ Vue.component("LswAgendaAccionesViewer", {
         momentoFinal.setSeconds(0);
         momentoFinal.setMilliseconds(0);
       }
+      const randomizableRules = await this.$lsw.fs.evaluateFileOrReturn("/kernel/agenda/randomizables.js", {});
+      const config = await this.$lsw.fs.evaluateFileOrReturn("/kernel/agenda/randomizables.config.js", {});
       const accionesAutogeneradas = LswAgendaRandomizer.generar(
-        LswAgendaRandomizerReglas,
+        randomizableRules,
         accionesDelDia,
         momentoInicio,
         duracion_de_bloques,
         momentoFinal,
-        0.6
+        config?.ratio || 0.2
       );
       accionesAutogeneradas.forEach(accion => {
         delete accion.id;
@@ -25957,7 +25986,27 @@ Vue.component("LswAgendaAccionesViewer", {
         await this.$lsw.database.insertMany("Accion", accionesAutogeneradas);
         await this.loadDateTasks(this.selectedDate);
       }
-    }
+    },
+    async openDeleteTaskDialog(tarea, e) {
+      this.$trace("lsw-agenda.methods.openDeleteTaskDialog");
+      const confirmed = await Vue.prototype.$dialogs.open({
+        title: "Eliminar registro",
+        template: `
+          <div>
+            <div class="pad_2">¿Seguro que quieres eliminar el registro?</div>
+            <hr class="margin_0" />
+            <div class="pad_2 text_align_right">
+              <button class="supermini danger_button" v-on:click="() => accept(true)">Eliminar</button>
+              <button class="supermini " v-on:click="() => accept(false)">Cancelar</button>
+            </div>
+          </div>
+        `,
+      });
+      if (!confirmed) return false;
+      await this.$lsw.database.delete("Accion", tarea.id);
+      this.selectedForm = undefined;
+      this.refreshTasks();
+    },
   },
   watch: {
 

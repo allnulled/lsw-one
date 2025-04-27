@@ -810,6 +810,8 @@ table.top_aligned > tbody > tr > td {
     flex-direction: row;
     width: 100%;
     height: calc(100% - 43px);
+    border: 1px solid #000;
+    border-top: 0px solid #000;
 }
 .lsw_filesystem_explorer .leftside {
     flex: 1;
@@ -894,17 +896,15 @@ table.top_aligned > tbody > tr > td {
 
 .lsw_filesystem_editor .editor {
     width: calc(100% - 0px);
-    height: calc(100% - 0px);
-    resize: none;
+    height: calc(100% - 2px);
+    resize: vertical;
     border: 1px solid black;
     border-radius: 0pt;
     outline: none;
     min-height: 230px;
-    height: 100%;
 }
 .absolute_version .lsw_filesystem_editor .editor {
-    min-height: auto;
-    height: auto;
+    
 }
 .lsw_filesystem_editor .editor:focus {
     background-color: #E0E0E0;
@@ -1588,7 +1588,7 @@ bajar(B) 100
 
 .tasks_viewer {
     padding: 0px;
-    padding-top: 4px;
+    padding-top: 0px;
     padding-bottom: 0px;
 }
 .LswAgendaAccionAdd {

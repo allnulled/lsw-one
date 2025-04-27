@@ -8,6 +8,10 @@ try {
       Vue.prototype.$lsw = {};
     }
     Inject_global_api: {
+      Vue.prototype.$lsw.fs = new LswFilesystem();
+      Vue.prototype.$lsw.fs.init().then(() => {
+        console.log("[*] LswFilesystem instance was loaded successfully.");
+      });
       Vue.prototype.$lsw.importer = importer;
       Vue.prototype.$lsw.logger = Superlogger.create("lsw");
       Vue.prototype.$trace = (...args) => Vue.prototype.$lsw.logger.trace(...args);
@@ -17,7 +21,6 @@ try {
       Vue.prototype.$lsw.dialogs = null;
       Vue.prototype.$lsw.toasts = null;
       Vue.prototype.$lsw.proxifier = $proxifier;
-      Vue.prototype.$lsw.fs = null;
       Vue.prototype.$lsw.wiki = null;
       Vue.prototype.$lsw.agenda = null;
       // WE DO NOT INJECT DATABASE FROM HERE.

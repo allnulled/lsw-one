@@ -26005,7 +26005,7 @@ Vue.component("LswAgendaAccionesViewer", {
       if (!confirmed) return false;
       await this.$lsw.database.delete("Accion", tarea.id);
       this.selectedForm = undefined;
-      this.refreshTasks();
+      this.loadDateTasks();
     },
   },
   watch: {

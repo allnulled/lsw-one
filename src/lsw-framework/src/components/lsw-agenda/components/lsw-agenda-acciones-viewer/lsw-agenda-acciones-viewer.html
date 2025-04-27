@@ -1,0 +1,224 @@
+<div class="lsw_agenda_acciones_viewer">
+    <div class="tasks_viewer">
+        <div class="selected_day_title"
+            v-if="selectedDate">
+            <div class="flex_row centered">
+                <div class="flex_1 margin_right_1">
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="() => selectForm('new')"
+                        :class="{activated: selectedForm === 'new'}">#️⃣</button>
+                </div>
+                <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
+                <div class="flex_1 nowrap">
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="randomizeDay">+ 🎲</button>
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="cleanRandomizedDays">🔥 🎲</button>
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="showAllHours"
+                        style="display: none;">🔓*</button>
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="hideAllHours"
+                        style="display: none;">🔒*</button>
+                </div>
+            </div>
+        </div>
+        <div v-if="selectedForm === 'new'">
+            <lsw-schema-based-form :on-submit="v => onInsertTask(v)"
+                :on-delete-row="loadDateTasks"
+                :overriden-values="{
+                    tiene_inicio: $lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
+                    + ' '
+                    + $lsw.timer.utils.formatHour(0, 0)
+                }"
+                :model="{
+                    connection: $lsw.database,
+                    databaseId: 'lsw_default_database',
+                    rowId: -1,
+                    tableId: 'Accion',
+                }" />
+        </div>
+        <div class="no_tasks_message"
+            v-if="isLoading">
+            Por favor, aguarde hasta recuperar los datos.
+        </div>
+        <div v-if="(!isLoading) && selectedDateTasksSorted && selectedDateTasksSorted.length">
+            <div class="hour_task_block"
+                :class="{is_completed: accion.tiene_estado === 'completada', is_failed: accion.tiene_estado === 'fallida', is_pending: accion.tiene_estado === 'pendiente'}"
+                v-for="accion, accionIndex in selectedDateTasksSorted"
+                v-bind:key="'accion_' + accionIndex">
+                <div class="accion_row flex_row centered"
+                    style="padding-top: 2px;">
+                    <div class="flex_1 celda_de_hora padded_vertically_1"
+                        :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
+                        v-on:click="() => toggleShowAccion(accion.id)">{{
+                        $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                        }}</div>
+                    <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
+                    <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
+                    <div class="flex_100 shortable_text">
+                        <div class="celda_de_concepto pad_left_1 pad_right_1 padded_vertically_1"
+                            v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                        </div>
+                    </div>
+                    <div class="flex_1">
+                        <button class="supermini padded_vertically_1"
+                            :class="{activated: selectedForm === accion.id}"
+                            v-on:click="(e) => selectForm(accion.id)">#️⃣</button>
+                    </div>
+                    <div class="flex_1">
+                        <button class="supermini danger_button padded_vertically_1"
+                            v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
+                    </div>
+                </div>
+                <div class="detalles_de_accion"
+                    v-if="shownAcciones.indexOf(accion.id) !== -1">
+                    <div class="tabla_de_detalles">
+                        <div class="campo"
+                            v-if="accion.en_concepto">
+                            <div class="clave">Concepto: </div>
+                            <div class="valor"><u>{{ accion.en_concepto }}</u></div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_estado">
+                            <div class="clave">Estado: </div>
+                            <div class="valor valor_de_estado">{{ accion.tiene_estado }}</div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_inicio">
+                            <div class="clave">Inicio: </div>
+                            <div class="valor">{{ accion.tiene_inicio }}</div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_duracion">
+                            <div class="clave">Duración: </div>
+                            <div class="valor">{{ accion.tiene_duracion }}</div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_parametros">
+                            <div class="clave">Parámetros: </div>
+                            <div class="valor">{{ accion.tiene_parametros }}</div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_comentarios">
+                            <div class="clave">Comentarios: </div>
+                            <div class="valor">{{ accion.tiene_comentarios }}</div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_resultados">
+                            <div class="clave">Resultados: </div>
+                            <div class="valor">{{ accion.tiene_resultados }}</div>
+                        </div>
+                    </div>
+                </div>
+                <lsw-schema-based-form v-if="selectedForm === accion.id"
+                    :on-submit="v => onUpdateTask(v, accion)"
+                    :on-delete-row="loadDateTasks"
+                    :overriden-values="{
+                        tiene_inicio: accion.tiene_inicio
+                    }"
+                    :model="{
+                        connection: $lsw.database,
+                        databaseId: 'lsw_default_database',
+                        rowId: accion.id,
+                        tableId: 'Accion',
+                    }" />
+            </div>
+        </div>
+        <!--div class="box_for_date_details"
+        v-else-if="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length">
+        <div class="hour_table"
+            v-for="franja, franjaIndex in selectedDateTasksFormattedPerHour"
+            v-bind:key="'franja_horaria_' + franjaIndex">
+            <div class="hour_lapse_separator">
+                <div class="flex_row centered">
+                    <div class="flex_1 pad_right_1">
+                        <button class="iconized_button nowrap"
+                            style="margin-right: 1px;"
+                            v-on:click="() => selectHour(franja.hora)"
+                            :class="{activated: selectedForm === franja.hora}">#️⃣</button>
+                    </div>
+                    <div class="flex_100">
+                        <span>{{ $lsw.timer.utils.formatHourFromMomento(franja) }}</span>
+                        <span> · </span>
+                        <span class="hour_compromises">{{ $lsw.utils.pluralizar("compromiso", "compromisos", "%i %s", Object.keys(franja.tareas).length) }}</span>
+                    </div>
+                    <div class="flex_1">
+                        <div class="flex_1 flex_row centered">
+                            <span v-on:click="() => toggleHour(franja.hora)">
+                                <button class="iconized_button nowrap activated"
+                                    v-if="hiddenDateHours.indexOf(franja.hora) === -1">🔓</button>
+                                <button class="iconized_button nowrap"
+                                    v-else>🔒</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <lsw-schema-based-form v-if="selectedForm === franja.hora"
+                :on-submit="v => $lsw.database.insert('Accion', v).then(loadDateTasks)"
+                :on-delete-row="loadDateTasks"
+                :overriden-values="{
+                    tiene_inicio: $lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
+                    + ' '
+                    + $lsw.timer.utils.formatHour(franja.hora, franja.minuto || 0)
+                }"
+                :model="{
+                    connection: $lsw.database,
+                    databaseId: 'lsw_default_database',
+                    rowId: -1,
+                    tableId: 'Accion',
+                }" />
+            <div class="hour_lapse_list"
+                v-show="hiddenDateHours.indexOf(franja.hora) === -1">
+                <template v-for="tarea, tareaIndex in franja.tareas">
+                    <div class="hour_task_block"
+                        :class="{is_completed: tarea.tiene_estado === 'completada', is_failed: tarea.tiene_estado === 'fallida', is_pending: tarea.tiene_estado === 'pendiente'}"
+                        v-bind:key="'franja_horaria_' + franjaIndex + '_tarea_' + tareaIndex">
+                        <div class="hour_task_pill pill">
+                            <div class="flex_1 hour_task_dragger pill_start">
+                                <div class="">❗️</div>
+                            </div>
+                            <div class="flex_1 hour_task_details_start pill_middle">
+                                <div class="lighted_cell" :class="{psicodelic_cell: hasPsicodelia}">{{ $lsw.timer.utils.formatHourFromMomentoCode(tarea.tiene_inicio, true) ?? '💩' }}
+                                </div>
+                            </div>
+                            <div class="flex_1 hour_task_details_duration pill_middle">
+                                <div class="lighted_cell">{{ tarea.tiene_duracion || '🤔' }}</div>
+                            </div>
+                            <div class="flex_100 hour_task_name pill_middle" style="overflow: hidden;" v-on:click="() => advanceTaskState(tarea)">
+                                <div class="lighted_cell" style="text-overflow: ellipsis; overflow: clip; max-width: 100%;">{{ tarea.en_concepto || '🤔' }}</div>
+                            </div>
+                            <div class="flex_1 hour_task_editer pill_middle button_pill_cell">
+                                <button class="" v-on:click="() => openUpdateTaskDialog(tarea)"
+                                    :class="{activated: selectedForm === tarea.id}">#️⃣</button>
+                            </div>
+                            <div class="flex_1 hour_task_editer pill_end button_pill_cell">
+                                <button class="danger_button" v-on:click="(e) => openDeleteTaskDialog(tarea, e)">❌</button>
+                            </div>
+                        </div>
+                        <lsw-schema-based-form v-if="selectedForm === tarea.id"
+                            :on-submit="v => onUpdateTask(v, tarea)"
+                            :on-delete-row="loadDateTasks"
+                            :overriden-values="{
+                                tiene_inicio: $lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
+                                + ' '
+                                + $lsw.timer.utils.formatHour(franja.hora, franja.minuto || 0)
+                            }"
+                            :model="{
+                                connection: $lsw.database,
+                                databaseId: 'lsw_default_database',
+                                rowId: tarea.id,
+                                tableId: 'Accion',
+                            }" />
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div-->
+        <div class="no_tasks_message"
+            v-else>
+            No hay tareas asignadas para este día.
+        </div>
+    </div>
+</div>

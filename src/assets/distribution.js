@@ -12505,13 +12505,13 @@ if (process?.env?.NODE_ENV === "test") {
     }
     
 
-    static generar(reglas = {}, accionesPrevias = [], horaInicio = new Date(), duracionMinima = "20min", tasaDePeso = 0.6) {
+    static generar(reglas = {}, accionesPrevias = [], horaInicio = new Date(), duracionMinima = "20min", horaFinal = new Date(), tasaDePeso = 0.6) {
       this.trace("generar", arguments);
       const ahora = new Date(horaInicio);
       ahora.setSeconds(0, 0); // limpia segundos y ms
     
       const inicio = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), horaInicio.getHours(), 0, 0, 0);
-      const finDelDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), 23, 59, 59, 999);
+      const finDelDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), horaFinal.getHours(), 59, 59, 999);
       const duracionMilisegundos = this._duracionAMilisegundos(duracionMinima);
     
       const acciones = [];
@@ -25055,7 +25055,7 @@ Vue.component("LswAgenda", {
     <div class=""
         v-if="selectedContext === 'agenda'">
         <div class="calendar_viewer"
-            v-if="isCalendarioSelected">
+            v-show="isCalendarioSelected">
             <lsw-calendario ref="calendario"
                 modo="date"
                 :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
@@ -25064,228 +25064,10 @@ Vue.component("LswAgenda", {
         <div class="limitador_viewer">
             <lsw-agenda-limitador-viewer :agenda="this" />
         </div>
-        <div class="tasks_viewer">
-            <div class="selected_day_title"
-                v-if="selectedDate">
-                <div class="flex_row centered">
-                    <div class="flex_1 margin_right_1">
-                        <button class="iconized_button padded_vertically_1"
-                            v-on:click="() => selectAccion('new')"
-                            :class="{activated: selectedAccion === 'new'}">#️⃣</button>
-                    </div>
-                    <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
-                    <div class="flex_1 nowrap">
-                        <button class="iconized_button padded_vertically_1"
-                            v-on:click="randomizeDay">+ 🎲</button>
-                        <button class="iconized_button padded_vertically_1"
-                            v-on:click="cleanRandomizedDays">🔥 🎲</button>
-                        <button class="iconized_button padded_vertically_1"
-                            v-on:click="showAllHours"
-                            style="display: none;">🔓*</button>
-                        <button class="iconized_button padded_vertically_1"
-                            v-on:click="hideAllHours"
-                            style="display: none;">🔒*</button>
-                    </div>
-                </div>
-            </div>
-            <div v-if="selectedAccion === 'new'">
-                <lsw-schema-based-form :on-submit="v => onInsertTask(v)"
-                    :on-delete-row="refreshTasks"
-                    :overriden-values="{
-                        tiene_inicio: \$lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
-                        + ' '
-                        + \$lsw.timer.utils.formatHour(0, 0)
-                    }"
-                    :model="{
-                        connection: \$lsw.database,
-                        databaseId: 'lsw_default_database',
-                        rowId: -1,
-                        tableId: 'Accion',
-                    }" />
-            </div>
-            <div class="no_tasks_message"
-                v-if="isLoading">
-                Por favor, aguarde hasta recuperar los datos.
-            </div>
-            <div v-if="(!isLoading) && selectedDateTasksSorted && selectedDateTasksSorted.length">
-                <div class="hour_task_block"
-                    :class="{is_completed: accion.tiene_estado === 'completada', is_failed: accion.tiene_estado === 'fallida', is_pending: accion.tiene_estado === 'pendiente'}"
-                    v-for="accion, accionIndex in selectedDateTasksSorted"
-                    v-bind:key="'accion_' + accionIndex">
-                    <div class="accion_row flex_row centered"
-                        style="padding-top: 2px;">
-                        <div class="flex_1 celda_de_hora padded_vertically_1"
-                            :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
-                            v-on:click="() => toggleShowAccion(accion.id)">{{
-                            \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
-                            }}</div>
-                        <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
-                        <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
-                        <div class="flex_100 shortable_text">
-                            <div class="celda_de_concepto pad_left_1 pad_right_1 padded_vertically_1"
-                                v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
-                            </div>
-                        </div>
-                        <div class="flex_1">
-                            <button class="supermini padded_vertically_1"
-                                :class="{activated: selectedAccion === accion.id}"
-                                v-on:click="(e) => selectAccion(accion.id)">#️⃣</button>
-                        </div>
-                        <div class="flex_1">
-                            <button class="supermini danger_button padded_vertically_1"
-                                v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
-                        </div>
-                    </div>
-                    <div class="detalles_de_accion"
-                        v-if="shownAcciones.indexOf(accion.id) !== -1">
-                        <div class="tabla_de_detalles">
-                            <div class="campo"
-                                v-if="accion.tiene_estado">
-                                <div class="clave">Estado: </div>
-                                <div class="valor">{{ accion.tiene_estado }}</div>
-                            </div>
-                            <div class="campo"
-                                v-if="accion.en_concepto">
-                                <div class="clave">Concepto: </div>
-                                <div class="valor"><u>{{ accion.en_concepto }}</u></div>
-                            </div>
-                            <div class="campo"
-                                v-if="accion.tiene_inicio">
-                                <div class="clave">Inicio: </div>
-                                <div class="valor">{{ accion.tiene_inicio }}</div>
-                            </div>
-                            <div class="campo"
-                                v-if="accion.tiene_duracion">
-                                <div class="clave">Duración: </div>
-                                <div class="valor">{{ accion.tiene_duracion }}</div>
-                            </div>
-                            <div class="campo"
-                                v-if="accion.tiene_parametros">
-                                <div class="clave">Parámetros: </div>
-                                <div class="valor">{{ accion.tiene_parametros }}</div>
-                            </div>
-                            <div class="campo"
-                                v-if="accion.tiene_comentarios">
-                                <div class="clave">Comentarios: </div>
-                                <div class="valor">{{ accion.tiene_comentarios }}</div>
-                            </div>
-                            <div class="campo"
-                                v-if="accion.tiene_resultados">
-                                <div class="clave">Resultados: </div>
-                                <div class="valor">{{ accion.tiene_resultados }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <lsw-schema-based-form v-if="selectedAccion === accion.id"
-                        :on-submit="v => onUpdateTask(v, accion)"
-                        :on-delete-row="refreshTasks"
-                        :overriden-values="{
-                            tiene_inicio: accion.tiene_inicio
-                        }"
-                        :model="{
-                            connection: \$lsw.database,
-                            databaseId: 'lsw_default_database',
-                            rowId: accion.id,
-                            tableId: 'Accion',
-                        }" />
-                </div>
-            </div>
-            <!--div class="box_for_date_details"
-                v-else-if="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length">
-                <div class="hour_table"
-                    v-for="franja, franjaIndex in selectedDateTasksFormattedPerHour"
-                    v-bind:key="'franja_horaria_' + franjaIndex">
-                    <div class="hour_lapse_separator">
-                        <div class="flex_row centered">
-                            <div class="flex_1 pad_right_1">
-                                <button class="iconized_button nowrap"
-                                    style="margin-right: 1px;"
-                                    v-on:click="() => selectHour(franja.hora)"
-                                    :class="{activated: selectedForm === franja.hora}">#️⃣</button>
-                            </div>
-                            <div class="flex_100">
-                                <span>{{ \$lsw.timer.utils.formatHourFromMomento(franja) }}</span>
-                                <span> · </span>
-                                <span class="hour_compromises">{{ \$lsw.utils.pluralizar("compromiso", "compromisos", "%i %s", Object.keys(franja.tareas).length) }}</span>
-                            </div>
-                            <div class="flex_1">
-                                <div class="flex_1 flex_row centered">
-                                    <span v-on:click="() => toggleHour(franja.hora)">
-                                        <button class="iconized_button nowrap activated"
-                                            v-if="hiddenDateHours.indexOf(franja.hora) === -1">🔓</button>
-                                        <button class="iconized_button nowrap"
-                                            v-else>🔒</button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <lsw-schema-based-form v-if="selectedForm === franja.hora"
-                        :on-submit="v => \$lsw.database.insert('Accion', v).then(refreshTasks)"
-                        :on-delete-row="refreshTasks"
-                        :overriden-values="{
-                            tiene_inicio: \$lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
-                            + ' '
-                            + \$lsw.timer.utils.formatHour(franja.hora, franja.minuto || 0)
-                        }"
-                        :model="{
-                            connection: \$lsw.database,
-                            databaseId: 'lsw_default_database',
-                            rowId: -1,
-                            tableId: 'Accion',
-                        }" />
-                    <div class="hour_lapse_list"
-                        v-show="hiddenDateHours.indexOf(franja.hora) === -1">
-                        <template v-for="tarea, tareaIndex in franja.tareas">
-                            <div class="hour_task_block"
-                                :class="{is_completed: tarea.tiene_estado === 'completada', is_failed: tarea.tiene_estado === 'fallida', is_pending: tarea.tiene_estado === 'pendiente'}"
-                                v-bind:key="'franja_horaria_' + franjaIndex + '_tarea_' + tareaIndex">
-                                <div class="hour_task_pill pill">
-                                    <div class="flex_1 hour_task_dragger pill_start">
-                                        <div class="">❗️</div>
-                                    </div>
-                                    <div class="flex_1 hour_task_details_start pill_middle">
-                                        <div class="lighted_cell" :class="{psicodelic_cell: hasPsicodelia}">{{ \$lsw.timer.utils.formatHourFromMomentoCode(tarea.tiene_inicio, true) ?? '💩' }}
-                                        </div>
-                                    </div>
-                                    <div class="flex_1 hour_task_details_duration pill_middle">
-                                        <div class="lighted_cell">{{ tarea.tiene_duracion || '🤔' }}</div>
-                                    </div>
-                                    <div class="flex_100 hour_task_name pill_middle" style="overflow: hidden;" v-on:click="() => advanceTaskState(tarea)">
-                                        <div class="lighted_cell" style="text-overflow: ellipsis; overflow: clip; max-width: 100%;">{{ tarea.en_concepto || '🤔' }}</div>
-                                    </div>
-                                    <div class="flex_1 hour_task_editer pill_middle button_pill_cell">
-                                        <button class="" v-on:click="() => openUpdateTaskDialog(tarea)"
-                                            :class="{activated: selectedForm === tarea.id}">#️⃣</button>
-                                    </div>
-                                    <div class="flex_1 hour_task_editer pill_end button_pill_cell">
-                                        <button class="danger_button" v-on:click="(e) => openDeleteTaskDialog(tarea, e)">❌</button>
-                                    </div>
-                                </div>
-                                <lsw-schema-based-form v-if="selectedForm === tarea.id"
-                                    :on-submit="v => onUpdateTask(v, tarea)"
-                                    :on-delete-row="refreshTasks"
-                                    :overriden-values="{
-                                        tiene_inicio: \$lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
-                                        + ' '
-                                        + \$lsw.timer.utils.formatHour(franja.hora, franja.minuto || 0)
-                                    }"
-                                    :model="{
-                                        connection: \$lsw.database,
-                                        databaseId: 'lsw_default_database',
-                                        rowId: tarea.id,
-                                        tableId: 'Accion',
-                                    }" />
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </div-->
-            <div class="no_tasks_message"
-                v-else>
-                No hay tareas asignadas para este día.
-            </div>
-        </div>
+        <lsw-agenda-acciones-viewer
+            :initial-date="selectedDate"
+            ref="agenda_acciones_viewer"
+        />
     </div>
 </div>`,
   props: {},
@@ -25294,7 +25076,7 @@ Vue.component("LswAgenda", {
     return {
       counter: 0,
       isLoading: false,
-      isCalendarioSelected: true,
+      isCalendarioSelected: false,
       hasPsicodelia: true,
       selectedAccion: undefined,
       selectedContext: "agenda",
@@ -25312,7 +25094,7 @@ Vue.component("LswAgenda", {
     toggleShowAccion(accionId) {
       this.$trace("lsw-agenda.methods.toggleShowAccion");
       const pos = this.shownAcciones.indexOf(accionId);
-      if(pos === -1) {
+      if (pos === -1) {
         this.shownAcciones.push(accionId);
       } else {
         this.shownAcciones.splice(pos, 1);
@@ -25320,19 +25102,11 @@ Vue.component("LswAgenda", {
     },
     selectAccion(accionId) {
       this.$trace("lsw-agenda.methods.selectAccion");
-      if(this.selectedAccion === accionId) {
+      if (this.selectedAccion === accionId) {
         this.selectedAccion = undefined;
       } else {
         this.selectedAccion = accionId;
       }
-    },
-    showAllHours() {
-      this.$trace("lsw-agenda.methods.showAllHours");
-      this.hiddenDateHours = [];
-    },
-    hideAllHours() {
-      this.$trace("lsw-agenda.methods.hideAllHours");
-      this.hiddenDateHours = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
     },
     selectContext(id, parameters = {}) {
       this.$trace("lsw-agenda.methods.selectContext");
@@ -25369,7 +25143,7 @@ Vue.component("LswAgenda", {
         this.hiddenDateHours.splice(pos, 1);
       }
     },
-    async loadDateTasks(newDate, calendario) {
+    async loadDateTasks(newDate, calendario, isOnMounted = false) {
       this.$trace("lsw-agenda.methods.loadDateTasks");
       // this.isLoading = true;
       console.log("[*] Loading date tasks of: " + LswTimer.utils.fromDateToDatestring(newDate));
@@ -25411,12 +25185,22 @@ Vue.component("LswAgenda", {
             return -1;
           }
         });
+        if(isOnMounted) {
+          const noTasksFound = (!this.selectedDateTasks) || (!this.selectedDateTasks.length);
+          if(noTasksFound) {
+            this.isCalendarioSelected = true;
+          }
+        }
         this.propagateDateTasks();
       } catch (error) {
         console.log("Error loading date taskes:", error);
       } finally {
         setTimeout(() => { this.isLoading = false }, 100);
       }
+      await this.reloadCalendarioMarks(calendario);
+      this.refreshTasks();
+    },
+    async reloadCalendarioMarks(calendario) {
       if (calendario) {
         const selectedDate = this.selectedDate;
         const tasksOfMonth = await this.$lsw.database.selectMany("Accion", valueBrute => {
@@ -25507,7 +25291,9 @@ Vue.component("LswAgenda", {
     },
     async refreshTasks() {
       this.$trace("lsw-agenda.methods.refreshTasks");
-      this.loadDateTasks(new Date(this.selectedDate));
+      if(this.$refs.agenda_acciones_viewer) {
+        this.$refs.agenda_acciones_viewer.changeDate(new Date(this.selectedDate));
+      }
     },
     async onUpdateTask(v, tarea) {
       this.$trace("lsw-agenda.methods.onUpdateTask");
@@ -25521,149 +25307,6 @@ Vue.component("LswAgenda", {
       this.selectedForm = id;
       this.refreshTasks();
     },
-    async advanceTaskState(tarea) {
-      this.$trace("lsw-agenda.methods.onInsertTask");
-      const siguienteEstado = (() => {
-        switch (tarea.tiene_estado) {
-          case "pendiente": return "completada";
-          case "completada": return "fallida";
-          case "fallida": return "pendiente";
-          default: return "pendiente";
-        }
-      })();
-      await this.$lsw.database.overwrite('Accion', tarea.id, {
-        tiene_estado: siguienteEstado
-      });
-      this.refreshTasks();
-    },
-    sameDayPendingAndAutogeneratedFilter(currentDate) {
-      return (accion) => {
-        try {
-          const accionDate = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
-          const sameYear = currentDate.getFullYear() === accionDate.getFullYear();
-          const sameMonth = currentDate.getMonth() === accionDate.getMonth();
-          const sameDay = currentDate.getDate() === accionDate.getDate();
-          const isPendiente = accion.tiene_estado === "pendiente";
-          const isAutogenerated = accion.tiene_parametros.startsWith("[*autogenerada]");
-          const isValid = sameYear && sameMonth && sameDay && isPendiente && isAutogenerated;
-          if(isValid) {
-            console.log("!!!", accion.en_concepto);
-          } else {
-            console.log("sameYear, sameMonth, sameDay, isPendiente");
-            console.log("Fallo:", sameYear, sameMonth, sameDay, isPendiente, isAutogenerated);
-          }
-          return isValid;
-        } catch (error) {
-          console.log(error);
-          return false;
-        }
-      }
-    },
-    async cleanRandomizedDays() {
-      this.$trace("lsw-agenda.methods.cleanRandomizedDays");
-      const currentDate = this.selectedDate || new Date();
-      const filterAutogeneratedPendingOfCurrentDate = this.sameDayPendingAndAutogeneratedFilter(currentDate);
-      const matchedAcciones = await this.$lsw.database.selectMany("Accion", filterAutogeneratedPendingOfCurrentDate);
-      if(!matchedAcciones.length) {
-        return this.$lsw.toasts.send({
-          title: "No hay acciones randomizadas",
-          text: "Niniguna acción fue eliminada por ello."
-        });
-      }
-      const respuesta = await this.$lsw.dialogs.open({
-        title: "Eliminar registros randomizados",
-        template: `<div>
-          <div class="pad_1">
-            <div>¿Estás seguro que quieres eliminar los registros randomizados?</div>
-            <div>Se eliminarán {{ accionesToDelete.length }} registros de acciones randomizados de hoy.</div>
-            <hr />
-            <div class="flex_row pad_1">
-              <div class="flex_100"></div>
-              <div class="flex_1 pad_left_1">
-                <button v-on:click="() => accept(true)" class="supermini danger_button">Eliminar</button>
-              </div>
-              <div class="flex_1 pad_left_1">
-                <button v-on:click="cancel" class="supermini">Cancelar</button>
-              </div>
-            </div>
-          </div>
-        </div>`,
-        factory: {
-          data: {
-            accionesToDelete: matchedAcciones
-          }
-        }
-      });
-      if(respuesta !== true) return;
-      await this.$lsw.database.deleteMany("Accion", filterAutogeneratedPendingOfCurrentDate);
-      await this.loadDateTasks(currentDate);
-    },
-    async randomizeDay() {
-      this.$trace("lsw-agenda.methods.randomizeDay");
-      const DURACION_DE_BLOQUES = await this.$dialogs.open({
-        title: "Cuestionario de randomizar día",
-        template: `<div>
-          <div class="pad_1 pad_bottom_0">
-            <div class="pad_1 pad_bottom_0">¿Con qué duración quieres las acciones de randomizado de día?</div>
-            <div class="pad_1 pad_top_2 pad_bottom_0">
-              <lsw-duration-control ref="duracion" :settings="{name:'duracion',initialValue:'15min'}" :skip-label="true" />
-            </div>
-          </div>
-          <hr />
-          <div class="text_align_right pad_right_1">
-            <button class="supermini danger_button" v-on:click="submit">Randomizar día</button>
-            <button class="supermini" v-on:click="cancel">Cancelar</button>
-          </div>
-        </div>`,
-        factory: {
-          methods: {
-            submit() {
-              this.$trace("Dialogs.randomizar_dia.methos.submit");
-              const valor = this.$refs.duracion.value;
-              const ast = LswTimer.parser.parse(valor);
-              const esValido = (valor.trim() !== "") && (typeof ast[0] === "object") && (ast[0].tipo === "Duracion");
-              if (!esValido) return;
-              this.value = valor;
-              return this.accept();
-            }
-          }
-        }
-      });
-      if (typeof DURACION_DE_BLOQUES !== "string") return;
-      const currentDate = this.selectedDate;
-      const accionesDelDia = await this.$lsw.database.select("Accion", accion => {
-        try {
-          const accionDate = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
-          const sameYear = currentDate.getFullYear() === accionDate.getFullYear();
-          const sameMonth = currentDate.getMonth() === accionDate.getMonth();
-          const sameDay = currentDate.getDate() === accionDate.getDate();
-          const isNotPendiente = accion.tiene_estado !== "pendiente";
-          const isValid = sameYear && sameMonth && sameDay && isNotPendiente;
-          return isValid;
-        } catch (error) {
-          console.log(error);
-          return false;
-        }
-      });
-      const horaInicio = new Date(this.selectedDate);
-      const momentoAhora = new Date();
-      if(horaInicio.getDate() === momentoAhora.getDate()) {
-        horaInicio.setHours(momentoAhora.getHours());
-      }
-      horaInicio.setMinutes(0);
-      horaInicio.setSeconds(0);
-      horaInicio.setMilliseconds(0);
-      const accionesAutogeneradas = LswAgendaRandomizer.generar(LswAgendaRandomizerReglas, accionesDelDia, horaInicio, DURACION_DE_BLOQUES);
-      accionesAutogeneradas.forEach(accion => {
-        delete accion.id;
-        accion.tiene_estado = "pendiente";
-        accion.tiene_parametros = ("[*autogenerada] " + (accion.tiene_parametros.replace(/^\[\*autogenerada\]/g, ""))).trim();
-      });
-      Insertar_rows: {
-        await this.$lsw.database.insertMany("Accion", accionesAutogeneradas);
-        await this.loadDateTasks(this.selectedDate);
-      }
-    }
   },
   watch: {
   },
@@ -25671,7 +25314,7 @@ Vue.component("LswAgenda", {
     try {
       this.$trace("lsw-agenda.mounted");
       const selectedDate = this.$refs.calendario.getValue();
-      this.loadDateTasks(selectedDate);
+      await this.loadDateTasks(selectedDate, undefined, true);
     } catch (error) {
       console.log(error);
     }
@@ -25748,6 +25391,614 @@ Vue.component("LswAgendaAccionSearch", {
   }
 });
 // @code.end: LswAgendaAccionSearch API
+// @code.start: LswAgendaAccionesViewer API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaAccionesViewer API » LswAgendaAccionesViewer component
+Vue.component("LswAgendaAccionesViewer", {
+  name: "LswAgendaAccionesViewer",
+  template: `<div class="lsw_agenda_acciones_viewer">
+    <div class="tasks_viewer">
+        <div class="selected_day_title"
+            v-if="selectedDate">
+            <div class="flex_row centered">
+                <div class="flex_1 margin_right_1">
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="() => selectForm('new')"
+                        :class="{activated: selectedForm === 'new'}">#️⃣</button>
+                </div>
+                <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
+                <div class="flex_1 nowrap">
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="randomizeDay">+ 🎲</button>
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="cleanRandomizedDays">🔥 🎲</button>
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="showAllHours"
+                        style="display: none;">🔓*</button>
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="hideAllHours"
+                        style="display: none;">🔒*</button>
+                </div>
+            </div>
+        </div>
+        <div v-if="selectedForm === 'new'">
+            <lsw-schema-based-form :on-submit="v => onInsertTask(v)"
+                :on-delete-row="loadDateTasks"
+                :overriden-values="{
+                    tiene_inicio: \$lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
+                    + ' '
+                    + \$lsw.timer.utils.formatHour(0, 0)
+                }"
+                :model="{
+                    connection: \$lsw.database,
+                    databaseId: 'lsw_default_database',
+                    rowId: -1,
+                    tableId: 'Accion',
+                }" />
+        </div>
+        <div class="no_tasks_message"
+            v-if="isLoading">
+            Por favor, aguarde hasta recuperar los datos.
+        </div>
+        <div v-if="(!isLoading) && selectedDateTasksSorted && selectedDateTasksSorted.length">
+            <div class="hour_task_block"
+                :class="{is_completed: accion.tiene_estado === 'completada', is_failed: accion.tiene_estado === 'fallida', is_pending: accion.tiene_estado === 'pendiente'}"
+                v-for="accion, accionIndex in selectedDateTasksSorted"
+                v-bind:key="'accion_' + accionIndex">
+                <div class="accion_row flex_row centered"
+                    style="padding-top: 2px;">
+                    <div class="flex_1 celda_de_hora padded_vertically_1"
+                        :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
+                        v-on:click="() => toggleShowAccion(accion.id)">{{
+                        \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                        }}</div>
+                    <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
+                    <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
+                    <div class="flex_100 shortable_text">
+                        <div class="celda_de_concepto pad_left_1 pad_right_1 padded_vertically_1"
+                            v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                        </div>
+                    </div>
+                    <div class="flex_1">
+                        <button class="supermini padded_vertically_1"
+                            :class="{activated: selectedForm === accion.id}"
+                            v-on:click="(e) => selectForm(accion.id)">#️⃣</button>
+                    </div>
+                    <div class="flex_1">
+                        <button class="supermini danger_button padded_vertically_1"
+                            v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
+                    </div>
+                </div>
+                <div class="detalles_de_accion"
+                    v-if="shownAcciones.indexOf(accion.id) !== -1">
+                    <div class="tabla_de_detalles">
+                        <div class="campo"
+                            v-if="accion.en_concepto">
+                            <div class="clave">Concepto: </div>
+                            <div class="valor"><u>{{ accion.en_concepto }}</u></div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_estado">
+                            <div class="clave">Estado: </div>
+                            <div class="valor valor_de_estado">{{ accion.tiene_estado }}</div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_inicio">
+                            <div class="clave">Inicio: </div>
+                            <div class="valor">{{ accion.tiene_inicio }}</div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_duracion">
+                            <div class="clave">Duración: </div>
+                            <div class="valor">{{ accion.tiene_duracion }}</div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_parametros">
+                            <div class="clave">Parámetros: </div>
+                            <div class="valor">{{ accion.tiene_parametros }}</div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_comentarios">
+                            <div class="clave">Comentarios: </div>
+                            <div class="valor">{{ accion.tiene_comentarios }}</div>
+                        </div>
+                        <div class="campo"
+                            v-if="accion.tiene_resultados">
+                            <div class="clave">Resultados: </div>
+                            <div class="valor">{{ accion.tiene_resultados }}</div>
+                        </div>
+                    </div>
+                </div>
+                <lsw-schema-based-form v-if="selectedForm === accion.id"
+                    :on-submit="v => onUpdateTask(v, accion)"
+                    :on-delete-row="loadDateTasks"
+                    :overriden-values="{
+                        tiene_inicio: accion.tiene_inicio
+                    }"
+                    :model="{
+                        connection: \$lsw.database,
+                        databaseId: 'lsw_default_database',
+                        rowId: accion.id,
+                        tableId: 'Accion',
+                    }" />
+            </div>
+        </div>
+        <!--div class="box_for_date_details"
+        v-else-if="(!isLoading) && Array.isArray(selectedDateTasksFormattedPerHour) && selectedDateTasksFormattedPerHour.length">
+        <div class="hour_table"
+            v-for="franja, franjaIndex in selectedDateTasksFormattedPerHour"
+            v-bind:key="'franja_horaria_' + franjaIndex">
+            <div class="hour_lapse_separator">
+                <div class="flex_row centered">
+                    <div class="flex_1 pad_right_1">
+                        <button class="iconized_button nowrap"
+                            style="margin-right: 1px;"
+                            v-on:click="() => selectHour(franja.hora)"
+                            :class="{activated: selectedForm === franja.hora}">#️⃣</button>
+                    </div>
+                    <div class="flex_100">
+                        <span>{{ \$lsw.timer.utils.formatHourFromMomento(franja) }}</span>
+                        <span> · </span>
+                        <span class="hour_compromises">{{ \$lsw.utils.pluralizar("compromiso", "compromisos", "%i %s", Object.keys(franja.tareas).length) }}</span>
+                    </div>
+                    <div class="flex_1">
+                        <div class="flex_1 flex_row centered">
+                            <span v-on:click="() => toggleHour(franja.hora)">
+                                <button class="iconized_button nowrap activated"
+                                    v-if="hiddenDateHours.indexOf(franja.hora) === -1">🔓</button>
+                                <button class="iconized_button nowrap"
+                                    v-else>🔒</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <lsw-schema-based-form v-if="selectedForm === franja.hora"
+                :on-submit="v => \$lsw.database.insert('Accion', v).then(loadDateTasks)"
+                :on-delete-row="loadDateTasks"
+                :overriden-values="{
+                    tiene_inicio: \$lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
+                    + ' '
+                    + \$lsw.timer.utils.formatHour(franja.hora, franja.minuto || 0)
+                }"
+                :model="{
+                    connection: \$lsw.database,
+                    databaseId: 'lsw_default_database',
+                    rowId: -1,
+                    tableId: 'Accion',
+                }" />
+            <div class="hour_lapse_list"
+                v-show="hiddenDateHours.indexOf(franja.hora) === -1">
+                <template v-for="tarea, tareaIndex in franja.tareas">
+                    <div class="hour_task_block"
+                        :class="{is_completed: tarea.tiene_estado === 'completada', is_failed: tarea.tiene_estado === 'fallida', is_pending: tarea.tiene_estado === 'pendiente'}"
+                        v-bind:key="'franja_horaria_' + franjaIndex + '_tarea_' + tareaIndex">
+                        <div class="hour_task_pill pill">
+                            <div class="flex_1 hour_task_dragger pill_start">
+                                <div class="">❗️</div>
+                            </div>
+                            <div class="flex_1 hour_task_details_start pill_middle">
+                                <div class="lighted_cell" :class="{psicodelic_cell: hasPsicodelia}">{{ \$lsw.timer.utils.formatHourFromMomentoCode(tarea.tiene_inicio, true) ?? '💩' }}
+                                </div>
+                            </div>
+                            <div class="flex_1 hour_task_details_duration pill_middle">
+                                <div class="lighted_cell">{{ tarea.tiene_duracion || '🤔' }}</div>
+                            </div>
+                            <div class="flex_100 hour_task_name pill_middle" style="overflow: hidden;" v-on:click="() => advanceTaskState(tarea)">
+                                <div class="lighted_cell" style="text-overflow: ellipsis; overflow: clip; max-width: 100%;">{{ tarea.en_concepto || '🤔' }}</div>
+                            </div>
+                            <div class="flex_1 hour_task_editer pill_middle button_pill_cell">
+                                <button class="" v-on:click="() => openUpdateTaskDialog(tarea)"
+                                    :class="{activated: selectedForm === tarea.id}">#️⃣</button>
+                            </div>
+                            <div class="flex_1 hour_task_editer pill_end button_pill_cell">
+                                <button class="danger_button" v-on:click="(e) => openDeleteTaskDialog(tarea, e)">❌</button>
+                            </div>
+                        </div>
+                        <lsw-schema-based-form v-if="selectedForm === tarea.id"
+                            :on-submit="v => onUpdateTask(v, tarea)"
+                            :on-delete-row="loadDateTasks"
+                            :overriden-values="{
+                                tiene_inicio: \$lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
+                                + ' '
+                                + \$lsw.timer.utils.formatHour(franja.hora, franja.minuto || 0)
+                            }"
+                            :model="{
+                                connection: \$lsw.database,
+                                databaseId: 'lsw_default_database',
+                                rowId: tarea.id,
+                                tableId: 'Accion',
+                            }" />
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div-->
+        <div class="no_tasks_message"
+            v-else>
+            No hay tareas asignadas para este día.
+        </div>
+    </div>
+</div>`,
+  props: {
+    initialDate: {
+      type: Date,
+      required: true,
+    },
+    sorterStrategy: {
+      type: String,
+      default: () => false,
+    }
+  },
+  data() {
+    this.$trace("lsw-agenda-acciones-viewer.data");
+    return {
+      isLoading: true,
+      selectedDate: this.initialDate,
+      selectedAccion: "",
+      selectedForm: false,
+      selectedDateTasks: undefined,
+      selectedDateTasksSorted: undefined,
+      hiddenDateHours: [],
+      shownAcciones: [],
+    };
+  },
+  methods: {
+    changeDate(selectedDate) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.changeDate");
+      this.selectedDate = selectedDate;
+      this.loadDateTasks();
+    },
+    selectForm(hora) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.selectForm");
+      if (this.selectedForm === hora) {
+        this.selectedForm = undefined;
+      } else {
+        this.selectedForm = hora;
+      }
+    },
+    async advanceTaskState(tarea) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.onInsertTask");
+      const siguienteEstado = (() => {
+        switch (tarea.tiene_estado) {
+          case "pendiente": return "completada";
+          case "completada": return "fallida";
+          case "fallida": return "pendiente";
+          default: return "pendiente";
+        }
+      })();
+      await this.$lsw.database.overwrite('Accion', tarea.id, {
+        tiene_estado: siguienteEstado
+      });
+      await this.loadDateTasks();
+    },
+    toggleShowAccion(accionId) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.toggleShowAccion");
+      const pos = this.shownAcciones.indexOf(accionId);
+      if (pos === -1) {
+        this.shownAcciones.push(accionId);
+      } else {
+        this.shownAcciones.splice(pos, 1);
+      }
+    },
+    async loadDateTasks() {
+      this.isLoading = true;
+      const selectedDate = this.selectedDate;
+      const selectedDateTasks = await this.$lsw.database.selectMany("Accion", valueBrute => {
+        try {
+          const valueList = LswTimer.parser.parse(valueBrute.tiene_inicio);
+          const value = valueList[0];
+          const isSameYear = value.anio === selectedDate.getFullYear();
+          const isSameMonth = value.mes === (selectedDate.getMonth() + 1);
+          const isSameDay = value.dia === selectedDate.getDate();
+          const isAccepted = isSameYear && isSameMonth && isSameDay;
+          return isAccepted;
+        } catch (error) {
+          return true;
+        }
+      });
+      Constitute_date_tasks_as_required: {
+        if (this.sorterStrategy === false) {
+          this.selectedDateTasks = selectedDateTasks;
+          this.selectedDateTasksSorted = selectedDateTasks.sort((accion1, accion2) => {
+            let inicio1 = undefined;
+            let inicio2 = undefined;
+            try {
+              inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
+            } catch (error) {
+              return 1;
+            }
+            try {
+              inicio2 = LswTimer.utils.fromDatestringToDate(accion2.tiene_inicio);
+            } catch (error) {
+              return -1;
+            }
+            if (inicio1 < inicio2) {
+              return -1;
+            } else if (inicio1 > inicio2) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+        } else if(this.sorterStrategy === "despues") {
+          this.selectedDateTasks = selectedDateTasks;
+          const momentoActual = new Date();
+          this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
+            const dateInicio = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
+            try {
+              return momentoActual <= dateInicio;
+            } catch (error) {
+              console.log(error);
+              return false;
+            }
+          }).sort((accion1, accion2) => {
+            let inicio1 = undefined;
+            let inicio2 = undefined;
+            try {
+              inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
+            } catch (error) {
+              return 1;
+            }
+            try {
+              inicio2 = LswTimer.utils.fromDatestringToDate(accion2.tiene_inicio);
+            } catch (error) {
+              return -1;
+            }
+            if (inicio1 < inicio2) {
+              return -1;
+            } else if (inicio1 > inicio2) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+        } else if(this.sorterStrategy === "antes") {
+          this.selectedDateTasks = selectedDateTasks;
+          const momentoActual = new Date();
+          this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
+            const dateInicio = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
+            try {
+              return momentoActual >= dateInicio;
+            } catch (error) {
+              console.log(error);
+              return false;
+            }
+          }).sort((accion1, accion2) => {
+            let inicio1 = undefined;
+            let inicio2 = undefined;
+            try {
+              inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
+            } catch (error) {
+              return 1;
+            }
+            try {
+              inicio2 = LswTimer.utils.fromDatestringToDate(accion2.tiene_inicio);
+            } catch (error) {
+              return -1;
+            }
+            if (inicio1 < inicio2) {
+              return 1;
+            } else if (inicio1 > inicio2) {
+              return -1;
+            } else {
+              return 1;
+            }
+          });
+        }
+      }
+      this.isLoading = false;
+    },
+    showAllHours() {
+      this.$trace("lsw-agenda-acciones-viewer.methods.showAllHours");
+      this.hiddenDateHours = [];
+    },
+    hideAllHours() {
+      this.$trace("lsw-agenda-acciones-viewer.methods.hideAllHours");
+      this.hiddenDateHours = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
+    },
+    sameDayPendingAndAutogeneratedFilter(currentDate) {
+      return (accion) => {
+        try {
+          const accionDate = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
+          const sameYear = currentDate.getFullYear() === accionDate.getFullYear();
+          const sameMonth = currentDate.getMonth() === accionDate.getMonth();
+          const sameDay = currentDate.getDate() === accionDate.getDate();
+          const isPendiente = accion.tiene_estado === "pendiente";
+          const isAutogenerated = accion.tiene_parametros.startsWith("[*autogenerada]");
+          const isValid = sameYear && sameMonth && sameDay && isPendiente && isAutogenerated;
+          if (isValid) {
+            console.log("!!!", accion.en_concepto);
+          } else {
+            console.log("sameYear, sameMonth, sameDay, isPendiente");
+            console.log("Fallo:", sameYear, sameMonth, sameDay, isPendiente, isAutogenerated);
+          }
+          return isValid;
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+      }
+    },
+    async cleanRandomizedDays() {
+      this.$trace("lsw-agenda-acciones-viewer.methods.cleanRandomizedDays");
+      const currentDate = this.selectedDate || new Date();
+      const filterAutogeneratedPendingOfCurrentDate = this.sameDayPendingAndAutogeneratedFilter(currentDate);
+      const matchedAcciones = await this.$lsw.database.selectMany("Accion", filterAutogeneratedPendingOfCurrentDate);
+      if (!matchedAcciones.length) {
+        return this.$lsw.toasts.send({
+          title: "No hay acciones randomizadas",
+          text: "Niniguna acción fue eliminada por ello."
+        });
+      }
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Eliminar registros randomizados",
+        template: `<div>
+                    <div class="pad_1">
+                    <div>¿Estás seguro que quieres eliminar los registros randomizados?</div>
+                    <div>Se eliminarán {{ accionesToDelete.length }} registros de acciones randomizados de hoy.</div>
+                    <hr />
+                    <div class="flex_row pad_1">
+                        <div class="flex_100"></div>
+                        <div class="flex_1 pad_left_1">
+                        <button v-on:click="() => accept(true)" class="supermini danger_button">Eliminar</button>
+                        </div>
+                        <div class="flex_1 pad_left_1">
+                        <button v-on:click="cancel" class="supermini">Cancelar</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>`,
+        factory: {
+          data: {
+            accionesToDelete: matchedAcciones
+          }
+        }
+      });
+      if (respuesta !== true) return;
+      await this.$lsw.database.deleteMany("Accion", filterAutogeneratedPendingOfCurrentDate);
+      await this.loadDateTasks(currentDate);
+    },
+    async randomizeDay() {
+      this.$trace("lsw-agenda-acciones-viewer.methods.randomizeDay");
+      const respuesta = await this.$dialogs.open({
+        title: "Cuestionario de randomizar día",
+        template: `<div>
+            <div class="pad_1 pad_bottom_0">
+                <div class="pad_1 pad_bottom_0">¿Qué duración quieres para las acciones de randomizado de día?</div>
+                <div class="pad_1 pad_top_2 pad_bottom_0">
+                    <lsw-duration-control ref="duracion" :settings="{name:'duracion',initialValue:'15min'}" :skip-label="true" />
+                </div>
+                <hr />
+                <div class="pad_1 pad_bottom_0">¿Desde qué hora quieres randomizar? Mínimo: 0.</div>
+                <div class="pad_1 pad_top_2 pad_bottom_0">
+                    <lsw-text-control ref="hora_inicio" :settings="{name:'hora_inicio',initialValue:currentHour}" :skip-label="true" />
+                </div>
+                <hr />
+                <div class="pad_1 pad_bottom_0">¿Hasta qué hora quieres randomizar? Máximo: 24</div>
+                <div class="pad_1 pad_top_2 pad_bottom_0">
+                    <lsw-text-control ref="hora_final" :settings="{name:'hora_final',initialValue:'24'}" :skip-label="true" />
+                </div>
+            </div>
+            <div v-if="error">
+                <hr/>
+                <div class="box_error_container error_is_affecting_field" v-on:click="() => setError(false)">
+                    <div class="box_error_content">{{ error.name }}: {{ error.message }}</div>
+                </div>
+            </div>
+            <hr />
+            <div class="text_align_right pad_right_1">
+                <button class="supermini danger_button" v-on:click="submit">Randomizar día</button>
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+            </div>
+        </div>`,
+        factory: {
+          data: {
+            error: false,
+            currentHour: (new Date()).getHours() + "",
+          },
+          methods: {
+            setError(error) {
+              this.error = error;
+            },
+            submit() {
+              this.$trace("Dialogs.randomizar_dia.methos.submit");
+              try {
+                const valor = this.$refs.duracion.value;
+                const ast = LswTimer.parser.parse(valor);
+                const esValido = (valor.trim() !== "") && (typeof ast[0] === "object") && (ast[0].tipo === "Duracion");
+                if (!esValido) return;
+                this.value = {
+                  duracion: valor,
+                  hora_inicio: parseInt(this.$refs.hora_inicio.value),
+                  hora_final: parseInt(this.$refs.hora_final.value),
+                };
+                if (this.value.hora_inicio < 0) {
+                  throw new Error("Hora de inicio debe ser mayor que 0");
+                }
+                if (this.value.hora_inicio > 24) {
+                  throw new Error("Hora de inicio debe ser menor o igual que 24");
+                }
+                if (this.value.hora_final < 0) {
+                  throw new Error("Hora de final debe ser mayor que 0");
+                }
+                if (this.value.hora_final > 24) {
+                  throw new Error("Hora de final debe ser menor o igual que 24");
+                }
+                return this.accept();
+              } catch (error) {
+                console.log(error);
+                this.setError(error);
+              }
+            }
+          }
+        }
+      });
+      const {
+        duracion: duracion_de_bloques,
+        hora_inicio,
+        hora_final
+      } = respuesta;
+      if (typeof duracion_de_bloques !== "string") return;
+      const currentDate = this.selectedDate;
+      const accionesDelDia = await this.$lsw.database.select("Accion", accion => {
+        try {
+          const accionDate = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
+          const sameYear = currentDate.getFullYear() === accionDate.getFullYear();
+          const sameMonth = currentDate.getMonth() === accionDate.getMonth();
+          const sameDay = currentDate.getDate() === accionDate.getDate();
+          const isNotPendiente = accion.tiene_estado !== "pendiente";
+          const isValid = sameYear && sameMonth && sameDay && isNotPendiente;
+          return isValid;
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+      });
+      const momentoInicio = new Date(this.selectedDate);
+      Configurar_hora_de_inicio: {
+        momentoInicio.setHours(hora_inicio);
+        momentoInicio.setMinutes(0);
+        momentoInicio.setSeconds(0);
+        momentoInicio.setMilliseconds(0);
+      }
+      const momentoFinal = new Date(this.selectedDate);
+      Configurar_hora_de_final: {
+        momentoFinal.setHours(hora_final - 1);
+        momentoFinal.setMinutes(0);
+        momentoFinal.setSeconds(0);
+        momentoFinal.setMilliseconds(0);
+      }
+      const accionesAutogeneradas = LswAgendaRandomizer.generar(
+        LswAgendaRandomizerReglas,
+        accionesDelDia,
+        momentoInicio,
+        duracion_de_bloques,
+        momentoFinal,
+        0.6
+      );
+      accionesAutogeneradas.forEach(accion => {
+        delete accion.id;
+        accion.tiene_estado = "pendiente";
+        accion.tiene_parametros = ("[*autogenerada] " + (accion.tiene_parametros.replace(/^\[\*autogenerada\]/g, ""))).trim();
+      });
+      Insertar_rows: {
+        await this.$lsw.database.insertMany("Accion", accionesAutogeneradas);
+        await this.loadDateTasks(this.selectedDate);
+      }
+    }
+  },
+  watch: {
+
+  },
+  async mounted() {
+    try {
+      this.$trace("lsw-agenda-acciones-viewer.mounted");
+      await this.loadDateTasks();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswAgendaAccionesViewer API
 // @code.start: LswAgendaBreadcrumb API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaBreadcrumb API » LswAgendaBreadcrumb component
 Vue.component("LswAgendaBreadcrumb", {
   name: "LswAgendaBreadcrumb",
@@ -26748,11 +26999,11 @@ Vue.component("LswErrorViewer", {
 // @code.start: LswTextControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswTextControl component
 Vue.component("LswTextControl", {
   template: `<div class="lsw_text_control lsw_formtype lsw_form_control">
-    <lsw-control-label :settings="settings" :parent-formtype="this" />
+    <lsw-control-label :settings="settings" :parent-formtype="this" v-if="skipLabel === false" />
     <div v-show="isEditable">
         <div ref="controller" v-xform.control="{
             name: settings.name,
-            onValidate: settings.column.hasValidator || \$noop,
+            onValidate: settings.column?.hasValidator || \$noop,
             onSetError: () => {
                 isEditable = true;
             }
@@ -26775,6 +27026,10 @@ Vue.component("LswTextControl", {
       type: Object,
       default: () => ({})
     },
+    skipLabel: {
+      type: Boolean,
+      default: () => false,
+    }
   },
   data() {
     this.$trace("lsw-text-control.data");
@@ -41909,7 +42164,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-bind:key="'app_acciones_anteriores'">
                     <h3 class="pad_bottom_1 margin_bottom_1">
                         <div class="flex_row centered">
-                            <div class="flex_100">🕓 Antes de las {{ getHoraActual() }}:</div>
+                            <div class="flex_100">⬅️ 🕓 Antes de las {{ getHoraActual() }}:</div>
                             <div class="flex_1">
                                 <button class="supermini"
                                     v-on:click="() => selectApplication('calendario')">📅</button>
@@ -41920,25 +42175,10 @@ Vue.component("LswAppsViewerPanel", {
                             </div>
                         </div>
                     </h3>
-                    <template v-if="accionesAntes && accionesAntes.length">
-                        <div class="tarjetas_de_accion">
-                            <div class="tarjeta_de_accion nowrap"
-                                v-for="accion, accionIndex in accionesAntes"
-                                v-bind:key="'accion_antes_' + accionIndex">
-                                <div class="celda_de_hora">{{ LswTimer.utils.extractHourFromDatestring(accion.tiene_inicio) }}</div>
-                                <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
-                                <div class="font_weight_bold">{{ accion.tiene_duracion }}</div>
-                                <div class="cell_en_concepto shortable_text flex_100">{{ accion.en_concepto }}</div>
-                                <div class="cell_en_estado"
-                                    :class="'estado_' + accion.tiene_estado"
-                                    v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{
-                                    accion.tiene_estado }} {{ getSimboloEstadoAccion(accion.tiene_estado) }}</div>
-                                <!--div>{{ accion.tiene_parametros }}</div>
-                                    <div>{{ accion.tiene_resultados }}</div>
-                                    <div>{{ accion.tiene_comentarios }}</div-->
-                            </div>
-                        </div>
-                    </template>
+                    <lsw-agenda-acciones-viewer
+                        :initial-date="new Date()"
+                        sorter-strategy="antes"
+                    />
                     <div v-else
                         class="pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
                 </div>
@@ -41947,7 +42187,7 @@ Vue.component("LswAppsViewerPanel", {
                     v-bind:key="'app_acciones_posteriores'">
                     <h3 class="pad_bottom_1 margin_bottom_1">
                         <div class="flex_row centered">
-                            <div class="flex_100">🕓 Después de las {{ getHoraActual() }}:</div>
+                            <div class="flex_100">🕓 ➡️ Después de las {{ getHoraActual() }}:</div>
                             <div class="flex_1">
                                 <button class="supermini"
                                     v-on:click="() => selectApplication('calendario')">📅</button>
@@ -41958,7 +42198,11 @@ Vue.component("LswAppsViewerPanel", {
                             </div>
                         </div>
                     </h3>
-                    <template v-if="accionesDespues && accionesDespues.length">
+                    <lsw-agenda-acciones-viewer
+                        :initial-date="new Date()"
+                        sorter-strategy="despues"
+                    />
+                    <!--template v-if="accionesDespues && accionesDespues.length">
                         <div class="tarjetas_de_accion">
                             <div class="tarjeta_de_accion nowrap"
                                 v-for="accion, accionIndex in accionesDespues"
@@ -41975,7 +42219,7 @@ Vue.component("LswAppsViewerPanel", {
                         </div>
                     </template>
                     <div v-else
-                        class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div>
+                        class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div-->
                 </div>
 
                 <div class="pad_1"

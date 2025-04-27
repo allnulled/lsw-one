@@ -1,9 +1,9 @@
 <div class="lsw_text_control lsw_formtype lsw_form_control">
-    <lsw-control-label :settings="settings" :parent-formtype="this" />
+    <lsw-control-label :settings="settings" :parent-formtype="this" v-if="skipLabel === false" />
     <div v-show="isEditable">
         <div ref="controller" v-xform.control="{
             name: settings.name,
-            onValidate: settings.column.hasValidator || $noop,
+            onValidate: settings.column?.hasValidator || $noop,
             onSetError: () => {
                 isEditable = true;
             }

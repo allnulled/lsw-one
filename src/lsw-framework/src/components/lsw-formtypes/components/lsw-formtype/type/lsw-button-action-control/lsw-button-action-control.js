@@ -1,18 +1,14 @@
-// @code.start: LswTextControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswTextControl component
-Vue.component("LswTextControl", {
+// @code.start: LswButtonActionControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswButtonActionControl component
+Vue.component("LswButtonActionControl", {
   template: $template,
   props: {
     settings: {
       type: Object,
       default: () => ({})
     },
-    skipLabel: {
-      type: Boolean,
-      default: () => false,
-    }
   },
   data() {
-    this.$trace("lsw-text-control.data");
+    this.$trace("lsw-button-action-control.data");
     this.validateSettings();
     const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
     return {
@@ -39,10 +35,10 @@ Vue.component("LswTextControl", {
   watch: {},
   mounted() {
     try {
-      this.$trace("lsw-text-control.mounted");
+      this.$trace("lsw-button-action-control.mounted");
     } catch (error) {
       console.log(error);
     }
   }
 });
-// @code.end: LswTextControl API
+// @code.end: LswButtonActionControl API

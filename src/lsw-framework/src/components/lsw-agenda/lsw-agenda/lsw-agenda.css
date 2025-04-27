@@ -178,6 +178,10 @@
     padding-bottom: 0px;
 }
 
+.tabla_de_detalles>.campo>.valor_de_estado {
+    text-transform: uppercase;
+}
+
 .celda_de_hora {}
 
 .celda_de_duracion {}

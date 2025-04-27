@@ -64,13 +64,13 @@
     }
     
 
-    static generar(reglas = {}, accionesPrevias = [], horaInicio = new Date(), duracionMinima = "20min", tasaDePeso = 0.6) {
+    static generar(reglas = {}, accionesPrevias = [], horaInicio = new Date(), duracionMinima = "20min", horaFinal = new Date(), tasaDePeso = 0.6) {
       this.trace("generar", arguments);
       const ahora = new Date(horaInicio);
       ahora.setSeconds(0, 0); // limpia segundos y ms
     
       const inicio = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), horaInicio.getHours(), 0, 0, 0);
-      const finDelDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), 23, 59, 59, 999);
+      const finDelDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), horaFinal.getHours(), 59, 59, 999);
       const duracionMilisegundos = this._duracionAMilisegundos(duracionMinima);
     
       const acciones = [];

@@ -21,7 +21,10 @@
 
 .celda_de_hora {}
 
-.celda_de_duracion {}
+.celda_de_duracion {
+    white-space: nowrap;
+    font-size: 10px;
+}
 
 .celda_de_concepto {
     border: 1px solid black;

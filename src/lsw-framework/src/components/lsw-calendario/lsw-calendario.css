@@ -4,6 +4,7 @@
 .visor_de_calendario {
     max-width: 260px;
     border: 1px solid black;
+    border-radius: 2pt;
     box-shadow: 0 0 4px black;
     background-color: rgba(0,0,0,0.3);
     padding: 4px;

@@ -86,6 +86,7 @@ table.basic_table > thead > tr > th:last-child {
 .visor_de_calendario {
     max-width: 260px;
     border: 1px solid black;
+    border-radius: 2pt;
     box-shadow: 0 0 4px black;
     background-color: rgba(0,0,0,0.3);
     padding: 4px;
@@ -252,7 +253,7 @@ button.active > .total_de_tareas_de_dia > div {
     margin-bottom: 3px;
     margin-left: 40px;
     margin-right: 40px;
-    height: 200px;
+    height: 500px;
     resize: vertical;
 }
 

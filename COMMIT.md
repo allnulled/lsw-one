@@ -31,6 +31,7 @@ En este commit hemos:
 [x] El picker de horas del calendario había que mejorarlo, no sé, a ver
 [x] Mejorado el calendario y botones
 [x] Agregamos paginador al lsw-table
-
-[ ] El flujo de new y update en la database-ui
-  [ ] Crea el concepto pero no redirecciona al formulario de ese row
+[x] Tabla con paginación completa
+[x] Modificada duración en tasks_viewer
+[x] El flujo de new y update en la database-ui
+  [x] Crea el concepto pero no redirecciona al formulario de ese row

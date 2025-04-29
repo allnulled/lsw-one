@@ -21856,7 +21856,7 @@ Vue.component("LswTable", {
                         <div class="pagination_button"
                             v-on:click="decreasePage">◀️</div>
                     </div>
-                    <div class="flex_100 text_align_center">{{ currentPage+1 }} con {{ itemsPerPage }} ítems máx.</div>
+                    <div class="flex_100 text_align_center">Pág. {{ currentPage+1 }}/{{ totalOfPages }} - máx: {{ itemsPerPage }}</div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
                             v-on:click="increasePage">▶️</div>
@@ -21907,7 +21907,7 @@ Vue.component("LswTable", {
                                 <td class="index_cell">
                                     <button v-on:click="() => toggleRow(row.id)"
                                         :class="{activated: selectedRows.indexOf(row.id) !== -1}">
-                                        {{ rowIndex + (currentPage * itemsPerPage) }}
+                                        {{ (rowIndex + 1) + (currentPage * itemsPerPage) }}
                                     </button>
                                 </td>
                                 <!--Selectable cell:-->
@@ -21985,7 +21985,7 @@ Vue.component("LswTable", {
                         <div class="pagination_button"
                             v-on:click="decreasePage">◀️</div>
                     </div>
-                    <div class="flex_100 text_align_center">{{ currentPage+1 }}</div>
+                    <div class="flex_100 text_align_center">Pág. {{ currentPage+1 }}/{{ totalOfPages }} - máx: {{ itemsPerPage }}</div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
                             v-on:click="increasePage">▶️</div>
@@ -22047,7 +22047,7 @@ Vue.component("LswTable", {
       extender: this.initialSettings?.extender || "",
       filter: this.initialSettings?.filter || "",
       sorter: this.initialSettings?.sorter || "",
-      itemsPerPage: this.initialSettings?.itemsPerPage || 50,
+      itemsPerPage: this.initialSettings?.itemsPerPage || 10,
       currentPage: this.initialSettings?.currentPage || 0,
       columnsAsList: this.initialSettings?.columnsAsList || [],
       columnsOrder: this.initialSettings?.columnsOrder || [],
@@ -22061,7 +22061,7 @@ Vue.component("LswTable", {
       placeholderForOrdenador: "data.sort(function(a, b) {\n  return /* you start here */;\n});",
       placeholderForFiltro: "data.filter(function(it, i) {\n  return /* you start here */;\n});",
       placeholderForBuscador: "Búsqueda de texto rápida",
-      placeholderForPaginador: "Ítems por página. Por defecto: 50"
+      placeholderForPaginador: "Ítems por página. Por defecto: 10"
     };
   },
   methods: {
@@ -22269,7 +22269,11 @@ Vue.component("LswTable", {
         return true;
       };
       return false;
-    }
+    },
+    totalOfPages() {
+      this.$trace("lsw-table.computed.totalOfPages");
+      return Math.ceil(this.output.length / this.itemsPerPage) || 1;
+    },
   },
   mounted() {
     this.$trace("lsw-table.mounted");

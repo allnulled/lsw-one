@@ -3,4 +3,3 @@
 gnome-terminal -- bash -c "npm run serve"
 gnome-terminal -- bash -c "npm run dev"
 gnome-terminal -- bash -c "npm run reloader"
-gnome-terminal -- bash -c "code ."

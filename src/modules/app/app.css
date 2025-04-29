@@ -145,6 +145,9 @@ hr {
     margin-top: 4px;
     margin-bottom: 4px;
 }
+hr.dashed {
+    border-bottom: 1px dashed #222;
+}
 
 /* API de Conductometria */
 :root {

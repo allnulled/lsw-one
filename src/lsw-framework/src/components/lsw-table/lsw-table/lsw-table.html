@@ -2,16 +2,19 @@
     style="padding-top: 4px;">
     <div>
         <div class="lsw_table_top_panel">
-            <div class="flex_row centered">
+            <div class="flex_row centered" style="gap: 2px;">
                 <div class="flex_1">
-                    <button class="cursor_pointer"
-                        v-on:click="digestOutput">🛜</button>
+                    *️⃣
                 </div>
                 <div class="flex_100 title_box">{{ title }}</div>
-                <div class="flex_1 lsw_table_top_button" v-for="topButton, topButtonIndex in attachedTopButtons" v-bind:key="'table-button-' + topButtonIndex">
+                <div class="flex_1" v-for="topButton, topButtonIndex in attachedTopButtons" v-bind:key="'table-button-' + topButtonIndex">
                     <button class="" v-on:click="topButton.event">
                         {{ topButton.text }}
                     </button>
+                </div>
+                <div class="flex_1">
+                    <button class="cursor_pointer"
+                        v-on:click="digestOutput">🛜</button>
                 </div>
                 <div class="flex_1">
                     <button class="table_menu_div width_100"
@@ -31,28 +34,52 @@
                         <div class="flex_row centered">
                             <div class="flex_1 nowrap">Estás en: </div>
                             <div class="flex_100 left_padded_1">
-                                <select class="width_100 text_align_left"
+                                <select class="width_100 text_align_right"
                                     v-model="isShowingSubpanel">
-                                    <option value="Extensor">Extensor ({{ extender.length }})</option>
-                                    <option value="Filtro">Filtro ({{ filter.length }})</option>
-                                    <option value="Ordenador">Ordenador ({{ sorter.length }})</option>
+                                    <option value="Paginador">Paginador (en: {{ itemsPerPage }})</option>
+                                    <option value="Buscador">Buscador {{ searcher.length ? `(con: ${searcher.length}B)` : '' }}</option>
+                                    <option value="Extensor">Extensor {{ extender.length ? `(con: ${searcher.length}B)` : '' }}</option>
+                                    <option value="Filtro">Filtro {{ filter.length ? `(con: ${searcher.length}B)` : '' }}</option>
+                                    <option value="Ordenador">Ordenador {{ sorter.length ? `(con: ${searcher.length}B)` : '' }}</option>
                                 </select>
                             </div>
                         </div>
+                        <hr />
                         <div v-if="isShowingSubpanel === 'Extensor'">
                             <textarea spellcheck="false"
                                 v-model="extender"
-                                :placeholder="placeholderForExtensor"></textarea>
+                                :placeholder="placeholderForExtensor"
+                                v-focus></textarea>
                         </div>
                         <div v-if="isShowingSubpanel === 'Filtro'">
                             <textarea spellcheck="false"
                                 v-model="filter"
-                                :placeholder="placeholderForFiltro"></textarea>
+                                :placeholder="placeholderForFiltro"
+                                v-focus></textarea>
                         </div>
                         <div v-if="isShowingSubpanel === 'Ordenador'">
                             <textarea spellcheck="false"
                                 v-model="sorter"
-                                :placeholder="placeholderForOrdenador"></textarea>
+                                :placeholder="placeholderForOrdenador"
+                                v-focus></textarea>
+                        </div>
+                        <div v-if="isShowingSubpanel === 'Buscador'">
+                            <input spellcheck="false"
+                                class="width_100"
+                                type="text"
+                                v-model="searcher"
+                                v-on:keypress.enter="digestOutput"
+                                :placeholder="placeholderForBuscador"
+                                v-focus />
+                        </div>
+                        <div v-if="isShowingSubpanel === 'Paginador'">
+                            <input spellcheck="false"
+                                class="width_100"
+                                type="number"
+                                v-model="itemsPerPage"
+                                v-on:keypress.enter="digestOutput"
+                                :placeholder="placeholderForPaginador"
+                                v-focus />
                         </div>
                     </div>
                 </div>
@@ -71,7 +98,7 @@
                         <div class="pagination_button"
                             v-on:click="decreasePage">◀️</div>
                     </div>
-                    <div class="flex_100 text_align_center">{{ currentPage+1 }}</div>
+                    <div class="flex_100 text_align_center">{{ currentPage+1 }} con {{ itemsPerPage }} ítems máx.</div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
                             v-on:click="increasePage">▶️</div>

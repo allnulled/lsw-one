@@ -49,16 +49,16 @@
                 v-bind:key="'accion_' + accionIndex">
                 <div class="accion_row flex_row centered"
                     style="padding-top: 2px;">
-                    <div class="flex_1 celda_de_hora padded_vertically_1"
-                        :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
-                        v-on:click="() => toggleShowAccion(accion.id)">{{
-                        $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                    <div class="flex_1 celda_de_concepto padded_vertically_1"
+                        v-on:click="() => advanceTaskState(accion)">{{
+                            $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
                         }}</div>
                     <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                     <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
                     <div class="flex_100 shortable_text">
-                        <div class="celda_de_concepto pad_left_1 pad_right_1 padded_vertically_1"
-                            v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                        <div class="celda_de_hora pad_left_1 pad_right_1 padded_vertically_1"
+                            :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
+                            v-on:click="() => toggleShowAccion(accion.id)"> {{ accion.en_concepto || '🤔' }}
                         </div>
                     </div>
                     <div class="flex_1">
@@ -97,17 +97,17 @@
                         <div class="campo"
                             v-if="accion.tiene_parametros">
                             <div class="clave">Parámetros: </div>
-                            <div class="valor">{{ accion.tiene_parametros }}</div>
+                            <div class="valor texto_markdown" v-html="marked.parse(accion.tiene_parametros)"></div>
                         </div>
                         <div class="campo"
                             v-if="accion.tiene_comentarios">
                             <div class="clave">Comentarios: </div>
-                            <div class="valor">{{ accion.tiene_comentarios }}</div>
+                            <div class="valor texto_markdown" v-html="(accion.tiene_comentarios)"></div>
                         </div>
                         <div class="campo"
                             v-if="accion.tiene_resultados">
                             <div class="clave">Resultados: </div>
-                            <div class="valor">{{ accion.tiene_resultados }}</div>
+                            <div class="valor texto_markdown" v-html="(accion.tiene_resultados)"></div>
                         </div>
                     </div>
                 </div>

@@ -13,6 +13,10 @@
     min-height: 180px;
     margin-top: 3px;
     margin-bottom: 3px;
+    margin-left: 40px;
+    margin-right: 40px;
+    height: 200px;
+    resize: vertical;
 }
 
 table.lsw_table_itself>thead>tr>th {
@@ -61,6 +65,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 
 .table_navigation_menu {
     background-color: #DDD;
+    color: black;
     box-shadow: 0 0 4px black;
     border-top-left-radius: 2pt;
     border-top-right-radius: 2pt;
@@ -74,6 +79,8 @@ table.lsw_table_itself>thead>tr>th.button_header {
     text-overflow: ellipsis;
     white-space: nowrap;
     border-left: 1px solid #999;
+    color: black;
+    text-shadow: 0 0 1px white;
 }
 
 .lsw_table_itself>tbody>tr>td:first-child {

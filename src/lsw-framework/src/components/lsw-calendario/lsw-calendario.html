@@ -58,8 +58,82 @@
         </tr>
       </tbody>
     </table>
-    <table class="width_100 no_borders_table"
-      v-if="modo === 'datetime' || modo === 'time'">
+    <div class="text_align_center" v-if="modo === 'datetime' || modo === 'time'">
+
+      <!--div class="panel_de_hora_de_calendario">{{ obtener_expresion_de_hora(fecha_seleccionada) }}</div-->
+
+      <hr class="dashed" />
+
+      <div class="duration_control_details_panel">
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(0)">00:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(1)">01:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(2)">02:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(3)">03:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(4)">04:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(5)">05:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(6)">06:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(7)">07:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(8)">08:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(9)">09:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(10)">10:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(11)">11:00:00</div>
+      </div>
+      
+      <hr class="dashed" />
+      
+      <div class="duration_control_details_panel">
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(12)">12:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(13)">13:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(14)">14:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(15)">15:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(16)">16:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(17)">17:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(18)">18:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(19)">19:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(20)">20:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(21)">21:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(22)">22:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(23)">23:00:00</div>
+      </div>
+
+      <hr class="dashed" />
+
+      <div class="duration_control_details_panel">
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(0)">00min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(5)">05min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(10)">10min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(15)">15min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(20)">20min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(25)">25min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(30)">30min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(35)">35min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(40)">40min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(45)">45min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(50)">50min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(55)">55min</div>
+      </div>
+
+      <hr class="dashed" />
+
+      <div class="duration_control_details_panel">
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(1)">+01min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(5)">+05min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(10)">+10min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(30)">+30min</div>
+      </div>
+
+      <hr class="dashed" />
+
+      <div class="duration_control_details_panel">
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-1)">-01min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-5)">-05min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-10)">-10min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-30)">-30min</div>
+      </div>
+
+    </div>
+    <!--table class="width_100 no_borders_table"
+      >
       <tbody>
         <tr class="fila_de_digito">
           <td v-on:click="agregar_digito_de_hora(1)"><button class="boton_de_ajuste_de_hora">▲</button></td>
@@ -93,7 +167,7 @@
           <td v-on:click="$noop"><button class="boton_de_ajuste_de_hora">▼</button></td>
         </tr>
       </tbody>
-    </table>
+    </table-->
     <!--table class="tabla_para_horas"
       v-if="!es_solo_fecha">
       <tr>

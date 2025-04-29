@@ -14,8 +14,7 @@
                     style="min-width: 160px;">
                     <div class="hidden_menu_items">
                         <div class="title">
-                            <div class="flex_100"
-                                style="padding-left: 4px;">
+                            <div class="flex_100 pad_right_2 pad_left_2">
                                 Insertar info
                             </div>
                             <div class="flex_1">
@@ -32,14 +31,14 @@
                             <button class="mini"
                                 v-on:click="() => selectContext('concepto.add')">Crear concepto</button>
                         </div>
-                        <div class="button_cell">
+                        <!--div class="button_cell">
                             <button class="mini"
                                 v-on:click="() => selectContext('limitador.add')">Crear limitador</button>
                         </div>
                         <div class="button_cell">
                             <button class="mini"
                                 v-on:click="() => selectContext('impresion.add')">Crear impresión</button>
-                        </div>
+                        </div-->
                     </div>
                 </div>
             </div>
@@ -52,10 +51,11 @@
                 v-if="selectedSubmenu1 === 'search'">
                 <div class="hidden_menu_fixed_layer"
                     v-on:click="() => selectSubmenu1('none')"></div>
-                <div class="hidden_menu_box">
+                <div class="hidden_menu_box"
+                    style="min-width: 160px;">
                     <div class="hidden_menu_items">
                         <div class="title">
-                            <div class="flex_100 pad_left_1 pad_right_1">
+                            <div class="flex_100 pad_left_2 pad_right_2">
                                 Buscar info
                             </div>
                             <div class="flex_1">
@@ -63,9 +63,9 @@
                                     v-on:click="() => selectSubmenu1('none')">❌</button>
                             </div>
                         </div>
-                        <div class="separator">
+                        <!--div class="separator">
                             <div class="flex_100 pad_left_1 pad_right_1">Tablas físicas:</div>
-                        </div>
+                        </div-->
                         <div class="button_cell">
                             <button class="mini"
                                 v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
@@ -74,6 +74,7 @@
                             <button class="mini"
                                 v-on:click="() => selectContext('concepto.search')">Buscar por concepto</button>
                         </div>
+                        <!--
                         <div class="button_cell">
                             <button class="mini"
                                 v-on:click="() => selectContext('propagador.search')">Buscar por propagador</button>
@@ -106,6 +107,7 @@
                             <button class="mini"
                                 v-on:click="() => selectContext('evento.search')">Buscar por evento</button>
                         </div>
+                        -->
                     </div>
                 </div>
             </div>

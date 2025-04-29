@@ -39,8 +39,14 @@ Vue.component("LswAgendaAccionesViewer", {
         this.selectedForm = hora;
       }
     },
-    async advanceTaskState(tarea) {
+    async onInsertTask(v, tarea) {
       this.$trace("lsw-agenda-acciones-viewer.methods.onInsertTask");
+      const id = await this.$lsw.database.insert('Accion', v);
+      this.selectForm(id);
+      this.loadDateTasks();
+    },
+    async advanceTaskState(tarea) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.advanceTaskState");
       const siguienteEstado = (() => {
         switch (tarea.tiene_estado) {
           case "pendiente": return "completada";
@@ -372,7 +378,7 @@ Vue.component("LswAgendaAccionesViewer", {
       }
     },
     async openDeleteTaskDialog(tarea, e) {
-      this.$trace("lsw-agenda.methods.openDeleteTaskDialog");
+      this.$trace("lsw-agenda-acciones-viewer.methods.openDeleteTaskDialog");
       const confirmed = await Vue.prototype.$dialogs.open({
         title: "Eliminar registro",
         template: `
@@ -389,6 +395,12 @@ Vue.component("LswAgendaAccionesViewer", {
       if (!confirmed) return false;
       await this.$lsw.database.delete("Accion", tarea.id);
       this.selectedForm = undefined;
+      this.loadDateTasks();
+    },
+    async onUpdateTask(v, tarea) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.onUpdateTask");
+      await this.$lsw.database.update('Accion', tarea.id, v);
+      this.selectedForm = tarea.id;
       this.loadDateTasks();
     },
   },

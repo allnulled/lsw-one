@@ -124,20 +124,20 @@
 }
 
 .accion_row>div:first-child {
-    padding-left: 0px;
+    
 }
 
 .hour_task_block.is_failed .celda_de_concepto {
-    background-color: #5a2020BB;
+    background-color: #5a202088;
 }
 
 .hour_task_block.is_completed .celda_de_concepto {
-    background-color: #46c01aBB;
+    background-color: #46c01a88;
     color: black;
 }
 
 .hour_task_block.is_pending .celda_de_concepto {
-    background-color: #e5df23BB;
+    background-color: #e5df2388;
     color: black;
 
 }
@@ -169,6 +169,10 @@
     padding-right: 4px;
     color: #666;
     text-shadow: 0 0 1px black;
+    border-top: 1px solid #444;
+    vertical-align: top;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .tabla_de_detalles>.campo>.valor {
@@ -176,27 +180,21 @@
     width: 100%;
     padding: 4px;
     padding-bottom: 0px;
+    border-top: 1px solid #444;
 }
 
 .tabla_de_detalles>.campo>.valor_de_estado {
     text-transform: uppercase;
 }
 
-.celda_de_hora {}
-
-.celda_de_duracion {}
-
-.celda_de_concepto {
-    border: 1px solid black;
-    box-shadow: 0 0 2px white;
-    border-radius: 3pt;
-    cursor: pointer;
-}
-
-.celda_de_hora.activated {
-    background-color: rgba(16, 211, 169, 0.249) !important;
-    border: 1px solid rgb(0, 166, 166) !important;
-    color: white !important;
+.texto_markdown {}
+.texto_markdown h1,
+.texto_markdown h2,
+.texto_markdown h3,
+.texto_markdown h4,
+.texto_markdown h5,
+.texto_markdown h6 {
+    margin: 0px;
 }
 
 .pill_start,
@@ -319,6 +317,7 @@
     padding-bottom: 1px;
     text-align: left;
     min-height: 25px;
+    color: black;
     /* @CAUTION: depends on button{height} */
     display: flex;
     align-items: center;

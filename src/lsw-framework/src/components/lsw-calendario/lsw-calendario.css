@@ -3,6 +3,10 @@
 }
 .visor_de_calendario {
     max-width: 260px;
+    border: 1px solid black;
+    box-shadow: 0 0 4px black;
+    background-color: rgba(0,0,0,0.3);
+    padding: 4px;
 }
 .LswCalendario .like_table {
     display: table;
@@ -31,12 +35,19 @@ button.boton_de_dia_de_calendario {
 }
 button.boton_de_dia_de_calendario.current {
     background-color: rgb(97, 48, 46);
-    color: white;
+    border: 2px solid #6fff00;
+    border-radius: 2pt;
+    box-shadow: 0 0 8px rgb(255, 251, 0);
 }
+
 button.boton_de_dia_de_calendario.active {
     background-color: white;
     color: black;
 }
+button.boton_de_dia_de_calendario.active.current {
+    
+}
+
 button.boton_de_mover_mes {
     width: 100%;
     min-width: 25px;
@@ -132,4 +143,13 @@ button.active > .total_de_tareas_de_dia > div {
 
 .dia_de_calendario_texto {
     margin-top: -12px;
+}
+.subtitulo_de_seccion_de_calendario {
+    padding-top: 25px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+.panel_de_hora_de_calendario {
+    background-color: rgba(255, 255, 255, 0.61);
+    border: 1px solid white;
 }

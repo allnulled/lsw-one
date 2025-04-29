@@ -374,6 +374,7 @@ Vue.component("LswCalendario", {
       }
     },
     obtener_expresion_de_hora(fecha = this.fecha_seleccionada) {
+      this.$trace("lsw-calendario.methods.obtener_expresion_de_hora");
       let hours = fecha.getHours();
       let minutes = fecha.getMinutes();
       let seconds = fecha.getSeconds();
@@ -383,8 +384,29 @@ Vue.component("LswCalendario", {
       return `${hours}:${minutes}:${seconds}`;
     },
     establecer_marcadores_del_mes(marcadores_del_mes) {
+      this.$trace("lsw-calendario.methods.establecer_marcadores_del_mes");
       this.marcadores_del_mes = marcadores_del_mes;
-    }
+    },
+    establecer_hora_directamente(hora, minutos = 0) {
+      this.$trace("lsw-calendario.methods.establecer_hora_directamente");
+      this.fecha_seleccionada.setHours(hora);
+      this.fecha_seleccionada.setMinutes(minutos);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
+    aniadir_minutos_directamente(minutos_aniadidos) {
+      this.$trace("lsw-calendario.methods.aniadir_minutos_directamente");
+      const minutos_actuales = this.fecha_seleccionada.getMinutes();
+      this.fecha_seleccionada.setMinutes(minutos_actuales + minutos_aniadidos);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
+    establecer_minutos_directamente(minutos) {
+      this.$trace("lsw-calendario.methods.establecer_minutos_directamente");
+      this.fecha_seleccionada.setMinutes(minutos);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
   },
   watch: {
     fecha_seleccionada(nuevo_valor) {

@@ -46,10 +46,10 @@
                             <button class="supermini margin_right_1 nowrap"
                                 :class="{activated: isShowingFormInfo}"
                                 v-on:click="toggleFormInfo">ℹ️</button>
-                            <button class="supermini margin_right_1 nowrap"
+                            <!--button class="supermini margin_right_1 nowrap"
                                 v-on:click="openEditables">🔓*</button>
                             <button class="supermini margin_right_1 nowrap"
-                                v-on:click="closeEditables">🔒*</button>
+                                v-on:click="closeEditables">🔒*</button-->
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                     class="scrollable_text_area">
                     <pre style="background-color: white; color: black; font-family: Arial; font-size: 11px; padding: 4px; margin: 0px; border-top: 1px solid white;">ℹ️: {{ tableDefinition }}</pre>
                 </div>
-                <div class="lsw_table_viewer" style="padding: 0px; min-height: 0%;">
+                <div class="" style="padding: 0px; min-height: 0%;">
                     <div class="pestania"
                         v-if="section === 'campos propios'">
                         <!--div class="subtitle_box">Campos propios:</div-->
@@ -111,10 +111,10 @@
                                         v-on:click="submitForm">⚡️ Enviar</button>
                                     <button class="mini margin_left_1 nowrap"
                                         v-on:click="validateForm">✅ Validar</button>
-                                    <button class="mini margin_left_1 nowrap"
+                                    <!--button class="mini margin_left_1 nowrap"
                                         v-on:click="openEditables">🔓*</button>
                                     <button class="mini margin_left_1 nowrap"
-                                        v-on:click="closeEditables">🔒*</button>
+                                        v-on:click="closeEditables">🔒*</button-->
                                 </div>
                             </div>
                         </div>

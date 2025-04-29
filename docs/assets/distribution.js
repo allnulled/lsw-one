@@ -21182,8 +21182,82 @@ Vue.component("LswCalendario", {
         </tr>
       </tbody>
     </table>
-    <table class="width_100 no_borders_table"
-      v-if="modo === 'datetime' || modo === 'time'">
+    <div class="text_align_center" v-if="modo === 'datetime' || modo === 'time'">
+
+      <!--div class="panel_de_hora_de_calendario">{{ obtener_expresion_de_hora(fecha_seleccionada) }}</div-->
+
+      <hr class="dashed" />
+
+      <div class="duration_control_details_panel">
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(0)">00:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(1)">01:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(2)">02:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(3)">03:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(4)">04:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(5)">05:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(6)">06:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(7)">07:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(8)">08:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(9)">09:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(10)">10:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(11)">11:00:00</div>
+      </div>
+      
+      <hr class="dashed" />
+      
+      <div class="duration_control_details_panel">
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(12)">12:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(13)">13:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(14)">14:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(15)">15:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(16)">16:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(17)">17:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(18)">18:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(19)">19:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(20)">20:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(21)">21:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(22)">22:00:00</div>
+        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(23)">23:00:00</div>
+      </div>
+
+      <hr class="dashed" />
+
+      <div class="duration_control_details_panel">
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(0)">00min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(5)">05min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(10)">10min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(15)">15min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(20)">20min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(25)">25min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(30)">30min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(35)">35min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(40)">40min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(45)">45min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(50)">50min</div>
+        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(55)">55min</div>
+      </div>
+
+      <hr class="dashed" />
+
+      <div class="duration_control_details_panel">
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(1)">+01min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(5)">+05min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(10)">+10min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(30)">+30min</div>
+      </div>
+
+      <hr class="dashed" />
+
+      <div class="duration_control_details_panel">
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-1)">-01min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-5)">-05min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-10)">-10min</div>
+        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-30)">-30min</div>
+      </div>
+
+    </div>
+    <!--table class="width_100 no_borders_table"
+      >
       <tbody>
         <tr class="fila_de_digito">
           <td v-on:click="agregar_digito_de_hora(1)"><button class="boton_de_ajuste_de_hora">▲</button></td>
@@ -21217,7 +21291,7 @@ Vue.component("LswCalendario", {
           <td v-on:click="\$noop"><button class="boton_de_ajuste_de_hora">▼</button></td>
         </tr>
       </tbody>
-    </table>
+    </table-->
     <!--table class="tabla_para_horas"
       v-if="!es_solo_fecha">
       <tr>
@@ -21650,6 +21724,7 @@ Vue.component("LswCalendario", {
       }
     },
     obtener_expresion_de_hora(fecha = this.fecha_seleccionada) {
+      this.$trace("lsw-calendario.methods.obtener_expresion_de_hora");
       let hours = fecha.getHours();
       let minutes = fecha.getMinutes();
       let seconds = fecha.getSeconds();
@@ -21659,8 +21734,29 @@ Vue.component("LswCalendario", {
       return `${hours}:${minutes}:${seconds}`;
     },
     establecer_marcadores_del_mes(marcadores_del_mes) {
+      this.$trace("lsw-calendario.methods.establecer_marcadores_del_mes");
       this.marcadores_del_mes = marcadores_del_mes;
-    }
+    },
+    establecer_hora_directamente(hora, minutos = 0) {
+      this.$trace("lsw-calendario.methods.establecer_hora_directamente");
+      this.fecha_seleccionada.setHours(hora);
+      this.fecha_seleccionada.setMinutes(minutos);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
+    aniadir_minutos_directamente(minutos_aniadidos) {
+      this.$trace("lsw-calendario.methods.aniadir_minutos_directamente");
+      const minutos_actuales = this.fecha_seleccionada.getMinutes();
+      this.fecha_seleccionada.setMinutes(minutos_actuales + minutos_aniadidos);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
+    establecer_minutos_directamente(minutos) {
+      this.$trace("lsw-calendario.methods.establecer_minutos_directamente");
+      this.fecha_seleccionada.setMinutes(minutos);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
   },
   watch: {
     fecha_seleccionada(nuevo_valor) {
@@ -21691,16 +21787,19 @@ Vue.component("LswTable", {
     style="padding-top: 4px;">
     <div>
         <div class="lsw_table_top_panel">
-            <div class="flex_row centered">
+            <div class="flex_row centered" style="gap: 2px;">
                 <div class="flex_1">
-                    <button class="cursor_pointer"
-                        v-on:click="digestOutput">🛜</button>
+                    *️⃣
                 </div>
                 <div class="flex_100 title_box">{{ title }}</div>
-                <div class="flex_1 lsw_table_top_button" v-for="topButton, topButtonIndex in attachedTopButtons" v-bind:key="'table-button-' + topButtonIndex">
+                <div class="flex_1" v-for="topButton, topButtonIndex in attachedTopButtons" v-bind:key="'table-button-' + topButtonIndex">
                     <button class="" v-on:click="topButton.event">
                         {{ topButton.text }}
                     </button>
+                </div>
+                <div class="flex_1">
+                    <button class="cursor_pointer"
+                        v-on:click="digestOutput">🛜</button>
                 </div>
                 <div class="flex_1">
                     <button class="table_menu_div width_100"
@@ -21720,28 +21819,52 @@ Vue.component("LswTable", {
                         <div class="flex_row centered">
                             <div class="flex_1 nowrap">Estás en: </div>
                             <div class="flex_100 left_padded_1">
-                                <select class="width_100 text_align_left"
+                                <select class="width_100 text_align_right"
                                     v-model="isShowingSubpanel">
-                                    <option value="Extensor">Extensor ({{ extender.length }})</option>
-                                    <option value="Filtro">Filtro ({{ filter.length }})</option>
-                                    <option value="Ordenador">Ordenador ({{ sorter.length }})</option>
+                                    <option value="Paginador">Paginador (en: {{ itemsPerPage }})</option>
+                                    <option value="Buscador">Buscador {{ searcher.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
+                                    <option value="Extensor">Extensor {{ extender.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
+                                    <option value="Filtro">Filtro {{ filter.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
+                                    <option value="Ordenador">Ordenador {{ sorter.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
                                 </select>
                             </div>
                         </div>
+                        <hr />
                         <div v-if="isShowingSubpanel === 'Extensor'">
                             <textarea spellcheck="false"
                                 v-model="extender"
-                                :placeholder="placeholderForExtensor"></textarea>
+                                :placeholder="placeholderForExtensor"
+                                v-focus></textarea>
                         </div>
                         <div v-if="isShowingSubpanel === 'Filtro'">
                             <textarea spellcheck="false"
                                 v-model="filter"
-                                :placeholder="placeholderForFiltro"></textarea>
+                                :placeholder="placeholderForFiltro"
+                                v-focus></textarea>
                         </div>
                         <div v-if="isShowingSubpanel === 'Ordenador'">
                             <textarea spellcheck="false"
                                 v-model="sorter"
-                                :placeholder="placeholderForOrdenador"></textarea>
+                                :placeholder="placeholderForOrdenador"
+                                v-focus></textarea>
+                        </div>
+                        <div v-if="isShowingSubpanel === 'Buscador'">
+                            <input spellcheck="false"
+                                class="width_100"
+                                type="text"
+                                v-model="searcher"
+                                v-on:keypress.enter="digestOutput"
+                                :placeholder="placeholderForBuscador"
+                                v-focus />
+                        </div>
+                        <div v-if="isShowingSubpanel === 'Paginador'">
+                            <input spellcheck="false"
+                                class="width_100"
+                                type="number"
+                                v-model="itemsPerPage"
+                                v-on:keypress.enter="digestOutput"
+                                :placeholder="placeholderForPaginador"
+                                v-focus />
                         </div>
                     </div>
                 </div>
@@ -21760,7 +21883,7 @@ Vue.component("LswTable", {
                         <div class="pagination_button"
                             v-on:click="decreasePage">◀️</div>
                     </div>
-                    <div class="flex_100 text_align_center">{{ currentPage+1 }}</div>
+                    <div class="flex_100 text_align_center">{{ currentPage+1 }} con {{ itemsPerPage }} ítems máx.</div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
                             v-on:click="increasePage">▶️</div>
@@ -21944,13 +22067,14 @@ Vue.component("LswTable", {
       input,
       title: this.initialSettings?.title || "",
       isShowingMenu: this.initialSettings?.isShowingMenu || false,
-      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Extensor",
+      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Buscador",
       selectedRows: [],
       choosenRows: this.initialChoosenValue || [],
+      searcher: this.initialSettings?.searcher || "",
       extender: this.initialSettings?.extender || "",
       filter: this.initialSettings?.filter || "",
       sorter: this.initialSettings?.sorter || "",
-      itemsPerPage: this.initialSettings?.itemsPerPage || 10,
+      itemsPerPage: this.initialSettings?.itemsPerPage || 50,
       currentPage: this.initialSettings?.currentPage || 0,
       columnsAsList: this.initialSettings?.columnsAsList || [],
       columnsOrder: this.initialSettings?.columnsOrder || [],
@@ -21963,6 +22087,8 @@ Vue.component("LswTable", {
       placeholderForExtensor: "data.map(function(it, i) {\n  return /* you start here */ || {};\n});",
       placeholderForOrdenador: "data.sort(function(a, b) {\n  return /* you start here */;\n});",
       placeholderForFiltro: "data.filter(function(it, i) {\n  return /* you start here */;\n});",
+      placeholderForBuscador: "Búsqueda de texto rápida",
+      placeholderForPaginador: "Ítems por página. Por defecto: 50"
     };
   },
   methods: {
@@ -22032,6 +22158,7 @@ Vue.component("LswTable", {
       const sorterExpression = this.sorter.trim() || "0";
       const sorterFunction = new Function("a", "b", `return ${sorterExpression}`);
       let tempHeaders = new Set();
+      Iterating_rows:
       for (let index = 0; index < input.length; index++) {
         const row = input[index];
         let extendedRow = undefined;
@@ -22043,14 +22170,28 @@ Vue.component("LswTable", {
             extendedRow = Object.assign({}, row);
           }
         }
+        let isValidFinally = true;
+        Apply_searcher: {
+          if(this.searcher.trim() !== "") {
+            const hasMatch = JSON.stringify(extendedRow).toLowerCase().indexOf(this.searcher.toLowerCase()) !== -1;
+            if(!hasMatch) {
+              isValidFinally = isValidFinally && false;
+            }
+          }
+        }
         Apply_filter: {
           try {
             const filterProduct = filterFunction(extendedRow, index);
-            if (filterProduct === true) {
-              temp.push(extendedRow);
+            if (filterProduct !== true) {
+              isValidFinally = isValidFinally && false;
             }
           } catch (error) {
             // @OK.
+          }
+        }
+        Extract_row: {
+          if(isValidFinally) {
+            temp.push(extendedRow);
           }
         }
         Extract_headers: {
@@ -22149,6 +22290,9 @@ Vue.component("LswTable", {
         return true;
       }
       if (this.sorter.length) {
+        return true;
+      };
+      if (this.searcher.length) {
         return true;
       };
       return false;
@@ -23523,30 +23667,6 @@ Vue.component("LswPageRows", {
         }"
         :row-buttons="[{ header: '', text: '↗️', event: (row) => openRow(row.id) }]"
         :table-buttons="[{ text: '#️⃣', event() { openRow(-1) }}]"></lsw-table>
-    <!--table class="basic_table top_aligned">
-        <thead>
-            <tr>
-                <th>Nº</th>
-                <th>ID</th>
-                <th class="width_100">Item</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="row, rowIndex in rows" v-bind:key="'row_index_' + rowIndex">
-                <td>{{ rowIndex + 1 }}</td>
-                <td>
-                    <a href="javascript:void(0)" v-on:click="() => openRow(row.id)">
-                        #{{ row.id }}
-                    </a>
-                </td>
-                <td>
-                    <div v-for="prop, propIndex, propCounter in row" v-bind:key="'row_index_' + rowIndex + '_prop_' + propIndex">
-                        {{ propCounter + 1 }}. {{ propIndex }}: {{ prop }}
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table-->
 </div>`,
   props: {
     databaseExplorer: {
@@ -24882,8 +25002,7 @@ Vue.component("LswAgenda", {
                     style="min-width: 160px;">
                     <div class="hidden_menu_items">
                         <div class="title">
-                            <div class="flex_100"
-                                style="padding-left: 4px;">
+                            <div class="flex_100 pad_right_2 pad_left_2">
                                 Insertar info
                             </div>
                             <div class="flex_1">
@@ -24900,14 +25019,14 @@ Vue.component("LswAgenda", {
                             <button class="mini"
                                 v-on:click="() => selectContext('concepto.add')">Crear concepto</button>
                         </div>
-                        <div class="button_cell">
+                        <!--div class="button_cell">
                             <button class="mini"
                                 v-on:click="() => selectContext('limitador.add')">Crear limitador</button>
                         </div>
                         <div class="button_cell">
                             <button class="mini"
                                 v-on:click="() => selectContext('impresion.add')">Crear impresión</button>
-                        </div>
+                        </div-->
                     </div>
                 </div>
             </div>
@@ -24920,10 +25039,11 @@ Vue.component("LswAgenda", {
                 v-if="selectedSubmenu1 === 'search'">
                 <div class="hidden_menu_fixed_layer"
                     v-on:click="() => selectSubmenu1('none')"></div>
-                <div class="hidden_menu_box">
+                <div class="hidden_menu_box"
+                    style="min-width: 160px;">
                     <div class="hidden_menu_items">
                         <div class="title">
-                            <div class="flex_100 pad_left_1 pad_right_1">
+                            <div class="flex_100 pad_left_2 pad_right_2">
                                 Buscar info
                             </div>
                             <div class="flex_1">
@@ -24931,9 +25051,9 @@ Vue.component("LswAgenda", {
                                     v-on:click="() => selectSubmenu1('none')">❌</button>
                             </div>
                         </div>
-                        <div class="separator">
+                        <!--div class="separator">
                             <div class="flex_100 pad_left_1 pad_right_1">Tablas físicas:</div>
-                        </div>
+                        </div-->
                         <div class="button_cell">
                             <button class="mini"
                                 v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
@@ -24942,6 +25062,7 @@ Vue.component("LswAgenda", {
                             <button class="mini"
                                 v-on:click="() => selectContext('concepto.search')">Buscar por concepto</button>
                         </div>
+                        <!--
                         <div class="button_cell">
                             <button class="mini"
                                 v-on:click="() => selectContext('propagador.search')">Buscar por propagador</button>
@@ -24974,6 +25095,7 @@ Vue.component("LswAgenda", {
                             <button class="mini"
                                 v-on:click="() => selectContext('evento.search')">Buscar por evento</button>
                         </div>
+                        -->
                     </div>
                 </div>
             </div>
@@ -25322,18 +25444,6 @@ Vue.component("LswAgenda", {
         this.$refs.agenda_acciones_viewer.changeDate(new Date(this.selectedDate));
       }
     },
-    async onUpdateTask(v, tarea) {
-      this.$trace("lsw-agenda.methods.onUpdateTask");
-      await this.$lsw.database.update('Accion', tarea.id, v);
-      this.selectedForm = tarea.id;
-      this.refreshTasks();
-    },
-    async onInsertTask(v, tarea) {
-      this.$trace("lsw-agenda.methods.onInsertTask");
-      const id = await this.$lsw.database.insert('Accion', v);
-      this.selectedForm = id;
-      this.refreshTasks();
-    },
   },
   watch: {
   },
@@ -25389,9 +25499,15 @@ Vue.component("LswAgendaAccionAdd", {
 // @code.end: LswAgendaAccionAdd API
 // @code.start: LswAgendaAccionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaAccionSearch API » LswAgendaAccionSearch component
 Vue.component("LswAgendaAccionSearch", {
-  template: `<div class="LswAgendaAccionSearch">
-  <lsw-table v-if="isLoaded"
-    :initial-input="rows"></lsw-table>
+  template: `<div class="LswAgendaAccionSearch pad_top_1">
+  <lsw-database-explorer
+    :show-breadcrumb="true"
+    initial-page="lsw-page-rows"
+    :initial-args="{
+      database: 'lsw_default_database',
+      table: 'Accion',
+    }"
+  />
 </div>`,
   props: {},
   data() {
@@ -25472,16 +25588,16 @@ Vue.component("LswAgendaAccionesViewer", {
                 v-bind:key="'accion_' + accionIndex">
                 <div class="accion_row flex_row centered"
                     style="padding-top: 2px;">
-                    <div class="flex_1 celda_de_hora padded_vertically_1"
-                        :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
-                        v-on:click="() => toggleShowAccion(accion.id)">{{
-                        \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                    <div class="flex_1 celda_de_concepto padded_vertically_1"
+                        v-on:click="() => advanceTaskState(accion)">{{
+                            \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
                         }}</div>
                     <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
                     <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
                     <div class="flex_100 shortable_text">
-                        <div class="celda_de_concepto pad_left_1 pad_right_1 padded_vertically_1"
-                            v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                        <div class="celda_de_hora pad_left_1 pad_right_1 padded_vertically_1"
+                            :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
+                            v-on:click="() => toggleShowAccion(accion.id)"> {{ accion.en_concepto || '🤔' }}
                         </div>
                     </div>
                     <div class="flex_1">
@@ -25520,17 +25636,17 @@ Vue.component("LswAgendaAccionesViewer", {
                         <div class="campo"
                             v-if="accion.tiene_parametros">
                             <div class="clave">Parámetros: </div>
-                            <div class="valor">{{ accion.tiene_parametros }}</div>
+                            <div class="valor texto_markdown" v-html="marked.parse(accion.tiene_parametros)"></div>
                         </div>
                         <div class="campo"
                             v-if="accion.tiene_comentarios">
                             <div class="clave">Comentarios: </div>
-                            <div class="valor">{{ accion.tiene_comentarios }}</div>
+                            <div class="valor texto_markdown" v-html="(accion.tiene_comentarios)"></div>
                         </div>
                         <div class="campo"
                             v-if="accion.tiene_resultados">
                             <div class="clave">Resultados: </div>
-                            <div class="valor">{{ accion.tiene_resultados }}</div>
+                            <div class="valor texto_markdown" v-html="(accion.tiene_resultados)"></div>
                         </div>
                     </div>
                 </div>
@@ -25682,8 +25798,14 @@ Vue.component("LswAgendaAccionesViewer", {
         this.selectedForm = hora;
       }
     },
-    async advanceTaskState(tarea) {
+    async onInsertTask(v, tarea) {
       this.$trace("lsw-agenda-acciones-viewer.methods.onInsertTask");
+      const id = await this.$lsw.database.insert('Accion', v);
+      this.selectForm(id);
+      this.loadDateTasks();
+    },
+    async advanceTaskState(tarea) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.advanceTaskState");
       const siguienteEstado = (() => {
         switch (tarea.tiene_estado) {
           case "pendiente": return "completada";
@@ -26015,7 +26137,7 @@ Vue.component("LswAgendaAccionesViewer", {
       }
     },
     async openDeleteTaskDialog(tarea, e) {
-      this.$trace("lsw-agenda.methods.openDeleteTaskDialog");
+      this.$trace("lsw-agenda-acciones-viewer.methods.openDeleteTaskDialog");
       const confirmed = await Vue.prototype.$dialogs.open({
         title: "Eliminar registro",
         template: `
@@ -26032,6 +26154,12 @@ Vue.component("LswAgendaAccionesViewer", {
       if (!confirmed) return false;
       await this.$lsw.database.delete("Accion", tarea.id);
       this.selectedForm = undefined;
+      this.loadDateTasks();
+    },
+    async onUpdateTask(v, tarea) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.onUpdateTask");
+      await this.$lsw.database.update('Accion', tarea.id, v);
+      this.selectedForm = tarea.id;
       this.loadDateTasks();
     },
   },
@@ -26056,8 +26184,8 @@ Vue.component("LswAgendaBreadcrumb", {
         <div class="pad_right_1">
             <button v-on:click="() => goToSection('agenda')">📆</button>
         </div>
-        <div class="agenda_breadcrumb flex_100" style="align-self: stretch;padding-top: 10px;">
-            <div class="agenda_bradcrumb_item"
+        <h3 class="agenda_breadcrumb flex_100">
+            <div class="agenda_breadcrumb_item"
                 v-for="pathItem, pathIndex in pathItems"
                 v-bind:key="'agenda-breadcrumb-path-item-' + pathIndex">
                 <span v-if="pathIndex !== 0"> » </span>
@@ -26078,7 +26206,7 @@ Vue.component("LswAgendaBreadcrumb", {
                     <span>{{ pathItem.label }}</span>
                 </span>
             </div>
-        </div>
+        </h3>
     </div>
 </div>`,
   props: {
@@ -26157,9 +26285,15 @@ Vue.component("LswAgendaConceptoAdd", {
 // @code.end: LswAgendaConceptoAdd API
 // @code.start: LswAgendaConceptoSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaConceptoSearch API » LswAgendaConceptoSearch component
 Vue.component("LswAgendaConceptoSearch", {
-  template: `<div class="LswAgendaConceptoSearch">
-  <lsw-table v-if="isLoaded"
-    :initial-input="rows"></lsw-table>
+  template: `<div class="LswAgendaConceptoSearch pad_top_1">
+  <lsw-database-explorer
+    :show-breadcrumb="true"
+    initial-page="lsw-page-rows"
+    :initial-args="{
+      database: 'lsw_default_database',
+      table: 'Concepto',
+    }"
+  />
 </div>`,
   props: {},
   data() {
@@ -27294,19 +27428,19 @@ Vue.component("LswDurationControl", {
   template: `<div class="lsw_duration_control lsw_formtype lsw_form_control">
     <lsw-control-label :settings="settings"
         :parent-formtype="this"
-        v-if="settings.skipLabel === false"
+        v-if="skipLabel === false"
     />
     <lsw-error-viewer v-if="validateError" :error="validateError" />
     <lsw-error-viewer v-if="submitError" :error="submitError" />
     <div v-show="isEditable" v-else>
         <div ref="controller"
             v-xform.control="{
-            name: settings.name,
-            onValidate: settings?.column?.hasValidator || \$noop,
-            onSetError: () => {
-                isEditable = true;
-            }
-        }">
+                name: settings.name,
+                onValidate: settings?.column?.hasValidator || \$noop,
+                onSetError: () => {
+                    isEditable = true;
+                }
+            }">
             <div class="flex_row">
                 <div class="pad_right_1">
                     <button v-on:click="toggleDetails">⌛️</button>
@@ -27843,10 +27977,10 @@ Vue.component("LswSchemaBasedForm", {
                             <button class="supermini margin_right_1 nowrap"
                                 :class="{activated: isShowingFormInfo}"
                                 v-on:click="toggleFormInfo">ℹ️</button>
-                            <button class="supermini margin_right_1 nowrap"
+                            <!--button class="supermini margin_right_1 nowrap"
                                 v-on:click="openEditables">🔓*</button>
                             <button class="supermini margin_right_1 nowrap"
-                                v-on:click="closeEditables">🔒*</button>
+                                v-on:click="closeEditables">🔒*</button-->
                         </div>
                     </div>
                 </div>
@@ -27854,7 +27988,7 @@ Vue.component("LswSchemaBasedForm", {
                     class="scrollable_text_area">
                     <pre style="background-color: white; color: black; font-family: Arial; font-size: 11px; padding: 4px; margin: 0px; border-top: 1px solid white;">ℹ️: {{ tableDefinition }}</pre>
                 </div>
-                <div class="lsw_table_viewer" style="padding: 0px; min-height: 0%;">
+                <div class="" style="padding: 0px; min-height: 0%;">
                     <div class="pestania"
                         v-if="section === 'campos propios'">
                         <!--div class="subtitle_box">Campos propios:</div-->
@@ -27908,10 +28042,10 @@ Vue.component("LswSchemaBasedForm", {
                                         v-on:click="submitForm">⚡️ Enviar</button>
                                     <button class="mini margin_left_1 nowrap"
                                         v-on:click="validateForm">✅ Validar</button>
-                                    <button class="mini margin_left_1 nowrap"
+                                    <!--button class="mini margin_left_1 nowrap"
                                         v-on:click="openEditables">🔓*</button>
                                     <button class="mini margin_left_1 nowrap"
-                                        v-on:click="closeEditables">🔒*</button>
+                                        v-on:click="closeEditables">🔒*</button-->
                                 </div>
                             </div>
                         </div>

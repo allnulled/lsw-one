@@ -42,13 +42,14 @@ Vue.component("LswTable", {
       input,
       title: this.initialSettings?.title || "",
       isShowingMenu: this.initialSettings?.isShowingMenu || false,
-      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Extensor",
+      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Buscador",
       selectedRows: [],
       choosenRows: this.initialChoosenValue || [],
+      searcher: this.initialSettings?.searcher || "",
       extender: this.initialSettings?.extender || "",
       filter: this.initialSettings?.filter || "",
       sorter: this.initialSettings?.sorter || "",
-      itemsPerPage: this.initialSettings?.itemsPerPage || 10,
+      itemsPerPage: this.initialSettings?.itemsPerPage || 50,
       currentPage: this.initialSettings?.currentPage || 0,
       columnsAsList: this.initialSettings?.columnsAsList || [],
       columnsOrder: this.initialSettings?.columnsOrder || [],
@@ -61,6 +62,8 @@ Vue.component("LswTable", {
       placeholderForExtensor: "data.map(function(it, i) {\n  return /* you start here */ || {};\n});",
       placeholderForOrdenador: "data.sort(function(a, b) {\n  return /* you start here */;\n});",
       placeholderForFiltro: "data.filter(function(it, i) {\n  return /* you start here */;\n});",
+      placeholderForBuscador: "Búsqueda de texto rápida",
+      placeholderForPaginador: "Ítems por página. Por defecto: 50"
     };
   },
   methods: {
@@ -130,6 +133,7 @@ Vue.component("LswTable", {
       const sorterExpression = this.sorter.trim() || "0";
       const sorterFunction = new Function("a", "b", `return ${sorterExpression}`);
       let tempHeaders = new Set();
+      Iterating_rows:
       for (let index = 0; index < input.length; index++) {
         const row = input[index];
         let extendedRow = undefined;
@@ -141,14 +145,28 @@ Vue.component("LswTable", {
             extendedRow = Object.assign({}, row);
           }
         }
+        let isValidFinally = true;
+        Apply_searcher: {
+          if(this.searcher.trim() !== "") {
+            const hasMatch = JSON.stringify(extendedRow).toLowerCase().indexOf(this.searcher.toLowerCase()) !== -1;
+            if(!hasMatch) {
+              isValidFinally = isValidFinally && false;
+            }
+          }
+        }
         Apply_filter: {
           try {
             const filterProduct = filterFunction(extendedRow, index);
-            if (filterProduct === true) {
-              temp.push(extendedRow);
+            if (filterProduct !== true) {
+              isValidFinally = isValidFinally && false;
             }
           } catch (error) {
             // @OK.
+          }
+        }
+        Extract_row: {
+          if(isValidFinally) {
+            temp.push(extendedRow);
           }
         }
         Extract_headers: {
@@ -247,6 +265,9 @@ Vue.component("LswTable", {
         return true;
       }
       if (this.sorter.length) {
+        return true;
+      };
+      if (this.searcher.length) {
         return true;
       };
       return false;

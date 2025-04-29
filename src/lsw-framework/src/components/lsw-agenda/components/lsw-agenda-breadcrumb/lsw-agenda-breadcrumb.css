@@ -5,15 +5,12 @@
 .agenda_breadcrumb {
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 4px;
-    border: 1px solid #999;
-    border-radius: 2pt;
-    padding: 4px;
-    background-color: rgba(193, 193, 193, 0.51);
+    padding: 12px;
 }
 .agenda_breadcrumb_item {
     flex: 1;
-    padding: 4px;
 }
 .agenda_breadcrumb_link {
     color: black;

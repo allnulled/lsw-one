@@ -227,18 +227,6 @@ Vue.component("LswAgenda", {
         this.$refs.agenda_acciones_viewer.changeDate(new Date(this.selectedDate));
       }
     },
-    async onUpdateTask(v, tarea) {
-      this.$trace("lsw-agenda.methods.onUpdateTask");
-      await this.$lsw.database.update('Accion', tarea.id, v);
-      this.selectedForm = tarea.id;
-      this.refreshTasks();
-    },
-    async onInsertTask(v, tarea) {
-      this.$trace("lsw-agenda.methods.onInsertTask");
-      const id = await this.$lsw.database.insert('Accion', v);
-      this.selectedForm = id;
-      this.refreshTasks();
-    },
   },
   watch: {
   },

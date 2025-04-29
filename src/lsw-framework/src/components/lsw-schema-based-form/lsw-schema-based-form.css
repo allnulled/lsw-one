@@ -1,7 +1,8 @@
 .lsw-schema-based-form {}
 
 .schema_form_top_panel {
-    padding-top: 4px;  
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .title_box_one_line {
@@ -17,7 +18,7 @@
 
 .title_database_id_cell {
     flex: 1;
-    color: #AAA;
+    color: #000;
     padding-bottom: 4px;
 }
 

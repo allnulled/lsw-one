@@ -13,7 +13,7 @@ Vue.component("LswDatabaseExplorer", {
     initialArgs: {
       type: Object,
       default: () => ({ database: "lsw_default_database" })
-    }
+    },
   },
   data() {
     this.$trace("lsw-database-explorer.data", []);

@@ -124,21 +124,25 @@
 }
 
 .accion_row>div:first-child {
-    
+    padding-left: 0px;
 }
 
 .hour_task_block.is_failed .celda_de_concepto {
     background-color: #5a202088;
+    color: black;
+    text-decoration: line-through;
 }
 
 .hour_task_block.is_completed .celda_de_concepto {
     background-color: #46c01a88;
     color: black;
+    text-decoration: line-through;
 }
 
 .hour_task_block.is_pending .celda_de_concepto {
-    background-color: #e5df2388;
-    color: black;
+    background-color: #cbc51588;
+    color: #050899;
+    border: 1px solid rgb(42, 129, 181);
 
 }
 

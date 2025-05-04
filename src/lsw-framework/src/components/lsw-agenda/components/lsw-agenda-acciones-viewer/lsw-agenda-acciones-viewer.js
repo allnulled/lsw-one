@@ -45,6 +45,19 @@ Vue.component("LswAgendaAccionesViewer", {
       this.selectForm(id);
       this.loadDateTasks();
     },
+    async toggleAutogeneration(tarea) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.toggleAutogeneration");
+      const siguientesParametros = (() => {
+        if(tarea.tiene_parametros.startsWith("[*autogenerada]")) {
+          return tarea.tiene_parametros.replace(/^\[\*autogenerada\] */g, "");
+        }
+        return "[*autogenerada] " + tarea.tiene_parametros;
+      })();
+      await this.$lsw.database.overwrite('Accion', tarea.id, {
+        tiene_parametros: siguientesParametros
+      });
+      await this.loadDateTasks();
+    },
     async advanceTaskState(tarea) {
       this.$trace("lsw-agenda-acciones-viewer.methods.advanceTaskState");
       const siguienteEstado = (() => {
@@ -357,15 +370,14 @@ Vue.component("LswAgendaAccionesViewer", {
         momentoFinal.setSeconds(0);
         momentoFinal.setMilliseconds(0);
       }
-      const randomizableRules = await this.$lsw.fs.evaluateFileOrReturn("/kernel/agenda/randomizables.js", {});
-      const config = await this.$lsw.fs.evaluateFileOrReturn("/kernel/agenda/randomizables.config.js", {});
+      const randomizableRules = await this.$lsw.fs.evaluateAsDotenvFileOrReturn("/kernel/agenda/randomizables.env", {});
       const accionesAutogeneradas = LswAgendaRandomizer.generar(
         randomizableRules,
         accionesDelDia,
         momentoInicio,
         duracion_de_bloques,
         momentoFinal,
-        config?.ratio || 0.2
+        0.2
       );
       accionesAutogeneradas.forEach(accion => {
         delete accion.id;

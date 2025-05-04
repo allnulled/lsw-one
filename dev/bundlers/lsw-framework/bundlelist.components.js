@@ -53,6 +53,8 @@ module.exports = [
   `${basepath}/lsw-framework/src/apis/lsw-store/dist/store.unbundled.js`,
   // LSW TIMER:
   `${basepath}/lsw-framework/src/apis/lsw-timer/timeformat.bundled.js`,
+  // LSW INTRUDER:
+  `${basepath}/lsw-framework/src/apis/lsw-intruder/lsw-intruder.js`,
   // LSW CYCLER:
   `${basepath}/lsw-framework/src/apis/lsw-cycler/lsw-cycler.js`,
   // LSW LIFECYCLE:
@@ -73,6 +75,8 @@ module.exports = [
   // `${basepath}/lsw-framework/src/apis/lsw-database-adapter/LswDatabaseAdapter.js`, // Por si se requiere pero en principio no y debe eliminarse
   // LSW DEPENDER:
   `${basepath}/lsw-framework/src/apis/lsw-depender/lsw-depender.js`,
+  // LSW BACKUPER:
+  `${basepath}/lsw-framework/src/apis/lsw-backuper/lsw-backuper.js`,
   // LSW TYPER:
   `${basepath}/lsw-framework/src/apis/lsw-typer/lsw-typer.js`,
   // LSW DATABASE-UI:

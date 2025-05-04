@@ -211,12 +211,17 @@ Vue.component("LswSchemaBasedForm", {
       return await this.$refs.schemaForm0.$xform.submit();
     },
     async deleteRow() {
-      this.$trace("lsw-schema-based-form.methods.submitForm");
-      const confirmed = await Vue.prototype.$dialogs.open({
+      this.$trace("lsw-schema-based-form.methods.deleteRow");
+      const confirmed = await this.$lsw.dialogs.open({
+        id: `eliminar-registro-${this.model.tableId}-${this.model.rowId || this.model.row.id}-${LswRandomizer.getRandomString(5)}`,
         title: "Eliminar registro",
         template: `
           <div>
-            <div class="pad_2">¿Seguro que quieres eliminar el registro?</div>
+            <div class="pad_2 font_weight_bold">ATENCIÓN: </div>
+            <div class="pad_2">¿Seguro que quieres eliminar el registro <b>{{ model.tableId }}</b> cuyo <b>id</b>#<b>{{ model.rowId || model.row.id }}</b>?</div>
+            <div class="pad_2">
+              <pre class="pad_2 codeblock">{{ JSON.stringify(model.row || rowValue, null, 2) }}</pre>
+            </div>
             <hr class="margin_0" />
             <div class="pad_2 text_align_right">
               <button class="supermini danger_button" v-on:click="() => accept(true)">Eliminar</button>
@@ -224,17 +229,30 @@ Vue.component("LswSchemaBasedForm", {
             </div>
           </div>
         `,
+        factory: {
+          data: {
+            model: this.model,
+            rowValue: this.value
+          }
+        }
       });
       if(!confirmed) return false;
-      await this.$lsw.database.delete(this.model.tableId, this.model.rowId || this.model.row.id);
+      const rowIdentifier = this.model.rowId || this.model.row.id;
+      await this.$lsw.database.delete(this.model.tableId, rowIdentifier);
       if(this.onDeleteRow) {
-        this.onDeleteRow(this.model.rowId, this.model.tableId, true);
+        const result = this.onDeleteRow(this.model.rowId, this.model.tableId, true);
+        // INTERCEPT REDIRECTION RETURNING FALSE FROM onDeleteRow PARAMETRIC CALLBACK
+        if(result === false) return;
       }
       if(this.model.databaseExplorer) {
-        this.model.databaseExplorer.selectPage("LswPageRows", {
-          database: this.model.databaseId,
-          table: this.model.tableId,
-        });
+        if(this.model.databaseExplorer.showBreadcrumb) {
+          this.model.databaseExplorer.selectPage("LswPageRows", {
+            database: this.model.databaseId,
+            table: this.model.tableId,
+          });
+        } else {
+          
+        }
       }
     }
   },

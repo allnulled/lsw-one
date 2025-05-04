@@ -29,9 +29,9 @@
             connection: $lsw.database,
             databaseId: args.database,
             tableId: args.table,
-            rowId: args.rowId,
+            rowId: args.rowId || row.id,
             row: row,
             databaseExplorer,
         }"
-        />
+    />
 </div>

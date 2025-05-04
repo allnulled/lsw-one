@@ -9,9 +9,19 @@ Vue.component("LswConfigurationsPage", {
     this.$trace("lsw-configurations-page.data", arguments);
     return {
       selectedSection: "datos",
+      isShowingCurrentBackup: false,
+      currentBackup: false,
     };
   },
   methods: {
+    async toggleCurrentBackup() {
+      this.$trace("lsw-configurations-page.methods.toggleCurrentBackup");
+      const newState = !this.isShowingCurrentBackup;
+      if(newState === true) {
+        this.currentBackup = await this.$lsw.backuper.getLastBackup();
+      }
+      this.isShowingCurrentBackup = newState;
+    },
     selectSection(seccion) {
       this.$trace("lsw-configurations-page.methods.selectSection");
       this.selectSection = seccion;
@@ -134,7 +144,54 @@ Vue.component("LswConfigurationsPage", {
         }
       });
       if(typeof confirmation !== "object") return;
-      console.log("Confirmed:", confirmation);
+      await this.$lsw.database.close();
+      await LswDatabase.deleteDatabase("lsw_default_database");
+    },
+    async saveBackup() {
+      this.$trace("lsw-configurations-page.methods.saveBackup");
+      const allData = await LswDatabase.exportDatabase("lsw_default_database");
+      await this.$lsw.backuper.setLastBackup(allData);
+      await this.$lsw.toasts.send({
+        title: "Backup exportado",
+        text: "La copia de seguridad fue exportada con el estado actual con éxito."
+      });
+    },
+    async loadBackup() {
+      this.$trace("lsw-configurations-page.methods.loadBackup");
+      // @TODO: esta función no está terminada.
+      this.currentBackup = await this.$lsw.backuper.getLastBackup();
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Importar copia de seguridad",
+        template: `
+          <div>
+            <div class="pad_2">¿Seguro que quieres importar la actual copia de seguridad?</div>
+            <hr />
+            <div class="pad_1 text_align_right">
+              <button class="supermini danger_button" v-on:click="() => accept(true)">Sí, importar</button>
+              <button class="supermini" v-on:click="close">Cancelar</button>
+            </div>
+          </div>
+        `
+      });
+      if(respuesta !== true) return;
+      const backupData = await this.$lsw.backuper.getLastBackup();
+      try {
+        for(const tableId in backupData) {
+          const tableRows = backupData[tableId];
+          await this.$lsw.database.insertMany(tableId, tableRows);
+        }
+      } catch (error) {
+        console.log(error);
+        return await this.$lsw.toasts.send({
+          title: "Backup con errores",
+          text: "La copia de seguridad tuvo errores de importación: " + error.message,
+          background: "rgba(212, 74, 74, 0.62)",
+        });
+      }
+      await this.$lsw.toasts.send({
+        title: "Backup importado",
+        text: "La copia de seguridad fue importada al estado actual con éxito."
+      });
     },
   },
   mounted() {

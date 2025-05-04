@@ -11,6 +11,7 @@ module.exports = [
   `${basepath}/modules/org.allnulled.lsw.wiki/load.js`,
   `${basepath}/modules/org.allnulled.lsw.fs/load.js`,
   `${basepath}/modules/org.allnulled.lsw.db/load.js`,
+  `${basepath}/modules/org.allnulled.lsw-conductometria/load.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/components/lsw-automensajes-viewer/lsw-automensajes-viewer`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/components/lsw-apps-viewer-button/lsw-apps-viewer-button`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel`,

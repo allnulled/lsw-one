@@ -31,7 +31,8 @@ Vue.component("LswSpontaneousFormNota", {
         tiene_categorias: this.tiene_categorias,
       };
       if(nota.tiene_titulo.trim() === "") {
-        nota.tiene_titulo = `${nota.tiene_contenido.substr(0,30)}...`;
+        const superaLimite = nota.tiene_contenido.length > 30;
+        nota.tiene_titulo = nota.tiene_contenido.substr(0,30) + (superaLimite ? "..." : "");
       }
       const notaId = await this.$lsw.database.insert("Nota", nota);
       Object.assign(this, this.getInitialData());

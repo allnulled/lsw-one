@@ -31,6 +31,7 @@ button {
     padding: 2px;
     font-family: Arial;
     font-size: 20px;
+    font-size: 14px;
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.50);
     background-color: rgba(255, 255, 255, 0.20);
@@ -131,11 +132,25 @@ select>option {
 h3 {
     font-size: 13px;
     background-color: rgba(255, 227, 0, 0.4);
-    border: 1px solid gold;
+    border: 1px solid rgb(225, 214, 151);
     border-radius: 2pt;
     color: black;
     text-shadow: 0 0 1px white;
     font-weight: normal;
+    padding: 4px;
+    margin: 0px;
+}
+
+h4 {
+    font-size: 11px;
+    background-color: rgba(128, 117, 38, 0.4);
+    border: 1px solid rgb(103, 88, 0);
+    border-radius: 2pt;
+    color: black;
+    text-shadow: 0 0 1px white;
+    font-weight: normal;
+    padding: 4px;
+    margin: 0px;
 }
 
 hr {
@@ -145,6 +160,7 @@ hr {
     margin-top: 4px;
     margin-bottom: 4px;
 }
+
 hr.dashed {
     border-bottom: 1px dashed #222;
 }
@@ -289,6 +305,28 @@ table.tabla_de_conductometria .minibutton {
     background-color: #181830D8;
 }
 
+pre.codeblock {
+    background-color: #D0D0FF;
+    color: black;
+    font-size: 9px;
+    border: 1px solid black;
+    box-shadow: 0 0 2px black;
+    overflow: scroll;
+}
+
+.explanation_text {
+    font-size: 10px;
+}
+
+.rutiner_box {
+    background-color: rgba(135, 135, 135, 0.4);
+    border-radius: 3pt;
+    border: 1px solid white;
+    box-shadow: 0 0 4px black;
+    font-family: Arial;
+    font-size: 12px;
+    margin: 0px;
+}
 
 /* WIDGET CLASSES */
 

@@ -290,7 +290,7 @@ Vue.component("LswPageRow", {
       } else {
         await this.$lsw.database.update(this.table, id, v);
       }
-      lsw.toasts.send({
+      this.$lsw.toasts.send({
         title: `Nueva ${operation === 'insert' ? 'inserción' : 'actualización'}`,
         text: `El registro #${id} de «${this.table}» fue ${operation === 'insert' ? 'insertado' : 'actualizado'} correctamente.`
       });

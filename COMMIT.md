@@ -1,4 +1,40 @@
-En este commit hemos:
+# Último commit:
+
+# 04-05-2025 11:01am.
+
+[x] Corregido bug de al eliminar row desde el diálogo de «Actualizar nota»
+[x] Corregido bug de al actualizar row desde el diálogo de «Actualizar nota»
+[x] Corregido bug que al expandir 1 row (en vista de tablas), expande todos
+  [x] Le faltaba el id en los rows para que funcionara la feature por defecto de lsw-table
+[x] Normalizados estilos de interfaz configuraciones de base de datos
+[x] Botones para guardar/cargar backups:
+  [x] Botones incorporados
+    [x] Guardar estado
+    [x] Cargar copia
+    [x] Ver copia
+  [x] Botones funcionando
+[x] Notas del spontaneous-table:
+  [x] Quitado que ponga 3 puntos al final si no llega al límite
+  [x] Permiten togglear tag de parámetros de autogenerada
+    [x] clicando a la mano o al robot
+  [x] Se ordenan según:
+    [x] urgency-first con tiene_estado de urgencia
+    [x] posteriority-fist con tiene_fecha
+    [x] permite alterar la fecha para ponerla encima
+    [x] muestra las 3 primeras letras del estado (si tiene)
+  [x] Mejorados estilos del editor
+    [x] Botones de incremease/decrease fontsize
+    [x] Botón de alternar tipo de fuente
+[ ] Intruder
+  [x] Para irse quedando con el Rutiner
+    [x] Que sea dinámico, a partir de un fichero .env
+  [ ] Para irse quedando con el Tracker
+    [ ] Este no de momento.
+
+
+----
+
+# 29-04-2025 13:45pm.
 
 [x] Ampliado los ítems por defecto en cada página del componente `lsw-table`
 [x] Acabado bien el ciclo de actualizar tarea del componente `lsw-agenda-acciones-viewer`

@@ -34,8 +34,8 @@
       }
     }
 
-    async evaluateFile(filepath, scope = undefined) {
-      this.trace("evaluateFile", [filepath]);
+    async evaluateAsJavascriptFile(filepath, scope = undefined) {
+      this.trace("evaluateAsJavascriptFile", [filepath]);
       const fileContents = await this.read_file(filepath);
       const AsyncFunction = (async function() {}).constructor;
       const asyncFunction = new AsyncFunction(fileContents);
@@ -44,13 +44,31 @@
       return result;
     }
 
-    evaluateFileOrReturn(filepath, output = null, scope = undefined) {
-      this.trace("evaluateFileOrReturn", [filepath]);
-      return this.evaluateFile(filepath, scope).catch(error => {
+    evaluateAsJavascriptFileOrReturn(filepath, output = null, scope = undefined) {
+      this.trace("evaluateAsJavascriptFileOrReturn", [filepath]);
+      return this.evaluateAsJavascriptFile(filepath, scope).catch(error => {
         console.log("[!] Error evaluating file", error);
         return output;
       });
-      
+    }
+
+    async evaluateAsDotenvFile(filepath) {
+      this.trace("evaluateAsDotenvFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      const result = fileContents.split(/\n/).filter(line => line.trim() !== "").reduce((output, line) => {
+        const [ id, value = "" ] = line.split(/\=/);
+        output[id.trim()] = (value || "").trim();
+        return output;
+      }, {});
+      return result;
+    }
+
+    evaluateAsDotenvFileOrReturn(filepath, output = {}) {
+      this.trace("evaluateAsDotenvFileOrReturn", [filepath]);
+      return this.evaluateAsDotenvFile(filepath).catch(error => {
+        console.log("[!] Error evaluating file:", error);
+        return output;
+      });
     }
 
   }

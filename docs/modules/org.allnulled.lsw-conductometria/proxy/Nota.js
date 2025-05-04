@@ -70,9 +70,9 @@ $proxifier.define("org.allnulled.lsw-conductometria.Nota", {
           isIndexed: true,
           hasFormtypeParameters: {
             type: "selector",
-            available: ["creada", "procesada", "dudosa", "desestimada"],
+            available: ["", "creada", "urgente", "dudosa", "procesada", "desestimada"],
             selectable: 1, // could be: number or "*" to all options
-            defaultValue: "creada",
+            defaultValue: "",
           },
           hasValidator(v) {
             

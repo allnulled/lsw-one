@@ -16432,6 +16432,103 @@ return Store;
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
+    window['LswIntruder'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswIntruder'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+  
+  const IntruderJob = class {
+
+    constructor(options = {}) {
+      Object.assign(this, options);
+    }
+
+  };
+
+  const LswIntruder = class {
+
+    static create(...args) {
+      return new this(...args);
+    }
+
+    static defaultOptions = {
+      trace: true,
+    };
+
+    $trace(method, args) {
+      if(this.$options.trace) {
+        console.log("[trace][lsw-intruder] " + method, Array.from(args));
+      }
+    }
+
+    constructor(options = {}) {
+      this.$jobs = {};
+      this.$options = Object.assign({}, this.constructor.defaultOptions, options);
+    }
+
+    addJob(options = {}) {
+      this.$trace("addJob", []);
+      const {
+        id = LswRandomizer.getRandomString(7),
+        timeout = 0,
+        dialog = false
+      } = options;
+      $ensure({id},1).type("string");
+      $ensure({timeout},1).type("number");
+      $ensure({dialog},1).type("object").to.have.keys(["title", "template"]);
+      const startDate = new Date();
+      const timeoutDate = new Date(startDate.getTime() + (timeout));
+      this.$jobs[id] = {
+        id,
+        timeout,
+        dialog,
+        state: "created",
+        createdAt: startDate,
+        firedAt: timeoutDate,
+      };
+      this.$jobs[id].timeoutId = setTimeout(() => {
+        this.startJob(id);
+      }, timeout);
+      return this.$jobs[id];
+    }
+
+    removeJob(id) {
+      this.$trace("removeJob", []);
+      if(!(id in this.$jobs)) {
+        return false;
+      }
+      clearTimeout(this.$jobs[id].timeout);
+      delete this.$jobs[id];
+    }
+
+    startJob(id, parameters = []) {
+      this.$trace("startJob", []);
+      const job = this.$jobs[id];
+      const isStarted = job.state === "started";
+      if(isStarted) {
+        throw new Error(`Job «${id}» is already started`);
+      }
+      if(!Vue.prototype.$lsw) {
+        throw new Error(`Job «${id}» could not find lsw api from Vue.prototype.$lsw`);
+      }
+      return Vue.prototype.$lsw.dialogs.open(job.dialog).finally(() => {
+        this.removeJob(id);
+      });
+    }
+
+  }
+
+  return LswIntruder;
+
+});
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
     window['LswCycler'] = mod;
   }
   if (typeof global !== 'undefined') {
@@ -18058,8 +18155,8 @@ return Store;
       }
     }
 
-    async evaluateFile(filepath, scope = undefined) {
-      this.trace("evaluateFile", [filepath]);
+    async evaluateAsJavascriptFile(filepath, scope = undefined) {
+      this.trace("evaluateAsJavascriptFile", [filepath]);
       const fileContents = await this.read_file(filepath);
       const AsyncFunction = (async function() {}).constructor;
       const asyncFunction = new AsyncFunction(fileContents);
@@ -18068,13 +18165,31 @@ return Store;
       return result;
     }
 
-    evaluateFileOrReturn(filepath, output = null, scope = undefined) {
-      this.trace("evaluateFileOrReturn", [filepath]);
-      return this.evaluateFile(filepath, scope).catch(error => {
+    evaluateAsJavascriptFileOrReturn(filepath, output = null, scope = undefined) {
+      this.trace("evaluateAsJavascriptFileOrReturn", [filepath]);
+      return this.evaluateAsJavascriptFile(filepath, scope).catch(error => {
         console.log("[!] Error evaluating file", error);
         return output;
       });
-      
+    }
+
+    async evaluateAsDotenvFile(filepath) {
+      this.trace("evaluateAsDotenvFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      const result = fileContents.split(/\n/).filter(line => line.trim() !== "").reduce((output, line) => {
+        const [ id, value = "" ] = line.split(/\=/);
+        output[id.trim()] = (value || "").trim();
+        return output;
+      }, {});
+      return result;
+    }
+
+    evaluateAsDotenvFileOrReturn(filepath, output = {}) {
+      this.trace("evaluateAsDotenvFileOrReturn", [filepath]);
+      return this.evaluateAsDotenvFile(filepath).catch(error => {
+        console.log("[!] Error evaluating file:", error);
+        return output;
+      });
     }
 
   }
@@ -18839,6 +18954,64 @@ return Store;
   // @code.end: LswDepender class
 
   return LswDepender;
+
+});
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswBackuper'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswBackuper'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+  
+  const LswBackuper = class {
+
+    static create(...args) {
+      return new this(...args);
+    }
+
+    static get defaultOptions() {
+      return {
+        storageId: "lsw_default_database_backup_1",
+        trace: true,
+      };
+    }
+
+    $trace(method, args = []) {
+      if(this.options.trace) {
+        console.log(`[lsw][trace][lsw-backuper] ${method}: ${Array.from(args).length}`);
+      }
+    }
+
+    constructor(options = {}) {
+      this.options = Object.assign({}, this.constructor.defaultOptions, options);
+    }
+
+    getLastBackup() {
+      this.$trace("getLastBackup", arguments);
+      try {
+        const jsonData = localStorage[this.options.storageId] || "{}";
+        const data = JSON.parse(jsonData);
+        return data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    }
+
+    setLastBackup(backupJson) {
+      this.$trace("setLastBackup", arguments);
+      localStorage[this.options.storageId] = JSON.stringify(backupJson, null, 2);
+    }
+
+  };
+
+  return LswBackuper;
 
 });
 (function(factory) {
@@ -23508,7 +23681,7 @@ Vue.component("LswDatabaseExplorer", {
     initialArgs: {
       type: Object,
       default: () => ({ database: "lsw_default_database" })
-    }
+    },
   },
   data() {
     this.$trace("lsw-database-explorer.data", []);
@@ -23776,11 +23949,11 @@ Vue.component("LswPageRow", {
             connection: \$lsw.database,
             databaseId: args.database,
             tableId: args.table,
-            rowId: args.rowId,
+            rowId: args.rowId || row.id,
             row: row,
             databaseExplorer,
         }"
-        />
+    />
 </div>`,
   props: {
     databaseExplorer: {
@@ -23988,6 +24161,7 @@ Vue.component("LswPageTables", {
         const tableId = tableIds[index];
         const tableData = value[tableId];
         tablesAsList.push({
+          id: tableId,
           name: tableId,
           ...tableData,
           indexes: tableData.indexes ? tableData.indexes.map(ind => ind.name) : []
@@ -24330,35 +24504,60 @@ Vue.component("LswFilesystemExplorer", {
       this.is_ready = false;
       this.current_node_is_file = true;
       this.current_node_is_directory = false;
-      const allButtonsOnFile = [
-        {
-          text: "💾",
-          click: () => this.processToSaveFile(),
-        }, {
-          text: "↔️",
-          click: () => this.processToRenameFile(),
-        }, {
-          text: "🔄",
-          click: () => this.processToLoadFile(),
-        }, {
-          text: "📄 🔥",
-          classes: "danger_button",
-          click: () => this.processToDeleteFile(),
-        }
-      ];
-      if (this.current_node.endsWith(".js")) {
-        allButtonsOnFile.push({
-          text: "⚡️",
-          classes: "danger_button",
-          click: () => this.processToExecuteFile(),
+      Setup_panel_top_on_file: {
+        this.$refs.panelTop.setButtons({
+          text: "➜",
+          classes: "reversed",
+          click: () => this.goUp(),
         });
       }
-      this.$refs.panelTop.setButtons({
-        text: "➜",
-        classes: "reversed",
-        click: () => this.goUp(),
-      });
-      this.$refs.panelRight.setButtons(...allButtonsOnFile);
+      Setup_panel_right_on_file: {
+        const rightButtonsOnFile = [
+          {
+            text: "💾",
+            click: () => this.processToSaveFile(),
+          }, {
+            text: "↔️",
+            click: () => this.processToRenameFile(),
+          }, {
+            text: "🔄",
+            click: () => this.processToLoadFile(),
+          }, {
+            text: "📄 🔥",
+            classes: "danger_button",
+            click: () => this.processToDeleteFile(),
+          }
+        ];
+        // @INJECTABLE: add custom buttons for extensions:
+        if (this.current_node.endsWith(".js")) {
+          // @BUTTON to execute JavaScript:
+          rightButtonsOnFile.push({
+            text: "⚡️",
+            classes: "danger_button",
+            click: () => this.processToExecuteFile(),
+          });
+        }
+        this.$refs.panelRight.setButtons(...rightButtonsOnFile);
+      }
+      Setup_panel_bottom_on_file: {
+        const bottomButtonsOnFile = [
+          {
+            text: "➕",
+            click: () => this.increaseFontsize(),
+          }, {
+            text: "➖",
+            click: () => this.decreaseFontsize(),
+          }, {
+            text: "✍🏻|💻",
+            click: () => this.toggleFontfamily(),
+          }
+        ];
+        // @INJECTABLE: add custom buttons for extensions:
+        if (this.current_node.endsWith(".js")) {
+          // @OK
+        }
+        this.$refs.panelBottom.setButtons(...bottomButtonsOnFile);
+      }
       this.$nextTick(() => {
         this.is_ready = true;
       });
@@ -24368,29 +24567,48 @@ Vue.component("LswFilesystemExplorer", {
       this.is_ready = false;
       this.current_node_is_directory = true;
       this.current_node_is_file = false;
-      if (this.current_node === "/") {
-        this.$refs.panelTop.setButtons();
-      } else {
-        this.$refs.panelTop.setButtons({
-          text: "➜",
-          classes: "reversed",
-          click: () => this.goUp(),
+      Setup_panel_top_on_directory: {
+        if (this.current_node === "/") {
+          this.$refs.panelTop.setButtons();
+        } else {
+          this.$refs.panelTop.setButtons({
+            text: "➜",
+            classes: "reversed",
+            click: () => this.goUp(),
+          });
+        }
+      }
+      Setup_panel_right_on_directory: {
+        this.$refs.panelRight.setButtons({
+          text: "📄+",
+          click: () => this.processToCreateFile(),
+        }, {
+          text: "📁+",
+          click: () => this.processToCreateDirectory(),
+        }, {
+          text: "📁 🔥",
+          classes: "danger_button",
+          click: () => this.processToDeleteDirectory()
         });
       }
-      this.$refs.panelRight.setButtons({
-        text: "📄+",
-        click: () => this.processToCreateFile(),
-      }, {
-        text: "📁+",
-        click: () => this.processToCreateDirectory(),
-      }, {
-        text: "📁 🔥",
-        classes: "danger_button",
-        click: () => this.processToDeleteDirectory()
-      });
+      Setup_panel_bottom_on_directory: {
+        this.$refs.panelBottom.setButtons();
+      }
       this.$nextTick(() => {
         this.is_ready = true;
       });
+    },
+    increaseFontsize() {
+      this.$trace("lsw-filesystem-explorer.methods.increaseFontsize");
+      this.$refs.editor.increaseFontsize();
+    },
+    decreaseFontsize() {
+      this.$trace("lsw-filesystem-explorer.methods.decreaseFontsize");
+      this.$refs.editor.decreaseFontsize();
+    },
+    toggleFontfamily() {
+      this.$trace("lsw-filesystem-explorer.methods.toggleFontfamily");
+      this.$refs.editor.toggleFontfamily();
     },
     async _openFile(subpath) {
       this.$trace("lsw-filesystem-explorer.methods._openFile");
@@ -24474,9 +24692,7 @@ Vue.component("LswFilesystemExplorer", {
       }
     },
     async initializeFilesystemForLsw() {
-      const DEFAULT_CONFIGURATIONS = {
-        ratio: 0.2
-      };
+      /*
       const DEFAULT_ACCIONES = {
         "Trackeo de números de conducta/agenda": [{ porcion: 500 }],
         "Trackeo de conceptos/relaciones": [{ porcion: 500 }],
@@ -24509,8 +24725,47 @@ Vue.component("LswFilesystemExplorer", {
         "Dibujo artístico/anime/abstracto/esquemista/conceptualista": [{ porcion: 1 }],
         "Reflexión/Diálogo interno": [{ porcion: 500 }],
       };
-      await this.$lsw.fs.ensureFile("/kernel/agenda/randomizables.config.js", "return " + JSON.stringify(DEFAULT_CONFIGURATIONS, null, 2) + ";");
-      await this.$lsw.fs.ensureFile("/kernel/agenda/randomizables.js", "return " + JSON.stringify(DEFAULT_ACCIONES, null, 2) + ";");
+      //*/
+      await this.$lsw.fs.ensureFile("/kernel/agenda/rutiner.env", `
+Rutina 1
+Rutina 2
+Rutina 3
+Rutina 4
+Rutina 5
+Rutina 6
+Rutina 7
+Rutina 8
+`.trim());
+      await this.$lsw.fs.ensureFile("/kernel/agenda/randomizables.env", `
+
+Trackeo de números de conducta/agenda = 1
+Trackeo de conceptos/relaciones = 1
+Trackeo de ideas/notas = 1
+Programación de interfaces gráficas = 1
+Arquitectura por patrones = 1
+Arquitectura de la realidad = 1
+Arquitectura del yo = 1
+Lenguajes formales = 1
+Investigación de cocina/nutrición/química = 1
+Investigación de nutrición = 1
+Investigación de química = 1
+Investigación de física = 1
+Investigación de matemáticas = 1
+Investigación de geometría = 1
+Investigación de canvas/perspectiva = 1
+Investigación de medicina/biología/fisiología = 1
+Investigación de musculación/flexibilidad = 1
+Investigación de las emociones = 1
+Actividad física = 1
+Optimización de RAM = 1
+Autocontrol/Autobservación/Autoanálisis = 1
+Meditación/Relajación = 1
+Paisajismo = 1
+Dibujo 3D/Perspectiva/Geometría/Mates = 1
+Dibujo artístico/anime/abstracto/esquemista/conceptualista = 1
+Reflexión/Diálogo interno = 1
+
+`.trim());
     }
   },
   watch: {
@@ -24583,7 +24838,10 @@ Vue.component("LswFilesystemButtonsPanel", {
 Vue.component("LswFilesystemEditor", {
   name: "LswFilesystemEditor",
   template: `<div class="lsw_filesystem_editor">
-    <textarea class="editor" v-model="contents" spellcheck="false" />
+    <textarea class="editor" :style="{
+        fontSize: currentFontsize + 'px',
+        fontFamily: currentFontfamily
+    }" v-model="contents" spellcheck="false" v-focus />
 </div>`,
   props: {
     explorer: {
@@ -24597,7 +24855,9 @@ Vue.component("LswFilesystemEditor", {
   },
   data() {
     return {
-      contents: this.filecontents
+      contents: this.filecontents,
+      currentFontsize: 12,
+      currentFontfamily: "Arial"
     };
   },
   watch: {
@@ -24609,6 +24869,22 @@ Vue.component("LswFilesystemEditor", {
     },
     setContents(contents) {
       this.contents = contents;
+    },
+    increaseFontsize() {
+      this.$trace("lsw-filesystem-editor.methods.increaseFontsize");
+      this.currentFontsize++;
+    },
+    decreaseFontsize() {
+      this.$trace("lsw-filesystem-editor.methods.decreaseFontsize");
+      this.currentFontsize--;
+    },
+    toggleFontfamily() {
+      this.$trace("lsw-filesystem-editor.methods.toggleFontfamily");
+      if(this.currentFontfamily === "monospace") {
+        this.currentFontfamily = "Arial";
+      } else {
+        this.currentFontfamily = "monospace";
+      }
     }
   },
   mounted() {
@@ -25592,22 +25868,28 @@ Vue.component("LswAgendaAccionesViewer", {
                 v-bind:key="'accion_' + accionIndex">
                 <div class="accion_row flex_row centered"
                     style="padding-top: 2px;">
-                    <div class="flex_1 celda_de_concepto padded_vertically_1"
-                        v-on:click="() => advanceTaskState(accion)">{{
-                            \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
-                        }}</div>
-                    <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
-                    <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
-                    <div class="flex_100 shortable_text">
-                        <div class="celda_de_hora pad_left_1 pad_right_1 padded_vertically_1"
-                            :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
-                            v-on:click="() => toggleShowAccion(accion.id)"> {{ accion.en_concepto || '🤔' }}
-                        </div>
-                    </div>
-                    <div class="flex_1">
+                    <div class="flex_1 pad_right_1">
                         <button class="supermini padded_vertically_1"
                             :class="{activated: selectedForm === accion.id}"
                             v-on:click="(e) => selectForm(accion.id)">#️⃣</button>
+                    </div>
+                    <div class="flex_1 celda_de_hora"
+                        v-on:click="() => toggleShowAccion(accion.id)">
+                        <div class="padded_vertically_1">{{
+                            \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                        }}
+                        </div>
+                    </div>
+                    <div>
+                        <button class="supermini padded_vertically_1"
+                            v-on:click="(e) => toggleAutogeneration(accion)">{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</button>
+                    </div>
+                    <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
+                    <div class="flex_100 celda_de_concepto shortable_text">
+                        <div class=" pad_left_1 pad_right_1 padded_vertically_1"
+                            :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
+                            v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                        </div>
                     </div>
                     <div class="flex_1">
                         <button class="supermini danger_button padded_vertically_1"
@@ -25807,6 +26089,19 @@ Vue.component("LswAgendaAccionesViewer", {
       const id = await this.$lsw.database.insert('Accion', v);
       this.selectForm(id);
       this.loadDateTasks();
+    },
+    async toggleAutogeneration(tarea) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.toggleAutogeneration");
+      const siguientesParametros = (() => {
+        if(tarea.tiene_parametros.startsWith("[*autogenerada]")) {
+          return tarea.tiene_parametros.replace(/^\[\*autogenerada\] */g, "");
+        }
+        return "[*autogenerada] " + tarea.tiene_parametros;
+      })();
+      await this.$lsw.database.overwrite('Accion', tarea.id, {
+        tiene_parametros: siguientesParametros
+      });
+      await this.loadDateTasks();
     },
     async advanceTaskState(tarea) {
       this.$trace("lsw-agenda-acciones-viewer.methods.advanceTaskState");
@@ -26120,15 +26415,14 @@ Vue.component("LswAgendaAccionesViewer", {
         momentoFinal.setSeconds(0);
         momentoFinal.setMilliseconds(0);
       }
-      const randomizableRules = await this.$lsw.fs.evaluateFileOrReturn("/kernel/agenda/randomizables.js", {});
-      const config = await this.$lsw.fs.evaluateFileOrReturn("/kernel/agenda/randomizables.config.js", {});
+      const randomizableRules = await this.$lsw.fs.evaluateAsDotenvFileOrReturn("/kernel/agenda/randomizables.env", {});
       const accionesAutogeneradas = LswAgendaRandomizer.generar(
         randomizableRules,
         accionesDelDia,
         momentoInicio,
         duracion_de_bloques,
         momentoFinal,
-        config?.ratio || 0.2
+        0.2
       );
       accionesAutogeneradas.forEach(accion => {
         delete accion.id;
@@ -28320,12 +28614,17 @@ Vue.component("LswSchemaBasedForm", {
       return await this.$refs.schemaForm0.$xform.submit();
     },
     async deleteRow() {
-      this.$trace("lsw-schema-based-form.methods.submitForm");
-      const confirmed = await Vue.prototype.$dialogs.open({
+      this.$trace("lsw-schema-based-form.methods.deleteRow");
+      const confirmed = await this.$lsw.dialogs.open({
+        id: `eliminar-registro-${this.model.tableId}-${this.model.rowId || this.model.row.id}-${LswRandomizer.getRandomString(5)}`,
         title: "Eliminar registro",
         template: `
           <div>
-            <div class="pad_2">¿Seguro que quieres eliminar el registro?</div>
+            <div class="pad_2 font_weight_bold">ATENCIÓN: </div>
+            <div class="pad_2">¿Seguro que quieres eliminar el registro <b>{{ model.tableId }}</b> cuyo <b>id</b>#<b>{{ model.rowId || model.row.id }}</b>?</div>
+            <div class="pad_2">
+              <pre class="pad_2 codeblock">{{ JSON.stringify(model.row || rowValue, null, 2) }}</pre>
+            </div>
             <hr class="margin_0" />
             <div class="pad_2 text_align_right">
               <button class="supermini danger_button" v-on:click="() => accept(true)">Eliminar</button>
@@ -28333,17 +28632,30 @@ Vue.component("LswSchemaBasedForm", {
             </div>
           </div>
         `,
+        factory: {
+          data: {
+            model: this.model,
+            rowValue: this.value
+          }
+        }
       });
       if(!confirmed) return false;
-      await this.$lsw.database.delete(this.model.tableId, this.model.rowId || this.model.row.id);
+      const rowIdentifier = this.model.rowId || this.model.row.id;
+      await this.$lsw.database.delete(this.model.tableId, rowIdentifier);
       if(this.onDeleteRow) {
-        this.onDeleteRow(this.model.rowId, this.model.tableId, true);
+        const result = this.onDeleteRow(this.model.rowId, this.model.tableId, true);
+        // INTERCEPT REDIRECTION RETURNING FALSE FROM onDeleteRow PARAMETRIC CALLBACK
+        if(result === false) return;
       }
       if(this.model.databaseExplorer) {
-        this.model.databaseExplorer.selectPage("LswPageRows", {
-          database: this.model.databaseId,
-          table: this.model.tableId,
-        });
+        if(this.model.databaseExplorer.showBreadcrumb) {
+          this.model.databaseExplorer.selectPage("LswPageRows", {
+            database: this.model.databaseId,
+            table: this.model.tableId,
+          });
+        } else {
+          
+        }
       }
     }
   },
@@ -28484,7 +28796,7 @@ Vue.component("LswNotes", {
 Vue.component("LswConfigurationsPage", {
   template: `<div class="configurations_page">
     <div class="flex_row centered">
-        <div class="flex_1 nowrap pad_right_2">📌</div>
+        <div class="flex_1 nowrap pad_right_2">📌 Sección: </div>
         <select class="flex_100" v-model="selectedSection">
             <option value="datos">Base de datos</option>
             <option value="preferencias">Preferencias de usuario</option>
@@ -28492,13 +28804,56 @@ Vue.component("LswConfigurationsPage", {
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'datos'">
         <h3>Configuraciones » Base de datos</h3>
+        <hr />
+        <h4>Importar/Exportar base de datos</h4>
         <div class="margin_top_1">
-            <button class="supermini margin_right_1" v-on:click="startExportarAJson">Exportar a JSON</button>
-            <button class="supermini margin_right_1" v-on:click="startImportarDeJson">Importar de JSON</button>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startExportarAJson">Exportar a JSON</button>
+                </div>
+                <div class="flex_100 explanation_text">muestra una copia del estado actual en un JSON.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startImportarDeJson">Importar de JSON</button>
+                </div>
+                <div class="flex_100 explanation_text">permite pasar un JSON para insertar masivamente en el estado actual.</div>
+            </div>
         </div>
         <hr />
-        <div class="text_align_right">
-            <button class="supermini danger_button" v-on:click="startResetearBaseDeDatos">Resetear</button>
+        <h4>Gestionar copia de seguridad de base de datos</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered">
+                <div class="flex_1">
+                    <button class=" supermini margin_right_1" v-on:click="saveBackup">Guardar estado</button>
+                </div>
+                <div class="flex_100 explanation_text">sobreescribirá la copia de seguridad anterior con el estado actual de datos.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class=" supermini margin_right_1" v-on:click="loadBackup">Inyectar copia</button>
+                </div>
+                <div class="flex_100 explanation_text">insertará los datos de la copia de seguridad anterior en el estado actual de datos.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class=" supermini margin_right_1" v-on:click="toggleCurrentBackup">Ver copia actual</button>
+                </div>
+                <div class="flex_100 explanation_text">mostrará en un diálogo el JSON de la copia de seguridad actual.</div>
+            </div>
+            <div v-if="isShowingCurrentBackup">
+                <pre class="codeblock">{{ currentBackup }}</pre>
+            </div>
+        </div>
+        <hr />
+        <h4>Resetear base de datos</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1 danger_button" v-on:click="startResetearBaseDeDatos">Resetear</button>
+                </div>
+                <div class="flex_100 explanation_text">eliminará la base de datos por completo, forzando que al reiniciar se vuelva a crear.</div>
+            </div>
         </div>
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'preferencias'">
@@ -28513,9 +28868,19 @@ Vue.component("LswConfigurationsPage", {
     this.$trace("lsw-configurations-page.data", arguments);
     return {
       selectedSection: "datos",
+      isShowingCurrentBackup: false,
+      currentBackup: false,
     };
   },
   methods: {
+    async toggleCurrentBackup() {
+      this.$trace("lsw-configurations-page.methods.toggleCurrentBackup");
+      const newState = !this.isShowingCurrentBackup;
+      if(newState === true) {
+        this.currentBackup = await this.$lsw.backuper.getLastBackup();
+      }
+      this.isShowingCurrentBackup = newState;
+    },
     selectSection(seccion) {
       this.$trace("lsw-configurations-page.methods.selectSection");
       this.selectSection = seccion;
@@ -28638,7 +29003,54 @@ Vue.component("LswConfigurationsPage", {
         }
       });
       if(typeof confirmation !== "object") return;
-      console.log("Confirmed:", confirmation);
+      await this.$lsw.database.close();
+      await LswDatabase.deleteDatabase("lsw_default_database");
+    },
+    async saveBackup() {
+      this.$trace("lsw-configurations-page.methods.saveBackup");
+      const allData = await LswDatabase.exportDatabase("lsw_default_database");
+      await this.$lsw.backuper.setLastBackup(allData);
+      await this.$lsw.toasts.send({
+        title: "Backup exportado",
+        text: "La copia de seguridad fue exportada con el estado actual con éxito."
+      });
+    },
+    async loadBackup() {
+      this.$trace("lsw-configurations-page.methods.loadBackup");
+      // @TODO: esta función no está terminada.
+      this.currentBackup = await this.$lsw.backuper.getLastBackup();
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Importar copia de seguridad",
+        template: `
+          <div>
+            <div class="pad_2">¿Seguro que quieres importar la actual copia de seguridad?</div>
+            <hr />
+            <div class="pad_1 text_align_right">
+              <button class="supermini danger_button" v-on:click="() => accept(true)">Sí, importar</button>
+              <button class="supermini" v-on:click="close">Cancelar</button>
+            </div>
+          </div>
+        `
+      });
+      if(respuesta !== true) return;
+      const backupData = await this.$lsw.backuper.getLastBackup();
+      try {
+        for(const tableId in backupData) {
+          const tableRows = backupData[tableId];
+          await this.$lsw.database.insertMany(tableId, tableRows);
+        }
+      } catch (error) {
+        console.log(error);
+        return await this.$lsw.toasts.send({
+          title: "Backup con errores",
+          text: "La copia de seguridad tuvo errores de importación: " + error.message,
+          background: "rgba(212, 74, 74, 0.62)",
+        });
+      }
+      await this.$lsw.toasts.send({
+        title: "Backup importado",
+        text: "La copia de seguridad fue importada al estado actual con éxito."
+      });
     },
   },
   mounted() {
@@ -42111,6 +42523,52 @@ LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled
   console.log("[*] Installing db");
   return LswUtils.waitForMilliseconds(1);
 });
+LswLifecycle.hooks.register("app:all_loaded", "startJobs:org.allnulled.lsw-conductometria", async function () {
+  Setup_intruder_jobs: {
+    // RUTINER A LOS 2:20-3 MINUTOS DE ENTRAR, MENSAJE:
+    const milisegundoInicial = (60) + 0;
+    const milisegundoFinal = milisegundoInicial + 60;
+    const millisecondsToWait = LswRandomizer.getRandomIntegerBetween(milisegundoInicial, milisegundoFinal) * 1000;
+    Vue.prototype.$lsw.intruder.addJob({
+      id: "Job para memorizar Rutiner",
+      timeout: millisecondsToWait,
+      dialog: {
+        id: "rutiner-basico",
+        title: "¿Recuerdas el Rutiner?",
+        template: `
+          <div>
+            <div class="pad_1">
+              <div class="" v-if="rutinerText">
+                <div class="rutiner_box pad_2" v-html="rutinerText"></div>
+              </div>
+            </div>
+            <div class="text_align_right pad_right_1">
+              <button v-on:click="accept" class="margin_left_1">Aceptar</button>
+            </div>
+          </div>
+        `,
+        factory() {
+          return {
+            data() {
+              return {
+                rutinerText: false,
+              }
+            },
+            methods: {
+              async loadRutinas() {
+                const markdownText = await this.$lsw.fs.read_file("/kernel/agenda/rutiner.env");
+                this.rutinerText = marked.parse(markdownText);
+              }
+            },
+            mounted() {
+              this.loadRutinas();
+            }
+          }
+        }
+      }
+    });
+  }
+});
 // @code.start: LswAutomensajesViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAutomensajesViewer API » LswAutomensajesViewer component
 Vue.component("LswAutomensajesViewer", {
   template: `<div class="lsw_automensajes_viewer">
@@ -42389,24 +42847,6 @@ Vue.component("LswAppsViewerPanel", {
                         :initial-date="new Date()"
                         sorter-strategy="despues"
                     />
-                    <!--template v-if="accionesDespues && accionesDespues.length">
-                        <div class="tarjetas_de_accion">
-                            <div class="tarjeta_de_accion nowrap"
-                                v-for="accion, accionIndex in accionesDespues"
-                                v-bind:key="'accion_despues_' + accionIndex">
-                                <div class="celda_de_hora">{{ LswTimer.utils.extractHourFromDatestring(accion.tiene_inicio) }}</div>
-                                <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
-                                <div class="font_weight_bold">{{ accion.tiene_duracion }}</div>
-                                <div class="cell_en_concepto shortable_text flex_100">{{ accion.en_concepto }}</div>
-                                <div class="cell_en_estado cursor_pointer"
-                                    :class="'estado_' + accion.tiene_estado"
-                                    v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{
-                                    accion.tiene_estado }} {{ getSimboloEstadoAccion(accion.tiene_estado) }}</div>
-                            </div>
-                        </div>
-                    </template>
-                    <div v-else
-                        class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div-->
                 </div>
 
                 <div class="pad_1"
@@ -42883,7 +43323,8 @@ Vue.component("LswSpontaneousFormNota", {
         tiene_categorias: this.tiene_categorias,
       };
       if(nota.tiene_titulo.trim() === "") {
-        nota.tiene_titulo = `${nota.tiene_contenido.substr(0,30)}...`;
+        const superaLimite = nota.tiene_contenido.length > 30;
+        nota.tiene_titulo = nota.tiene_contenido.substr(0,30) + (superaLimite ? "..." : "");
       }
       const notaId = await this.$lsw.database.insert("Nota", nota);
       Object.assign(this, this.getInitialData());
@@ -43015,7 +43456,8 @@ Vue.component("LswSpontaneousTableNota", {
                 <span>
                     {{ currentPage+1 }}/{{ totalPages }}
                 </span>
-                <button class="supermini" v-on:click="loadNotes">🛜</button>
+                <button class="supermini"
+                    v-on:click="loadNotes">🛜</button>
 
             </div>
             <div class="flex_1">
@@ -43027,22 +43469,43 @@ Vue.component("LswSpontaneousTableNota", {
                     v-on:click="goToLastPage">⏩</button>
             </div>
         </div>
-        <div v-if="currentNotas && currentNotas.length" class="pad_bottom_0">
-            <div class="pad_top_1" v-for="nota, notaIndex in currentNotas" v-bind:key="'nota-' + notaIndex">
-                <button class="supermini nota_button width_100 text_align_left" v-on:click="toggleNota(nota.id)"
+        <div v-if="currentNotas && currentNotas.length"
+            class="pad_bottom_0">
+            <div class="pad_top_1"
+                v-for="nota, notaIndex in currentNotas"
+                v-bind:key="'nota-' + notaIndex">
+                <button class="supermini nota_button width_100 text_align_left"
+                    v-on:click="toggleNota(nota.id)"
                     :class="{activated: selectedNotas.indexOf(nota.id) !== -1}">
                     <div class="flex_row">
                         <div class="flex_1 smallest_font">#{{ nota.id }}</div>
-                        <div class="flex_100 shortable_text nota_title_text pad_left_1 pad_right_1" style="font-size: 11px;">{{ nota.tiene_titulo }}</div>
-                        <div class="flex_1 pad_left_1 pad_right_1 smallest_font">{{ nota.tiene_fecha }} |</div>
-                        <div class="flex_1 smallest_font text_align_right" style="min-width: 20px;">{{ nota.tiene_contenido?.length }}B</div>
+                        <div class="flex_100 shortable_text nota_title_text pad_left_1 pad_right_1"
+                            style="font-size: 11px;">{{ nota.tiene_titulo }}</div>
+                        <div class="flex_1"
+                            v-if="nota.tiene_estado">
+                            <div class="celda_de_estado_de_nota smallest_font"
+                                :class="'estado_' + nota.tiene_estado">{{
+                                nota.tiene_estado.substr(0,3).toUpperCase() }}
+                            </div>
+                        </div>
+                        <div class="flex_1 pad_left_1 pad_right_1 smallest_font">| {{ nota.tiene_fecha }} |</div>
+                        <div class="flex_1 smallest_font text_align_right"
+                            style="min-width: 20px;">{{ nota.tiene_contenido?.length }}B</div>
                     </div>
                 </button>
-                <div class="pad_top_1" v-if="selectedNotas.indexOf(nota.id) !== -1">
+                <div class="pad_top_1"
+                    v-if="selectedNotas.indexOf(nota.id) !== -1">
                     <div class="position_relative">
-                        <div class="markdown_text" v-html="\$window.marked.parse(nota.tiene_contenido)" style="font-size: 11px;"></div>
+                        <div class="markdown_text"
+                            v-html="\$window.marked.parse(nota.tiene_contenido)"
+                            style="font-size: 11px;"></div>
                         <div class="position_absolute top_0 right_0 pad_right_1 pad_top_1">
-                            <button class="supermini" v-on:click="() => goToEditNota(nota.id)">✏️</button>
+                            <div class="flex_row centered">
+                                <button class="supermini margin_right_1"
+                                    v-on:click="() => goToDeleteNota(nota)">❌</button>
+                                <button class="supermini"
+                                    v-on:click="() => goToEditNota(nota.id)">✏️</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -43060,8 +43523,9 @@ Vue.component("LswSpontaneousTableNota", {
                     <span>
                         {{ currentPage+1 }}/{{ totalPages }}
                     </span>
-                    <button class="supermini" v-on:click="loadNotes">🛜</button>
-    
+                    <button class="supermini"
+                        v-on:click="loadNotes">🛜</button>
+
                 </div>
                 <div class="flex_1">
                     <button class="supermini"
@@ -43073,10 +43537,12 @@ Vue.component("LswSpontaneousTableNota", {
                 </div>
             </div>
         </div>
-        <div class="pad_top_1" v-else-if="currentNotas === false">
+        <div class="pad_top_1"
+            v-else-if="currentNotas === false">
             <div>Cargando notas. Un momento, por favor...</div>
         </div>
-        <div class="pad_top_1" v-else>
+        <div class="pad_top_1"
+            v-else>
             <div>No se encontraron notas.</div>
         </div>
     </div>
@@ -43097,7 +43563,7 @@ Vue.component("LswSpontaneousTableNota", {
     toggleNota(notaId) {
       this.$trace("lsw-spontaneous-table-nota.methods.toggleNota");
       const pos = this.selectedNotas.indexOf(notaId);
-      if(pos === -1) {
+      if (pos === -1) {
         this.selectedNotas.push(notaId);
       } else {
         this.selectedNotas.splice(pos, 1);
@@ -43105,7 +43571,7 @@ Vue.component("LswSpontaneousTableNota", {
     },
     goToNextPage() {
       this.$trace("lsw-spontaneous-table-nota.methods.goToNextPage");
-      if((this.currentPage+1) < this.totalPages) {
+      if ((this.currentPage + 1) < this.totalPages) {
         this.currentPage++;
         this.synchronizePagination();
       }
@@ -43117,12 +43583,12 @@ Vue.component("LswSpontaneousTableNota", {
     },
     goToLastPage() {
       this.$trace("lsw-spontaneous-table-nota.methods.goToLastPage");
-      this.currentPage = (this.totalPages-1);
+      this.currentPage = (this.totalPages - 1);
       this.synchronizePagination();
     },
     goToPreviousPage() {
       this.$trace("lsw-spontaneous-table-nota.methods.goToPreviousPage");
-      if(this.currentPage > 0) {
+      if (this.currentPage > 0) {
         this.currentPage--;
         this.synchronizePagination();
       }
@@ -43130,7 +43596,30 @@ Vue.component("LswSpontaneousTableNota", {
     async loadNotes() {
       this.$trace("lsw-spontaneous-table-nota.methods.loadNotes");
       const allNotas = await this.$lsw.database.selectMany("Nota");
-      const sortedNotas = allNotas.reverse();
+      const sortedNotas = allNotas.sort((n1, n2) => {
+        Ordena_por_urgencia: {
+          const estado1 = n1.tiene_estado;
+          const estado2 = n2.tiene_estado;
+          const urgencia1 = estado1 === "urgente" ? 100 : 1;
+          const urgencia2 = estado2 === "urgente" ? 100 : 1;
+          if (urgencia1 > urgencia2) {
+            return -1;
+          } else if (urgencia1 < urgencia2) {
+            return 1;
+          }
+        }
+        Ordena_por_fecha: {
+          const fecha1 = LswTimer.utils.fromDatestringToDate(n1.tiene_fecha);
+          const fecha2 = LswTimer.utils.fromDatestringToDate(n2.tiene_fecha);
+          if (fecha1 > fecha2) {
+            return -1;
+          } else if (fecha1 < fecha2) {
+            return 1;
+          } else {
+            return -1;
+          }
+        }
+      });
       this.allNotas = sortedNotas;
       this.synchronizePagination();
     },
@@ -43144,40 +43633,88 @@ Vue.component("LswSpontaneousTableNota", {
       this.currentNotas = (() => {
         const paginatedNotas = [];
         const minIndex = this.currentPage * this.currentItemsPerPage;
-        const maxIndex = (this.currentPage+1) * this.currentItemsPerPage;
-        console.log(minIndex, maxIndex);
-        for(let index=0; index<this.allNotas.length; index++) {
+        const maxIndex = (this.currentPage + 1) * this.currentItemsPerPage;
+        for (let index = 0; index < this.allNotas.length; index++) {
           const nota = this.allNotas[index];
-          console.log(index);
           const validByMin = index >= minIndex;
           const validByMax = index < maxIndex;
           const isValid = validByMin && validByMax;
-          if(isValid) {
+          if (isValid) {
             paginatedNotas.push(nota);
           }
         }
-        console.log(paginatedNotas);
         return paginatedNotas;
       })();
     },
-    goToEditNota(notaId) {
+    async goToDeleteNota(row) {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToDeleteNota");
+      const confirmed = await this.$lsw.dialogs.open({
+        id: `eliminar-registro-Nota-#${row.id}-${LswRandomizer.getRandomString(5)}`,
+        title: "Eliminar registro",
+        template: `
+          <div>
+            <div class="pad_2 font_weight_bold">ATENCIÓN: </div>
+            <div class="pad_2">¿Seguro que quieres eliminar el registro <b>{{ tableId }}</b> cuyo <b>id</b>#<b>{{ rowId }}</b>?</div>
+            <div class="pad_2">
+              <pre class="pad_2 codeblock">{{ JSON.stringify(rowValue, null, 2) }}</pre>
+            </div>
+            <hr class="margin_0" />
+            <div class="pad_2 text_align_right">
+              <button class="supermini danger_button" v-on:click="() => accept(true)">Eliminar</button>
+              <button class="supermini " v-on:click="() => accept(false)">Cancelar</button>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            tableId: "Nota",
+            rowValue: row,
+            rowId: row.id
+          }
+        }
+      });
+      if (!confirmed) return false;
+      await this.$lsw.database.delete("Nota", row.id);
+      this.$lsw.toasts.send({
+        title: `Registro eliminado`,
+        text: `El registro #${this.notaId} de «Nota» fue eliminado correctamente.`
+      });
+      this.loadNotes();
+    },
+    async goToEditNota(notaId) {
       this.$trace("lsw-spontaneous-table-nota.methods.goToEditNota");
-      this.$lsw.dialogs.open({
+      await this.$lsw.dialogs.open({
         title: "Actualizar nota",
         template: `
           <div>
-            <lsw-database-explorer
-              :show-breadcrumb="false"
-              initial-page="lsw-page-row"
-              :initial-args="{
-                database: 'lsw_default_database',
-                table: 'Nota',
-                rowId: notaId,
+            <lsw-schema-based-form
+              :on-submit="(value) => submitCallback(value)"
+              :on-delete-row="deleteCallback"
+              :model="{
+                  connection: $lsw.database,
+                  databaseId: 'lsw_default_database',
+                  tableId: 'Nota',
+                  rowId: notaId,
               }"
             />
           </div>
         `,
         factory: {
+          methods: {
+            async submitCallback(value) {
+              console.log("Submiting form: ", value);
+              await this.$lsw.database.update("Nota", notaId, value);
+              this.$lsw.toasts.send({
+                title: `Nueva actualización`,
+                text: `El registro #${this.notaId} de «Nota» fue actualizado correctamente.`
+              });
+              this.close();
+            },
+            async deleteCallback() {
+              // EL DELETE YA LO HACE DENTRO, POR ALGUNA RAZÓN, NO ME ACABES DE PREGUNTAR.
+              this.close();
+            }
+          },
           data: {
             notaId,
           }
@@ -43191,7 +43728,7 @@ Vue.component("LswSpontaneousTableNota", {
       this.$trace("lsw-spontaneous-table-nota.mounted");
       this.loadNotes();
       this.$window.sptt_notas = this;
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
@@ -44008,9 +44545,9 @@ $proxifier.define("org.allnulled.lsw-conductometria.Nota", {
           isIndexed: true,
           hasFormtypeParameters: {
             type: "selector",
-            available: ["creada", "procesada", "dudosa", "desestimada"],
+            available: ["", "creada", "urgente", "dudosa", "procesada", "desestimada"],
             selectable: 1, // could be: number or "*" to all options
-            defaultValue: "creada",
+            defaultValue: "",
           },
           hasValidator(v) {
             
@@ -44445,9 +44982,7 @@ try {
     Vue.prototype.$window = window;
     Vue.prototype.$console = console;
     Vue.prototype.$vue = Vue;
-    if (!Vue.prototype.$lsw) {
-      Vue.prototype.$lsw = {};
-    }
+    Vue.prototype.$lsw = Vue.prototype.$lsw || {};
     Inject_global_api: {
       Vue.prototype.$lsw.fs = new LswFilesystem();
       Vue.prototype.$lsw.fs.init().then(() => {
@@ -44458,6 +44993,8 @@ try {
       Vue.prototype.$trace = (...args) => Vue.prototype.$lsw.logger.trace(...args);
       Vue.prototype.$lsw.utils = LswUtils;
       Vue.prototype.$lsw.timer = LswTimer;
+      Vue.prototype.$lsw.backuper = LswBackuper.create();
+      Vue.prototype.$lsw.intruder = LswIntruder.create();
       Vue.prototype.$lsw.windows = null;
       Vue.prototype.$lsw.dialogs = null;
       Vue.prototype.$lsw.toasts = null;
@@ -44488,6 +45025,8 @@ try {
       Vue.prototype.$lsw.classes.Filesystem = LswFilesystem;
       Vue.prototype.$lsw.classes.ConsoleHooker = ConsoleHooker;
       Vue.prototype.$lsw.classes.ClassRegister = LswClassRegister;
+      Vue.prototype.$lsw.classes.Backuper = LswBackuper;
+      Vue.prototype.$lsw.classes.Intruder = LswIntruder;
       // Vue.prototype.$lsw.classes.Dialogs = LswDialogs;
       // Vue.prototype.$lsw.classes.Windows = LswWindows;
       // Vue.prototype.$lsw.classes.Toasts = LswToasts;

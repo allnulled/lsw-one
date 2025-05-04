@@ -49,22 +49,28 @@
                 v-bind:key="'accion_' + accionIndex">
                 <div class="accion_row flex_row centered"
                     style="padding-top: 2px;">
-                    <div class="flex_1 celda_de_concepto padded_vertically_1"
-                        v-on:click="() => advanceTaskState(accion)">{{
-                            $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
-                        }}</div>
-                    <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
-                    <div class="flex_1 celda_de_duracion">{{ accion.tiene_duracion || '🤔' }}</div>
-                    <div class="flex_100 shortable_text">
-                        <div class="celda_de_hora pad_left_1 pad_right_1 padded_vertically_1"
-                            :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
-                            v-on:click="() => toggleShowAccion(accion.id)"> {{ accion.en_concepto || '🤔' }}
-                        </div>
-                    </div>
-                    <div class="flex_1">
+                    <div class="flex_1 pad_right_1">
                         <button class="supermini padded_vertically_1"
                             :class="{activated: selectedForm === accion.id}"
                             v-on:click="(e) => selectForm(accion.id)">#️⃣</button>
+                    </div>
+                    <div class="flex_1 celda_de_hora"
+                        v-on:click="() => toggleShowAccion(accion.id)">
+                        <div class="padded_vertically_1">{{
+                            $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                        }}
+                        </div>
+                    </div>
+                    <div>
+                        <button class="supermini padded_vertically_1"
+                            v-on:click="(e) => toggleAutogeneration(accion)">{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</button>
+                    </div>
+                    <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
+                    <div class="flex_100 celda_de_concepto shortable_text">
+                        <div class=" pad_left_1 pad_right_1 padded_vertically_1"
+                            :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
+                            v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                        </div>
                     </div>
                     <div class="flex_1">
                         <button class="supermini danger_button padded_vertically_1"

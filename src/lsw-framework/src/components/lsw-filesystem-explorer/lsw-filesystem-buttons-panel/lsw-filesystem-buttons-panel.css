@@ -13,3 +13,8 @@
     padding-left: 4px;
     padding-right: 4px;
 }
+.lsw_filesystem_buttons_panel > .buttons_panel.orientation_row > .button_cell {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-right: 4px;
+}

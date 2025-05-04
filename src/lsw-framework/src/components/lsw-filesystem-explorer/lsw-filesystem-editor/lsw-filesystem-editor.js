@@ -14,7 +14,9 @@ Vue.component("LswFilesystemEditor", {
   },
   data() {
     return {
-      contents: this.filecontents
+      contents: this.filecontents,
+      currentFontsize: 12,
+      currentFontfamily: "Arial"
     };
   },
   watch: {
@@ -26,6 +28,22 @@ Vue.component("LswFilesystemEditor", {
     },
     setContents(contents) {
       this.contents = contents;
+    },
+    increaseFontsize() {
+      this.$trace("lsw-filesystem-editor.methods.increaseFontsize");
+      this.currentFontsize++;
+    },
+    decreaseFontsize() {
+      this.$trace("lsw-filesystem-editor.methods.decreaseFontsize");
+      this.currentFontsize--;
+    },
+    toggleFontfamily() {
+      this.$trace("lsw-filesystem-editor.methods.toggleFontfamily");
+      if(this.currentFontfamily === "monospace") {
+        this.currentFontfamily = "Arial";
+      } else {
+        this.currentFontfamily = "monospace";
+      }
     }
   },
   mounted() {

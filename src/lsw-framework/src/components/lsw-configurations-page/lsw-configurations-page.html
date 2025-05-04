@@ -1,6 +1,6 @@
 <div class="configurations_page">
     <div class="flex_row centered">
-        <div class="flex_1 nowrap pad_right_2">📌</div>
+        <div class="flex_1 nowrap pad_right_2">📌 Sección: </div>
         <select class="flex_100" v-model="selectedSection">
             <option value="datos">Base de datos</option>
             <option value="preferencias">Preferencias de usuario</option>
@@ -8,13 +8,56 @@
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'datos'">
         <h3>Configuraciones » Base de datos</h3>
+        <hr />
+        <h4>Importar/Exportar base de datos</h4>
         <div class="margin_top_1">
-            <button class="supermini margin_right_1" v-on:click="startExportarAJson">Exportar a JSON</button>
-            <button class="supermini margin_right_1" v-on:click="startImportarDeJson">Importar de JSON</button>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startExportarAJson">Exportar a JSON</button>
+                </div>
+                <div class="flex_100 explanation_text">muestra una copia del estado actual en un JSON.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startImportarDeJson">Importar de JSON</button>
+                </div>
+                <div class="flex_100 explanation_text">permite pasar un JSON para insertar masivamente en el estado actual.</div>
+            </div>
         </div>
         <hr />
-        <div class="text_align_right">
-            <button class="supermini danger_button" v-on:click="startResetearBaseDeDatos">Resetear</button>
+        <h4>Gestionar copia de seguridad de base de datos</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered">
+                <div class="flex_1">
+                    <button class=" supermini margin_right_1" v-on:click="saveBackup">Guardar estado</button>
+                </div>
+                <div class="flex_100 explanation_text">sobreescribirá la copia de seguridad anterior con el estado actual de datos.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class=" supermini margin_right_1" v-on:click="loadBackup">Inyectar copia</button>
+                </div>
+                <div class="flex_100 explanation_text">insertará los datos de la copia de seguridad anterior en el estado actual de datos.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class=" supermini margin_right_1" v-on:click="toggleCurrentBackup">Ver copia actual</button>
+                </div>
+                <div class="flex_100 explanation_text">mostrará en un diálogo el JSON de la copia de seguridad actual.</div>
+            </div>
+            <div v-if="isShowingCurrentBackup">
+                <pre class="codeblock">{{ currentBackup }}</pre>
+            </div>
+        </div>
+        <hr />
+        <h4>Resetear base de datos</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1 danger_button" v-on:click="startResetearBaseDeDatos">Resetear</button>
+                </div>
+                <div class="flex_100 explanation_text">eliminará la base de datos por completo, forzando que al reiniciar se vuelva a crear.</div>
+            </div>
         </div>
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'preferencias'">

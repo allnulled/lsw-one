@@ -46,24 +46,6 @@
                         :initial-date="new Date()"
                         sorter-strategy="despues"
                     />
-                    <!--template v-if="accionesDespues && accionesDespues.length">
-                        <div class="tarjetas_de_accion">
-                            <div class="tarjeta_de_accion nowrap"
-                                v-for="accion, accionIndex in accionesDespues"
-                                v-bind:key="'accion_despues_' + accionIndex">
-                                <div class="celda_de_hora">{{ LswTimer.utils.extractHourFromDatestring(accion.tiene_inicio) }}</div>
-                                <div>{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</div>
-                                <div class="font_weight_bold">{{ accion.tiene_duracion }}</div>
-                                <div class="cell_en_concepto shortable_text flex_100">{{ accion.en_concepto }}</div>
-                                <div class="cell_en_estado cursor_pointer"
-                                    :class="'estado_' + accion.tiene_estado"
-                                    v-on:click="() => alternarEstado(accion)">{{ getSimboloEstadoAccion(accion.tiene_estado) }} {{
-                                    accion.tiene_estado }} {{ getSimboloEstadoAccion(accion.tiene_estado) }}</div>
-                            </div>
-                        </div>
-                    </template>
-                    <div v-else
-                        class="pad_top_0 pad_bottom_0">No hay acciones posteriores.</div-->
                 </div>
 
                 <div class="pad_1"

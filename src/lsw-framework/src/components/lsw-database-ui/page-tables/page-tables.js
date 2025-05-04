@@ -50,6 +50,7 @@ Vue.component("LswPageTables", {
         const tableId = tableIds[index];
         const tableData = value[tableId];
         tablesAsList.push({
+          id: tableId,
           name: tableId,
           ...tableData,
           indexes: tableData.indexes ? tableData.indexes.map(ind => ind.name) : []

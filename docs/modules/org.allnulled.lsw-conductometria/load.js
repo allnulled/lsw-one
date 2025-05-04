@@ -1,65 +1,46 @@
-LswLifecycle.hooks.register("app:install_modules", "install_module:org.allnulled.lsw-conductometria", async function () {
-  console.log("[*] Installing conductometria");
-  // await importer.importVueComponent("modules/org.allnulled.lsw-conductometria/components/lsw-protolang-editor/lsw-protolang-editor");
-  // await LswLifecycle.loadSubmodule("org.allnulled.lsw-conductometria", "proxy/Accion.js");
-  // await LswLifecycle.loadSubmodule("org.allnulled.lsw-conductometria", "proxy/Concepto.js");
-  // await LswLifecycle.loadSubmodule("org.allnulled.lsw-conductometria", "proxy/Categoria_de_concepto.js");
-  // await LswLifecycle.loadSubmodule("org.allnulled.lsw-conductometria", "proxy/Propagador_prototipo.js");
-  // await LswLifecycle.loadSubmodule("org.allnulled.lsw-conductometria", "proxy/Propagador_de_concepto.js");
-  // await LswLifecycle.loadSubmodule("org.allnulled.lsw-conductometria", "proxy/Limitador.js");
-  // await LswLifecycle.loadSubmodule("org.allnulled.lsw-conductometria", "proxy/Impresion.js");
-  // await LswLifecycle.loadSubmodule("org.allnulled.lsw-conductometria", "proxy/Nota.js");
-  // await LswLifecycle.loadSubmodule("org.allnulled.lsw-conductometria", "lang/protolang/protolang.js");
-  // await LswLifecycle.loadSubmodule("org.allnulled.lsw-conductometria", "lang/protolang/protolang.api.js");
-  // return LswUtils.waitForMilliseconds(1);
-  Database_seeding: {
-  
-    const all = {};
-  
-    all.conceptos = [{
-      tiene_nombre: "dejar en paz",
-    }, {
-      tiene_nombre: "okok",
-    }, {
-      tiene_nombre: "ok"
-    }, {
-      tiene_nombre: "ok1"
-    }, {
-      tiene_nombre: "ok2"
-    }, {
-      tiene_nombre: "ok3"
-    }];
-  
-    all.acciones = [];
-  
-    all.propagadores_prototipo = [];
-    
-    all.propagadores_de_concepto = [];
-  
-    all.notas = [{
-      tiene_titulo: "Nota 1",
-      tiene_contenido: "Esto es la **nota 1**. A ver si podemos meterle marked.js.",
-      tiene_categorias: "cat 1; cat 2; cat 3",
-      tiene_estado: "creada",
-      tiene_fecha: LswTimer.utils.formatDatestringFromDate(new Date())
-    }];
-
-    all.automensajes = [{
-      tiene_contenido: "Esto es un automensaje"
-    }];
-  
-    LswLifecycle.hooks.register("app:seed_database", "seed_database:org.allnulled.lsw-conductometria", async function () {
-      console.log("[*] Seeding conductometria database");
-      await lsw.database.insertMany("Concepto", all.conceptos);
-      await lsw.database.insertMany("Accion", all.acciones);
-      await lsw.database.insertMany("Propagador_prototipo", all.propagadores_prototipo);
-      await lsw.database.insertMany("Propagador_de_concepto", all.propagadores_de_concepto);
-      await lsw.database.insertMany("Nota", all.notas);
-      await lsw.database.insertMany("Automensaje", all.automensajes);
-      return LswUtils.waitForMilliseconds(1);
+LswLifecycle.hooks.register("app:all_loaded", "startJobs:org.allnulled.lsw-conductometria", async function () {
+  Setup_intruder_jobs: {
+    // RUTINER A LOS 2:20-3 MINUTOS DE ENTRAR, MENSAJE:
+    const milisegundoInicial = (60) + 0;
+    const milisegundoFinal = milisegundoInicial + 60;
+    const millisecondsToWait = LswRandomizer.getRandomIntegerBetween(milisegundoInicial, milisegundoFinal) * 1000;
+    Vue.prototype.$lsw.intruder.addJob({
+      id: "Job para memorizar Rutiner",
+      timeout: millisecondsToWait,
+      dialog: {
+        id: "rutiner-basico",
+        title: "¿Recuerdas el Rutiner?",
+        template: `
+          <div>
+            <div class="pad_1">
+              <div class="" v-if="rutinerText">
+                <div class="rutiner_box pad_2" v-html="rutinerText"></div>
+              </div>
+            </div>
+            <div class="text_align_right pad_right_1">
+              <button v-on:click="accept" class="margin_left_1">Aceptar</button>
+            </div>
+          </div>
+        `,
+        factory() {
+          return {
+            data() {
+              return {
+                rutinerText: false,
+              }
+            },
+            methods: {
+              async loadRutinas() {
+                const markdownText = await this.$lsw.fs.read_file("/kernel/agenda/rutiner.env");
+                this.rutinerText = marked.parse(markdownText);
+              }
+            },
+            mounted() {
+              this.loadRutinas();
+            }
+          }
+        }
+      }
     });
-  
   }
-  
-  console.log("[*] Installed conductometria successfully");
 });

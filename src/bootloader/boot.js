@@ -4,9 +4,7 @@ try {
     Vue.prototype.$window = window;
     Vue.prototype.$console = console;
     Vue.prototype.$vue = Vue;
-    if (!Vue.prototype.$lsw) {
-      Vue.prototype.$lsw = {};
-    }
+    Vue.prototype.$lsw = Vue.prototype.$lsw || {};
     Inject_global_api: {
       Vue.prototype.$lsw.fs = new LswFilesystem();
       Vue.prototype.$lsw.fs.init().then(() => {
@@ -17,6 +15,8 @@ try {
       Vue.prototype.$trace = (...args) => Vue.prototype.$lsw.logger.trace(...args);
       Vue.prototype.$lsw.utils = LswUtils;
       Vue.prototype.$lsw.timer = LswTimer;
+      Vue.prototype.$lsw.backuper = LswBackuper.create();
+      Vue.prototype.$lsw.intruder = LswIntruder.create();
       Vue.prototype.$lsw.windows = null;
       Vue.prototype.$lsw.dialogs = null;
       Vue.prototype.$lsw.toasts = null;
@@ -47,6 +47,8 @@ try {
       Vue.prototype.$lsw.classes.Filesystem = LswFilesystem;
       Vue.prototype.$lsw.classes.ConsoleHooker = ConsoleHooker;
       Vue.prototype.$lsw.classes.ClassRegister = LswClassRegister;
+      Vue.prototype.$lsw.classes.Backuper = LswBackuper;
+      Vue.prototype.$lsw.classes.Intruder = LswIntruder;
       // Vue.prototype.$lsw.classes.Dialogs = LswDialogs;
       // Vue.prototype.$lsw.classes.Windows = LswWindows;
       // Vue.prototype.$lsw.classes.Toasts = LswToasts;

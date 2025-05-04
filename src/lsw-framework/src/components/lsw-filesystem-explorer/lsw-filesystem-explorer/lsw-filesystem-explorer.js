@@ -295,35 +295,60 @@ Vue.component("LswFilesystemExplorer", {
       this.is_ready = false;
       this.current_node_is_file = true;
       this.current_node_is_directory = false;
-      const allButtonsOnFile = [
-        {
-          text: "💾",
-          click: () => this.processToSaveFile(),
-        }, {
-          text: "↔️",
-          click: () => this.processToRenameFile(),
-        }, {
-          text: "🔄",
-          click: () => this.processToLoadFile(),
-        }, {
-          text: "📄 🔥",
-          classes: "danger_button",
-          click: () => this.processToDeleteFile(),
-        }
-      ];
-      if (this.current_node.endsWith(".js")) {
-        allButtonsOnFile.push({
-          text: "⚡️",
-          classes: "danger_button",
-          click: () => this.processToExecuteFile(),
+      Setup_panel_top_on_file: {
+        this.$refs.panelTop.setButtons({
+          text: "➜",
+          classes: "reversed",
+          click: () => this.goUp(),
         });
       }
-      this.$refs.panelTop.setButtons({
-        text: "➜",
-        classes: "reversed",
-        click: () => this.goUp(),
-      });
-      this.$refs.panelRight.setButtons(...allButtonsOnFile);
+      Setup_panel_right_on_file: {
+        const rightButtonsOnFile = [
+          {
+            text: "💾",
+            click: () => this.processToSaveFile(),
+          }, {
+            text: "↔️",
+            click: () => this.processToRenameFile(),
+          }, {
+            text: "🔄",
+            click: () => this.processToLoadFile(),
+          }, {
+            text: "📄 🔥",
+            classes: "danger_button",
+            click: () => this.processToDeleteFile(),
+          }
+        ];
+        // @INJECTABLE: add custom buttons for extensions:
+        if (this.current_node.endsWith(".js")) {
+          // @BUTTON to execute JavaScript:
+          rightButtonsOnFile.push({
+            text: "⚡️",
+            classes: "danger_button",
+            click: () => this.processToExecuteFile(),
+          });
+        }
+        this.$refs.panelRight.setButtons(...rightButtonsOnFile);
+      }
+      Setup_panel_bottom_on_file: {
+        const bottomButtonsOnFile = [
+          {
+            text: "➕",
+            click: () => this.increaseFontsize(),
+          }, {
+            text: "➖",
+            click: () => this.decreaseFontsize(),
+          }, {
+            text: "✍🏻|💻",
+            click: () => this.toggleFontfamily(),
+          }
+        ];
+        // @INJECTABLE: add custom buttons for extensions:
+        if (this.current_node.endsWith(".js")) {
+          // @OK
+        }
+        this.$refs.panelBottom.setButtons(...bottomButtonsOnFile);
+      }
       this.$nextTick(() => {
         this.is_ready = true;
       });
@@ -333,29 +358,48 @@ Vue.component("LswFilesystemExplorer", {
       this.is_ready = false;
       this.current_node_is_directory = true;
       this.current_node_is_file = false;
-      if (this.current_node === "/") {
-        this.$refs.panelTop.setButtons();
-      } else {
-        this.$refs.panelTop.setButtons({
-          text: "➜",
-          classes: "reversed",
-          click: () => this.goUp(),
+      Setup_panel_top_on_directory: {
+        if (this.current_node === "/") {
+          this.$refs.panelTop.setButtons();
+        } else {
+          this.$refs.panelTop.setButtons({
+            text: "➜",
+            classes: "reversed",
+            click: () => this.goUp(),
+          });
+        }
+      }
+      Setup_panel_right_on_directory: {
+        this.$refs.panelRight.setButtons({
+          text: "📄+",
+          click: () => this.processToCreateFile(),
+        }, {
+          text: "📁+",
+          click: () => this.processToCreateDirectory(),
+        }, {
+          text: "📁 🔥",
+          classes: "danger_button",
+          click: () => this.processToDeleteDirectory()
         });
       }
-      this.$refs.panelRight.setButtons({
-        text: "📄+",
-        click: () => this.processToCreateFile(),
-      }, {
-        text: "📁+",
-        click: () => this.processToCreateDirectory(),
-      }, {
-        text: "📁 🔥",
-        classes: "danger_button",
-        click: () => this.processToDeleteDirectory()
-      });
+      Setup_panel_bottom_on_directory: {
+        this.$refs.panelBottom.setButtons();
+      }
       this.$nextTick(() => {
         this.is_ready = true;
       });
+    },
+    increaseFontsize() {
+      this.$trace("lsw-filesystem-explorer.methods.increaseFontsize");
+      this.$refs.editor.increaseFontsize();
+    },
+    decreaseFontsize() {
+      this.$trace("lsw-filesystem-explorer.methods.decreaseFontsize");
+      this.$refs.editor.decreaseFontsize();
+    },
+    toggleFontfamily() {
+      this.$trace("lsw-filesystem-explorer.methods.toggleFontfamily");
+      this.$refs.editor.toggleFontfamily();
     },
     async _openFile(subpath) {
       this.$trace("lsw-filesystem-explorer.methods._openFile");
@@ -439,9 +483,7 @@ Vue.component("LswFilesystemExplorer", {
       }
     },
     async initializeFilesystemForLsw() {
-      const DEFAULT_CONFIGURATIONS = {
-        ratio: 0.2
-      };
+      /*
       const DEFAULT_ACCIONES = {
         "Trackeo de números de conducta/agenda": [{ porcion: 500 }],
         "Trackeo de conceptos/relaciones": [{ porcion: 500 }],
@@ -474,8 +516,47 @@ Vue.component("LswFilesystemExplorer", {
         "Dibujo artístico/anime/abstracto/esquemista/conceptualista": [{ porcion: 1 }],
         "Reflexión/Diálogo interno": [{ porcion: 500 }],
       };
-      await this.$lsw.fs.ensureFile("/kernel/agenda/randomizables.config.js", "return " + JSON.stringify(DEFAULT_CONFIGURATIONS, null, 2) + ";");
-      await this.$lsw.fs.ensureFile("/kernel/agenda/randomizables.js", "return " + JSON.stringify(DEFAULT_ACCIONES, null, 2) + ";");
+      //*/
+      await this.$lsw.fs.ensureFile("/kernel/agenda/rutiner.env", `
+Rutina 1
+Rutina 2
+Rutina 3
+Rutina 4
+Rutina 5
+Rutina 6
+Rutina 7
+Rutina 8
+`.trim());
+      await this.$lsw.fs.ensureFile("/kernel/agenda/randomizables.env", `
+
+Trackeo de números de conducta/agenda = 1
+Trackeo de conceptos/relaciones = 1
+Trackeo de ideas/notas = 1
+Programación de interfaces gráficas = 1
+Arquitectura por patrones = 1
+Arquitectura de la realidad = 1
+Arquitectura del yo = 1
+Lenguajes formales = 1
+Investigación de cocina/nutrición/química = 1
+Investigación de nutrición = 1
+Investigación de química = 1
+Investigación de física = 1
+Investigación de matemáticas = 1
+Investigación de geometría = 1
+Investigación de canvas/perspectiva = 1
+Investigación de medicina/biología/fisiología = 1
+Investigación de musculación/flexibilidad = 1
+Investigación de las emociones = 1
+Actividad física = 1
+Optimización de RAM = 1
+Autocontrol/Autobservación/Autoanálisis = 1
+Meditación/Relajación = 1
+Paisajismo = 1
+Dibujo 3D/Perspectiva/Geometría/Mates = 1
+Dibujo artístico/anime/abstracto/esquemista/conceptualista = 1
+Reflexión/Diálogo interno = 1
+
+`.trim());
     }
   },
   watch: {

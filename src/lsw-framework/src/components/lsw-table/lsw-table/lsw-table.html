@@ -48,20 +48,17 @@
                         <div v-if="isShowingSubpanel === 'Extensor'">
                             <textarea spellcheck="false"
                                 v-model="extender"
-                                :placeholder="placeholderForExtensor"
-                                v-focus></textarea>
+                                :placeholder="placeholderForExtensor"></textarea>
                         </div>
                         <div v-if="isShowingSubpanel === 'Filtro'">
                             <textarea spellcheck="false"
                                 v-model="filter"
-                                :placeholder="placeholderForFiltro"
-                                v-focus></textarea>
+                                :placeholder="placeholderForFiltro"></textarea>
                         </div>
                         <div v-if="isShowingSubpanel === 'Ordenador'">
                             <textarea spellcheck="false"
                                 v-model="sorter"
-                                :placeholder="placeholderForOrdenador"
-                                v-focus></textarea>
+                                :placeholder="placeholderForOrdenador"></textarea>
                         </div>
                         <div v-if="isShowingSubpanel === 'Buscador'">
                             <input spellcheck="false"
@@ -69,8 +66,7 @@
                                 type="text"
                                 v-model="searcher"
                                 v-on:keypress.enter="digestOutput"
-                                :placeholder="placeholderForBuscador"
-                                v-focus />
+                                :placeholder="placeholderForBuscador" />
                         </div>
                         <div v-if="isShowingSubpanel === 'Paginador'">
                             <input spellcheck="false"
@@ -78,8 +74,7 @@
                                 type="number"
                                 v-model="itemsPerPage"
                                 v-on:keypress.enter="digestOutput"
-                                :placeholder="placeholderForPaginador"
-                                v-focus />
+                                :placeholder="placeholderForPaginador" />
                         </div>
                     </div>
                 </div>

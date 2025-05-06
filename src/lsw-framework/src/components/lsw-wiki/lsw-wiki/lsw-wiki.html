@@ -1,76 +1,73 @@
 <div class="lsw_wiki">
-    <div class="wiki_buscador"
-        :class="{esta_buscando:isSearching}">
+    <h4 class="">
         <div class="flex_row centered">
-            <div class="flex_100">
-                <input class="width_100 wiki_buscador_texto"
-                    style="min-height: 42px;"
-                    v-model="searchText"
-                    type="text"
-                    placeholder="Buscar en artículos"
-                    v-on:keyup="loadArticulosDelayed"
-                    v-on:keyup.enter="loadArticulos" />
+            <div class="flex_100">🔬 Enciclopedia:</div>
+            <div class="flex_1">
+                <div class="pad_left_1"><button :class="{activated: selectedSection === 'libros'}" class="supermini" v-on:click="() => selectSection('libros')">📚</button></div>
             </div>
-            <div class="flex_1 pad_left_1">
-                <button v-on:click="loadArticulos">🔎</button>
+            <!--div class="flex_1">
+                <div class="pad_left_1"><button :class="{activated: selectedSection === 'revistas'}" class="supermini" v-on:click="() => selectSection('revistas')">📰</button></div>
+            </div-->
+            <div class="flex_1">
+                <div class="pad_left_1"><button :class="{activated: selectedSection === 'categorias'}" class="supermini" v-on:click="() => selectSection('categorias')">📂</button></div>
             </div>
-        </div>
-        <div class="pad_top_1 pad_bottom_1">
-            <div class="caja_de_mensaje_sobre_articulos">
-                <div class=""
-                    v-if="isSearching"
-                    style="color: rgb(255, 196, 86);">
-                    Buscando artículos...
-                </div>
-                <div class=""
-                    v-else-if="!articulos"
-                    style="color: rgb(245, 89, 78);">
-                    No se alcanzaron a encontrar los artículos.
-                </div>
-                <div class=""
-                    v-else-if="!articulos.length"
-                    style="color: rgb(183, 215, 210);">
-                    No se encontraron artículos según la búsqueda.
-                </div>
-                <div class=""
-                    v-else-if="articulos.length !== 1">
-                    Se encontraron {{ articulos.length }} artículos coincidentes.
-                </div>
-                <div class=""
-                    v-else-if="articulos.length === 1">
-                    Se encontró {{ articulos.length }} artículo coincidente.
-                </div>
+            <div class="flex_1">
+                <div class="pad_left_1"><button :class="{activated: selectedSection === 'articulos'}" class="supermini" v-on:click="() => selectSection('articulos')">🔬</button></div>
             </div>
         </div>
-        <div class="lista_articulos"
-            v-if="articulos && articulos.length">
-            <template v-for="articulo, articuloIndex in articulos">
-                <div class="item_articulo"
-                    :class="{activated: openedArticulos.indexOf(articulo.id) !== -1}"
-                    v-on:click="() => toggleArticulo(articulo.id)"
-                    v-bind:key="'articulo_de_wiki_' + articulo.id">
-                    <div class="flex_column">
-                        <div class="flex_1 flex_row">
-                            <div class="celda_articulo flex_1">
-                                {{ articuloIndex + 1 }}.
-                            </div>
-                            <div class="celda_articulo flex_100">
-                                {{ articulo.tiene_titulo }}
-                            </div>
-                            <div class="celda_articulo flex_1">
-                                {{ articulo.tiene_contenido?.length }}B
-                            </div>
-                        </div>
-                        <div class="flex_1"
-                            class="articulo_detalles"
-                            v-if="openedArticulos.indexOf(articulo.id) !== -1">
-                            <div class="celda_articulo">
-                                {{ articulo.tiene_contenido }}
-                            </div>
-                        </div>
+    </h4>
+    <hr />
+    <div class="wiki_libros" v-if="selectedSection === 'libros'">
+        <div class="flex_row centered">
+            <h4 class="margin_bottom_1 width_100">
+                <div class="flex_row centered">
+                    <div class="flex_100">
+                        📚 Libros
+                    </div>
+                    <div class="flex_1 pad_right_1">
+                        <button class="supermini" v-on:click="refreshLibros">🛜</button>
+                    </div>
+                    <div class="flex_1">
+                        <button class="supermini" v-on:click="openLibrosFolder">↗️</button>
                     </div>
                 </div>
-            </template>
+            </h4>
         </div>
+        <lsw-wiki-libros v-if="isLoadedLibros" />
+    </div>
+    <div class="wiki_revistas pad_top_1" v-else-if="selectedSection === 'revistas'">
+        <div class="flex_row centered">
+            <h4 class="margin_bottom_1">📰 Revistas</h4>
+        </div>
+        <lsw-wiki-revistas />
+    </div>
+    <div class="wiki_categorias" v-else-if="selectedSection === 'categorias'">
+        <div class="flex_row centered">
+            <h4 class="margin_bottom_1 width_100">
+                <div class="flex_row centered">
+                    <div class="flex_100">
+                        📂 Categorías
+                    </div>
+                    <div class="flex_1 pad_right_1">
+                        <button class="supermini" v-on:click="refreshCategorias">🛜</button>
+                    </div>
+                    <div class="flex_1">
+                        <button class="supermini" v-on:click="openCategoriasFile">↗️</button>
+                    </div>
+                </div>
+            </h4>
+        </div>
+        <lsw-wiki-categorias v-if="isLoadedCategorias" />
+    </div>
+    <div class="wiki_buscador pad_top_1" v-else-if="selectedSection === 'buscador'">
+        <div class="flex_row centered">
+            <h4 class="margin_bottom_1">🔭 Buscador</h4>
+        </div>
+    </div>
+    <div class="wiki_articulos pad_top_1"
+        :class="{esta_buscando:isSearching}"
+        v-else-if="selectedSection === 'articulos'">
+        <h4 class="margin_bottom_1">📃 Artículos</h4>
+        <lsw-wiki-articulos />
     </div>
 </div>

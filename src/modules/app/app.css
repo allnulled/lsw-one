@@ -129,7 +129,11 @@ select>option {
     font-family: Arial;
 }
 
-h3 {
+h1,h2,h3,h4,h5,h6 {
+    margin: 0px;
+}
+
+.h3 {
     font-size: 13px;
     background-color: rgba(255, 227, 0, 0.4);
     border: 1px solid rgb(225, 214, 151);
@@ -141,7 +145,7 @@ h3 {
     margin: 0px;
 }
 
-h4 {
+.h4 {
     font-size: 11px;
     background-color: rgba(128, 117, 38, 0.4);
     border: 1px solid rgb(103, 88, 0);
@@ -312,6 +316,8 @@ pre.codeblock {
     border: 1px solid black;
     box-shadow: 0 0 2px black;
     overflow: scroll;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .explanation_text {
@@ -328,14 +334,106 @@ pre.codeblock {
     margin: 0px;
 }
 
+.lista_de_botones_unilinea {
+    
+}
+.lista_de_botones_unilinea > button:first-child {
+    margin-top: 0px;
+}
+
+.linkable_button {
+    border: 0px solid white;
+    box-shadow: 0 0 2px black;
+    border-radius: 2pt;
+    background-color: rgba(255,255,255,0.5);
+    padding: 0px;
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 7px;
+    max-height: 10px;
+}
+
+.linkable_text {
+    text-decoration: underline;
+    color: rgb(216, 219, 251);
+    cursor: pointer;
+}
+.linkable_text:hover {
+    color: white;
+}
+.linkable_text.activated {
+    color: yellow;
+}
+
+.list_buttons {
+    padding-top: 0px;
+    padding-bottom: 1px;
+}
+.list_button {
+    margin-top: 1px;
+    border: 1px solid white;
+    border-radius: 3pt;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
+    background-color: rgba(255,255,255,0.3);
+    color: black;
+    text-shadow: 0 0 1px white;
+    cursor: pointer;
+}
+.list_button:hover {
+    background-color: rgba(255,255,255,0.5);
+}
+.list_button.activated {
+    background-color: rgba(255,255,255,0.7);
+}
+
+
+
+.texto_markdown {}
+.texto_markdown h1,
+.texto_markdown h2,
+.texto_markdown h3,
+.texto_markdown h4,
+.texto_markdown h5,
+.texto_markdown h6,
+.texto_markdown p {
+    margin: 0px;
+}
+.texto_markdown {
+    padding: 7px;
+    margin: 0px;
+    background-color: rgba(19, 3, 43, 0.4);
+    color: #FFF;
+    text-shadow: 0 0 1px #fff;
+    border: 3px double rgb(170, 133, 133);
+    border-radius: 3pt;
+    box-shadow: 0 0 4px black;
+}
+
+.texto_markdown>p:first-child {
+    margin-top: 0px;
+}
+
+.texto_markdown>p:last-child {
+    margin-bottom: 0px;
+}
+.texto_markdown ol,
+.texto_markdown ul {
+    margin: 0px;
+    padding-left: 12px;
+}
+
 /* WIDGET CLASSES */
 
+.rounded {
+    border-radius: 50%;
+}
 
-
-
-
-
-
+.small_font {
+    font-size: 11px;
+}
 
 /* CSS-CLASSES */
 :root {
@@ -563,6 +661,14 @@ pre.codeblock {
 
 .position_absolute {
     position: absolute;
+}
+
+.position_absolute_fixed {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
 }
 
 .position_fixed {

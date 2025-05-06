@@ -8,7 +8,7 @@ module.exports = [
   // Continuation:
   `${basepath}/assets/lib/jquery/jquery-v3.7.1.js`,
   `${basepath}/assets/lib/marked/marked.js`,
-  `${basepath}/modules/org.allnulled.lsw.wiki/load.js`,
+  `${basepath}/modules/org.allnulled.lsw-wiki/load.js`,
   `${basepath}/modules/org.allnulled.lsw.fs/load.js`,
   `${basepath}/modules/org.allnulled.lsw.db/load.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/load.js`,
@@ -28,9 +28,11 @@ module.exports = [
   `${basepath}/modules/org.allnulled.lsw-conductometria/components/tables/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/components/tables/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/components/tables/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio`,
-
+  
+  // Controles extra_
   `${basepath}/modules/org.allnulled.lsw-conductometria/components/controls/lsw-fast-datetime-control/lsw-fast-datetime-control`,
 
+  // Proxies de Conductometría:
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Accion.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Concepto.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Categoria_de_concepto.js`,
@@ -40,9 +42,10 @@ module.exports = [
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Impresion.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Nota.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Automensaje.js`,
-  `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Articulo.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Lista.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Recordatorio.js`,
+  // Proxies de Wiki:
+  `${basepath}/modules/org.allnulled.lsw-wiki/proxy/Articulo.js`,
   // LSW INITIALIZATION
   `${basepath}/bootloader/boot.js`,
   `${basepath}/bootloader/runner.js`,

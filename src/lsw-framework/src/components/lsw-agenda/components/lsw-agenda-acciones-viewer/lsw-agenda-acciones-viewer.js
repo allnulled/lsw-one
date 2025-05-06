@@ -268,7 +268,7 @@ Vue.component("LswAgendaAccionesViewer", {
             <div class="pad_1 pad_bottom_0">
                 <div class="pad_1 pad_bottom_0">¿Qué duración quieres para las acciones de randomizado de día?</div>
                 <div class="pad_1 pad_top_2 pad_bottom_0">
-                    <lsw-duration-control ref="duracion" :settings="{name:'duracion',initialValue:'15min'}" :skip-label="true" />
+                    <lsw-duration-control ref="duracion" :settings="{name:'duracion',initialValue:'20min'}" :skip-label="true" />
                 </div>
                 <hr />
                 <div class="pad_1 pad_bottom_0">¿Desde qué hora quieres randomizar? Mínimo: 0.</div>
@@ -370,7 +370,7 @@ Vue.component("LswAgendaAccionesViewer", {
         momentoFinal.setSeconds(0);
         momentoFinal.setMilliseconds(0);
       }
-      const randomizableRules = await this.$lsw.fs.evaluateAsDotenvFileOrReturn("/kernel/agenda/randomizables.env", {});
+      const randomizableRules = await this.$lsw.fs.evaluateAsDotenvFileOrReturn("/kernel/settings/randomizables.env", {});
       const accionesAutogeneradas = LswAgendaRandomizer.generar(
         randomizableRules,
         accionesDelDia,

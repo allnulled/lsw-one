@@ -13,7 +13,8 @@
         :initial-settings="{
             title: 'Registros de ' + args.table,
             columnsOrder: ['id'],
+            ...(args.initialSettings || {})
         }"
         :row-buttons="[{ header: '', text: '↗️', event: (row) => openRow(row.id) }]"
-        :table-buttons="[{ text: '#️⃣', event() { openRow(-1) }}]"></lsw-table>
+        :table-buttons="databaseExplorer.showBreadcrumb ? [{ text: '➕', event() { openRow(-1) }}] : []"></lsw-table>
 </div>

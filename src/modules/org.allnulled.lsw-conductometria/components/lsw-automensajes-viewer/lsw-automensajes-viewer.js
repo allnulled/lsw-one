@@ -8,6 +8,7 @@ Vue.component("LswAutomensajesViewer", {
       isMounted: false,
       automensajes: [],
       selectedAutomensaje: undefined,
+      selectedFontsize: 12,
       automessagingId: undefined,
       automessagingSeconds: 0,
       simboloActual: "♠️",
@@ -23,17 +24,33 @@ Vue.component("LswAutomensajesViewer", {
     },
     async loadAutomensajes() {
       this.$trace("LswAutomensajesViewer.methods.loadAutomensajes", []);
-      const automensajes = await this.$lsw.database.selectMany("Automensaje");
-      this.automensajes = automensajes;
+      const automensajes = await this.$lsw.fs.evaluateAsDotenvFileOrReturn("/kernel/settings/automessages.env", {});
+      this.automensajes = Object.keys(automensajes);
     },
     async sendAutomessage() {
       this.$trace("LswAutomensajesViewer.methods.sendAutomessage", []);
       const availableAutomensajes = this.automensajes.filter(a => {
-        if((typeof this.selectedAutomensaje !== "object") || (typeof this.selectedAutomensaje.tiene_contenido !== "string")) return true;
-        return a.tiene_contenido !== this.selectedAutomensaje.tiene_contenido;
+        if(typeof this.selectedAutomensaje !== "string") return true;
+        return a !== this.selectedAutomensaje;
       });
-      this.selectedAutomensaje = LswRandomizer.getRandomItem(availableAutomensajes);
+      const nextAutomensaje = LswRandomizer.getRandomItem(availableAutomensajes);
+      const nextFontsize = this.calculateFontsize(nextAutomensaje);
+      this.selectedFontsize = nextFontsize;
+      this.selectedAutomensaje = nextAutomensaje;
       this.continueAutomessaging();
+    },
+    calculateFontsize(text) {
+      this.$trace("LswAutomensajesViewer.methods.calculateFontsize", []);
+      const textLength = text.length;
+      if(textLength < 10) {
+        return 18;
+      } else if(textLength < 20) {
+        return 16;
+      } else if(textLength < 30) {
+        return 14;
+      } else {
+        return 12;
+      }
     },
     async startAutomessaging() {
       this.$trace("LswAutomensajesViewer.methods.startAutomessaging", []);

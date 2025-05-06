@@ -17,6 +17,11 @@ Aplicación de gestión del tiempo y la información + Proyecto base para el des
   - [Requisitos](#requisitos)
   - [Comandos para el desarrollo](#comandos-para-el-desarrollo)
   - [Ficheros para el desarrollo](#ficheros-para-el-desarrollo)
+- [Trucos para usuario](#trucos-para-usuario)
+  - [Ficheros del kernel](#ficheros-del-kernel)
+      - [Configurar los fondos de pantalla](#configurar-los-fondos-de-pantalla)
+      - [Configurar los automensajes](#configurar-los-automensajes)
+      - [Configurar el mensaje rutinario](#configurar-el-mensaje-rutinario)
 
 # ¿Qué es esta aplicación?
 
@@ -118,4 +123,24 @@ Para ir engrosando el framework:
 1. Ir poniendo en [dev/bundlers/lsw-framework/bundlelist.components.js](dev/bundlers/lsw-framework/bundlelist.components.js) los **componentes del framework**.
 2. Ir poniendo en [dev/bundlers/lsw-framework/bundlelist.css.js](dev/bundlers/lsw-framework/bundlelist.css.js) los **estilos del framework**.
 3. Ir poniendo en [dev/bundlers/lsw-framework/bundlelist.js.js](dev/bundlers/lsw-framework/bundlelist.js.js) los **scripts del framework**.
+
+----
+
+# Trucos para usuario
+
+## Ficheros del kernel
+
+Algunos ficheros controlan configuraciones de la aplicación.
+
+#### Configurar los fondos de pantalla
+
+- `/kernel/settings/background.env`
+
+#### Configurar los automensajes
+
+- `/kernel/settings/automessages.env`
+
+#### Configurar el mensaje rutinario
+
+- `/kernel/settings/rutiner.md`
 

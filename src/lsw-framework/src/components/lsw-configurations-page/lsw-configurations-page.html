@@ -62,6 +62,47 @@
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'preferencias'">
         <h3>Configuraciones » Preferencias de usuario</h3>
-        <div class="pad_1 margin_top_1">Por ahora, esta sección está vacía.</div>
+        <hr />
+        <h4>Fondos de pantalla</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startConfigureBackgrounds">Configurar</button>
+                </div>
+                <div class="flex_100 explanation_text">permite introducir nuevas URLs para fondos.</div>
+            </div>
+        </div>
+        <hr />
+        <h4>Automensajes de fondo</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startConfigureAutomessages">Configurar</button>
+                </div>
+                <div class="flex_100 explanation_text">permite cambiar los automensajes que se muestran en el home.</div>
+            </div>
+        </div>
+        <hr />
+        <h4>Acciones randomizables</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startConfigureRandomizables">Configurar</button>
+                </div>
+                <div class="flex_100 explanation_text">permite cambiar las acciones randomizables de la agenda.</div>
+            </div>
+        </div>
+        <hr />
+        <h4>Mensaje rutinario</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startConfigureRutiner">Configurar</button>
+                </div>
+                <div class="flex_100 explanation_text">permite cambiar el mensaje que se muestra al cabo de aprox. 2 minutos de estar navegando.</div>
+            </div>
+        </div>
+        <hr />
+        
     </div>
 </div>

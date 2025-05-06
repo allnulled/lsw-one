@@ -25,7 +25,9 @@ $proxifier.define("org.allnulled.lsw-conductometria.Articulo", {
           isFormType: "text",
           isIndexed: true,
           hasValidator(v) {
-            // Ok.
+            if(v.trim() === "") {
+              throw new Error("Título no puede estar vacío");
+            }
           },
           hasFormatter: false,
           hasLabel: "Tiene título:",
@@ -44,6 +46,9 @@ $proxifier.define("org.allnulled.lsw-conductometria.Articulo", {
           },
           hasFormatter: function (v) {
             return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasInitialValue: function() {
+            return LswTimer.utils.fromDateToDatestring(new Date(), false, false, true);
           },
           hasLabel: "Tiene fecha:",
           hasDescription: "Momento en que se creó el artículo",
@@ -64,25 +69,6 @@ $proxifier.define("org.allnulled.lsw-conductometria.Articulo", {
           hasPlaceholder: "Categoría 1; categoría 2; categoría 3",
           hasExtraAttributes: {},
         },
-        tiene_garantia: {
-          isType: "text",
-          isFormType: "options",
-          isIndexed: true,
-          hasFormtypeParameters: {
-            type: "selector",
-            available: ["muy inestable", "inestable", "ns/nc", "estable", "muy estable", "popular"],
-            selectable: 1, // could be: number or "*" to all options
-            defaultValue: "creada",
-          },
-          hasValidator(v) {
-            
-          },
-          hasFormatter: false,
-          hasLabel: "Tiene estado:",
-          hasDescription: "Estado de el artículo. Puede ser «creada», «procesada», «dudosa» o «desestimada»",
-          hasPlaceholder: false,
-          hasExtraAttributes: {},
-        },
         tiene_contenido: {
           isType: "text",
           isFormType: "long-text",
@@ -96,7 +82,43 @@ $proxifier.define("org.allnulled.lsw-conductometria.Articulo", {
           hasDescription: "El contenido de este artículo. Permite markdown.",
           hasPlaceholder: "El **contenido** de tu artículo o artículo.",
           hasExtraAttributes: {},
-        }
+        },
+        tiene_garantia: {
+          isType: "text",
+          isFormType: "options",
+          isIndexed: true,
+          hasFormtypeParameters: {
+            type: "selector",
+            available: ["muy inestable", "inestable", "ns/nc", "estable", "muy estable", "popular"],
+            selectable: 1, // could be: number or "*" to all options
+            defaultValue: "ns/nc",
+          },
+          hasInitialValue: function() {
+            return "ns/nc";
+          },
+          hasValidator(v) {
+            
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene garantía:",
+          hasDescription: "Garantía de verdad del artículo. Puede ser «muy inestable», «inestable», «ns/nc», «estable», «muy estable», «popular»",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_tags: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene tags:",
+          hasDescription: "Una línea por cada tag",
+          hasPlaceholder: "tag 1\ntag 2\ntag 3",
+          hasExtraAttributes: {},
+        },
       }
     }
     static getVirtualizerId() {

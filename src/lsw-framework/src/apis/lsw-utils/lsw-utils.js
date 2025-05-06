@@ -295,7 +295,7 @@
             <input class="width_100" type="text" v-model="value.tiene_categorias" placeholder="categoría 1; categoria 2; categoria 3" />
           </div>
           <div class="flex_100" style="padding-top: 1px;">
-            <textarea v-focus v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." ref="contenido" />
+            <textarea v-model="value.tiene_contenido" spellcheck="false" style="height: 100%;" placeholder="Contenido de la nota. Acepta **markdown**, recuerda." ref="contenido" />
           </div>
           <div class="flex_1" style="padding-top: 2px;">
             <input class="width_100" type="text" v-model="value.tiene_titulo" placeholder="Título de la nota" ref="titulo" />

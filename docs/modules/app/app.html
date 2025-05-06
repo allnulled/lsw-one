@@ -1,10 +1,9 @@
 <div class="app app_component position_relative">
     <lsw-automensajes-viewer ref="desktop" />
     <div class="home_bottom_panel">
-        <button class="" v-on:click="clickPicas">♠️</button>
-        <button class="" v-on:click="goToNotas">💬</button>
-        <button class="" v-on:click="goToCalendario">📅</button>
+        <button class="" v-on:click="goToAddArticulo">+ 🔬</button>
         <button class="" v-on:click="goToAddNota">+ 💬</button>
+        <button class="" v-on:click="goToCalendario">📅</button>
         <!--button class="" v-on:click="goToAddArticulo">+ 🔬</button>
         <button class="" v-on:click="goToAddRecordatorio">+ 🪧</button-->
     </div>
@@ -14,7 +13,7 @@
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
             <div class="mobile_off_panel_cell" v-on:click="goToCalendario">📅</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToAddNota">+ 💬</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToEnciclopedia">🔬</div>
             <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
             <div class="mobile_off_panel_cell" v-on:click="clickPicas">♠️</div>
         </div>

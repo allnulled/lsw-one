@@ -191,15 +191,6 @@
     text-transform: uppercase;
 }
 
-.texto_markdown {}
-.texto_markdown h1,
-.texto_markdown h2,
-.texto_markdown h3,
-.texto_markdown h4,
-.texto_markdown h5,
-.texto_markdown h6 {
-    margin: 0px;
-}
 
 .pill_start,
 .pill_middle,

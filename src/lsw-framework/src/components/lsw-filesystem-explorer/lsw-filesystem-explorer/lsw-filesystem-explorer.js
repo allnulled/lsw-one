@@ -6,13 +6,17 @@ Vue.component("LswFilesystemExplorer", {
     absoluteLayout: {
       type: Boolean,
       default: () => false,
+    },
+    openedBy: {
+      type: String,
+      default: () => "/",
     }
   },
   data() {
     this.$trace("lsw-filesystem-explorer.data");
     return {
       is_ready: false,
-      current_node: undefined,
+      current_node: "/",
       current_node_parts: undefined,
       current_node_basename: undefined,
       current_node_basedir: undefined,
@@ -517,17 +521,26 @@ Vue.component("LswFilesystemExplorer", {
         "Reflexión/Diálogo interno": [{ porcion: 500 }],
       };
       //*/
-      await this.$lsw.fs.ensureFile("/kernel/agenda/rutiner.env", `
+      await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.md", `
+
 Rutina 1
+
 Rutina 2
+
 Rutina 3
+
 Rutina 4
+
 Rutina 5
+
 Rutina 6
+
 Rutina 7
+
 Rutina 8
+
 `.trim());
-      await this.$lsw.fs.ensureFile("/kernel/agenda/randomizables.env", `
+      await this.$lsw.fs.ensureFile("/kernel/settings/randomizables.env", `
 
 Trackeo de números de conducta/agenda = 1
 Trackeo de conceptos/relaciones = 1
@@ -557,6 +570,98 @@ Dibujo artístico/anime/abstracto/esquemista/conceptualista = 1
 Reflexión/Diálogo interno = 1
 
 `.trim());
+      await this.$lsw.fs.ensureFile("/kernel/settings/backgrounds.env", `
+
+assets/images/montania1.png
+assets/images/playa1.png
+assets/images/playa2.png
+
+`.trim());
+      await this.$lsw.fs.ensureFile("/kernel/settings/automessages.env", `
+
+Sé tu propia luz.
+Lo conseguiremos.
+Todo se andará.
+Sigamos adelante.
+En algún momento encontraremos la luz.
+
+`.trim());
+      await this.$lsw.fs.ensureFile("/kernel/wiki/libros/Boot.tri", `
+
+@{
+  "categorias": [],
+  "asco": [],
+  "de": [],
+  "persona": [],
+  "universal": "ok"
+}
+Boot [Artículo para el boot] {
+  @{
+    "autor": "github.com/allnulled",
+    "mensaje": "Dios, métete tu puto universo por tu puto culo de rata malnacida, no?",
+    "año": 2025
+  }
+  Capitulo 1 {}
+  Otro más nuevo [Otro más nuevo] {
+    Parte 1 [Capitulo 2/Parte 1] {}
+    Parte 2 [Capitulo 2/Parte 2] {}
+    Parte 3 [Capitulo 2/Parte 3] {}
+    Parte 4 [Capitulo 2/Parte 4] {}
+    Parte 5 [Capitulo 2/Parte 5] {}
+  }
+  Capítulo 3 [] {
+    Parte 1 [Capitulo 2/Parte 1] {}
+    Parte 2 [Capitulo 2/Parte 2] {}
+    Parte 3 [Capitulo 2/Parte 3] {}
+    Parte 4 [Capitulo 2/Parte 4] {}
+    Parte 5 [Capitulo 2/Parte 5] {}
+  }
+  Capítulo 4 [] {
+    Parte 1 [Capitulo 2/Parte 1] {}
+    Parte 2 [Capitulo 2/Parte 2] {}
+    Parte 3 [Capitulo 2/Parte 3] {}
+    Parte 4 [Capitulo 2/Parte 4] {}
+    Parte 5 [Capitulo 2/Parte 5] {}
+  }
+  Capítulo 5 [] {
+    Parte 1 [Capitulo 2/Parte 1] {}
+    Parte 2 [Capitulo 2/Parte 2] {}
+    Parte 3 [Capitulo 2/Parte 3] {}
+    Parte 4 [Capitulo 2/Parte 4] {}
+    Parte 5 [Capitulo 2/Parte 5] {}
+  }
+  Capítulo 6 [] {
+    Parte 1 [Capitulo 2/Parte 1] {}
+    Parte 2 [Capitulo 2/Parte 2] {}
+    Parte 3 [Capitulo 2/Parte 3] {}
+    Parte 4 [Capitulo 2/Parte 4] {}
+    Parte 5 [Capitulo 2/Parte 5] {}
+  }
+}
+  
+`.trim());
+      await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", `
+
+Árbol de categorías [] {
+  Biología [] {
+    Vegetal [] {}
+    Animal [] {}
+    Social [] {}
+  }
+  Medicina [] {
+    Fisiología [] {}
+    Nutrición [] {}
+  }
+  Química [] {}
+  Física [] {}
+  Matemáticas [] {
+    Programación [] {}
+    Lógica abstracta [] {}
+  }
+  Arte [] {}
+}
+
+`.trim());
     }
   },
   watch: {
@@ -570,7 +675,7 @@ Reflexión/Diálogo interno = 1
       this.$trace("lsw-filesystem-explorer.mounted");
       this.$lsw.fsExplorer = this;
       await this.initializeFilesystemForLsw();
-      await this.open("/");
+      await this.open(this.openedBy ?? "/");
     } catch (error) {
       console.log(error);
     }

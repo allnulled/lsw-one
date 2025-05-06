@@ -13,9 +13,9 @@ Vue.component("LswPageRows", {
   },
   data() {
     this.$trace("lsw-page-rows.data", []);
-    $ensure(this.args).type("object");
-    $ensure(this.args.database).type("string");
-    $ensure(this.args.table).type("string");
+    $ensure({ "args": this.args }, 1).type("object");
+    $ensure({ "args.database": this.args.database }, 1).type("string");
+    $ensure({ "args.table": this.args.table }, 1).type("string");
     return {
       breadcrumb: [{
         page: "LswPageTables",
@@ -49,7 +49,8 @@ Vue.component("LswPageRows", {
       this.$trace("lsw-page-rows.methods.loadRows", arguments);
       this.connection = this.connection ?? new LswDatabaseAdapter(this.database);
       await this.connection.open();
-      const selection = await this.connection.select(this.table, it => true);
+      const filterCallback = (this.args.filterCallback && typeof(this.args.filterCallback) === "function") ? this.args.filterCallback : () => true;
+      const selection = await this.connection.select(this.table, filterCallback);
       this.rows = selection;
       return selection;
     },

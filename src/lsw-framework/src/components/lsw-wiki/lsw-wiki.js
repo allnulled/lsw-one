@@ -18,7 +18,7 @@
 Vue.component("LswWiki", {
   name: "LswWiki",
   template: `<div class="lsw_wiki">
-    <h3>Welcome to wiki</h3>
+    <h4>Welcome to wiki</h4>
     <div class="wiki_searcher_1_box">
         <div class="wiki_searcher_1_input_cell">
             <input class="wiki_searcher_1_input" v-model="search_text_1" type="text" placeholder="Fast search" v-on:key-down.enter="search" />

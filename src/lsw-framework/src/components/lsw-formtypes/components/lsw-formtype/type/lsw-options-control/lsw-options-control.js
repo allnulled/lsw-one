@@ -10,7 +10,7 @@ Vue.component("LswOptionsControl", {
   data() {
     this.$trace("lsw-options-control.data");
     this.validateSettings();
-    const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
+    const value = this.settings?.initialValue || this.settings?.column?.hasInitialValue?.call() || "";
     return {
       uuid: LswRandomizer.getRandomString(5),
       value,

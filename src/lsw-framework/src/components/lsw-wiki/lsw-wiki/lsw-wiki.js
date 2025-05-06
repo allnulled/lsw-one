@@ -7,48 +7,66 @@ Vue.component("LswWiki", {
     this.$trace("lsw-wiki.data");
     return {
       isSearching: true,
-      searchText: "",
-      articulos: undefined,
-      timeoutId: undefined,
-      timeoutSeconds: 0.4,
-      openedArticulos: [],
+      isShowingNavigation: false,
+      isLoadedLibros: true,
+      isLoadedCategorias: true,
+      selectedSection: 'articulos',
     };
   },
   methods: {
-    async loadArticulos() {
-      this.$trace("lsw-wiki.methods.loadArticulos");
-      clearTimeout(this.searchTimeoutId);
-      this.isSearching = true;
-      const articulos = await (() => {
-        if(this.searchText) {
-          return this.$lsw.database.selectMany("Articulo", articulo => {
-            return JSON.stringify(articulo).indexOf(this.searchText) !== -1;
-          });
-        } else {
-          return this.$lsw.database.selectMany("Articulo");
-        }
-      })();
-      this.openedArticulos = [];
-      this.articulos = articulos;
-      this.isSearching = false;
+    selectSection(section) {
+      this.$trace("lsw-wiki.methods.selectSection");
+      this.selectedSection = section;
+      this.isShowingNavigation = false;
     },
-    loadArticulosDelayed() {
-      this.$trace("lsw-wiki.methods.loadArticulosDelayed");
-      clearTimeout(this.searchTimeoutId);
-      this.isSearching = true;
-      this.searchTimeoutId = setTimeout(() => {
-        this.loadArticulos();
-      }, 1000 * this.timeoutSeconds);
+    toggleNavigation() {
+      this.$trace("lsw-wiki.methods.toggleNavigation");
+      this.isShowingNavigation = !this.isShowingNavigation;
     },
-    toggleArticulo(articuloId) {
-      this.$trace("lsw-wiki.methods.toggleArticulo");
-      const pos = this.openedArticulos.indexOf(articuloId);
-      if(pos === -1) {
-        this.openedArticulos.push(articuloId);
-      } else {
-        this.openedArticulos.splice(pos, 1);
-      }
-    }
+    hideNavigation() {
+      this.$trace("lsw-wiki.methods.hideNavigation");
+      this.isShowingNavigation = false;
+    },
+    openLibrosFolder() {
+      this.$trace("lsw-wiki.methods.openLibrosFolder");
+      this.$lsw.dialogs.open({
+        id: LswRandomizer.getRandomString(10),
+        title: "Todos los libros",
+        template: `
+          <lsw-filesystem-explorer
+            :absolute-layout="true"
+            opened-by="/kernel/wiki/libros"
+          />
+        `
+      });
+    },
+    openCategoriasFile() {
+      this.$trace("lsw-wiki.methods.openCategoriasFile");
+      this.$lsw.dialogs.open({
+        id: LswRandomizer.getRandomString(10),
+        title: "Todas las categorías",
+        template: `
+          <lsw-filesystem-explorer
+            :absolute-layout="true"
+            opened-by="/kernel/wiki/categorias.tri"
+          />
+        `
+      });
+    },
+    refreshLibros() {
+      this.$trace("lsw-wiki.methods.refreshLibros");
+      this.isLoadedLibros = false;
+      setTimeout(() => {
+        this.isLoadedLibros = true;
+      }, 100);
+    },
+    refreshCategorias() {
+      this.$trace("lsw-wiki.methods.refreshCategorias");
+      this.isLoadedCategorias = false;
+      setTimeout(() => {
+        this.isLoadedCategorias = true;
+      }, 100);
+    },
   },
   watch: {
     
@@ -56,7 +74,6 @@ Vue.component("LswWiki", {
   async mounted() {
     try {
       this.$trace("lsw-wiki.mounted");
-      await this.loadArticulos();
     } catch (error) {
       console.log(error);
     }

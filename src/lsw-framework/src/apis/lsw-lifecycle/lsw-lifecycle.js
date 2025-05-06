@@ -43,6 +43,7 @@
       "onApplicationLoaded",
       "onAllLoaded",
       "onRunApplication",
+      "onApplicationDeployed",
       "onFinished",
     ],
 
@@ -202,6 +203,10 @@
         render: h => h(Vue.options.components.App),
       }).$mount("#app");
       return this.hooks.emit("app:run_application");
+    },
+    onApplicationDeployed: function () {
+      this.$trace("onApplicationDeployed", []);
+      return this.hooks.emit("app:application_deployed");
     },
     onFinished: function () {
       this.$trace("onFinished", []);

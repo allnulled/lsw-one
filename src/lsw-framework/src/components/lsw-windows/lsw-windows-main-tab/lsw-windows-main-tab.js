@@ -70,7 +70,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "notas-" + this.getRandomString(5),
         title: "Notas",
-        template: `<div class="pad_2"><lsw-spontaneous-table-notas /></div>`,
+        template: `<div class="pad_2"><lsw-spontaneous-table-nota /></div>`,
       });
     },
     openConfigurationsPage() {
@@ -78,7 +78,7 @@ Vue.component("LswWindowsMainTab", {
       this.viewer.hide();
       this.$dialogs.open({
         id: "configurations-page-" + this.getRandomString(5),
-        title: "Configurations page",
+        title: "Configuraciones",
         template: `<div class="pad_2"><lsw-configurations-page /></div>`,
       });
     }

@@ -22,12 +22,30 @@ LswLifecycle.start().then(async output => {
       await LswDom.waitForMilliseconds(100);
       LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
     },
+    async abrirWiki() {
+      LswDom.querySelectorFirst(".mobile_off_panel_cell", "🔬").click();
+      Abrir_articulos: {
+        await LswDom.waitForMilliseconds(100);
+        LswDom.querySelectorFirst(".lsw_wiki button.supermini", "🔬").click();
+        return;
+      }
+      Abrir_libros: {
+        await LswDom.waitForMilliseconds(100);
+        LswDom.querySelectorFirst(".lsw_wiki button.supermini", "📚").click();
+      }
+      Abrir_un_libro: {
+        await LswDom.waitForMilliseconds(100);
+        LswDom.querySelectorFirst(".nota_button .small_font", "Boot").click();
+      }
+    }
   }
 
   Work_relocation: {
     await LswDom.waitForMilliseconds(100);
-    await goTo.calendario();
+    await goTo.abrirWiki();
     return;
+    await LswDom.waitForMilliseconds(100);
+    await goTo.calendario();
     await LswDom.waitForMilliseconds(100);
     await goTo.abrirNavegacionRapida();
     await LswDom.waitForMilliseconds(100);

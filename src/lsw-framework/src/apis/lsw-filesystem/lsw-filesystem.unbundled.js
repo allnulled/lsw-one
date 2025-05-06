@@ -66,9 +66,28 @@
     evaluateAsDotenvFileOrReturn(filepath, output = {}) {
       this.trace("evaluateAsDotenvFileOrReturn", [filepath]);
       return this.evaluateAsDotenvFile(filepath).catch(error => {
-        console.log("[!] Error evaluating file:", error);
+        console.log("[!] Error evaluating file (as .env):", error);
         return output;
       });
+    }
+
+    async evaluateAsTripiFile(filepath) {
+      this.trace("evaluateAsTripiFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      const result = LswTreeParser.parse(fileContents);
+      return result;
+    }
+
+    async evaluateAsTripiFileOrReturn(filepath, output = {}) {
+      this.trace("evaluateAsTripiFileOrReturn", [filepath]);
+      try {
+        const fileContents = await this.read_file(filepath);
+        const result = LswTreeParser.parse(fileContents);
+        return result;
+      } catch (error) {
+        console.log("[!] Error evaluating file (as .tri):", error);
+        return output;
+      }
     }
 
   }

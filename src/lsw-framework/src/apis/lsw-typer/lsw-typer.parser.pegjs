@@ -6,10 +6,10 @@
 }
 
 Start
-  = _ value:Value _ { return value; }
+  = ANYSPACE value:Value ANYSPACE { return value; }
 
 Value
-  = tp:Type_def? _ vl:Value_untyped { return tp ? { ...tp, $value: vl } : vl; }
+  = tp:Type_def? ANYSPACE vl:Value_untyped { return tp ? { ...tp, $value: vl } : vl; }
 
 // Define una `Type_def` que acepta URLs completas
 Type_def = Type_def_by_js_property
@@ -51,12 +51,12 @@ Value_untyped
   / Null
 
 Object
-  = "{" _ members:MemberList? _ "}" {
+  = "{" ANYSPACE members:MemberList? ANYSPACE "}" {
       return members !== null ? members : {};
     }
 
 MemberList
-  = head:Member tail:(_ "," _ Member)* {
+  = head:Member tail:( ANYSPACE "," ANYSPACE Member)* {
       const result = { [head.key]: head.value };
       tail.forEach((item) => {
         const subitem = item[3];
@@ -67,17 +67,17 @@ MemberList
     }
 
 Member
-  = key:String _ ":" _ value:Value {
+  = key:String ANYSPACE ":" ANYSPACE value:Value {
       return { key, value };
     }
 
 Array
-  = "[" _ elements:ElementList? _ "]" {
+  = "[" ANYSPACE elements:ElementList? ANYSPACE "]" {
       return elements !== null ? elements : [];
     }
 
 ElementList
-  = head:Value tail:(_ "," _ Value)* {
+  = head:Value tail:( ANYSPACE "," ANYSPACE Value)* {
       return [head, ...tail.map(e => e[3])];
     }
 
@@ -101,5 +101,5 @@ Boolean
 Null
   = "null" { return null; }
 
-_ "whitespace"
+ANYSPACE "whitespace"
   = [ \t\n\r]*

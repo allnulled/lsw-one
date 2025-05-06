@@ -6,7 +6,7 @@
                 <div class="pad_1"
                     v-if="selectedApplication === 'antes'"
                     v-bind:key="'app_acciones_anteriores'">
-                    <h3 class="pad_bottom_1 margin_bottom_1">
+                    <h4 class="pad_bottom_1">
                         <div class="flex_row centered">
                             <div class="flex_100">⬅️ 🕓 Antes de las {{ getHoraActual() }}:</div>
                             <div class="flex_1">
@@ -18,18 +18,16 @@
                                     v-on:click="() => selectApplication('despues')">🕓➡️</button>
                             </div>
                         </div>
-                    </h3>
-                    <lsw-agenda-acciones-viewer
-                        :initial-date="new Date()"
-                        sorter-strategy="antes"
-                    />
+                    </h4>
+                    <lsw-agenda-acciones-viewer :initial-date="new Date()"
+                        sorter-strategy="antes" />
                     <div v-else
                         class="pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
                 </div>
                 <div class="pad_1"
                     v-if="selectedApplication === 'despues'"
                     v-bind:key="'app_acciones_posteriores'">
-                    <h3 class="pad_bottom_1 margin_bottom_1">
+                    <h4 class="pad_bottom_1">
                         <div class="flex_row centered">
                             <div class="flex_100">🕓 ➡️ Después de las {{ getHoraActual() }}:</div>
                             <div class="flex_1">
@@ -41,18 +39,16 @@
                                     v-on:click="() => selectApplication('antes')">⬅️🕓</button>
                             </div>
                         </div>
-                    </h3>
-                    <lsw-agenda-acciones-viewer
-                        :initial-date="new Date()"
-                        sorter-strategy="despues"
-                    />
+                    </h4>
+                    <lsw-agenda-acciones-viewer :initial-date="new Date()"
+                        sorter-strategy="despues" />
                 </div>
 
                 <div class="pad_1"
                     v-if="selectedApplication === 'calendario'"
                     v-bind:key="'app_calendario'">
                     <div class="pad_top_0 pad_bottom_0">
-                        <h3 class="margin_bottom_1">
+                        <h4 class="margin_bottom_1">
                             <div class="flex_row centered">
                                 <div class="flex_100">📅 Calendario:</div>
                                 <div class="flex_1">
@@ -64,7 +60,7 @@
                                         v-on:click="() => selectApplication('despues')">🕓➡️</button>
                                 </div>
                             </div>
-                        </h3>
+                        </h4>
                         <lsw-agenda />
                     </div>
                 </div>
@@ -81,7 +77,6 @@
                     v-if="selectedApplication === 'enciclopedia'"
                     v-bind:key="'enciclopedia'">
                     <div class="pad_top_0 pad_bottom_0">
-                        <h3 class="margin_bottom_1">🔬 Enciclopedia:</h3>
                         <lsw-wiki />
                     </div>
                 </div>

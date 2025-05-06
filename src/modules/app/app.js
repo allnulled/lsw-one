@@ -99,6 +99,10 @@ rel correr
         this.$trace("App.methods.goToNotas");
         this.$refs.desktop.selectApplication("notas");
       },
+      goToEnciclopedia() {
+        this.$trace("App.methods.goToEnciclopedia");
+        this.$refs.desktop.selectApplication("enciclopedia");
+      },
       clickPicas() {
         this.$trace("App.methods.clickPicas");
         document.querySelector("#the_picas_button").click();

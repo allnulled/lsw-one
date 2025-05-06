@@ -1,4 +1,4 @@
-LswLifecycle.hooks.register("app:all_loaded", "startJobs:org.allnulled.lsw-conductometria", async function () {
+LswLifecycle.hooks.register("app:application_deployed", "startJobs:org.allnulled.lsw-conductometria", async function () {
   Setup_intruder_jobs: {
     // RUTINER A LOS 2:20-3 MINUTOS DE ENTRAR, MENSAJE:
     const milisegundoInicial = (60) + 0;
@@ -31,7 +31,7 @@ LswLifecycle.hooks.register("app:all_loaded", "startJobs:org.allnulled.lsw-condu
             },
             methods: {
               async loadRutinas() {
-                const markdownText = await this.$lsw.fs.read_file("/kernel/agenda/rutiner.env");
+                const markdownText = await this.$lsw.fs.read_file("/kernel/settings/rutiner.md");
                 this.rutinerText = marked.parse(markdownText);
               }
             },
@@ -40,6 +40,15 @@ LswLifecycle.hooks.register("app:all_loaded", "startJobs:org.allnulled.lsw-condu
             }
           }
         }
+      }
+    });
+  }
+  Setup_custom_background_images: {
+    window.LSW_BACKGROUND_CONFIGURED_PROMISE.then(async function () {
+      const customBackgrounds = await Vue.prototype.$lsw.fs.evaluateAsDotenvFileOrReturn("/kernel/settings/backgrounds.env", {});
+      if (window.LSW_HAS_INTERNET) {
+        const backgroundList = Object.keys(customBackgrounds);
+        window.addBackgroundImages(backgroundList);
       }
     });
   }

@@ -1,5 +1,49 @@
 # Último commit:
 
+# 06-05-2025 18:59pm - ?
+
+[ ] Mantenimiento de bugs
+
+# 05-05-2025 01:30am - 06-05-2025 18:59pm
+
+[x] Fondos de pantalla configurables en:
+  [x] /kernel/settings/background.env
+[x] Normalizados otra vez los estilos de titulos con hX de html
+[x] Eslóganes que también se ponga desde un fichero.
+[x] Reelegir los botones iniciales
+[x] Hacer la parte de wiki de:
+  [x] Buscador de artículos
+    [x] Que permita buscar entre artículos
+    [x] Que permita ir al artículo y modificarlo
+  [x] Explorador de libros
+    [x] Que vengan del fs
+    [x] De una carpeta
+    [x] Con ficheros .tri
+      [x] Donde se concatenan los artículos
+      [x] Lo que habría que hacer en verdad es:
+        [x] Lenguaje para construir árboles
+        [x] Cada libro sería un árbol de artículos
+        [x] En cada nodo:
+          [x] un nombre del nodo
+          [x] un artículo asociable al nodo
+[x] Enciclopedia:
+  [x] Tener un lenguaje para parsear árboles
+    [x] lsw-tree-parser
+  [x] Tener los componentes de las pantallas
+    [x] De libros
+      [x] Con botón de editar libros (diálogo)
+      [x] Con botón de editar libro (diálogo)
+      [x] Que puedas expandir el artículo
+      [x] Con botón de editar artículo (diálogo)
+    [x] De categorías
+      [x] Prácticamente lo mismo que libros
+    [x] De artículos
+      [x] Un buscador de texto rápido
+[ ] Añadidas algunas opciones en configuraciones » preferencias de usuario
+  [ ] Para fondos, rutiner, etc.
+
+----
+
 # 04-05-2025 11:01am.
 
 [x] Corregido bug de al eliminar row desde el diálogo de «Actualizar nota»

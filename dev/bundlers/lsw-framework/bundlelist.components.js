@@ -24,6 +24,9 @@ module.exports = [
   `${basepath}/lsw-framework/src/apis/lsw-reloader/reloadable.js`,
   // LSW ENSURER:
   `${basepath}/lsw-framework/src/apis/lsw-ensurer/ensure.js`,
+  // LSW TREE PARSER:
+  `${basepath}/lsw-framework/src/apis/lsw-tree-parser/tripilang.parser.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-tree-parser/lsw-tree-parser.js`,
   // LSW TESTER:
   `${basepath}/lsw-framework/src/apis/lsw-tester/universal-tester.js`,
   // LSW DOM:
@@ -122,7 +125,16 @@ module.exports = [
   `${basepath}/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor`,
   `${basepath}/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer`,
   // WIKI:
+  `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros`,
+  `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer`,
+  `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos`,
+  `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias`,
+  `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer`,
+  `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas`,
+  `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree`,
+  `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode`,
   `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki`,
+  `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-utils/lsw-wiki-utils.js`,
   // CLOCKWATCHER:
   `${basepath}/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher`,
   // AGENDA:

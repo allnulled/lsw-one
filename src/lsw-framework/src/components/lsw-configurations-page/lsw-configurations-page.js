@@ -8,7 +8,7 @@ Vue.component("LswConfigurationsPage", {
   data() {
     this.$trace("lsw-configurations-page.data", arguments);
     return {
-      selectedSection: "datos",
+      selectedSection: "preferencias", // puede ser: datos, preferencias
       isShowingCurrentBackup: false,
       currentBackup: false,
     };
@@ -146,6 +146,34 @@ Vue.component("LswConfigurationsPage", {
       if(typeof confirmation !== "object") return;
       await this.$lsw.database.close();
       await LswDatabase.deleteDatabase("lsw_default_database");
+    },
+    startConfigureBackgrounds() {
+      this.$trace("lsw-configurations-page.methods.startConfigureBackgrounds");
+      this.$dialogs.open({
+        title: "Configurar fondos de pantalla",
+        template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/backgrounds.env" />`,
+      });
+    },
+    startConfigureAutomessages() {
+      this.$trace("lsw-configurations-page.methods.startConfigureAutomessages");
+      this.$dialogs.open({
+        title: "Configurar automensajes",
+        template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/automessages.env" />`,
+      });
+    },
+    startConfigureRutiner() {
+      this.$trace("lsw-configurations-page.methods.startConfigureRutiner");
+      this.$dialogs.open({
+        title: "Configurar mensaje rutinario",
+        template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/rutiner.md" />`,
+      });
+    },
+    startConfigureRandomizables() {
+      this.$trace("lsw-configurations-page.methods.startConfigureRandomizables");
+      this.$dialogs.open({
+        title: "Configurar acciones randomizables",
+        template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/randomizables.env" />`,
+      });
     },
     async saveBackup() {
       this.$trace("lsw-configurations-page.methods.saveBackup");

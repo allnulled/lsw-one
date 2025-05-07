@@ -46591,15 +46591,82 @@ Vue.component("LswSpontaneousFormAccion", {
 // @code.end: LswSpontaneousFormAccion API
 // @code.start: LswSpontaneousFormArticulo API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormArticulo API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormArticulo", {
-  template: `<div class="lsw_spontaneos_form_articulo">
-    Form of articulo
+  template: `<div class="lsw_spontaneos_form_nota pad_1">
+    <h4 class="margin_bottom_1px">🔬 Añadir artículo:</h4>
+    <div class="flex_row">
+        <div class="flex_100">
+            <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
+            <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de artículo" v-model="tiene_titulo" />
+            <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de artículo." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido"></textarea>
+            <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias"></textarea>
+            <textarea class="width_100 margin_bottom_0 margin_top_1" placeholder="tag 1; tag 2; tag 3;" v-model="tiene_tags"></textarea>
+            <div class="flex_row centered">
+                <div class="flex_1">
+                    Garantía: 
+                </div>
+                <div class="flex_100">
+                    <select class="width_100 margin_bottom_1 margin_top_1" v-model="tiene_garantia">
+                        <option v-for="valor, clave in opcionesGarantia" value="valor">{{ clave }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="mini" style="height: 100%; min-width: 30px;" v-on:click="addArticulo">🟢</button>
+        </div>
+    </div>
 </div>`,
   props: {},
   data() {
     this.$trace("lsw-spontaneous-form-articulo.data");
-    return {};
+    return {
+      ...this.getInitialContents(),
+      opcionesGarantia: {
+        "ns/nc": "ns/nc",
+        "muy inestable": "muy inestable",
+        "inestable": "inestable",
+        "estable": "estable",
+        "muy estable": "muy estable",
+        "popular": "popular",
+      }
+    };
   },
-  methods: {},
+  methods: {
+    getInitialContents() {
+      return Object.assign({}, {
+        tiene_titulo: "",
+        tiene_contenido: "",
+        tiene_categorias: "",
+        tiene_garantia: "ns/ns",
+        tiene_fecha: LswTimer.utils.fromDateToDatestring(new Date()),
+        tiene_tags: "",
+      });
+    },
+    async addArticulo() {
+      this.$trace("lsw-spontaneous-form-articulo.methods.addArticulo");
+      try {
+      await this.$lsw.database.insert("Articulo", {
+        tiene_titulo: this.tiene_titulo,
+        tiene_contenido: this.tiene_contenido,
+        tiene_categorias: this.tiene_categorias,
+        tiene_garantia: this.tiene_garantia,
+        tiene_fecha: this.tiene_fecha,
+        tiene_tags: this.tiene_tags,
+      });
+      this.$lsw.toasts.send({
+        title: "Artículo insertado",
+        message: "El artículo fue insertado con éxito."
+      });
+      Object.assign(this, this.getInitialContents());
+    } catch (error) {
+      console.log(error);
+      this.$lsw.toasts.send({
+        title: "Error al insertar artículo",
+        message: "Hubo errores al insertar el artículo: " + error.message
+      });
+    }
+    }
+  },
   watch: {},
   mounted() {
     try {
@@ -46639,9 +46706,9 @@ Vue.component("LswSpontaneousFormNota", {
     <h4 class="margin_bottom_1px">📒 Añadir nota:</h4>
     <div class="flex_row">
         <div class="flex_100">
-            <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
-            <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de nota." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido"></textarea>
             <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de nota" v-model="tiene_titulo" />
+            <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de nota." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido"></textarea>
+            <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
             <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias"></textarea>
         </div>
         <div class="flex_1 pad_left_1">
@@ -46692,7 +46759,7 @@ Vue.component("LswSpontaneousFormNota", {
     },
     focusContenidos() {
       this.$trace("lsw-spontaneous-form-nota.methods.addNota");
-      this.$refs.tiene_contenido.focus();
+      // this.$refs.tiene_contenido.focus();
     }
   },
   watch: {},

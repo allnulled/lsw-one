@@ -44,7 +44,7 @@ Vue.component("LswSpontaneousFormNota", {
     },
     focusContenidos() {
       this.$trace("lsw-spontaneous-form-nota.methods.addNota");
-      this.$refs.tiene_contenido.focus();
+      // this.$refs.tiene_contenido.focus();
     }
   },
   watch: {},

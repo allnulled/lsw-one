@@ -41,7 +41,8 @@
     };
 
     static defaultOptions = {
-      active: true,
+      // active: true,
+      active: false,
       level: "trace"
     };
 

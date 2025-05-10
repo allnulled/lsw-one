@@ -16,6 +16,20 @@ Vue.component("LswToasts", {
       }
       return out;
     },
+    showError(error, propagate = false, log = true) {
+      this.$trace("lsw-toasts.methods.showError");
+      const output = this.send({
+        title: "Un error ocurrió",
+        text: error.name + ": " + error.message
+      });
+      if(log) {
+        console.log(error);
+      }
+      if(propagate) {
+        throw error;
+      }
+      return output;
+    },
     send(toastsInput = {}) {
       const toastData = Object.assign({
         id: this.getRandomString(),

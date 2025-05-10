@@ -15411,7 +15411,9 @@ if (process?.env?.NODE_ENV === "test") {
     static _trace = true;
 
     static trace(methodName, args = []) {
-      if (this._trace) {
+      // @INJECTION: from LSW
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      if (this._trace && traceActivatedGlobally) {
         console.log("[browsie][" + methodName + "]", args.length + " args: " + Array.from(args).map(arg => typeof (arg)).join(", "));
       }
     }
@@ -16571,7 +16573,8 @@ if (process?.env?.NODE_ENV === "test") {
     };
 
     static defaultOptions = {
-      active: true,
+      // active: true,
+      active: false,
       level: "trace"
     };
 
@@ -18741,7 +18744,9 @@ return Store;
     };
 
     $trace(method, args) {
-      if(this.$options.trace) {
+      // @INJECTION: from LSW
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      if(this.$options.trace && traceActivatedGlobally) {
         console.log("[trace][lsw-intruder] " + method, Array.from(args));
       }
     }
@@ -19674,6 +19679,22 @@ return Store;
     });
     return response;
   };
+
+  LswUtils.createAsyncFunction = function(code, parameters = []) {
+    const AsyncFunction = (async function() {}).constructor;
+    const asyncFunction = new AsyncFunction(code);
+    return asyncFunction;
+  };
+
+  LswUtils.extractFirstStringOr = function(txt, defaultValue = "") {
+    if(!txt.startsWith('"')) return defaultValue;
+    const pos1 = txt.substr(1).indexOf('"');
+    if(pos1 === -1) return defaultValue;
+    const pos = pos1 - 1;
+    const extractedSubstr = txt.substr(0, pos);
+    // // @OK: No escapamos, porque se entiende que no se va a usar ese string en el concepto nunca.
+    return JSON.parse(extractedSubstr);
+  }
   // @code.end: LswUtils
 
   return LswUtils;
@@ -19716,7 +19737,11 @@ return Store;
       return this;
     }
     trace(method, args = []) {
-      console.log("[ufs][node-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      // @INJECTION: from LSW
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      if(traceActivatedGlobally) {
+        console.log("[ufs][node-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      }
     }
     resolve_path(...args) {
       this.trace("resolve_path", arguments);
@@ -20038,7 +20063,11 @@ return Store;
     }
 
     trace(method, args = []) {
-      console.log("[ufs][idb-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      // @INJECTION: from LSW
+      if(traceActivatedGlobally) {
+        console.log("[ufs][idb-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      }
     }
 
     init() {
@@ -20439,6 +20468,27 @@ return Store;
         await this.write_file(filepath2, contents);
       }
     }
+    
+    async ensureDirectory(filepath) {
+      this.trace("ensureDirectory", [filepath]);
+      const pathParts = filepath.split("/").filter(file => file.trim() !== "");
+      const directoryParts = [].concat(pathParts);
+      const filename = directoryParts.pop();
+      let currentPathPart = "";
+      for (let index = 0; index < directoryParts.length; index++) {
+        const pathPart = directoryParts[index];
+        currentPathPart += "/" + pathPart;
+        const existsSubpath = await this.exists(currentPathPart);
+        if (!existsSubpath) {
+          await this.make_directory(currentPathPart);
+        }
+      }
+      const filepath2 = currentPathPart + "/" + filename;
+      const existsFilepath2 = await this.exists(filepath2);
+      if (!existsFilepath2) {
+        await this.make_directory(filepath2);
+      }
+    }
 
     async evaluateAsJavascriptFile(filepath, scope = undefined) {
       this.trace("evaluateAsJavascriptFile", [filepath]);
@@ -20458,15 +20508,20 @@ return Store;
       });
     }
 
-    async evaluateAsDotenvFile(filepath) {
-      this.trace("evaluateAsDotenvFile", [filepath]);
-      const fileContents = await this.read_file(filepath);
+    evaluateAsDotenvText(fileContents) {
+      this.trace("evaluateAsDotenvText", []);
       const result = fileContents.split(/\n/).filter(line => line.trim() !== "").reduce((output, line) => {
         const [ id, value = "" ] = line.split(/\=/);
         output[id.trim()] = (value || "").trim();
         return output;
       }, {});
       return result;
+    }
+
+    async evaluateAsDotenvFile(filepath) {
+      this.trace("evaluateAsDotenvFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      return this.evaluateAsDotenvText(fileContents);
     }
 
     evaluateAsDotenvFileOrReturn(filepath, output = {}) {
@@ -23090,7 +23145,6 @@ $lswTyper.define("org.allnulled.lsw/type/moment.js", function(input) {
 `;
 
   window.addEventListener("load", function() {
-    console.log(document);
     document.body.appendChild(styleTag);
   });
 
@@ -24405,18 +24459,19 @@ Vue.component("LswTable", {
                                 <!--Id cell:-->
                                 <td class="index_cell">
                                     <button v-on:click="() => toggleRow(row.id)"
-                                        :class="{activated: selectedRows.indexOf(row.id) !== -1}">
+                                        class="supermini"
+                                        :class="{activated: row.id && selectedRows.indexOf(row.id) !== -1}">
                                         {{ (rowIndex + 1) + (currentPage * itemsPerPage) }}
                                     </button>
                                 </td>
                                 <!--Selectable cell:-->
                                 <td class="index_cell" v-if="selectable === 'one'">
                                     <span v-on:click="() => toggleChoosenRow(row[choosableId])">
-                                        <button class="activated" v-if="choosenRows === row[choosableId]">
+                                        <button class="supermini activated" v-if="choosenRows === row[choosableId]">
                                             <!--input type="radio" :checked="true" /-->
                                             ☑️
                                         </button>
-                                        <button v-else>
+                                        <button class="supermini" v-else>
                                             🔘
                                             <!--input type="radio" :checked="false" /-->
                                         </button>
@@ -24430,7 +24485,7 @@ Vue.component("LswTable", {
                                 <!--Row buttons cells:-->
                                 <td class="button_cell" v-for="attachedColumn, attachedColumnIndex in attachedColumns"
                                     v-bind:key="'attached-column-' + attachedColumnIndex">
-                                    <button v-on:click="() => rowButtons[attachedColumnIndex].event(row, rowIndex, attachedColumn)">{{ attachedColumn.text }}</button>
+                                    <button class="supermini" v-on:click="() => rowButtons[attachedColumnIndex].event(row, rowIndex, attachedColumn)">{{ attachedColumn.text }}</button>
                                 </td>
                                 <!--Object properties cells:-->
                                 <td class="data_cell" v-for="columnKey, columnIndex in headers"
@@ -24452,7 +24507,7 @@ Vue.component("LswTable", {
                                 </td>
                             </tr>
                             <tr class="row_for_details"
-                                v-show="selectedRows.indexOf(row.id) !== -1"
+                                v-show="row.id && selectedRows.indexOf(row.id) !== -1"
                                 v-bind:key="'row-for-cell-' + rowIndex">
                                 <td class="data_cell details_cell"
                                     colspan="1000">
@@ -24608,6 +24663,12 @@ Vue.component("LswTable", {
     },
     toggleRow(rowIndex) {
       this.$trace("lsw-table.methods.toggleRow");
+      if(typeof rowIndex === "undefined") {
+        return this.$lsw.toasts.send({
+          title: "La row no se desplegará",
+          text: "Añade «id» para que se puedan seleccionar las rows"
+        })
+      }
       const pos = this.selectedRows.indexOf(rowIndex);
       if (pos === -1) {
         this.selectedRows.push(rowIndex);
@@ -25271,7 +25332,9 @@ Vue.component('LswDataImplorer', {
         const {
           template,
           title = "",
-          id = "default",
+          // @OK: El ID debería ser único o no se abrirán las duplicadas.
+          // @PERO: Pero por algo lo tenía así también y no recuerdo.
+          id = LswRandomizer.getRandomString(10),
           priority = 500,
           factory = defaultDialogFactory,
           parentId = undefined,
@@ -25762,6 +25825,20 @@ Vue.component("LswToasts", {
         out += alphabet[Math.floor(Math.random() * alphabet.length)];
       }
       return out;
+    },
+    showError(error, propagate = false, log = true) {
+      this.$trace("lsw-toasts.methods.showError");
+      const output = this.send({
+        title: "Un error ocurrió",
+        text: error.name + ": " + error.message
+      });
+      if(log) {
+        console.log(error);
+      }
+      if(propagate) {
+        throw error;
+      }
+      return output;
     },
     send(toastsInput = {}) {
       const toastData = Object.assign({
@@ -27150,7 +27227,7 @@ Boot [Artículo para el boot] {
 }
   
 `.trim());
-      await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", `
+await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", `
 
 Árbol de categorías [] {
   Biología [] {
@@ -27172,6 +27249,45 @@ Boot [Artículo para el boot] {
 }
 
 `.trim());
+await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", `
+
+return {
+  "Todos los conceptos": [],
+  "Todas las acciones": [],
+  "Todos los propagadores": [],
+  "Todos los propagadores prototipo": [],
+  "Todas las acciones virtuales": [],
+  "Los estados acumulados": [],
+};
+
+`.trim());
+      await this.$lsw.fs.ensureFile("/kernel/agenda/proto/boot.proto", `
+
+inc /kernel/agenda/proto/concepto
+inc /kernel/agenda/proto/funcion
+inc /kernel/agenda/proto/relacion
+
+def desayunar, comer, cenar
+
+fun unEjemplo: param1, param2 {
+  console.log("Solo un ejemplo.");
+}
+
+rel desayunar
+  > consumir * 1
+  > abstenerse * 0
+  >> unEjemplo: 500, 1000
+
+`.trim());
+      await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/concepto");
+      await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/funcion");
+      await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
+      await this.$lsw.fs.ensureFile("/kernel/boot.js", `
+
+// Cuidadito con este script que te cargas la app
+// y luego tienes que borrar la caché para volver a tenerla.
+        
+        `.trim());
     }
   },
   watch: {
@@ -28456,7 +28572,7 @@ Vue.component("LswClockwatcher", {
   template: `<div class="clockwatcher_component">
     <div class="clockwatcher_layer_1">
         <div class="clockwatcher_layer_2">
-            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, false, true, true) }}
+            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, true, false || false, true) }}
         </div>
     </div>
 </div>`,
@@ -28482,7 +28598,7 @@ Vue.component("LswClockwatcher", {
       this.timerId = setTimeout(() => {
         this.currentDate = new Date();
         this.startTimer();
-      }, 1000);
+      }, 1000 * 60);
     },
     stopTimer() {
       this.$trace("lsw-clockwatcher.methods.stopTimer");
@@ -28508,12 +28624,12 @@ Vue.component("LswAgenda", {
         style="gap: 4px;">
         <div class="flex_1">
             <button class="width_100 nowrap"
-                v-on:click="() => selectSubmenu1('add')"
-                :class="{activated: selectedSubmenu1 === 'add'}">+</button>
+                v-on:click="() => selectHiddenMenu('add')"
+                :class="{activated: selectedHiddenMenu === 'add'}">+</button>
             <div class="hidden_menu"
-                v-if="selectedSubmenu1 === 'add'">
+                v-if="selectedHiddenMenu === 'add'">
                 <div class="hidden_menu_fixed_layer"
-                    v-on:click="() => selectSubmenu1('none')"></div>
+                    v-on:click="() => selectHiddenMenu('none')"></div>
                 <div class="hidden_menu_box"
                     style="min-width: 160px;">
                     <div class="hidden_menu_items">
@@ -28523,7 +28639,7 @@ Vue.component("LswAgenda", {
                             </div>
                             <div class="flex_1">
                                 <button class="mini"
-                                    v-on:click="() => selectSubmenu1('none')">❌</button>
+                                    v-on:click="() => selectHiddenMenu('none')">❌</button>
                             </div>
                         </div>
                         <div class="button_cell">
@@ -28549,12 +28665,12 @@ Vue.component("LswAgenda", {
         </div>
         <div class="flex_1">
             <button class="width_100 nowrap"
-                v-on:click="() => selectSubmenu1('search')"
-                :class="{activated: selectedSubmenu1 === 'search'}">🔎</button>
+                v-on:click="() => selectHiddenMenu('search')"
+                :class="{activated: selectedHiddenMenu === 'search'}">🔎</button>
             <div class="hidden_menu"
-                v-if="selectedSubmenu1 === 'search'">
+                v-if="selectedHiddenMenu === 'search'">
                 <div class="hidden_menu_fixed_layer"
-                    v-on:click="() => selectSubmenu1('none')"></div>
+                    v-on:click="() => selectHiddenMenu('none')"></div>
                 <div class="hidden_menu_box"
                     style="min-width: 160px;">
                     <div class="hidden_menu_items">
@@ -28564,7 +28680,7 @@ Vue.component("LswAgenda", {
                             </div>
                             <div class="flex_1">
                                 <button class="mini"
-                                    v-on:click="() => selectSubmenu1('none')">❌</button>
+                                    v-on:click="() => selectHiddenMenu('none')">❌</button>
                             </div>
                         </div>
                         <!--div class="separator">
@@ -28616,11 +28732,16 @@ Vue.component("LswAgenda", {
                 </div>
             </div>
         </div>
+        <div class="flex_1">
+            <button class="width_100 nowrap"
+                v-on:click="() => selectContext('conductometria')"
+                :class="{activated: selectedContext === 'conductometria'}">📊</button>
+        </div>
         <div class="flex_100"></div>
         <div class="flex_1">
             <button class="width_100 nowrap"
                 v-on:click="toggleCalendario"
-                :class="{activated: isCalendarioSelected}">📅</button>
+                :class="{activated: selectedAction === 'calendario'}">📅</button>
         </div>
     </div>
 
@@ -28717,23 +28838,27 @@ Vue.component("LswAgenda", {
             <lsw-agenda-propagador-search />
         </div>
     </div>
+
+    <div class="calendar_viewer pad_bottom_1"
+        v-show="(selectedContext === 'agenda') && (selectedAction === 'calendario')">
+        <lsw-calendario ref="calendario"
+            modo="date"
+            :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
+            :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)" />
+    </div>
+    
     <div class=""
         v-if="selectedContext === 'agenda'">
-        <div class="calendar_viewer pad_bottom_1"
-            v-show="isCalendarioSelected">
-            <lsw-calendario ref="calendario"
-                modo="date"
-                :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
-                :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)" />
-        </div>
         <div class="limitador_viewer">
             <lsw-agenda-limitador-viewer :agenda="this" />
         </div>
-        <lsw-agenda-acciones-viewer
-            :initial-date="selectedDate"
-            ref="agenda_acciones_viewer"
-        />
+        <lsw-agenda-acciones-viewer :initial-date="selectedDate"
+            ref="agenda_acciones_viewer" />
     </div>
+    <div v-else-if="selectedContext === 'conductometria'">
+        <lsw-conductometria />
+    </div>
+
 </div>`,
   props: {},
   data() {
@@ -28741,11 +28866,10 @@ Vue.component("LswAgenda", {
     return {
       counter: 0,
       isLoading: false,
-      isCalendarioSelected: false,
       hasPsicodelia: true,
-      selectedAccion: undefined,
+      selectedHiddenMenu: "none",
       selectedContext: "agenda",
-      selectedSubmenu1: 'calendario',
+      selectedAction: 'calendario',
       selectedDate: undefined,
       selectedDateTasks: undefined,
       selectedDateTasksSorted: undefined,
@@ -28765,35 +28889,32 @@ Vue.component("LswAgenda", {
         this.shownAcciones.splice(pos, 1);
       }
     },
-    selectAccion(accionId) {
-      this.$trace("lsw-agenda.methods.selectAccion");
-      if (this.selectedAccion === accionId) {
-        this.selectedAccion = undefined;
-      } else {
-        this.selectedAccion = accionId;
+    selectHiddenMenu(menuId) {
+      this.$trace("lsw-agenda.methods.selectHiddenMenu");
+      this.selectedHiddenMenu = menuId;
+    },
+    selectAction(accionId, contextId = false) {
+      this.$trace("lsw-agenda.methods.selectAction");
+      if(contextId) {
+        this.selectContext(contextId);
       }
+      this.selectedAction = accionId;
     },
     selectContext(id, parameters = {}) {
       this.$trace("lsw-agenda.methods.selectContext");
-      this.selectedSubmenu1 = "none";
+      this.selectedHiddenMenu = "none";
       this.selectedContextParameters = parameters;
       this.selectedContext = id;
     },
-    selectSubmenu1(id) {
-      this.$trace("lsw-agenda.methods.selectSubmenu1");
-      this.selectedSubmenu1 = id;
-    },
     toggleCalendario() {
       this.$trace("lsw-agenda.methods.toggleCalendario");
-      const finalState = !this.isCalendarioSelected;
+      const finalState = (this.selectedAction === "calendario") ? "none" : "calendario";
       if (this.selectedContext !== "agenda") {
         this.selectContext("agenda");
-        this.isCalendarioSelected = true;
+        this.selectAction("calendario");
         return;
-      } else if (finalState) {
-        // OK.
       }
-      this.isCalendarioSelected = finalState;
+      this.selectAction(finalState);
     },
     togglePsicodelia() {
       this.$trace("lsw-agenda.methods.togglePsicodelia");
@@ -28962,6 +29083,11 @@ Vue.component("LswAgenda", {
     },
   },
   watch: {
+  },
+  computed: {
+    isCalendarioSelected() {
+      return this.selectedAction === "calendario";
+    }
   },
   async mounted() {
     try {
@@ -30192,6 +30318,506 @@ Vue.component("LswAgendaPropagadorSearch", {
   }
 });
 // @code.end: LswAgendaPropagadorSearch API
+// @code.start: LswConductometria API | @$section: Vue.js (v2) Components » LswAgenda API » LswConductometria API » LswConductometria component
+Vue.component("LswConductometria", {
+  template: `<div class="LswConductometria">
+  <template v-if="isLoaded === false">
+    <button class="supermini width_100" v-on:click="reloadEverything">Virtualizar conductometria</button>
+  </template>
+  <template v-if="isLoaded === null">
+    <div class="">Se está virtualizando la conductometría.</div>
+  </template>
+  <template v-else-if="isLoaded === true">
+    <div>
+      <h4>
+        <div class="flex_row centered">
+          <div class="flex_100">
+            📊 Reportes disponibles:
+          </div>
+          <div class="flex_1 pad_left_1">
+            <button class="supermini" v-on:click="reloadEverything">🛜</button>
+          </div>
+          <div class="flex_1 pad_left_1">
+            <button class="supermini" style="min-width: 25px;" v-on:click="goToScripts">{ }</button>
+          </div>
+          <div class="flex_1 pad_left_1">
+            <button class="supermini" v-on:click="goToReports">📂 ↗️</button>
+          </div>
+        </div>
+      </h4>
+      <div v-for="reporte, reporteIndex in reportes"
+        v-bind:key="'reporte_' + reporteIndex">
+        <div class="flex_row centered pad_top_1">
+          <div class="flex_100">
+            <button class="supermini width_100 shortable_text text_align_left nowrap" v-on:click="() => openReport(reporte)">
+              <span class="float_left">{{ reporte }}</span><span class="float_right">🎥</span></button>
+          </div>
+          <div class="flex_1 pad_left_1">
+            <button class="supermini" v-on:click="() => editReport(reporte)">📄 ↗️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-conductometria.data");
+    return {
+      isLoaded: false,
+      reportes: [],
+    };
+  },
+  methods: {
+    async reloadEverything() {
+      this.$trace("lsw-conductometria.methods.reloadEverything");
+      this.isLoaded = null;
+      const files = await this.$lsw.fs.read_directory("/kernel/agenda/report");
+      this.reportes = Object.keys(files);
+      Reload_conductometria_fully: {
+        await this.$lsw.conductometria.reload(this);
+      }
+      this.isLoaded = true;
+    },
+    goToReports() {
+      this.$trace("lsw-conductometria.methods.goToReports");
+      this.$lsw.dialogs.open({
+        id: 'ver-reportes',
+        title: "Reportes de conductometría",
+        template: `
+          <lsw-filesystem-explorer opened-by="/kernel/agenda/report/" :absolute-layout="true" />
+        `
+      });
+    },
+    goToScripts() {
+      this.$trace("lsw-conductometria.methods.goToScripts");
+      this.$lsw.dialogs.open({
+        id: 'ver-script',
+        title: "Scripts de conductometría",
+        template: `
+          <lsw-filesystem-explorer opened-by="/kernel/agenda/proto" :absolute-layout="true" />
+        `
+      });
+    },
+    async editReport(reporte) {
+      this.$trace("lsw-conductometria.methods.editReport");
+      this.$lsw.dialogs.open({
+        title: "Editar reporte " + reporte,
+        template: `
+          <lsw-filesystem-explorer
+            :opened-by="'/kernel/agenda/report/' + reporte"
+            :absolute-layout="true" />
+        `,
+        factory: {
+          data: { reporte }
+        }
+      });
+    },
+    openReport(reporteId) {
+      this.$trace("lsw-conductometria.methods.openReport");
+      this.$lsw.dialogs.open({
+        title: "Reproducir reporte " + reporteId,
+        template: `
+          <lsw-conductometria-report :report-id="'/kernel/agenda/report/' + reporteId" />
+        `,
+        factory: {
+          data: { reporteId }
+        }
+      });
+    },
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-conductometria.mounted");
+    } catch(error) {
+      this.$lsw.toasts.showError(error);
+    }
+  }
+});
+// @code.end: LswConductometria API
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswConductometria'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswConductometria'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+
+  const LswConductometria = class {
+
+    static create(...args) {
+      Vue.prototype.$trace("LswConductometria.create");
+      return new this(...args);
+    }
+
+    constructor(options = {}) {
+      Vue.prototype.$trace("lswConductometria.constructor");
+    }
+
+    async reload(component) {
+      Vue.prototype.$trace("lswConductometria.reload");
+      const virtualization = new LswConductometriaVirtualization(component);
+      await virtualization.$resetVirtualTables();
+      await virtualization.$reloadProtolangScriptBoot();
+      await virtualization.$virtualizePropagations();
+    }
+
+  }
+
+  const LswConductometriaVirtualization = class {
+
+    static create(...args) {
+      Vue.prototype.$trace("LswConductometriaVirtualization.create");
+      return new this(...args);
+    }
+
+    constructor(component) {
+      this.$component = component;
+    }
+
+    reportErrorFromComponent(error) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.reportErrorFromComponent");
+      console.log(error);
+      if(this.$component && (typeof this.$component.addError === "function")) {
+        this.$component.addError(error);
+      }
+    }
+
+    async $resetVirtualTables() {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$resetVirtualTables");
+      await Vue.prototype.$lsw.database.deleteMany("Accion_virtual", it => true);
+      await Vue.prototype.$lsw.database.deleteMany("Propagador_prototipo", it => true);
+      await Vue.prototype.$lsw.database.deleteMany("Propagador_de_concepto", it => true);
+    }
+
+    async $reloadProtolangScriptBoot() {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$reloadProtolangScriptBoot");
+      const protoSource = await Vue.prototype.$lsw.fs.read_file("/kernel/agenda/proto/boot.proto");
+      return await this.$evaluateProtolangScript(protoSource, {
+        sourcePath: "/kernel/agenda/script/boot.proto"
+      });
+    }
+
+    async $evaluateProtolangScript(source, parameters) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateProtolangScript");
+      const ast = Vue.prototype.$lsw.parsers.proto.parse(source, {
+        options: parameters
+      });
+      for (let index = 0; index < ast.length; index++) {
+        const sentence = ast[index];
+        if (sentence.type === "inc") {
+          await this.$evaluateInclude(sentence);
+        } else if (sentence.type === "def") {
+          await this.$evaluateDefine(sentence);
+        } else if (sentence.type === "fun") {
+          await this.$evaluateFunction(sentence);
+        } else if (sentence.type === "rel") {
+          await this.$evaluateRelation(sentence);
+        }
+      }
+    }
+
+    async $evaluateInclude(sentence) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateInclude");
+      let isFile = undefined;
+      let isDirectory = undefined;
+      const allFiles = [];
+      const filepath = sentence.path;
+      Read_node: {
+        isFile = await Vue.prototype.$lsw.fs.is_file(filepath);
+        isDirectory = await Vue.prototype.$lsw.fs.is_directory(filepath);;
+        if (isFile) {
+          console.log("[*] Reading file: ", filepath);
+          const contents = await Vue.prototype.$lsw.fs.read_file(filepath);
+          allFiles.push({
+            incBy: sentence,
+            file: filepath,
+            contents: contents
+          });
+        } else if (isDirectory) {
+          console.log("[*] Reading directory: ", filepath);
+          const subfilesMap = await Vue.prototype.$lsw.fs.read_directory(filepath);
+          const subfiles = Object.keys(subfilesMap);
+          Iterating_subfiles:
+          for (let indexSubfile = 0; indexSubfile < subfiles.length; indexSubfile++) {
+            const subfile = subfiles[indexSubfile];
+            const subfilepath = Vue.prototype.$lsw.fs.resolve_path(filepath, subfile);
+            const is_file = await Vue.prototype.$lsw.fs.is_file(subfilepath);
+            if (!is_file) {
+              continue Iterating_subfiles;
+            }
+            console.log("[*] Reading subfile: ", subfilepath);
+            const filecontents = await Vue.prototype.$lsw.fs.read_file(subfilepath);
+            allFiles.push({
+              incBy: sentence,
+              file: subfilepath,
+              contents: filecontents
+            });
+          }
+        } else {
+          throw new Error(`File does not exits «${filepath}» on «lswConductometriaVirtualization.$evaluateInclude»`);
+        }
+      }
+      console.log("[*] Evaluating all subfiles:", allFiles);
+      Evaluate_subnodes: {
+        for(let indexFile=0; indexFile<allFiles.length; indexFile++) {
+          const metafile = allFiles[indexFile];
+          const file = metafile.file;
+          const contents = metafile.contents;
+          await this.$evaluateProtolangScript(contents, {
+            sourcePath: file
+          });
+        }
+      }
+    }
+
+    async $evaluateDefine(sentence) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateDefine");
+      const { names } = sentence;
+      // @TODO: insertar names en Concepto
+      Iterating_names:
+      for(let index=0; index<names.length; index++) {
+        const name = names[index];
+        try {
+          await Vue.prototype.$lsw.database.insert("Concepto", {
+            tiene_nombre: name,
+          });
+        } catch (error) {
+          if(error.message === "Error on «browsie.insert» operation over store «Concepto»: A mutation operation in the transaction failed because a constraint was not satisfied.") {
+            continue Iterating_names;
+          }
+          await this.reportErrorFromComponent(error);
+        }
+      }
+    }
+
+    async $evaluateFunction(sentence) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateFunction");
+      const { name, params, code } = sentence;
+      // @TODO: insertar name+params+code en Propagador_prototipo
+      try {
+        await Vue.prototype.$lsw.database.insert("Propagador_prototipo", {
+          tiene_nombre: name,
+          tiene_parametros: JSON.stringify(params),
+          tiene_funcion: code,
+        });
+      } catch (error) {
+        await this.reportErrorFromComponent(error);
+      }
+    }
+
+    async $evaluateRelation(sentence) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateRelation");
+      const { name, effects, triggers } = sentence;
+      Iterating_effects:
+      for(let indexEffect=0; indexEffect<effects.length; indexEffect++) {
+        const effect = effects[indexEffect];
+        const { concept, value } = effect;
+        await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
+          tiene_propagador_prototipo: "multiplicador",
+          tiene_concepto_origen: name,
+          tiene_concepto_destino: concept,
+          tiene_parametros_extra: value,
+        });
+      }
+      Iterating_triggers:
+      for(let indexTrigger=0; indexTrigger<triggers.length; indexTrigger++) {
+        const trigger = triggers[indexTrigger];
+        if(trigger.type === "trigger-by-call") {
+          const { name: propagador, args } = trigger;
+          await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
+            tiene_propagador_prototipo: propagador,
+            tiene_concepto_origen: name,
+            tiene_concepto_destino: LswUtils.extractFirstStringOr(args, ""),
+            tiene_parametros_extra: args,
+          });
+        } else if(trigger.type === "trigger-by-code") {
+          await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
+            tiene_propagador_prototipo: propagador,
+            tiene_concepto_origen: name,
+            tiene_concepto_destino: LswUtils.extractFirstStringOr(args, ""),
+            tiene_parametros_extra: args,
+            tiene_codigo: trigger.code
+          });
+        }
+      }
+    }
+
+    $virtualizePropagations() {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$virtualizePropagations");
+
+    }
+
+  }
+
+  return LswConductometria;
+
+});
+// @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
+Vue.component("LswConductometriaReport", {
+  name: "LswConductometriaReport",
+  template: `<div class="lsw_conductometria_reports">
+    <div v-if="!isLoaded">
+        <div class="">Reporte cargando. Un momento por favor...</div>
+    </div>
+    <div class="pad_1" v-else>
+        <div class="report_block" v-if="Array.isArray(report)">
+            <lsw-table :initial-input="report" :initial-settings="{title: reportId}" />
+        </div>
+        <div class="report_block" v-if="typeof report === 'object'">
+            <h4>
+                <div class="flex_row centered">
+                    <div class="flex_100">
+                        Desglose de reporte:
+                    </div>
+                    <div class="flex_1">
+                        <button class="supermini" v-on:click="openReportSource">📄 ↗️</button>
+                    </div>
+                </div>
+            </h4>
+            <ul>
+                <li v-for="reportItem, reportIndex in report"
+                    v-bind:key="'report-' + reportIndex">
+                    <div class="linkable_text has_light_bg" v-on:click="() => goToReportTitle(reportIndex)">{{ reportIndex }}</div>
+                </li>
+            </ul>
+            <div v-for="reportItem, reportIndex in report"
+                v-bind:key="'report-' + reportIndex">
+                <lsw-table :initial-input="reportItem" :initial-settings="{title: reportIndex}" :ref="'report_' + reportIndex" />
+            </div>
+        </div>
+    </div>
+</div>`,
+  props: {
+    reportId: {
+      type: String,
+      required: true,
+    }
+  },
+  data() {
+    this.$trace("lsw-conductometria-report.data");
+    return {
+      isLoaded: false,
+      report: false,
+    };
+  },
+  methods: {
+    async loadReport() {
+      this.$trace("lsw-conductometria-report.methods.loadReport");
+      this.isLoaded = false;
+      const reportSource = await this.$lsw.fs.read_file(this.reportId);
+      const reportInstance = LswConductometriaReport.create(reportSource, this);
+      const report = await reportInstance.buildReport();
+      this.report = report;
+      this.$nextTick(() => {this.isLoaded = true;});
+    },
+    goToReportTitle(reportIndex) {
+      this.$trace("lsw-conductometria-report.methods.loadReport");
+      const presuntReportTitle = this.$refs["report_" + reportIndex];
+      try {
+        presuntReportTitle[0].$el.scrollIntoView();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async openReportSource() {
+      this.$trace("lsw-conductometria-report.methods.openReportSource");
+      await this.$lsw.dialogs.open({
+        title: "Editar reporte",
+        template: `
+          <lsw-filesystem-explorer :opened-by="reportId" :absolute-layout="true" />
+        `,
+        factory: {
+          data: {
+            reportId: this.reportId
+          }
+        }
+      });
+    }
+  },
+  watch: {
+
+  },
+  computed: {
+    
+  },
+  async mounted() {
+    try {
+      this.$trace("lsw-conductometria-report.mounted");
+      await this.loadReport();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswAgenda API
+
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswConductometriaReport'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswConductometriaReport'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+  
+  const LswConductometriaReport = class {
+
+    static create(...args) {
+      return new this(...args);
+    }
+
+    constructor(originalInput = false, originalScope = this) {
+      Vue.prototype.$trace("LswConductometriaReport.constructor");
+      $ensure({ originalInput }, 1).type("string");
+      this.$originalInput = originalInput;
+      this.$originalScope = originalScope;
+      this.$reportBuilder = false;
+      this.result = false;
+      this.$resetReportState();
+    }
+
+    async buildReport() {
+      Vue.prototype.$trace("LswConductometriaReport.buildReport");
+      await this.$resetReportState();
+      await this.$rebuildCallback();
+      await this.$rebuildReport();
+      return this.result;
+    }
+
+    async $resetReportState() {
+      Vue.prototype.$trace("LswConductometriaReport.$resetReportState");
+      this.result = false;
+      this.$state = {
+        // @DEFAULT-STATE:
+      };
+    }
+
+    async $rebuildCallback() {
+      Vue.prototype.$trace("LswConductometriaReport.$rebuildCallback");
+      this.$reportBuilder = LswUtils.createAsyncFunction(this.$originalInput);
+    }
+
+    async $rebuildReport() {
+      Vue.prototype.$trace("LswConductometriaReport.$rebuildReport");
+      this.result = await this.$reportBuilder(this.$originalScope);
+    }
+
+  };
+
+  return LswConductometriaReport;
+
+});
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -32135,6 +32761,16 @@ Vue.component("LswConfigurationsPage", {
             </div>
         </div>
         <hr />
+        <h4>Evento de arranque</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startConfigureBoot">Configurar</button>
+                </div>
+                <div class="flex_100 explanation_text">permite inyectar JavaScript al entrar en la app.</div>
+            </div>
+        </div>
+        <hr />
         
     </div>
 </div>`,
@@ -32357,6 +32993,13 @@ Vue.component("LswConfigurationsPage", {
         text: "La copia de seguridad fue importada al estado actual con éxito."
       });
     },
+    startConfigureBoot() {
+      this.$trace("lsw-configurations-page.methods.startConfigureBoot");
+      this.$dialogs.open({
+        title: "Configurar arranque",
+        template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/boot.js" />`,
+      });
+    }
   },
   mounted() {
     this.$trace("lsw-configurations-page.mounter");

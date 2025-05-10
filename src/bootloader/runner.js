@@ -1,5 +1,7 @@
 LswLifecycle.start().then(async output => {
   console.log("[*] App lifecycle ended.");
+
+  // Vue.prototype.$lsw.logger.deactivate();
   
   const goTo = {
     async aniadirNota() {
@@ -10,6 +12,11 @@ LswLifecycle.start().then(async output => {
     },
     async calendario() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
+    },
+    async reportesDeCalendario() {
+      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button.nowrap", "📊").click();
     },
     async abrirNavegacionRapida() {
       LswDom.querySelectorFirst(".lsw_apps_button > button", "🌍").click();
@@ -42,10 +49,18 @@ LswLifecycle.start().then(async output => {
 
   Work_relocation: {
     await LswDom.waitForMilliseconds(100);
-    await goTo.abrirWiki();
+    await goTo.reportesDeCalendario();
+    try {
+      await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
+    } catch (error) {
+      Vue.prototype.$lsw.toasts.send({
+        title: "Errores en el boot",
+        text: "El boot lanzó un error: (" + error.name + ") " + error.message,
+      })
+    }
     return;
     await LswDom.waitForMilliseconds(100);
-    await goTo.calendario();
+    await goTo.abrirWiki();
     await LswDom.waitForMilliseconds(100);
     await goTo.abrirNavegacionRapida();
     await LswDom.waitForMilliseconds(100);

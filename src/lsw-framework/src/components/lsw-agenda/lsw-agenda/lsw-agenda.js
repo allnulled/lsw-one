@@ -8,11 +8,10 @@ Vue.component("LswAgenda", {
     return {
       counter: 0,
       isLoading: false,
-      isCalendarioSelected: false,
       hasPsicodelia: true,
-      selectedAccion: undefined,
+      selectedHiddenMenu: "none",
       selectedContext: "agenda",
-      selectedSubmenu1: 'calendario',
+      selectedAction: 'calendario',
       selectedDate: undefined,
       selectedDateTasks: undefined,
       selectedDateTasksSorted: undefined,
@@ -32,35 +31,32 @@ Vue.component("LswAgenda", {
         this.shownAcciones.splice(pos, 1);
       }
     },
-    selectAccion(accionId) {
-      this.$trace("lsw-agenda.methods.selectAccion");
-      if (this.selectedAccion === accionId) {
-        this.selectedAccion = undefined;
-      } else {
-        this.selectedAccion = accionId;
+    selectHiddenMenu(menuId) {
+      this.$trace("lsw-agenda.methods.selectHiddenMenu");
+      this.selectedHiddenMenu = menuId;
+    },
+    selectAction(accionId, contextId = false) {
+      this.$trace("lsw-agenda.methods.selectAction");
+      if(contextId) {
+        this.selectContext(contextId);
       }
+      this.selectedAction = accionId;
     },
     selectContext(id, parameters = {}) {
       this.$trace("lsw-agenda.methods.selectContext");
-      this.selectedSubmenu1 = "none";
+      this.selectedHiddenMenu = "none";
       this.selectedContextParameters = parameters;
       this.selectedContext = id;
     },
-    selectSubmenu1(id) {
-      this.$trace("lsw-agenda.methods.selectSubmenu1");
-      this.selectedSubmenu1 = id;
-    },
     toggleCalendario() {
       this.$trace("lsw-agenda.methods.toggleCalendario");
-      const finalState = !this.isCalendarioSelected;
+      const finalState = (this.selectedAction === "calendario") ? "none" : "calendario";
       if (this.selectedContext !== "agenda") {
         this.selectContext("agenda");
-        this.isCalendarioSelected = true;
+        this.selectAction("calendario");
         return;
-      } else if (finalState) {
-        // OK.
       }
-      this.isCalendarioSelected = finalState;
+      this.selectAction(finalState);
     },
     togglePsicodelia() {
       this.$trace("lsw-agenda.methods.togglePsicodelia");
@@ -229,6 +225,11 @@ Vue.component("LswAgenda", {
     },
   },
   watch: {
+  },
+  computed: {
+    isCalendarioSelected() {
+      return this.selectedAction === "calendario";
+    }
   },
   async mounted() {
     try {

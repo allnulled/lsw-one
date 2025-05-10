@@ -396,6 +396,22 @@
     });
     return response;
   };
+
+  LswUtils.createAsyncFunction = function(code, parameters = []) {
+    const AsyncFunction = (async function() {}).constructor;
+    const asyncFunction = new AsyncFunction(code);
+    return asyncFunction;
+  };
+
+  LswUtils.extractFirstStringOr = function(txt, defaultValue = "") {
+    if(!txt.startsWith('"')) return defaultValue;
+    const pos1 = txt.substr(1).indexOf('"');
+    if(pos1 === -1) return defaultValue;
+    const pos = pos1 - 1;
+    const extractedSubstr = txt.substr(0, pos);
+    // // @OK: No escapamos, porque se entiende que no se va a usar ese string en el concepto nunca.
+    return JSON.parse(extractedSubstr);
+  }
   // @code.end: LswUtils
 
   return LswUtils;

@@ -58,7 +58,9 @@
     static _trace = true;
 
     static trace(methodName, args = []) {
-      if (this._trace) {
+      // @INJECTION: from LSW
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      if (this._trace && traceActivatedGlobally) {
         console.log("[browsie][" + methodName + "]", args.length + " args: " + Array.from(args).map(arg => typeof (arg)).join(", "));
       }
     }

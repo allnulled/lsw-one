@@ -111,6 +111,12 @@ Vue.component("LswTable", {
     },
     toggleRow(rowIndex) {
       this.$trace("lsw-table.methods.toggleRow");
+      if(typeof rowIndex === "undefined") {
+        return this.$lsw.toasts.send({
+          title: "La row no se desplegará",
+          text: "Añade «id» para que se puedan seleccionar las rows"
+        })
+      }
       const pos = this.selectedRows.indexOf(rowIndex);
       if (pos === -1) {
         this.selectedRows.push(rowIndex);

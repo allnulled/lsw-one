@@ -98,7 +98,6 @@
 `;
 
   window.addEventListener("load", function() {
-    console.log(document);
     document.body.appendChild(styleTag);
   });
 

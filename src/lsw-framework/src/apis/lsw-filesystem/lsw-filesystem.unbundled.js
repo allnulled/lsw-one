@@ -33,6 +33,27 @@
         await this.write_file(filepath2, contents);
       }
     }
+    
+    async ensureDirectory(filepath) {
+      this.trace("ensureDirectory", [filepath]);
+      const pathParts = filepath.split("/").filter(file => file.trim() !== "");
+      const directoryParts = [].concat(pathParts);
+      const filename = directoryParts.pop();
+      let currentPathPart = "";
+      for (let index = 0; index < directoryParts.length; index++) {
+        const pathPart = directoryParts[index];
+        currentPathPart += "/" + pathPart;
+        const existsSubpath = await this.exists(currentPathPart);
+        if (!existsSubpath) {
+          await this.make_directory(currentPathPart);
+        }
+      }
+      const filepath2 = currentPathPart + "/" + filename;
+      const existsFilepath2 = await this.exists(filepath2);
+      if (!existsFilepath2) {
+        await this.make_directory(filepath2);
+      }
+    }
 
     async evaluateAsJavascriptFile(filepath, scope = undefined) {
       this.trace("evaluateAsJavascriptFile", [filepath]);
@@ -52,15 +73,20 @@
       });
     }
 
-    async evaluateAsDotenvFile(filepath) {
-      this.trace("evaluateAsDotenvFile", [filepath]);
-      const fileContents = await this.read_file(filepath);
+    evaluateAsDotenvText(fileContents) {
+      this.trace("evaluateAsDotenvText", []);
       const result = fileContents.split(/\n/).filter(line => line.trim() !== "").reduce((output, line) => {
         const [ id, value = "" ] = line.split(/\=/);
         output[id.trim()] = (value || "").trim();
         return output;
       }, {});
       return result;
+    }
+
+    async evaluateAsDotenvFile(filepath) {
+      this.trace("evaluateAsDotenvFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      return this.evaluateAsDotenvText(fileContents);
     }
 
     evaluateAsDotenvFileOrReturn(filepath, output = {}) {

@@ -100,7 +100,9 @@
         const {
           template,
           title = "",
-          id = "default",
+          // @OK: El ID debería ser único o no se abrirán las duplicadas.
+          // @PERO: Pero por algo lo tenía así también y no recuerdo.
+          id = LswRandomizer.getRandomString(10),
           priority = 500,
           factory = defaultDialogFactory,
           parentId = undefined,

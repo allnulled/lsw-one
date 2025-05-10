@@ -34,6 +34,7 @@ module.exports = [
 
   // Proxies de Conductometría:
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Accion.js`,
+  `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Accion_virtual.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Concepto.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Categoria_de_concepto.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Propagador_prototipo.js`,
@@ -44,6 +45,7 @@ module.exports = [
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Automensaje.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Lista.js`,
   `${basepath}/modules/org.allnulled.lsw-conductometria/proxy/Recordatorio.js`,
+  `${basepath}/modules/org.allnulled.lsw-conductometria/lang/protolang/protolang.js`,
   // Proxies de Wiki:
   `${basepath}/modules/org.allnulled.lsw-wiki/proxy/Articulo.js`,
   // LSW INITIALIZATION

@@ -24,7 +24,7 @@ Vue.component("LswClockwatcher", {
       this.timerId = setTimeout(() => {
         this.currentDate = new Date();
         this.startTimer();
-      }, 1000);
+      }, 1000 * 60);
     },
     stopTimer() {
       this.$trace("lsw-clockwatcher.methods.stopTimer");

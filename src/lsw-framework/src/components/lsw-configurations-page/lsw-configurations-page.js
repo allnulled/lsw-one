@@ -221,6 +221,13 @@ Vue.component("LswConfigurationsPage", {
         text: "La copia de seguridad fue importada al estado actual con éxito."
       });
     },
+    startConfigureBoot() {
+      this.$trace("lsw-configurations-page.methods.startConfigureBoot");
+      this.$dialogs.open({
+        title: "Configurar arranque",
+        template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/boot.js" />`,
+      });
+    }
   },
   mounted() {
     this.$trace("lsw-configurations-page.mounter");

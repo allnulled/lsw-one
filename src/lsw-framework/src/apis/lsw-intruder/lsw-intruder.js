@@ -30,7 +30,9 @@
     };
 
     $trace(method, args) {
-      if(this.$options.trace) {
+      // @INJECTION: from LSW
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      if(this.$options.trace && traceActivatedGlobally) {
         console.log("[trace][lsw-intruder] " + method, Array.from(args));
       }
     }

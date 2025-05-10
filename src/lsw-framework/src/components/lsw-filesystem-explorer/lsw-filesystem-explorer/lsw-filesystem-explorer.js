@@ -640,7 +640,7 @@ Boot [Artículo para el boot] {
 }
   
 `.trim());
-      await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", `
+await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", `
 
 Árbol de categorías [] {
   Biología [] {
@@ -662,6 +662,45 @@ Boot [Artículo para el boot] {
 }
 
 `.trim());
+await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", `
+
+return {
+  "Todos los conceptos": [],
+  "Todas las acciones": [],
+  "Todos los propagadores": [],
+  "Todos los propagadores prototipo": [],
+  "Todas las acciones virtuales": [],
+  "Los estados acumulados": [],
+};
+
+`.trim());
+      await this.$lsw.fs.ensureFile("/kernel/agenda/proto/boot.proto", `
+
+inc /kernel/agenda/proto/concepto
+inc /kernel/agenda/proto/funcion
+inc /kernel/agenda/proto/relacion
+
+def desayunar, comer, cenar
+
+fun unEjemplo: param1, param2 {
+  console.log("Solo un ejemplo.");
+}
+
+rel desayunar
+  > consumir * 1
+  > abstenerse * 0
+  >> unEjemplo: 500, 1000
+
+`.trim());
+      await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/concepto");
+      await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/funcion");
+      await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
+      await this.$lsw.fs.ensureFile("/kernel/boot.js", `
+
+// Cuidadito con este script que te cargas la app
+// y luego tienes que borrar la caché para volver a tenerla.
+        
+        `.trim());
     }
   },
   watch: {

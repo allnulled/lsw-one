@@ -1,5 +1,32 @@
 # Último commit:
 
+# 09-05-2025 12:57am
+
+[x] Protolang (el parser): lenguaje para:
+  [x] subir conceptos
+  [x] subir prototipos de propagador
+  [x] relacionar conceptos y propagadores
+[x] sentencia inc
+[x] botón gráficas
+  [x] botón virtualizar
+  [x] carpetas:
+    [x] /kernel/agenda/proto/boot.proto
+    [x] /kernel/agenda/report/*.js
+[ ] proceso en lsw-conductometria.api.js:
+  [x] borrar:
+    [x] propagadores de concepto
+    [x] propagadores prototipo
+    [x] acciones virtuales
+  [ ] iterar acciones reales
+    [ ] ir ejecutando propagadores
+    [ ] ir inflando acciones virtuales
+[ ] reportes de conductometria
+  [ ] acepta para dialog+table
+  [ ] acepta para dialog+template
+[ ] mejorar lsw-table para que sea más ligera
+[ ] buscador de texto rápido accesible en ref-resources iría bien
+  [ ] para ahorrarse el tags-control
+
 # 06-05-2025 18:59pm - ?
 
 [ ] Mantenimiento de bugs

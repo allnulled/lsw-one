@@ -92,6 +92,19 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_de_concepto", {
           hasDescription: "JSON con los parámetros extra",
           hasPlaceholder: "{}",
           hasExtraAttributes: {},
+        },
+        tiene_codigo: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene código directo:",
+          hasDescription: "Código JavaScript que se usará directo como propagador",
+          hasPlaceholder: "{}",
+          hasExtraAttributes: {},
         }
       }
     }

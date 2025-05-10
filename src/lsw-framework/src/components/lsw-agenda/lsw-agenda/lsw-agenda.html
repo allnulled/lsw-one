@@ -4,12 +4,12 @@
         style="gap: 4px;">
         <div class="flex_1">
             <button class="width_100 nowrap"
-                v-on:click="() => selectSubmenu1('add')"
-                :class="{activated: selectedSubmenu1 === 'add'}">+</button>
+                v-on:click="() => selectHiddenMenu('add')"
+                :class="{activated: selectedHiddenMenu === 'add'}">+</button>
             <div class="hidden_menu"
-                v-if="selectedSubmenu1 === 'add'">
+                v-if="selectedHiddenMenu === 'add'">
                 <div class="hidden_menu_fixed_layer"
-                    v-on:click="() => selectSubmenu1('none')"></div>
+                    v-on:click="() => selectHiddenMenu('none')"></div>
                 <div class="hidden_menu_box"
                     style="min-width: 160px;">
                     <div class="hidden_menu_items">
@@ -19,7 +19,7 @@
                             </div>
                             <div class="flex_1">
                                 <button class="mini"
-                                    v-on:click="() => selectSubmenu1('none')">❌</button>
+                                    v-on:click="() => selectHiddenMenu('none')">❌</button>
                             </div>
                         </div>
                         <div class="button_cell">
@@ -45,12 +45,12 @@
         </div>
         <div class="flex_1">
             <button class="width_100 nowrap"
-                v-on:click="() => selectSubmenu1('search')"
-                :class="{activated: selectedSubmenu1 === 'search'}">🔎</button>
+                v-on:click="() => selectHiddenMenu('search')"
+                :class="{activated: selectedHiddenMenu === 'search'}">🔎</button>
             <div class="hidden_menu"
-                v-if="selectedSubmenu1 === 'search'">
+                v-if="selectedHiddenMenu === 'search'">
                 <div class="hidden_menu_fixed_layer"
-                    v-on:click="() => selectSubmenu1('none')"></div>
+                    v-on:click="() => selectHiddenMenu('none')"></div>
                 <div class="hidden_menu_box"
                     style="min-width: 160px;">
                     <div class="hidden_menu_items">
@@ -60,7 +60,7 @@
                             </div>
                             <div class="flex_1">
                                 <button class="mini"
-                                    v-on:click="() => selectSubmenu1('none')">❌</button>
+                                    v-on:click="() => selectHiddenMenu('none')">❌</button>
                             </div>
                         </div>
                         <!--div class="separator">
@@ -112,11 +112,16 @@
                 </div>
             </div>
         </div>
+        <div class="flex_1">
+            <button class="width_100 nowrap"
+                v-on:click="() => selectContext('conductometria')"
+                :class="{activated: selectedContext === 'conductometria'}">📊</button>
+        </div>
         <div class="flex_100"></div>
         <div class="flex_1">
             <button class="width_100 nowrap"
                 v-on:click="toggleCalendario"
-                :class="{activated: isCalendarioSelected}">📅</button>
+                :class="{activated: selectedAction === 'calendario'}">📅</button>
         </div>
     </div>
 
@@ -213,21 +218,25 @@
             <lsw-agenda-propagador-search />
         </div>
     </div>
+
+    <div class="calendar_viewer pad_bottom_1"
+        v-show="(selectedContext === 'agenda') && (selectedAction === 'calendario')">
+        <lsw-calendario ref="calendario"
+            modo="date"
+            :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
+            :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)" />
+    </div>
+    
     <div class=""
         v-if="selectedContext === 'agenda'">
-        <div class="calendar_viewer pad_bottom_1"
-            v-show="isCalendarioSelected">
-            <lsw-calendario ref="calendario"
-                modo="date"
-                :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
-                :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)" />
-        </div>
         <div class="limitador_viewer">
             <lsw-agenda-limitador-viewer :agenda="this" />
         </div>
-        <lsw-agenda-acciones-viewer
-            :initial-date="selectedDate"
-            ref="agenda_acciones_viewer"
-        />
+        <lsw-agenda-acciones-viewer :initial-date="selectedDate"
+            ref="agenda_acciones_viewer" />
     </div>
+    <div v-else-if="selectedContext === 'conductometria'">
+        <lsw-conductometria />
+    </div>
+
 </div>

@@ -15,6 +15,7 @@ try {
       Vue.prototype.$trace = (...args) => Vue.prototype.$lsw.logger.trace(...args);
       Vue.prototype.$lsw.utils = LswUtils;
       Vue.prototype.$lsw.timer = LswTimer;
+      Vue.prototype.$lsw.conductometria = LswConductometria.create();
       Vue.prototype.$lsw.backuper = LswBackuper.create();
       Vue.prototype.$lsw.intruder = LswIntruder.create();
       Vue.prototype.$lsw.windows = null;
@@ -23,6 +24,15 @@ try {
       Vue.prototype.$lsw.proxifier = $proxifier;
       Vue.prototype.$lsw.wiki = null;
       Vue.prototype.$lsw.agenda = null;
+      // GLOBALLY AVAILABLE PARSERS:
+      Vue.prototype.$lsw.parsers = {
+        timer: LswTimer.parser,
+        proto: ProtolangParser,
+        tripi: TripilangParser,
+        dotenv: {
+          parse: Vue.prototype.$lsw.fs.evaluateAsDotenvText.bind(Vue.prototype.$lsw.fs)
+        }
+      }
       // WE DO NOT INJECT DATABASE FROM HERE.
     }
     Vue.prototype.$lsw.classes = {};

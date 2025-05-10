@@ -15438,7 +15438,9 @@ if (process?.env?.NODE_ENV === "test") {
     static _trace = true;
 
     static trace(methodName, args = []) {
-      if (this._trace) {
+      // @INJECTION: from LSW
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      if (this._trace && traceActivatedGlobally) {
         console.log("[browsie][" + methodName + "]", args.length + " args: " + Array.from(args).map(arg => typeof (arg)).join(", "));
       }
     }
@@ -16598,7 +16600,8 @@ if (process?.env?.NODE_ENV === "test") {
     };
 
     static defaultOptions = {
-      active: true,
+      // active: true,
+      active: false,
       level: "trace"
     };
 
@@ -18768,7 +18771,9 @@ return Store;
     };
 
     $trace(method, args) {
-      if(this.$options.trace) {
+      // @INJECTION: from LSW
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      if(this.$options.trace && traceActivatedGlobally) {
         console.log("[trace][lsw-intruder] " + method, Array.from(args));
       }
     }
@@ -19701,6 +19706,22 @@ return Store;
     });
     return response;
   };
+
+  LswUtils.createAsyncFunction = function(code, parameters = []) {
+    const AsyncFunction = (async function() {}).constructor;
+    const asyncFunction = new AsyncFunction(code);
+    return asyncFunction;
+  };
+
+  LswUtils.extractFirstStringOr = function(txt, defaultValue = "") {
+    if(!txt.startsWith('"')) return defaultValue;
+    const pos1 = txt.substr(1).indexOf('"');
+    if(pos1 === -1) return defaultValue;
+    const pos = pos1 - 1;
+    const extractedSubstr = txt.substr(0, pos);
+    // // @OK: No escapamos, porque se entiende que no se va a usar ese string en el concepto nunca.
+    return JSON.parse(extractedSubstr);
+  }
   // @code.end: LswUtils
 
   return LswUtils;
@@ -19743,7 +19764,11 @@ return Store;
       return this;
     }
     trace(method, args = []) {
-      console.log("[ufs][node-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      // @INJECTION: from LSW
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      if(traceActivatedGlobally) {
+        console.log("[ufs][node-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      }
     }
     resolve_path(...args) {
       this.trace("resolve_path", arguments);
@@ -20065,7 +20090,11 @@ return Store;
     }
 
     trace(method, args = []) {
-      console.log("[ufs][idb-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      // @INJECTION: from LSW
+      if(traceActivatedGlobally) {
+        console.log("[ufs][idb-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      }
     }
 
     init() {
@@ -20466,6 +20495,27 @@ return Store;
         await this.write_file(filepath2, contents);
       }
     }
+    
+    async ensureDirectory(filepath) {
+      this.trace("ensureDirectory", [filepath]);
+      const pathParts = filepath.split("/").filter(file => file.trim() !== "");
+      const directoryParts = [].concat(pathParts);
+      const filename = directoryParts.pop();
+      let currentPathPart = "";
+      for (let index = 0; index < directoryParts.length; index++) {
+        const pathPart = directoryParts[index];
+        currentPathPart += "/" + pathPart;
+        const existsSubpath = await this.exists(currentPathPart);
+        if (!existsSubpath) {
+          await this.make_directory(currentPathPart);
+        }
+      }
+      const filepath2 = currentPathPart + "/" + filename;
+      const existsFilepath2 = await this.exists(filepath2);
+      if (!existsFilepath2) {
+        await this.make_directory(filepath2);
+      }
+    }
 
     async evaluateAsJavascriptFile(filepath, scope = undefined) {
       this.trace("evaluateAsJavascriptFile", [filepath]);
@@ -20485,15 +20535,20 @@ return Store;
       });
     }
 
-    async evaluateAsDotenvFile(filepath) {
-      this.trace("evaluateAsDotenvFile", [filepath]);
-      const fileContents = await this.read_file(filepath);
+    evaluateAsDotenvText(fileContents) {
+      this.trace("evaluateAsDotenvText", []);
       const result = fileContents.split(/\n/).filter(line => line.trim() !== "").reduce((output, line) => {
         const [ id, value = "" ] = line.split(/\=/);
         output[id.trim()] = (value || "").trim();
         return output;
       }, {});
       return result;
+    }
+
+    async evaluateAsDotenvFile(filepath) {
+      this.trace("evaluateAsDotenvFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      return this.evaluateAsDotenvText(fileContents);
     }
 
     evaluateAsDotenvFileOrReturn(filepath, output = {}) {
@@ -23117,7 +23172,6 @@ $lswTyper.define("org.allnulled.lsw/type/moment.js", function(input) {
 `;
 
   window.addEventListener("load", function() {
-    console.log(document);
     document.body.appendChild(styleTag);
   });
 
@@ -24432,18 +24486,19 @@ Vue.component("LswTable", {
                                 <!--Id cell:-->
                                 <td class="index_cell">
                                     <button v-on:click="() => toggleRow(row.id)"
-                                        :class="{activated: selectedRows.indexOf(row.id) !== -1}">
+                                        class="supermini"
+                                        :class="{activated: row.id && selectedRows.indexOf(row.id) !== -1}">
                                         {{ (rowIndex + 1) + (currentPage * itemsPerPage) }}
                                     </button>
                                 </td>
                                 <!--Selectable cell:-->
                                 <td class="index_cell" v-if="selectable === 'one'">
                                     <span v-on:click="() => toggleChoosenRow(row[choosableId])">
-                                        <button class="activated" v-if="choosenRows === row[choosableId]">
+                                        <button class="supermini activated" v-if="choosenRows === row[choosableId]">
                                             <!--input type="radio" :checked="true" /-->
                                             ☑️
                                         </button>
-                                        <button v-else>
+                                        <button class="supermini" v-else>
                                             🔘
                                             <!--input type="radio" :checked="false" /-->
                                         </button>
@@ -24457,7 +24512,7 @@ Vue.component("LswTable", {
                                 <!--Row buttons cells:-->
                                 <td class="button_cell" v-for="attachedColumn, attachedColumnIndex in attachedColumns"
                                     v-bind:key="'attached-column-' + attachedColumnIndex">
-                                    <button v-on:click="() => rowButtons[attachedColumnIndex].event(row, rowIndex, attachedColumn)">{{ attachedColumn.text }}</button>
+                                    <button class="supermini" v-on:click="() => rowButtons[attachedColumnIndex].event(row, rowIndex, attachedColumn)">{{ attachedColumn.text }}</button>
                                 </td>
                                 <!--Object properties cells:-->
                                 <td class="data_cell" v-for="columnKey, columnIndex in headers"
@@ -24479,7 +24534,7 @@ Vue.component("LswTable", {
                                 </td>
                             </tr>
                             <tr class="row_for_details"
-                                v-show="selectedRows.indexOf(row.id) !== -1"
+                                v-show="row.id && selectedRows.indexOf(row.id) !== -1"
                                 v-bind:key="'row-for-cell-' + rowIndex">
                                 <td class="data_cell details_cell"
                                     colspan="1000">
@@ -24635,6 +24690,12 @@ Vue.component("LswTable", {
     },
     toggleRow(rowIndex) {
       this.$trace("lsw-table.methods.toggleRow");
+      if(typeof rowIndex === "undefined") {
+        return this.$lsw.toasts.send({
+          title: "La row no se desplegará",
+          text: "Añade «id» para que se puedan seleccionar las rows"
+        })
+      }
       const pos = this.selectedRows.indexOf(rowIndex);
       if (pos === -1) {
         this.selectedRows.push(rowIndex);
@@ -25298,7 +25359,9 @@ Vue.component('LswDataImplorer', {
         const {
           template,
           title = "",
-          id = "default",
+          // @OK: El ID debería ser único o no se abrirán las duplicadas.
+          // @PERO: Pero por algo lo tenía así también y no recuerdo.
+          id = LswRandomizer.getRandomString(10),
           priority = 500,
           factory = defaultDialogFactory,
           parentId = undefined,
@@ -25789,6 +25852,20 @@ Vue.component("LswToasts", {
         out += alphabet[Math.floor(Math.random() * alphabet.length)];
       }
       return out;
+    },
+    showError(error, propagate = false, log = true) {
+      this.$trace("lsw-toasts.methods.showError");
+      const output = this.send({
+        title: "Un error ocurrió",
+        text: error.name + ": " + error.message
+      });
+      if(log) {
+        console.log(error);
+      }
+      if(propagate) {
+        throw error;
+      }
+      return output;
     },
     send(toastsInput = {}) {
       const toastData = Object.assign({
@@ -27177,7 +27254,7 @@ Boot [Artículo para el boot] {
 }
   
 `.trim());
-      await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", `
+await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", `
 
 Árbol de categorías [] {
   Biología [] {
@@ -27199,6 +27276,45 @@ Boot [Artículo para el boot] {
 }
 
 `.trim());
+await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", `
+
+return {
+  "Todos los conceptos": [],
+  "Todas las acciones": [],
+  "Todos los propagadores": [],
+  "Todos los propagadores prototipo": [],
+  "Todas las acciones virtuales": [],
+  "Los estados acumulados": [],
+};
+
+`.trim());
+      await this.$lsw.fs.ensureFile("/kernel/agenda/proto/boot.proto", `
+
+inc /kernel/agenda/proto/concepto
+inc /kernel/agenda/proto/funcion
+inc /kernel/agenda/proto/relacion
+
+def desayunar, comer, cenar
+
+fun unEjemplo: param1, param2 {
+  console.log("Solo un ejemplo.");
+}
+
+rel desayunar
+  > consumir * 1
+  > abstenerse * 0
+  >> unEjemplo: 500, 1000
+
+`.trim());
+      await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/concepto");
+      await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/funcion");
+      await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
+      await this.$lsw.fs.ensureFile("/kernel/boot.js", `
+
+// Cuidadito con este script que te cargas la app
+// y luego tienes que borrar la caché para volver a tenerla.
+        
+        `.trim());
     }
   },
   watch: {
@@ -28483,7 +28599,7 @@ Vue.component("LswClockwatcher", {
   template: `<div class="clockwatcher_component">
     <div class="clockwatcher_layer_1">
         <div class="clockwatcher_layer_2">
-            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, false, true, true) }}
+            {{ LswTimer.utils.formatDatestringFromDate(currentDate, false, true, false || false, true) }}
         </div>
     </div>
 </div>`,
@@ -28509,7 +28625,7 @@ Vue.component("LswClockwatcher", {
       this.timerId = setTimeout(() => {
         this.currentDate = new Date();
         this.startTimer();
-      }, 1000);
+      }, 1000 * 60);
     },
     stopTimer() {
       this.$trace("lsw-clockwatcher.methods.stopTimer");
@@ -28535,12 +28651,12 @@ Vue.component("LswAgenda", {
         style="gap: 4px;">
         <div class="flex_1">
             <button class="width_100 nowrap"
-                v-on:click="() => selectSubmenu1('add')"
-                :class="{activated: selectedSubmenu1 === 'add'}">+</button>
+                v-on:click="() => selectHiddenMenu('add')"
+                :class="{activated: selectedHiddenMenu === 'add'}">+</button>
             <div class="hidden_menu"
-                v-if="selectedSubmenu1 === 'add'">
+                v-if="selectedHiddenMenu === 'add'">
                 <div class="hidden_menu_fixed_layer"
-                    v-on:click="() => selectSubmenu1('none')"></div>
+                    v-on:click="() => selectHiddenMenu('none')"></div>
                 <div class="hidden_menu_box"
                     style="min-width: 160px;">
                     <div class="hidden_menu_items">
@@ -28550,7 +28666,7 @@ Vue.component("LswAgenda", {
                             </div>
                             <div class="flex_1">
                                 <button class="mini"
-                                    v-on:click="() => selectSubmenu1('none')">❌</button>
+                                    v-on:click="() => selectHiddenMenu('none')">❌</button>
                             </div>
                         </div>
                         <div class="button_cell">
@@ -28576,12 +28692,12 @@ Vue.component("LswAgenda", {
         </div>
         <div class="flex_1">
             <button class="width_100 nowrap"
-                v-on:click="() => selectSubmenu1('search')"
-                :class="{activated: selectedSubmenu1 === 'search'}">🔎</button>
+                v-on:click="() => selectHiddenMenu('search')"
+                :class="{activated: selectedHiddenMenu === 'search'}">🔎</button>
             <div class="hidden_menu"
-                v-if="selectedSubmenu1 === 'search'">
+                v-if="selectedHiddenMenu === 'search'">
                 <div class="hidden_menu_fixed_layer"
-                    v-on:click="() => selectSubmenu1('none')"></div>
+                    v-on:click="() => selectHiddenMenu('none')"></div>
                 <div class="hidden_menu_box"
                     style="min-width: 160px;">
                     <div class="hidden_menu_items">
@@ -28591,7 +28707,7 @@ Vue.component("LswAgenda", {
                             </div>
                             <div class="flex_1">
                                 <button class="mini"
-                                    v-on:click="() => selectSubmenu1('none')">❌</button>
+                                    v-on:click="() => selectHiddenMenu('none')">❌</button>
                             </div>
                         </div>
                         <!--div class="separator">
@@ -28643,11 +28759,16 @@ Vue.component("LswAgenda", {
                 </div>
             </div>
         </div>
+        <div class="flex_1">
+            <button class="width_100 nowrap"
+                v-on:click="() => selectContext('conductometria')"
+                :class="{activated: selectedContext === 'conductometria'}">📊</button>
+        </div>
         <div class="flex_100"></div>
         <div class="flex_1">
             <button class="width_100 nowrap"
                 v-on:click="toggleCalendario"
-                :class="{activated: isCalendarioSelected}">📅</button>
+                :class="{activated: selectedAction === 'calendario'}">📅</button>
         </div>
     </div>
 
@@ -28744,23 +28865,27 @@ Vue.component("LswAgenda", {
             <lsw-agenda-propagador-search />
         </div>
     </div>
+
+    <div class="calendar_viewer pad_bottom_1"
+        v-show="(selectedContext === 'agenda') && (selectedAction === 'calendario')">
+        <lsw-calendario ref="calendario"
+            modo="date"
+            :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
+            :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)" />
+    </div>
+    
     <div class=""
         v-if="selectedContext === 'agenda'">
-        <div class="calendar_viewer pad_bottom_1"
-            v-show="isCalendarioSelected">
-            <lsw-calendario ref="calendario"
-                modo="date"
-                :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
-                :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)" />
-        </div>
         <div class="limitador_viewer">
             <lsw-agenda-limitador-viewer :agenda="this" />
         </div>
-        <lsw-agenda-acciones-viewer
-            :initial-date="selectedDate"
-            ref="agenda_acciones_viewer"
-        />
+        <lsw-agenda-acciones-viewer :initial-date="selectedDate"
+            ref="agenda_acciones_viewer" />
     </div>
+    <div v-else-if="selectedContext === 'conductometria'">
+        <lsw-conductometria />
+    </div>
+
 </div>`,
   props: {},
   data() {
@@ -28768,11 +28893,10 @@ Vue.component("LswAgenda", {
     return {
       counter: 0,
       isLoading: false,
-      isCalendarioSelected: false,
       hasPsicodelia: true,
-      selectedAccion: undefined,
+      selectedHiddenMenu: "none",
       selectedContext: "agenda",
-      selectedSubmenu1: 'calendario',
+      selectedAction: 'calendario',
       selectedDate: undefined,
       selectedDateTasks: undefined,
       selectedDateTasksSorted: undefined,
@@ -28792,35 +28916,32 @@ Vue.component("LswAgenda", {
         this.shownAcciones.splice(pos, 1);
       }
     },
-    selectAccion(accionId) {
-      this.$trace("lsw-agenda.methods.selectAccion");
-      if (this.selectedAccion === accionId) {
-        this.selectedAccion = undefined;
-      } else {
-        this.selectedAccion = accionId;
+    selectHiddenMenu(menuId) {
+      this.$trace("lsw-agenda.methods.selectHiddenMenu");
+      this.selectedHiddenMenu = menuId;
+    },
+    selectAction(accionId, contextId = false) {
+      this.$trace("lsw-agenda.methods.selectAction");
+      if(contextId) {
+        this.selectContext(contextId);
       }
+      this.selectedAction = accionId;
     },
     selectContext(id, parameters = {}) {
       this.$trace("lsw-agenda.methods.selectContext");
-      this.selectedSubmenu1 = "none";
+      this.selectedHiddenMenu = "none";
       this.selectedContextParameters = parameters;
       this.selectedContext = id;
     },
-    selectSubmenu1(id) {
-      this.$trace("lsw-agenda.methods.selectSubmenu1");
-      this.selectedSubmenu1 = id;
-    },
     toggleCalendario() {
       this.$trace("lsw-agenda.methods.toggleCalendario");
-      const finalState = !this.isCalendarioSelected;
+      const finalState = (this.selectedAction === "calendario") ? "none" : "calendario";
       if (this.selectedContext !== "agenda") {
         this.selectContext("agenda");
-        this.isCalendarioSelected = true;
+        this.selectAction("calendario");
         return;
-      } else if (finalState) {
-        // OK.
       }
-      this.isCalendarioSelected = finalState;
+      this.selectAction(finalState);
     },
     togglePsicodelia() {
       this.$trace("lsw-agenda.methods.togglePsicodelia");
@@ -28989,6 +29110,11 @@ Vue.component("LswAgenda", {
     },
   },
   watch: {
+  },
+  computed: {
+    isCalendarioSelected() {
+      return this.selectedAction === "calendario";
+    }
   },
   async mounted() {
     try {
@@ -30219,6 +30345,506 @@ Vue.component("LswAgendaPropagadorSearch", {
   }
 });
 // @code.end: LswAgendaPropagadorSearch API
+// @code.start: LswConductometria API | @$section: Vue.js (v2) Components » LswAgenda API » LswConductometria API » LswConductometria component
+Vue.component("LswConductometria", {
+  template: `<div class="LswConductometria">
+  <template v-if="isLoaded === false">
+    <button class="supermini width_100" v-on:click="reloadEverything">Virtualizar conductometria</button>
+  </template>
+  <template v-if="isLoaded === null">
+    <div class="">Se está virtualizando la conductometría.</div>
+  </template>
+  <template v-else-if="isLoaded === true">
+    <div>
+      <h4>
+        <div class="flex_row centered">
+          <div class="flex_100">
+            📊 Reportes disponibles:
+          </div>
+          <div class="flex_1 pad_left_1">
+            <button class="supermini" v-on:click="reloadEverything">🛜</button>
+          </div>
+          <div class="flex_1 pad_left_1">
+            <button class="supermini" style="min-width: 25px;" v-on:click="goToScripts">{ }</button>
+          </div>
+          <div class="flex_1 pad_left_1">
+            <button class="supermini" v-on:click="goToReports">📂 ↗️</button>
+          </div>
+        </div>
+      </h4>
+      <div v-for="reporte, reporteIndex in reportes"
+        v-bind:key="'reporte_' + reporteIndex">
+        <div class="flex_row centered pad_top_1">
+          <div class="flex_100">
+            <button class="supermini width_100 shortable_text text_align_left nowrap" v-on:click="() => openReport(reporte)">
+              <span class="float_left">{{ reporte }}</span><span class="float_right">🎥</span></button>
+          </div>
+          <div class="flex_1 pad_left_1">
+            <button class="supermini" v-on:click="() => editReport(reporte)">📄 ↗️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-conductometria.data");
+    return {
+      isLoaded: false,
+      reportes: [],
+    };
+  },
+  methods: {
+    async reloadEverything() {
+      this.$trace("lsw-conductometria.methods.reloadEverything");
+      this.isLoaded = null;
+      const files = await this.$lsw.fs.read_directory("/kernel/agenda/report");
+      this.reportes = Object.keys(files);
+      Reload_conductometria_fully: {
+        await this.$lsw.conductometria.reload(this);
+      }
+      this.isLoaded = true;
+    },
+    goToReports() {
+      this.$trace("lsw-conductometria.methods.goToReports");
+      this.$lsw.dialogs.open({
+        id: 'ver-reportes',
+        title: "Reportes de conductometría",
+        template: `
+          <lsw-filesystem-explorer opened-by="/kernel/agenda/report/" :absolute-layout="true" />
+        `
+      });
+    },
+    goToScripts() {
+      this.$trace("lsw-conductometria.methods.goToScripts");
+      this.$lsw.dialogs.open({
+        id: 'ver-script',
+        title: "Scripts de conductometría",
+        template: `
+          <lsw-filesystem-explorer opened-by="/kernel/agenda/proto" :absolute-layout="true" />
+        `
+      });
+    },
+    async editReport(reporte) {
+      this.$trace("lsw-conductometria.methods.editReport");
+      this.$lsw.dialogs.open({
+        title: "Editar reporte " + reporte,
+        template: `
+          <lsw-filesystem-explorer
+            :opened-by="'/kernel/agenda/report/' + reporte"
+            :absolute-layout="true" />
+        `,
+        factory: {
+          data: { reporte }
+        }
+      });
+    },
+    openReport(reporteId) {
+      this.$trace("lsw-conductometria.methods.openReport");
+      this.$lsw.dialogs.open({
+        title: "Reproducir reporte " + reporteId,
+        template: `
+          <lsw-conductometria-report :report-id="'/kernel/agenda/report/' + reporteId" />
+        `,
+        factory: {
+          data: { reporteId }
+        }
+      });
+    },
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-conductometria.mounted");
+    } catch(error) {
+      this.$lsw.toasts.showError(error);
+    }
+  }
+});
+// @code.end: LswConductometria API
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswConductometria'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswConductometria'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+
+  const LswConductometria = class {
+
+    static create(...args) {
+      Vue.prototype.$trace("LswConductometria.create");
+      return new this(...args);
+    }
+
+    constructor(options = {}) {
+      Vue.prototype.$trace("lswConductometria.constructor");
+    }
+
+    async reload(component) {
+      Vue.prototype.$trace("lswConductometria.reload");
+      const virtualization = new LswConductometriaVirtualization(component);
+      await virtualization.$resetVirtualTables();
+      await virtualization.$reloadProtolangScriptBoot();
+      await virtualization.$virtualizePropagations();
+    }
+
+  }
+
+  const LswConductometriaVirtualization = class {
+
+    static create(...args) {
+      Vue.prototype.$trace("LswConductometriaVirtualization.create");
+      return new this(...args);
+    }
+
+    constructor(component) {
+      this.$component = component;
+    }
+
+    reportErrorFromComponent(error) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.reportErrorFromComponent");
+      console.log(error);
+      if(this.$component && (typeof this.$component.addError === "function")) {
+        this.$component.addError(error);
+      }
+    }
+
+    async $resetVirtualTables() {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$resetVirtualTables");
+      await Vue.prototype.$lsw.database.deleteMany("Accion_virtual", it => true);
+      await Vue.prototype.$lsw.database.deleteMany("Propagador_prototipo", it => true);
+      await Vue.prototype.$lsw.database.deleteMany("Propagador_de_concepto", it => true);
+    }
+
+    async $reloadProtolangScriptBoot() {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$reloadProtolangScriptBoot");
+      const protoSource = await Vue.prototype.$lsw.fs.read_file("/kernel/agenda/proto/boot.proto");
+      return await this.$evaluateProtolangScript(protoSource, {
+        sourcePath: "/kernel/agenda/script/boot.proto"
+      });
+    }
+
+    async $evaluateProtolangScript(source, parameters) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateProtolangScript");
+      const ast = Vue.prototype.$lsw.parsers.proto.parse(source, {
+        options: parameters
+      });
+      for (let index = 0; index < ast.length; index++) {
+        const sentence = ast[index];
+        if (sentence.type === "inc") {
+          await this.$evaluateInclude(sentence);
+        } else if (sentence.type === "def") {
+          await this.$evaluateDefine(sentence);
+        } else if (sentence.type === "fun") {
+          await this.$evaluateFunction(sentence);
+        } else if (sentence.type === "rel") {
+          await this.$evaluateRelation(sentence);
+        }
+      }
+    }
+
+    async $evaluateInclude(sentence) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateInclude");
+      let isFile = undefined;
+      let isDirectory = undefined;
+      const allFiles = [];
+      const filepath = sentence.path;
+      Read_node: {
+        isFile = await Vue.prototype.$lsw.fs.is_file(filepath);
+        isDirectory = await Vue.prototype.$lsw.fs.is_directory(filepath);;
+        if (isFile) {
+          console.log("[*] Reading file: ", filepath);
+          const contents = await Vue.prototype.$lsw.fs.read_file(filepath);
+          allFiles.push({
+            incBy: sentence,
+            file: filepath,
+            contents: contents
+          });
+        } else if (isDirectory) {
+          console.log("[*] Reading directory: ", filepath);
+          const subfilesMap = await Vue.prototype.$lsw.fs.read_directory(filepath);
+          const subfiles = Object.keys(subfilesMap);
+          Iterating_subfiles:
+          for (let indexSubfile = 0; indexSubfile < subfiles.length; indexSubfile++) {
+            const subfile = subfiles[indexSubfile];
+            const subfilepath = Vue.prototype.$lsw.fs.resolve_path(filepath, subfile);
+            const is_file = await Vue.prototype.$lsw.fs.is_file(subfilepath);
+            if (!is_file) {
+              continue Iterating_subfiles;
+            }
+            console.log("[*] Reading subfile: ", subfilepath);
+            const filecontents = await Vue.prototype.$lsw.fs.read_file(subfilepath);
+            allFiles.push({
+              incBy: sentence,
+              file: subfilepath,
+              contents: filecontents
+            });
+          }
+        } else {
+          throw new Error(`File does not exits «${filepath}» on «lswConductometriaVirtualization.$evaluateInclude»`);
+        }
+      }
+      console.log("[*] Evaluating all subfiles:", allFiles);
+      Evaluate_subnodes: {
+        for(let indexFile=0; indexFile<allFiles.length; indexFile++) {
+          const metafile = allFiles[indexFile];
+          const file = metafile.file;
+          const contents = metafile.contents;
+          await this.$evaluateProtolangScript(contents, {
+            sourcePath: file
+          });
+        }
+      }
+    }
+
+    async $evaluateDefine(sentence) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateDefine");
+      const { names } = sentence;
+      // @TODO: insertar names en Concepto
+      Iterating_names:
+      for(let index=0; index<names.length; index++) {
+        const name = names[index];
+        try {
+          await Vue.prototype.$lsw.database.insert("Concepto", {
+            tiene_nombre: name,
+          });
+        } catch (error) {
+          if(error.message === "Error on «browsie.insert» operation over store «Concepto»: A mutation operation in the transaction failed because a constraint was not satisfied.") {
+            continue Iterating_names;
+          }
+          await this.reportErrorFromComponent(error);
+        }
+      }
+    }
+
+    async $evaluateFunction(sentence) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateFunction");
+      const { name, params, code } = sentence;
+      // @TODO: insertar name+params+code en Propagador_prototipo
+      try {
+        await Vue.prototype.$lsw.database.insert("Propagador_prototipo", {
+          tiene_nombre: name,
+          tiene_parametros: JSON.stringify(params),
+          tiene_funcion: code,
+        });
+      } catch (error) {
+        await this.reportErrorFromComponent(error);
+      }
+    }
+
+    async $evaluateRelation(sentence) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateRelation");
+      const { name, effects, triggers } = sentence;
+      Iterating_effects:
+      for(let indexEffect=0; indexEffect<effects.length; indexEffect++) {
+        const effect = effects[indexEffect];
+        const { concept, value } = effect;
+        await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
+          tiene_propagador_prototipo: "multiplicador",
+          tiene_concepto_origen: name,
+          tiene_concepto_destino: concept,
+          tiene_parametros_extra: value,
+        });
+      }
+      Iterating_triggers:
+      for(let indexTrigger=0; indexTrigger<triggers.length; indexTrigger++) {
+        const trigger = triggers[indexTrigger];
+        if(trigger.type === "trigger-by-call") {
+          const { name: propagador, args } = trigger;
+          await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
+            tiene_propagador_prototipo: propagador,
+            tiene_concepto_origen: name,
+            tiene_concepto_destino: LswUtils.extractFirstStringOr(args, ""),
+            tiene_parametros_extra: args,
+          });
+        } else if(trigger.type === "trigger-by-code") {
+          await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
+            tiene_propagador_prototipo: propagador,
+            tiene_concepto_origen: name,
+            tiene_concepto_destino: LswUtils.extractFirstStringOr(args, ""),
+            tiene_parametros_extra: args,
+            tiene_codigo: trigger.code
+          });
+        }
+      }
+    }
+
+    $virtualizePropagations() {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$virtualizePropagations");
+
+    }
+
+  }
+
+  return LswConductometria;
+
+});
+// @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
+Vue.component("LswConductometriaReport", {
+  name: "LswConductometriaReport",
+  template: `<div class="lsw_conductometria_reports">
+    <div v-if="!isLoaded">
+        <div class="">Reporte cargando. Un momento por favor...</div>
+    </div>
+    <div class="pad_1" v-else>
+        <div class="report_block" v-if="Array.isArray(report)">
+            <lsw-table :initial-input="report" :initial-settings="{title: reportId}" />
+        </div>
+        <div class="report_block" v-if="typeof report === 'object'">
+            <h4>
+                <div class="flex_row centered">
+                    <div class="flex_100">
+                        Desglose de reporte:
+                    </div>
+                    <div class="flex_1">
+                        <button class="supermini" v-on:click="openReportSource">📄 ↗️</button>
+                    </div>
+                </div>
+            </h4>
+            <ul>
+                <li v-for="reportItem, reportIndex in report"
+                    v-bind:key="'report-' + reportIndex">
+                    <div class="linkable_text has_light_bg" v-on:click="() => goToReportTitle(reportIndex)">{{ reportIndex }}</div>
+                </li>
+            </ul>
+            <div v-for="reportItem, reportIndex in report"
+                v-bind:key="'report-' + reportIndex">
+                <lsw-table :initial-input="reportItem" :initial-settings="{title: reportIndex}" :ref="'report_' + reportIndex" />
+            </div>
+        </div>
+    </div>
+</div>`,
+  props: {
+    reportId: {
+      type: String,
+      required: true,
+    }
+  },
+  data() {
+    this.$trace("lsw-conductometria-report.data");
+    return {
+      isLoaded: false,
+      report: false,
+    };
+  },
+  methods: {
+    async loadReport() {
+      this.$trace("lsw-conductometria-report.methods.loadReport");
+      this.isLoaded = false;
+      const reportSource = await this.$lsw.fs.read_file(this.reportId);
+      const reportInstance = LswConductometriaReport.create(reportSource, this);
+      const report = await reportInstance.buildReport();
+      this.report = report;
+      this.$nextTick(() => {this.isLoaded = true;});
+    },
+    goToReportTitle(reportIndex) {
+      this.$trace("lsw-conductometria-report.methods.loadReport");
+      const presuntReportTitle = this.$refs["report_" + reportIndex];
+      try {
+        presuntReportTitle[0].$el.scrollIntoView();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async openReportSource() {
+      this.$trace("lsw-conductometria-report.methods.openReportSource");
+      await this.$lsw.dialogs.open({
+        title: "Editar reporte",
+        template: `
+          <lsw-filesystem-explorer :opened-by="reportId" :absolute-layout="true" />
+        `,
+        factory: {
+          data: {
+            reportId: this.reportId
+          }
+        }
+      });
+    }
+  },
+  watch: {
+
+  },
+  computed: {
+    
+  },
+  async mounted() {
+    try {
+      this.$trace("lsw-conductometria-report.mounted");
+      await this.loadReport();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswAgenda API
+
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswConductometriaReport'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswConductometriaReport'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+  
+  const LswConductometriaReport = class {
+
+    static create(...args) {
+      return new this(...args);
+    }
+
+    constructor(originalInput = false, originalScope = this) {
+      Vue.prototype.$trace("LswConductometriaReport.constructor");
+      $ensure({ originalInput }, 1).type("string");
+      this.$originalInput = originalInput;
+      this.$originalScope = originalScope;
+      this.$reportBuilder = false;
+      this.result = false;
+      this.$resetReportState();
+    }
+
+    async buildReport() {
+      Vue.prototype.$trace("LswConductometriaReport.buildReport");
+      await this.$resetReportState();
+      await this.$rebuildCallback();
+      await this.$rebuildReport();
+      return this.result;
+    }
+
+    async $resetReportState() {
+      Vue.prototype.$trace("LswConductometriaReport.$resetReportState");
+      this.result = false;
+      this.$state = {
+        // @DEFAULT-STATE:
+      };
+    }
+
+    async $rebuildCallback() {
+      Vue.prototype.$trace("LswConductometriaReport.$rebuildCallback");
+      this.$reportBuilder = LswUtils.createAsyncFunction(this.$originalInput);
+    }
+
+    async $rebuildReport() {
+      Vue.prototype.$trace("LswConductometriaReport.$rebuildReport");
+      this.result = await this.$reportBuilder(this.$originalScope);
+    }
+
+  };
+
+  return LswConductometriaReport;
+
+});
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -32162,6 +32788,16 @@ Vue.component("LswConfigurationsPage", {
             </div>
         </div>
         <hr />
+        <h4>Evento de arranque</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startConfigureBoot">Configurar</button>
+                </div>
+                <div class="flex_100 explanation_text">permite inyectar JavaScript al entrar en la app.</div>
+            </div>
+        </div>
+        <hr />
         
     </div>
 </div>`,
@@ -32384,6 +33020,13 @@ Vue.component("LswConfigurationsPage", {
         text: "La copia de seguridad fue importada al estado actual con éxito."
       });
     },
+    startConfigureBoot() {
+      this.$trace("lsw-configurations-page.methods.startConfigureBoot");
+      this.$dialogs.open({
+        title: "Configurar arranque",
+        template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/boot.js" />`,
+      });
+    }
   },
   mounted() {
     this.$trace("lsw-configurations-page.mounter");
@@ -45976,7 +46619,6 @@ Vue.component("LswAutomensajesViewer", {
       const nextFontsize = this.calculateFontsize(nextAutomensaje);
       this.selectedFontsize = nextFontsize;
       this.selectedAutomensaje = nextAutomensaje;
-      this.continueAutomessaging();
     },
     calculateFontsize(text) {
       this.$trace("LswAutomensajesViewer.methods.calculateFontsize", []);
@@ -46000,7 +46642,7 @@ Vue.component("LswAutomensajesViewer", {
     async continueAutomessaging() {
       this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", []);
       clearTimeout(this.automessagingId);
-      this.automessagingSeconds = LswRandomizer.getRandomIntegerBetween(5,15);
+      this.automessagingSeconds = LswRandomizer.getRandomIntegerBetween(60,120);
       this.automessagingId = setTimeout(() => this.sendAutomessage(), this.automessagingSeconds * 1000);
     },
     stopAutomessaging() {
@@ -46028,7 +46670,7 @@ Vue.component("LswAutomensajesViewer", {
     try {
       this.$trace("lsw-automensajes-viewer.mounted");
       this.$window.$automensajesUi = this;
-      this.startAutomessaging();
+      // this.startAutomessaging();
       this.isMounted = true;
     } catch(error) {
       console.log(error);
@@ -47418,6 +48060,163 @@ $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
 
   }
 });
+$proxifier.define("org.allnulled.lsw-conductometria.Accion_virtual", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Accion_virtual@SchemaEntity";
+    }
+    static getName() {
+      return "Accion_virtual";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        en_concepto: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "En concepto de:",
+          hasDescription: "Nombre del concepto al que se atribuye la impresión",
+          hasPlaceholder: "Ej: Correr",
+          hasExtraAttributes: {},
+        },
+        tiene_estado: {
+          isType: "text",
+          isFormType: "options",
+          isIndexed: true,
+          hasFormtypeParameters: {
+            type: "selector",
+            available: ["pendiente", "completada", "fallida"],
+            selectable: 1, // could be: number or "*" to all options
+          },
+          hasValidator(v) {
+            if(v === "fallida") {
+              throw new Error("No losers, por favor");
+            }
+          },
+          hasDefaultValue: "pendiente",
+          hasFormatter: false,
+          hasLabel: "Tiene estado:",
+          hasDescription: "Estado en el que se encuentra la acción virtual. Puede ser «pendiente», «completada» o «fallida»",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_inicio: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasLabel: "Tiene inicio:",
+          hasDescription: "Momento en que empieza la acción virtual",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_duracion: {
+          isType: "text",
+          isFormType: "duration",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasDefaultValue: "1h",
+          hasValidator(v) {
+            LswTimer.utils.isDurationOrThrow(v);
+          },
+          hasFormatter(v) {
+            return LswTimer.parser.parse(v)[0];
+          },
+          hasLabel: "Tiene duración:",
+          hasDescription: "Cantidad de tiempo que dura la acción virtual",
+          hasPlaceholder: "Ej: 1h 20min",
+          hasExtraAttributes: {},
+        },
+        tiene_parametros: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene parámetros:",
+          hasDescription: "",
+          hasPlaceholder: "Ej: leche, trigo, arroz",
+          hasExtraAttributes: {},
+        },
+        tiene_resultados: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene resultados:",
+          hasDescription: "Resultados notorios asociados a esta acción virtual",
+          hasPlaceholder: "Ej:\n- Cogí fuerzas hasta el almuerzo\n- Disfruté de un buen desayuno",
+          hasExtraAttributes: {},
+        },
+        tiene_comentarios: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene comentarios:",
+          hasDescription: "Comentarios asociados a esta acción virtual",
+          hasPlaceholder: "Esta acción virtual me tomó varios intentos porque...",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Accion_virtual@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "acción virtual"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
 $proxifier.define("org.allnulled.lsw-conductometria.Concepto", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -47618,6 +48417,19 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_prototipo", {
           hasDescription: "Código JavaScript asociado al propagador prototipo",
           hasPlaceholder: "...",
           hasExtraAttributes: {},
+        },
+        tiene_parametros: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene parámetros:",
+          hasDescription: "Array de strings en JSON para los parámetros de la función (etiquetas de parámetro solamente)",
+          hasPlaceholder: "...",
+          hasExtraAttributes: {},
         }
       }
     }
@@ -47729,6 +48541,19 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_de_concepto", {
           hasFormatter: false,
           hasLabel: "Tiene parámetros extra:",
           hasDescription: "JSON con los parámetros extra",
+          hasPlaceholder: "{}",
+          hasExtraAttributes: {},
+        },
+        tiene_codigo: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene código directo:",
+          hasDescription: "Código JavaScript que se usará directo como propagador",
           hasPlaceholder: "{}",
           hasExtraAttributes: {},
         }
@@ -48282,6 +49107,1709 @@ $proxifier.define("org.allnulled.lsw-conductometria.Recordatorio", {
 
   }
 });
+/*
+ * Generated by PEG.js 0.10.0.
+ *
+ * http://pegjs.org/
+ */
+(function(root) {
+  "use strict";
+
+  function peg$subclass(child, parent) {
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor();
+  }
+
+  function peg$SyntaxError(message, expected, found, location) {
+    this.message  = message;
+    this.expected = expected;
+    this.found    = found;
+    this.location = location;
+    this.name     = "SyntaxError";
+
+    if (typeof Error.captureStackTrace === "function") {
+      Error.captureStackTrace(this, peg$SyntaxError);
+    }
+  }
+
+  peg$subclass(peg$SyntaxError, Error);
+
+  peg$SyntaxError.buildMessage = function(expected, found) {
+    var DESCRIBE_EXPECTATION_FNS = {
+          literal: function(expectation) {
+            return "\"" + literalEscape(expectation.text) + "\"";
+          },
+
+          "class": function(expectation) {
+            var escapedParts = "",
+                i;
+
+            for (i = 0; i < expectation.parts.length; i++) {
+              escapedParts += expectation.parts[i] instanceof Array
+                ? classEscape(expectation.parts[i][0]) + "-" + classEscape(expectation.parts[i][1])
+                : classEscape(expectation.parts[i]);
+            }
+
+            return "[" + (expectation.inverted ? "^" : "") + escapedParts + "]";
+          },
+
+          any: function(expectation) {
+            return "any character";
+          },
+
+          end: function(expectation) {
+            return "end of input";
+          },
+
+          other: function(expectation) {
+            return expectation.description;
+          }
+        };
+
+    function hex(ch) {
+      return ch.charCodeAt(0).toString(16).toUpperCase();
+    }
+
+    function literalEscape(s) {
+      return s
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g,  '\\"')
+        .replace(/\0/g, '\\0')
+        .replace(/\t/g, '\\t')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/[\x00-\x0F]/g,          function(ch) { return '\\x0' + hex(ch); })
+        .replace(/[\x10-\x1F\x7F-\x9F]/g, function(ch) { return '\\x'  + hex(ch); });
+    }
+
+    function classEscape(s) {
+      return s
+        .replace(/\\/g, '\\\\')
+        .replace(/\]/g, '\\]')
+        .replace(/\^/g, '\\^')
+        .replace(/-/g,  '\\-')
+        .replace(/\0/g, '\\0')
+        .replace(/\t/g, '\\t')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/[\x00-\x0F]/g,          function(ch) { return '\\x0' + hex(ch); })
+        .replace(/[\x10-\x1F\x7F-\x9F]/g, function(ch) { return '\\x'  + hex(ch); });
+    }
+
+    function describeExpectation(expectation) {
+      return DESCRIBE_EXPECTATION_FNS[expectation.type](expectation);
+    }
+
+    function describeExpected(expected) {
+      var descriptions = new Array(expected.length),
+          i, j;
+
+      for (i = 0; i < expected.length; i++) {
+        descriptions[i] = describeExpectation(expected[i]);
+      }
+
+      descriptions.sort();
+
+      if (descriptions.length > 0) {
+        for (i = 1, j = 1; i < descriptions.length; i++) {
+          if (descriptions[i - 1] !== descriptions[i]) {
+            descriptions[j] = descriptions[i];
+            j++;
+          }
+        }
+        descriptions.length = j;
+      }
+
+      switch (descriptions.length) {
+        case 1:
+          return descriptions[0];
+
+        case 2:
+          return descriptions[0] + " or " + descriptions[1];
+
+        default:
+          return descriptions.slice(0, -1).join(", ")
+            + ", or "
+            + descriptions[descriptions.length - 1];
+      }
+    }
+
+    function describeFound(found) {
+      return found ? "\"" + literalEscape(found) + "\"" : "end of input";
+    }
+
+    return "Expected " + describeExpected(expected) + " but " + describeFound(found) + " found.";
+  };
+
+  function peg$parse(input, options) {
+    options = options !== void 0 ? options : {};
+
+    var peg$FAILED = {},
+
+        peg$startRuleFunctions = { start: peg$parsestart },
+        peg$startRuleFunction  = peg$parsestart,
+
+        peg$c0 = function(statements) { return statements; },
+        peg$c1 = function(st) { return Object.assign({}, st, { $len: text().length, $loc: reduceLoc(location()) })},
+        peg$c2 = "inc",
+        peg$c3 = peg$literalExpectation("inc", false),
+        peg$c4 = function(path) { return { type: "inc", path }; },
+        peg$c5 = "def",
+        peg$c6 = peg$literalExpectation("def", false),
+        peg$c7 = function(names) { return { type: "def", names }; },
+        peg$c8 = "fun",
+        peg$c9 = peg$literalExpectation("fun", false),
+        peg$c10 = function(header, code) {
+              return { type: "fun", ...header, code };
+          },
+        peg$c11 = function(name) { return { name, params: "" } },
+        peg$c12 = ":",
+        peg$c13 = peg$literalExpectation(":", false),
+        peg$c14 = function(name, params) {
+            return { name, params }
+          },
+        peg$c15 = "{",
+        peg$c16 = peg$literalExpectation("{", false),
+        peg$c17 = "}",
+        peg$c18 = peg$literalExpectation("}", false),
+        peg$c19 = function() { return "" },
+        peg$c20 = function(code) { return code; },
+        peg$c21 = "rel",
+        peg$c22 = peg$literalExpectation("rel", false),
+        peg$c23 = function(name, effects, triggers) {
+              return { type: "rel", name, effects, triggers };
+          },
+        peg$c24 = ">",
+        peg$c25 = peg$literalExpectation(">", false),
+        peg$c26 = "*",
+        peg$c27 = peg$literalExpectation("*", false),
+        peg$c28 = function(concept, value) { return { type: "effect", concept, value }; },
+        peg$c29 = ">>",
+        peg$c30 = peg$literalExpectation(">>", false),
+        peg$c31 = function(expr) { return expr; },
+        peg$c32 = function(name, args) { return { type: "trigger-by-call", name, args }; },
+        peg$c33 = function() { return { type: "trigger-by-code", code: text().trim() } },
+        peg$c34 = ",",
+        peg$c35 = peg$literalExpectation(",", false),
+        peg$c36 = function(first, rest) {
+              return [first].concat(rest.map(r => r[3]));
+          },
+        peg$c37 = peg$anyExpectation(),
+        peg$c38 = function() { return text().trim() },
+        peg$c39 = /^[0-9]/,
+        peg$c40 = peg$classExpectation([["0", "9"]], false, false),
+        peg$c41 = ".",
+        peg$c42 = peg$literalExpectation(".", false),
+        peg$c43 = function() { return text(); },
+        peg$c44 = peg$otherExpectation("Codeblock"),
+        peg$c45 = function() { return text() },
+        peg$c46 = " ",
+        peg$c47 = peg$literalExpectation(" ", false),
+        peg$c48 = "\t",
+        peg$c49 = peg$literalExpectation("\t", false),
+        peg$c50 = "\r\n",
+        peg$c51 = peg$literalExpectation("\r\n", false),
+        peg$c52 = "\r",
+        peg$c53 = peg$literalExpectation("\r", false),
+        peg$c54 = "\n",
+        peg$c55 = peg$literalExpectation("\n", false),
+
+        peg$currPos          = 0,
+        peg$savedPos         = 0,
+        peg$posDetailsCache  = [{ line: 1, column: 1 }],
+        peg$maxFailPos       = 0,
+        peg$maxFailExpected  = [],
+        peg$silentFails      = 0,
+
+        peg$result;
+
+    if ("startRule" in options) {
+      if (!(options.startRule in peg$startRuleFunctions)) {
+        throw new Error("Can't start parsing from rule \"" + options.startRule + "\".");
+      }
+
+      peg$startRuleFunction = peg$startRuleFunctions[options.startRule];
+    }
+
+    function text() {
+      return input.substring(peg$savedPos, peg$currPos);
+    }
+
+    function location() {
+      return peg$computeLocation(peg$savedPos, peg$currPos);
+    }
+
+    function expected(description, location) {
+      location = location !== void 0 ? location : peg$computeLocation(peg$savedPos, peg$currPos)
+
+      throw peg$buildStructuredError(
+        [peg$otherExpectation(description)],
+        input.substring(peg$savedPos, peg$currPos),
+        location
+      );
+    }
+
+    function error(message, location) {
+      location = location !== void 0 ? location : peg$computeLocation(peg$savedPos, peg$currPos)
+
+      throw peg$buildSimpleError(message, location);
+    }
+
+    function peg$literalExpectation(text, ignoreCase) {
+      return { type: "literal", text: text, ignoreCase: ignoreCase };
+    }
+
+    function peg$classExpectation(parts, inverted, ignoreCase) {
+      return { type: "class", parts: parts, inverted: inverted, ignoreCase: ignoreCase };
+    }
+
+    function peg$anyExpectation() {
+      return { type: "any" };
+    }
+
+    function peg$endExpectation() {
+      return { type: "end" };
+    }
+
+    function peg$otherExpectation(description) {
+      return { type: "other", description: description };
+    }
+
+    function peg$computePosDetails(pos) {
+      var details = peg$posDetailsCache[pos], p;
+
+      if (details) {
+        return details;
+      } else {
+        p = pos - 1;
+        while (!peg$posDetailsCache[p]) {
+          p--;
+        }
+
+        details = peg$posDetailsCache[p];
+        details = {
+          line:   details.line,
+          column: details.column
+        };
+
+        while (p < pos) {
+          if (input.charCodeAt(p) === 10) {
+            details.line++;
+            details.column = 1;
+          } else {
+            details.column++;
+          }
+
+          p++;
+        }
+
+        peg$posDetailsCache[pos] = details;
+        return details;
+      }
+    }
+
+    function peg$computeLocation(startPos, endPos) {
+      var startPosDetails = peg$computePosDetails(startPos),
+          endPosDetails   = peg$computePosDetails(endPos);
+
+      return {
+        start: {
+          offset: startPos,
+          line:   startPosDetails.line,
+          column: startPosDetails.column
+        },
+        end: {
+          offset: endPos,
+          line:   endPosDetails.line,
+          column: endPosDetails.column
+        }
+      };
+    }
+
+    function peg$fail(expected) {
+      if (peg$currPos < peg$maxFailPos) { return; }
+
+      if (peg$currPos > peg$maxFailPos) {
+        peg$maxFailPos = peg$currPos;
+        peg$maxFailExpected = [];
+      }
+
+      peg$maxFailExpected.push(expected);
+    }
+
+    function peg$buildSimpleError(message, location) {
+      return new peg$SyntaxError(message, null, null, location);
+    }
+
+    function peg$buildStructuredError(expected, found, location) {
+      return new peg$SyntaxError(
+        peg$SyntaxError.buildMessage(expected, found),
+        expected,
+        found,
+        location
+      );
+    }
+
+    function peg$parsestart() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parsestatement();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parsestatement();
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMAYSPACES();
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c0(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsestatement() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseincStatement();
+      if (s1 === peg$FAILED) {
+        s1 = peg$parsedefStatement();
+        if (s1 === peg$FAILED) {
+          s1 = peg$parsefunStatement();
+          if (s1 === peg$FAILED) {
+            s1 = peg$parserelStatement();
+          }
+        }
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c1(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseincStatement() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c2) {
+          s2 = peg$c2;
+          peg$currPos += 3;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c3); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMINSPACE();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseUNTIL_NEWLINE();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parse___();
+              if (s5 === peg$FAILED) {
+                s5 = peg$parseEOF();
+              }
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c4(s4);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsedefStatement() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c5) {
+          s2 = peg$c5;
+          peg$currPos += 3;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c6); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMINSPACE();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseidentifierList();
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c7(s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunStatement() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c8) {
+          s2 = peg$c8;
+          peg$currPos += 3;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c9); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMINSPACE();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsefunHeader();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseMAYSPACES();
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parsefunContent();
+                if (s6 !== peg$FAILED) {
+                  peg$savedPos = s0;
+                  s1 = peg$c10(s4, s6);
+                  s0 = s1;
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunHeader() {
+      var s0;
+
+      s0 = peg$parsefunHeaderWithParameters();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsefunHeaderWithoutParameters();
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunHeaderWithoutParameters() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseidentifier();
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c11(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsefunHeaderWithParameters() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseidentifier();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseMAYSPACES();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 58) {
+            s3 = peg$c12;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c13); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseMAYSPACES();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseidentifierList();
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c14(s1, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunContent() {
+      var s0;
+
+      s0 = peg$parsefunContentEmpty();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsefunContentFilled();
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunContentEmpty() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 123) {
+        s1 = peg$c15;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c16); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseMAYSPACES();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 125) {
+            s3 = peg$c17;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c18); }
+          }
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c19();
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunContentFilled() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 123) {
+        s1 = peg$c15;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c16); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsecodeBlock();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parse___();
+          if (s3 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 125) {
+              s4 = peg$c17;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c18); }
+            }
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c20(s2);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parserelStatement() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c21) {
+          s2 = peg$c21;
+          peg$currPos += 3;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c22); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMINSPACE();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseidentifier();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseMAYSPACES();
+              if (s5 !== peg$FAILED) {
+                s6 = [];
+                s7 = peg$parserelEffect();
+                while (s7 !== peg$FAILED) {
+                  s6.push(s7);
+                  s7 = peg$parserelEffect();
+                }
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parseMAYSPACES();
+                  if (s7 !== peg$FAILED) {
+                    s8 = [];
+                    s9 = peg$parserelTrigger();
+                    while (s9 !== peg$FAILED) {
+                      s8.push(s9);
+                      s9 = peg$parserelTrigger();
+                    }
+                    if (s8 !== peg$FAILED) {
+                      peg$savedPos = s0;
+                      s1 = peg$c23(s4, s6, s8);
+                      s0 = s1;
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$FAILED;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parserelEffect() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 62) {
+          s2 = peg$c24;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c25); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMAYSPACES();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseidentifier();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseMAYSPACES();
+              if (s5 !== peg$FAILED) {
+                if (input.charCodeAt(peg$currPos) === 42) {
+                  s6 = peg$c26;
+                  peg$currPos++;
+                } else {
+                  s6 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c27); }
+                }
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parseMAYSPACES();
+                  if (s7 !== peg$FAILED) {
+                    s8 = peg$parsenumber();
+                    if (s8 !== peg$FAILED) {
+                      peg$savedPos = s0;
+                      s1 = peg$c28(s4, s8);
+                      s0 = s1;
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$FAILED;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parserelTrigger() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 2) === peg$c29) {
+          s2 = peg$c29;
+          peg$currPos += 2;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c30); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMAYSPACES();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsetriggerExpr();
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c31(s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsetriggerExpr() {
+      var s0;
+
+      s0 = peg$parsetriggerExprByCall();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsetriggerExprByCode();
+      }
+
+      return s0;
+    }
+
+    function peg$parsetriggerExprByCall() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      s1 = peg$parseidentifier();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseMAYSPACES();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 58) {
+            s3 = peg$c12;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c13); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseMAYSPACES();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseUNTIL_NEWLINE();
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parse___();
+                if (s6 === peg$FAILED) {
+                  s6 = peg$parseEOF();
+                }
+                if (s6 !== peg$FAILED) {
+                  peg$savedPos = s0;
+                  s1 = peg$c32(s1, s5);
+                  s0 = s1;
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsetriggerExprByCode() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parseUNTIL_NEWLINE();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse___();
+        if (s2 === peg$FAILED) {
+          s2 = peg$parseEOF();
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c33();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseidentifierList() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$parseidentifier();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        s4 = peg$parseMAYSPACES();
+        if (s4 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s5 = peg$c34;
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c35); }
+          }
+          if (s5 !== peg$FAILED) {
+            s6 = peg$parseMAYSPACES();
+            if (s6 !== peg$FAILED) {
+              s7 = peg$parseidentifier();
+              if (s7 !== peg$FAILED) {
+                s4 = [s4, s5, s6, s7];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$FAILED;
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$currPos;
+          s4 = peg$parseMAYSPACES();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 44) {
+              s5 = peg$c34;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c35); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parseMAYSPACES();
+              if (s6 !== peg$FAILED) {
+                s7 = peg$parseidentifier();
+                if (s7 !== peg$FAILED) {
+                  s4 = [s4, s5, s6, s7];
+                  s3 = s4;
+                } else {
+                  peg$currPos = s3;
+                  s3 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c36(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseidentifier() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      s4 = peg$parse___();
+      if (s4 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 44) {
+          s4 = peg$c34;
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c35); }
+        }
+        if (s4 === peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 42) {
+            s4 = peg$c26;
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c27); }
+          }
+          if (s4 === peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 58) {
+              s4 = peg$c12;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c13); }
+            }
+            if (s4 === peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 123) {
+                s4 = peg$c15;
+                peg$currPos++;
+              } else {
+                s4 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c16); }
+              }
+            }
+          }
+        }
+      }
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c37); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$parse___();
+          if (s4 === peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 44) {
+              s4 = peg$c34;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c35); }
+            }
+            if (s4 === peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 42) {
+                s4 = peg$c26;
+                peg$currPos++;
+              } else {
+                s4 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c27); }
+              }
+              if (s4 === peg$FAILED) {
+                if (input.charCodeAt(peg$currPos) === 58) {
+                  s4 = peg$c12;
+                  peg$currPos++;
+                } else {
+                  s4 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c13); }
+                }
+                if (s4 === peg$FAILED) {
+                  if (input.charCodeAt(peg$currPos) === 123) {
+                    s4 = peg$c15;
+                    peg$currPos++;
+                  } else {
+                    s4 = peg$FAILED;
+                    if (peg$silentFails === 0) { peg$fail(peg$c16); }
+                  }
+                }
+              }
+            }
+          }
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c37); }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c38();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsenumber() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = [];
+      if (peg$c39.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c40); }
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          if (peg$c39.test(input.charAt(peg$currPos))) {
+            s2 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c40); }
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$currPos;
+        if (input.charCodeAt(peg$currPos) === 46) {
+          s3 = peg$c41;
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c42); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = [];
+          if (peg$c39.test(input.charAt(peg$currPos))) {
+            s5 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c40); }
+          }
+          if (s5 !== peg$FAILED) {
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              if (peg$c39.test(input.charAt(peg$currPos))) {
+                s5 = input.charAt(peg$currPos);
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c40); }
+              }
+            }
+          } else {
+            s4 = peg$FAILED;
+          }
+          if (s4 !== peg$FAILED) {
+            s3 = [s3, s4];
+            s2 = s3;
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+        if (s2 === peg$FAILED) {
+          s2 = null;
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c43();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsecodeBlock() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      peg$silentFails++;
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      s4 = peg$currPos;
+      s5 = peg$parse___();
+      if (s5 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 125) {
+          s6 = peg$c17;
+          peg$currPos++;
+        } else {
+          s6 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c18); }
+        }
+        if (s6 !== peg$FAILED) {
+          s5 = [s5, s6];
+          s4 = s5;
+        } else {
+          peg$currPos = s4;
+          s4 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s4;
+        s4 = peg$FAILED;
+      }
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        s4 = peg$parse___();
+        if (s4 === peg$FAILED) {
+          if (input.length > peg$currPos) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c37); }
+          }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$currPos;
+          s5 = peg$parse___();
+          if (s5 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 125) {
+              s6 = peg$c17;
+              peg$currPos++;
+            } else {
+              s6 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c18); }
+            }
+            if (s6 !== peg$FAILED) {
+              s5 = [s5, s6];
+              s4 = s5;
+            } else {
+              peg$currPos = s4;
+              s4 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s4;
+            s4 = peg$FAILED;
+          }
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parse___();
+            if (s4 === peg$FAILED) {
+              if (input.length > peg$currPos) {
+                s4 = input.charAt(peg$currPos);
+                peg$currPos++;
+              } else {
+                s4 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c37); }
+              }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c38();
+      }
+      s0 = s1;
+      peg$silentFails--;
+      if (s0 === peg$FAILED) {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c44); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseUNTIL_NEWLINE() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      s4 = peg$parse___();
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c37); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$parse___();
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c37); }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c45();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseMAYSPACES() {
+      var s0, s1;
+
+      s0 = [];
+      s1 = peg$parse_();
+      while (s1 !== peg$FAILED) {
+        s0.push(s1);
+        s1 = peg$parse_();
+      }
+
+      return s0;
+    }
+
+    function peg$parseMAYSPACE() {
+      var s0;
+
+      s0 = peg$parse_();
+      if (s0 === peg$FAILED) {
+        s0 = null;
+      }
+
+      return s0;
+    }
+
+    function peg$parseMINSPACE() {
+      var s0, s1;
+
+      s0 = [];
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        while (s1 !== peg$FAILED) {
+          s0.push(s1);
+          s1 = peg$parse_();
+        }
+      } else {
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseEOF() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      peg$silentFails++;
+      if (input.length > peg$currPos) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c37); }
+      }
+      peg$silentFails--;
+      if (s1 === peg$FAILED) {
+        s0 = void 0;
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parse_() {
+      var s0;
+
+      s0 = peg$parse__();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parse___();
+      }
+
+      return s0;
+    }
+
+    function peg$parse__() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 32) {
+        s0 = peg$c46;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c47); }
+      }
+      if (s0 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 9) {
+          s0 = peg$c48;
+          peg$currPos++;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c49); }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parse___() {
+      var s0;
+
+      if (input.substr(peg$currPos, 2) === peg$c50) {
+        s0 = peg$c50;
+        peg$currPos += 2;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c51); }
+      }
+      if (s0 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 13) {
+          s0 = peg$c52;
+          peg$currPos++;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c53); }
+        }
+        if (s0 === peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 10) {
+            s0 = peg$c54;
+            peg$currPos++;
+          } else {
+            s0 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c55); }
+          }
+        }
+      }
+
+      return s0;
+    }
+
+
+      const reduceLoc = function(loc) {
+        return `${loc.start.offset}-${loc.end.offset}|${loc.start.line}:${loc.start.column}-${loc.end.line}:${loc.end.column}`;
+      };
+
+
+    peg$result = peg$startRuleFunction();
+
+    if (peg$result !== peg$FAILED && peg$currPos === input.length) {
+      return peg$result;
+    } else {
+      if (peg$result !== peg$FAILED && peg$currPos < input.length) {
+        peg$fail(peg$endExpectation());
+      }
+
+      throw peg$buildStructuredError(
+        peg$maxFailExpected,
+        peg$maxFailPos < input.length ? input.charAt(peg$maxFailPos) : null,
+        peg$maxFailPos < input.length
+          ? peg$computeLocation(peg$maxFailPos, peg$maxFailPos + 1)
+          : peg$computeLocation(peg$maxFailPos, peg$maxFailPos)
+      );
+    }
+  }
+
+  root.ProtolangParser = {
+    SyntaxError: peg$SyntaxError,
+    parse:       peg$parse
+  };
+})(globalThis);
 $proxifier.define("org.allnulled.lsw-conductometria.Articulo", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -48438,6 +50966,7 @@ try {
       Vue.prototype.$trace = (...args) => Vue.prototype.$lsw.logger.trace(...args);
       Vue.prototype.$lsw.utils = LswUtils;
       Vue.prototype.$lsw.timer = LswTimer;
+      Vue.prototype.$lsw.conductometria = LswConductometria.create();
       Vue.prototype.$lsw.backuper = LswBackuper.create();
       Vue.prototype.$lsw.intruder = LswIntruder.create();
       Vue.prototype.$lsw.windows = null;
@@ -48446,6 +50975,15 @@ try {
       Vue.prototype.$lsw.proxifier = $proxifier;
       Vue.prototype.$lsw.wiki = null;
       Vue.prototype.$lsw.agenda = null;
+      // GLOBALLY AVAILABLE PARSERS:
+      Vue.prototype.$lsw.parsers = {
+        timer: LswTimer.parser,
+        proto: ProtolangParser,
+        tripi: TripilangParser,
+        dotenv: {
+          parse: Vue.prototype.$lsw.fs.evaluateAsDotenvText.bind(Vue.prototype.$lsw.fs)
+        }
+      }
       // WE DO NOT INJECT DATABASE FROM HERE.
     }
     Vue.prototype.$lsw.classes = {};
@@ -48487,6 +51025,8 @@ try {
 }
 LswLifecycle.start().then(async output => {
   console.log("[*] App lifecycle ended.");
+
+  // Vue.prototype.$lsw.logger.deactivate();
   
   const goTo = {
     async aniadirNota() {
@@ -48497,6 +51037,11 @@ LswLifecycle.start().then(async output => {
     },
     async calendario() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
+    },
+    async reportesDeCalendario() {
+      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button.nowrap", "📊").click();
     },
     async abrirNavegacionRapida() {
       LswDom.querySelectorFirst(".lsw_apps_button > button", "🌍").click();
@@ -48529,10 +51074,18 @@ LswLifecycle.start().then(async output => {
 
   Work_relocation: {
     await LswDom.waitForMilliseconds(100);
-    await goTo.abrirWiki();
+    await goTo.reportesDeCalendario();
+    try {
+      await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
+    } catch (error) {
+      Vue.prototype.$lsw.toasts.send({
+        title: "Errores en el boot",
+        text: "El boot lanzó un error: (" + error.name + ") " + error.message,
+      })
+    }
     return;
     await LswDom.waitForMilliseconds(100);
-    await goTo.calendario();
+    await goTo.abrirWiki();
     await LswDom.waitForMilliseconds(100);
     await goTo.abrirNavegacionRapida();
     await LswDom.waitForMilliseconds(100);

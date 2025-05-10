@@ -66,6 +66,7 @@ button.mini {
 
 button.supermini {
     min-width: auto;
+    min-width: 25px;
     min-height: auto;
     padding: 4px;
     font-size: 12px !important;
@@ -102,6 +103,7 @@ textarea {
     resize: vertical;
     background-color: #FFFFFF88;
     border: 1px solid #CCC;
+    white-space: pre;
 }
 
 input[type="radio"],
@@ -363,6 +365,18 @@ pre.codeblock {
 }
 .linkable_text.activated {
     color: yellow;
+}
+
+.linkable_text.has_light_bg {
+    text-decoration: underline;
+    color: rgb(25, 24, 52);
+    cursor: pointer;
+}
+.linkable_text:hover.has_light_bg {
+    color: rgb(27, 23, 117);
+}
+.linkable_text.activated.has_light_bg {
+    color: rgb(58, 55, 116);
 }
 
 .list_buttons {

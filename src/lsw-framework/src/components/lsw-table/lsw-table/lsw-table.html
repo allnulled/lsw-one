@@ -143,18 +143,19 @@
                                 <!--Id cell:-->
                                 <td class="index_cell">
                                     <button v-on:click="() => toggleRow(row.id)"
-                                        :class="{activated: selectedRows.indexOf(row.id) !== -1}">
+                                        class="supermini"
+                                        :class="{activated: row.id && selectedRows.indexOf(row.id) !== -1}">
                                         {{ (rowIndex + 1) + (currentPage * itemsPerPage) }}
                                     </button>
                                 </td>
                                 <!--Selectable cell:-->
                                 <td class="index_cell" v-if="selectable === 'one'">
                                     <span v-on:click="() => toggleChoosenRow(row[choosableId])">
-                                        <button class="activated" v-if="choosenRows === row[choosableId]">
+                                        <button class="supermini activated" v-if="choosenRows === row[choosableId]">
                                             <!--input type="radio" :checked="true" /-->
                                             ☑️
                                         </button>
-                                        <button v-else>
+                                        <button class="supermini" v-else>
                                             🔘
                                             <!--input type="radio" :checked="false" /-->
                                         </button>
@@ -168,7 +169,7 @@
                                 <!--Row buttons cells:-->
                                 <td class="button_cell" v-for="attachedColumn, attachedColumnIndex in attachedColumns"
                                     v-bind:key="'attached-column-' + attachedColumnIndex">
-                                    <button v-on:click="() => rowButtons[attachedColumnIndex].event(row, rowIndex, attachedColumn)">{{ attachedColumn.text }}</button>
+                                    <button class="supermini" v-on:click="() => rowButtons[attachedColumnIndex].event(row, rowIndex, attachedColumn)">{{ attachedColumn.text }}</button>
                                 </td>
                                 <!--Object properties cells:-->
                                 <td class="data_cell" v-for="columnKey, columnIndex in headers"
@@ -190,7 +191,7 @@
                                 </td>
                             </tr>
                             <tr class="row_for_details"
-                                v-show="selectedRows.indexOf(row.id) !== -1"
+                                v-show="row.id && selectedRows.indexOf(row.id) !== -1"
                                 v-bind:key="'row-for-cell-' + rowIndex">
                                 <td class="data_cell details_cell"
                                     colspan="1000">

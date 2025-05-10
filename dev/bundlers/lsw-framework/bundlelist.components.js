@@ -156,6 +156,10 @@ module.exports = [
   `${basepath}/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search`,
   `${basepath}/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search`,
   `${basepath}/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search`,
+  `${basepath}/lsw-framework/src/components/lsw-conductometria/lsw-conductometria`,
+  `${basepath}/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.api.js`,
+  `${basepath}/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report`,
+  `${basepath}/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.api.js`,
   // FORMTYPES:
   `${basepath}/lsw-framework/src/components/lsw-formtypes/api/api.js`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder`,

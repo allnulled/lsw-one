@@ -35,7 +35,11 @@
       return this;
     }
     trace(method, args = []) {
-      console.log("[ufs][node-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      // @INJECTION: from LSW
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      if(traceActivatedGlobally) {
+        console.log("[ufs][node-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      }
     }
     resolve_path(...args) {
       this.trace("resolve_path", arguments);
@@ -357,7 +361,11 @@
     }
 
     trace(method, args = []) {
-      console.log("[ufs][idb-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      const traceActivatedGlobally = (typeof Vue === "undefined") || (typeof Vue.prototype.$lsw === "undefined") || ((typeof Vue !== "undefined") && (typeof Vue.prototype.$lsw !== "undefined") && (Vue.prototype.$lsw.logger.$options.active));
+      // @INJECTION: from LSW
+      if(traceActivatedGlobally) {
+        console.log("[ufs][idb-driver][" + method + "]", Array.from(args).map(arg => typeof (arg) + ": " + arg).join(", "));
+      }
     }
 
     init() {

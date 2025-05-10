@@ -37,7 +37,6 @@ Vue.component("LswAutomensajesViewer", {
       const nextFontsize = this.calculateFontsize(nextAutomensaje);
       this.selectedFontsize = nextFontsize;
       this.selectedAutomensaje = nextAutomensaje;
-      this.continueAutomessaging();
     },
     calculateFontsize(text) {
       this.$trace("LswAutomensajesViewer.methods.calculateFontsize", []);
@@ -61,7 +60,7 @@ Vue.component("LswAutomensajesViewer", {
     async continueAutomessaging() {
       this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", []);
       clearTimeout(this.automessagingId);
-      this.automessagingSeconds = LswRandomizer.getRandomIntegerBetween(5,15);
+      this.automessagingSeconds = LswRandomizer.getRandomIntegerBetween(60,120);
       this.automessagingId = setTimeout(() => this.sendAutomessage(), this.automessagingSeconds * 1000);
     },
     stopAutomessaging() {
@@ -89,7 +88,7 @@ Vue.component("LswAutomensajesViewer", {
     try {
       this.$trace("lsw-automensajes-viewer.mounted");
       this.$window.$automensajesUi = this;
-      this.startAutomessaging();
+      // this.startAutomessaging();
       this.isMounted = true;
     } catch(error) {
       console.log(error);

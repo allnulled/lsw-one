@@ -22,6 +22,7 @@ Aplicación de gestión del tiempo y la información + Proyecto base para el des
       - [Configurar los fondos de pantalla](#configurar-los-fondos-de-pantalla)
       - [Configurar los automensajes](#configurar-los-automensajes)
       - [Configurar el mensaje rutinario](#configurar-el-mensaje-rutinario)
+      - [El lenguaje de Protolang](#el-lenguaje-de-protolang)
 
 # ¿Qué es esta aplicación?
 
@@ -144,3 +145,8 @@ Algunos ficheros controlan configuraciones de la aplicación.
 
 - `/kernel/settings/rutiner.md`
 
+#### El lenguaje de Protolang
+
+Ves aquí que lo explica bien:
+
+  - [./src/modules/org.allnulled.lsw-conductometria/lang/README.md](src/modules/org.allnulled.lsw-conductometria/lang/README.md)

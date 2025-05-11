@@ -66,11 +66,15 @@ Vue.component("LswConductometria", {
         }
       });
     },
+    showError(error, ...args) {
+      Vue.prototype.$lsw.toasts.showError(error, ...args);
+    }
   },
   watch: {},
   mounted() {
     try {
       this.$trace("lsw-conductometria.mounted");
+      this.$lsw.conductometria = LswConductometria.create(this);
     } catch(error) {
       this.$lsw.toasts.showError(error);
     }

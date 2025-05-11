@@ -42,13 +42,14 @@ Vue.component("LswTable", {
       input,
       title: this.initialSettings?.title || "",
       isShowingMenu: this.initialSettings?.isShowingMenu || false,
-      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Buscador",
+      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Filtro", // "Buscador", ...
       selectedRows: [],
       choosenRows: this.initialChoosenValue || [],
       searcher: this.initialSettings?.searcher || "",
       extender: this.initialSettings?.extender || "",
       filter: this.initialSettings?.filter || "",
       sorter: this.initialSettings?.sorter || "",
+      itemsPerPageOnForm: this.initialSettings?.itemsPerPage || 10,
       itemsPerPage: this.initialSettings?.itemsPerPage || 10,
       currentPage: this.initialSettings?.currentPage || 0,
       columnsAsList: this.initialSettings?.columnsAsList || [],
@@ -217,6 +218,9 @@ Vue.component("LswTable", {
     digestPagination() {
       this.$trace("lsw-table.methods.digestPagination");
       const page = this.currentPage;
+      Inject_form_state_of_items_per_page_here: {
+        this.itemsPerPage = this.itemsPerPageOnForm;
+      }
       const items = this.itemsPerPage;
       const firstPosition = items * (page);
       this.selectedRows = [];
@@ -250,7 +254,7 @@ Vue.component("LswTable", {
   watch: {
     itemsPerPage(value) {
       this.$trace("lsw-table.watch.itemsPerPage");
-      this.digestPagination();
+      /// this.digestPagination();
     },
     currentPage(value) {
       this.$trace("lsw-table.watch.currentPage");
@@ -282,6 +286,10 @@ Vue.component("LswTable", {
       this.$trace("lsw-table.computed.totalOfPages");
       return Math.ceil(this.output.length / this.itemsPerPage) || 1;
     },
+    currentLastPage() {
+      this.$trace("lsw-table.computed.currentLastPage");
+      return Math.floor(this.output.length / this.itemsPerPage) || 1;
+    }
   },
   mounted() {
     this.$trace("lsw-table.mounted");

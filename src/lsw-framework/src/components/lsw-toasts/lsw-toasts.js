@@ -16,11 +16,12 @@ Vue.component("LswToasts", {
       }
       return out;
     },
-    showError(error, propagate = false, log = true) {
+    showError(error, args = {}, propagate = false, log = true) {
       this.$trace("lsw-toasts.methods.showError");
       const output = this.send({
         title: "Un error ocurrió",
-        text: error.name + ": " + error.message
+        text: error.name + ": " + error.message,
+        ...args,
       });
       if(log) {
         console.log(error);

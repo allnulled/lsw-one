@@ -2,5 +2,6 @@
     <textarea class="editor" :style="{
         fontSize: currentFontsize + 'px',
         fontFamily: currentFontfamily
-    }" v-model="contents" spellcheck="false" />
+    }" v-model="contents" spellcheck="false" 
+    v-on:keydown.ctrl.s.prevent="saveDocument" />
 </div>

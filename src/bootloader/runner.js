@@ -17,6 +17,9 @@ LswLifecycle.start().then(async output => {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
       await LswDom.waitForMilliseconds(100);
       LswDom.querySelectorFirst("button.nowrap", "📊").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button", "🔮 Iniciar conductometría").click();
+      
     },
     async abrirNavegacionRapida() {
       LswDom.querySelectorFirst(".lsw_apps_button > button", "🌍").click();
@@ -51,7 +54,9 @@ LswLifecycle.start().then(async output => {
     await LswDom.waitForMilliseconds(100);
     await goTo.reportesDeCalendario();
     try {
-      await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
+      Inject_kernel_bootjs: {
+        await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
+      }
     } catch (error) {
       Vue.prototype.$lsw.toasts.send({
         title: "Errores en el boot",

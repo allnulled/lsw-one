@@ -11,9 +11,11 @@
                 <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                 <div class="flex_1 nowrap">
                     <button class="iconized_button padded_vertically_1"
-                        v-on:click="randomizeDay">+ 🎲</button>
+                        v-on:click="openRandomizerFile">{🎲}</button>
                     <button class="iconized_button padded_vertically_1"
-                        v-on:click="cleanRandomizedDays">🔥 🎲</button>
+                        v-on:click="randomizeDay">+🎲</button>
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="cleanRandomizedDays">🔥🎲</button>
                     <button class="iconized_button padded_vertically_1"
                         v-on:click="showAllHours"
                         style="display: none;">🔓*</button>
@@ -103,17 +105,17 @@
                         <div class="campo"
                             v-if="accion.tiene_parametros">
                             <div class="clave">Parámetros: </div>
-                            <div class="valor texto_markdown" v-html="marked.parse(accion.tiene_parametros)"></div>
+                            <div class="valor texto_markdown sin_decorar" v-html="marked.parse(accion.tiene_parametros)"></div>
                         </div>
                         <div class="campo"
                             v-if="accion.tiene_comentarios">
                             <div class="clave">Comentarios: </div>
-                            <div class="valor texto_markdown" v-html="(accion.tiene_comentarios)"></div>
+                            <div class="valor texto_markdown sin_decorar" v-html="(accion.tiene_comentarios)"></div>
                         </div>
                         <div class="campo"
                             v-if="accion.tiene_resultados">
                             <div class="clave">Resultados: </div>
-                            <div class="valor texto_markdown" v-html="(accion.tiene_resultados)"></div>
+                            <div class="valor texto_markdown sin_decorar" v-html="(accion.tiene_resultados)"></div>
                         </div>
                     </div>
                 </div>

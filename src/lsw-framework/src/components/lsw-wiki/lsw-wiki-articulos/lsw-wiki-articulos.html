@@ -19,18 +19,15 @@
     <div class="pad_top_1">
         <div class="caja_de_mensaje_sobre_articulos">
             <div class=""
-                v-if="isSearching"
-                style="color: rgb(255, 196, 86);">
+                v-if="isSearching">
                 Buscando artículos...
             </div>
             <div class=""
-                v-else-if="!articulos"
-                style="color: rgb(245, 89, 78);">
+                v-else-if="!articulos">
                 No se alcanzaron a encontrar los artículos.
             </div>
             <div class=""
-                v-else-if="!articulos.length"
-                style="color: rgb(183, 215, 210);">
+                v-else-if="!articulos.length">
                 No se encontraron artículos según la búsqueda.
             </div>
             <div class=""

@@ -18,7 +18,7 @@ Vue.component("LswDateControl", {
     const respectivePlaceholder = this.generatePlaceholder();
     return {
       uuid: LswRandomizer.getRandomString(5),
-      value: this.settings?.initialValue || this.settings?.column?.hasInitialValue() || "",
+      value: this.settings?.initialValue || this.settings?.column?.hasInitialValue?.call() || "",
       isEditable: true,
       isShowingCalendar: false,
       respectivePlaceholder,

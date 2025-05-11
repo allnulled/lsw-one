@@ -1,3 +1,7 @@
+inc ./conceptos
+inc ./funciones
+inc ./relaciones
+
 def desayunar, comer, cenar, limpiar, pasear
 
 fun multiplicador de tiempo: concepto, multiplicador {
@@ -7,8 +11,8 @@ fun multiplicador de tiempo: concepto, multiplicador {
 
 rel consumir leche
   > calcio * 0.3
-  > pesadez * 2h
-  >> yo consumir alimento
+  > pesadez * 2
+  >> yo.consumir.alimento
 
 rel correr
   > ansiedad * 0.1
@@ -21,10 +25,10 @@ rel correr
 rel caminar
   > calma * 0.2
   > musculación * 0.1
-  >> yo caminar 
+  >> yo.caminar 
 
 rel pasear perrillo
   > caminar * 1
   > socialización * 0.7
-  >> yo pasear perrillo
+  >> yo.pasear.perrillo
 

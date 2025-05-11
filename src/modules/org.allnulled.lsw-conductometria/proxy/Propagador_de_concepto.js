@@ -40,7 +40,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_de_concepto", {
           hasPlaceholder: "Ej: al desayunar",
           hasExtraAttributes: {},
         },
-        tiene_concepto_origen: {
+        tiene_concepto_disparador: {
           refersTo: {
             entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
             table: "Concepto",
@@ -55,8 +55,8 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_de_concepto", {
             if(v.trim() === '') throw new Error("Cannot be empty");
           },
           hasFormatter: false,
-          hasLabel: "Tiene concepto origen:",
-          hasDescription: "Nombre del concepto origen en esta relación propagativa",
+          hasLabel: "Tiene concepto disparador:",
+          hasDescription: "Nombre del concepto disparador en esta relación propagativa",
           hasPlaceholder: "Ej: Desayunar",
           hasExtraAttributes: {},
         },
@@ -80,6 +80,19 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_de_concepto", {
           hasPlaceholder: "Ej: Recuperar energía",
           hasExtraAttributes: {},
         },
+        tiene_parametros: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene parámetros:",
+          hasDescription: "Array de valores en JSON para los parámetros de la función (raw injection)",
+          hasPlaceholder: "\"concept-x\", 2, [], {}",
+          hasExtraAttributes: {},
+        },
         tiene_parametros_extra: {
           isType: "text",
           isFormType: "code",
@@ -89,8 +102,8 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_de_concepto", {
           },
           hasFormatter: false,
           hasLabel: "Tiene parámetros extra:",
-          hasDescription: "JSON con los parámetros extra",
-          hasPlaceholder: "{}",
+          hasDescription: "JavaScript con los parámetros extra (raw injection)",
+          hasPlaceholder: "{msg:0}, 500, function() {}",
           hasExtraAttributes: {},
         },
         tiene_codigo: {

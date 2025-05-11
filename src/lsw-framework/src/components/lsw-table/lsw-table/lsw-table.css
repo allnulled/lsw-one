@@ -7,7 +7,7 @@
 .lsw_table_itself {}
 
 .lsw_table_viewer {
-    border: 1px solid #333;
+    border: 1px solid #88888888;
     padding: 4px;
     overflow: scroll;
     min-height: 180px;
@@ -15,7 +15,7 @@
     margin-bottom: 3px;
     margin-left: 40px;
     margin-right: 40px;
-    height: 500px;
+    height: 320px;
     resize: vertical;
 }
 
@@ -45,7 +45,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 }
 
 .lsw_table .title_box {
-    padding: 8px;
+    padding-left: 4px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -54,7 +54,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .table_menu_button {
     background-color: transparent;
     color: black;
-    border: 1px solid black;
+    border: 1px solid #88888888;
 }
 
 .table_navigation_menu_cell {
@@ -64,11 +64,11 @@ table.lsw_table_itself>thead>tr>th.button_header {
 }
 
 .table_navigation_menu {
-    background-color: #DDD;
+    background-color: #0000001a;
     color: black;
-    box-shadow: 0 0 4px black;
-    border-top-left-radius: 2pt;
-    border-top-right-radius: 2pt;
+    box-shadow: 0 0 0px black;
+    border-radius: 2pt;
+    border: 1px solid #88888888;
     padding: 4px;
 }
 
@@ -106,7 +106,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 
 .lsw_table_itself>tbody>tr>td.data_cell>pre {
     margin: 0px;
-    border: 1px solid #999;
+    border: 1px solid #88888888;
     background-color: #FFF;
     font-size: 12px;
     font-family: Arial;
@@ -131,8 +131,16 @@ table.lsw_table_itself>thead>tr>th.button_header {
 }
 
 .lsw_table .pagination_button {
-    font-size: 25px;
+    font-size: 20px;
     cursor: pointer;
+}
+
+.lsw_table .pagination_button.deactivated {
+    cursor: not-allowed;
+}
+
+.lsw_table .pagination_button.cursor_default {
+    cursor: default;
 }
 
 .lsw_table .pagination_button_box {
@@ -145,17 +153,17 @@ table.lsw_table_itself>thead>tr>th.button_header {
 
 .lsw_table_top_panel {
     background-color: #cecece30;
-    padding: 4px;
     border: 1px solid #88888888;
     margin-bottom: 4px;
 }
 .lsw_table_top_panel button {
     font-size: 16px;
-    padding: 4px;
-    max-height: 10px;
-    height: 10px;
-    min-height: 30px;
-    border: 1px solid #bbb;
+    padding: 0px;
+    height: auto;
+    min-height: 22px;
+    border: 1px solid #88888888;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 .lsw_table_top_button {
     margin-right: 2px;

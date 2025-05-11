@@ -26,6 +26,17 @@ Vue.component("LswAgendaAccionesViewer", {
     };
   },
   methods: {
+    openRandomizerFile() {
+      this.$trace("lsw-agenda-acciones-viewer.methods.openRandomizerFile");
+      this.$lsw.dialogs.open({
+        title: "Editar randomizables.env",
+        template: `
+          <div>
+            <lsw-filesystem-explorer opened-by="/kernel/settings/randomizables.env" :absolute-layout="true" />
+          </div>
+        `,
+      });
+    },
     changeDate(selectedDate) {
       this.$trace("lsw-agenda-acciones-viewer.methods.changeDate");
       this.selectedDate = selectedDate;

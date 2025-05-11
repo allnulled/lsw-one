@@ -15,7 +15,6 @@ try {
       Vue.prototype.$trace = (...args) => Vue.prototype.$lsw.logger.trace(...args);
       Vue.prototype.$lsw.utils = LswUtils;
       Vue.prototype.$lsw.timer = LswTimer;
-      Vue.prototype.$lsw.conductometria = LswConductometria.create();
       Vue.prototype.$lsw.backuper = LswBackuper.create();
       Vue.prototype.$lsw.intruder = LswIntruder.create();
       Vue.prototype.$lsw.windows = null;

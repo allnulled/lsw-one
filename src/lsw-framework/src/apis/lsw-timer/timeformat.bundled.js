@@ -1568,7 +1568,7 @@
       if (minuto !== false) {
         out += ("" + minuto).padStart(2, '0');
       }
-      if(addSeconds) {
+      if (addSeconds) {
         const segundo = date.getSeconds();
         out += ":";
         out += ("" + segundo).padStart(2, '0');
@@ -1578,6 +1578,74 @@
       console.log(error);
       return date;
     }
+  };
+
+  Timeformat_utils.parseToNumberOrReturn = function (txt, defaultValue) {
+    const output = parseFloat(txt);
+    return isNaN(output) ? defaultValue : output;
+  };
+
+  Timeformat_utils.fromDurationstringToMilliseconds = function (durationString) {
+    const lines = Timeformat_parser.parse(durationString);
+    if (lines.length === 0) {
+      return 0;
+    } else if (lines.length !== 1) {
+      throw new Error("Only accepted 1 expression")
+    }
+    const line = lines[0];
+    let ms = 0;
+    if (line.anios) {
+      ms += line.anios * 1000 * 60 * 60 * 24 * 365;
+    }
+    if (line.meses) {
+      ms += line.meses * 1000 * 60 * 60 * 24 * 30;
+    }
+    if (line.dias) {
+      ms += line.dias * 1000 * 60 * 60 * 24;
+    }
+    if (line.horas) {
+      ms += line.horas * 1000 * 60 * 60;
+    }
+    if (line.minutos) {
+      ms += line.minutos * 1000 * 60;
+    }
+    if (line.segundos) {
+      ms += line.segundos * 1000;
+    }
+    if (line.milisegundos) {
+      ms += line.milisegundos;
+    }
+    return ms;
+  };
+
+  Timeformat_utils.fromMillisecondsToDurationstring = function (ms) {
+    const units = {
+      y: 1000 * 60 * 60 * 24 * 365,
+      mon: 1000 * 60 * 60 * 24 * 30,
+      d: 1000 * 60 * 60 * 24,
+      h: 1000 * 60 * 60,
+      min: 1000 * 60,
+      s: 1000,
+      ms: 1
+    };
+    let remaining = ms;
+    const parts = [];
+    for (const [unit, value] of Object.entries(units)) {
+      const amount = Math.floor(remaining / value);
+      if (amount > 0) {
+        parts.push(`${amount}${unit}`);
+        remaining %= value;
+      }
+    }
+    return parts.join(' ') || "0min";
+  };
+
+  Timeformat_utils.multiplyDuration = function (duration, multiplier) {
+    const operand = Timeformat_utils.parseToNumberOrReturn(multiplier, 0);
+    const durationMiliSource = Timeformat_utils.fromDurationstringToMilliseconds(duration);
+    const durationMiliDest = durationMiliSource * operand;
+    const durationDest = Timeformat_utils.fromMillisecondsToDurationstring(durationMiliDest);
+    return durationDest;
   };
 
   return {

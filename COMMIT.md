@@ -18,18 +18,18 @@
     [x] propagadores prototipo
     [x] acciones virtuales
   [ ] iterar acciones reales
-    [ ] ir ejecutando propagadores
-    [ ] ir inflando acciones virtuales
+    [x] ir ejecutando propagadores
+      [x] con multiplicador ya automático funcionando
+    [x] ir inflando acciones virtuales
+    [x] ir propagando recursivamente acciones virtuales
 [ ] reportes de conductometria
-  [ ] acepta para dialog+table
+  [x] acepta para dialog+table
   [ ] acepta para dialog+template
-[ ] mejorar lsw-table para que sea más ligera
-[ ] buscador de texto rápido accesible en ref-resources iría bien
-  [ ] para ahorrarse el tags-control
+[x] mejorar lsw-table para que sea más ligera
 
 # 06-05-2025 18:59pm - ?
 
-[ ] Mantenimiento de bugs
+[x] Mantenimiento de bugs
 
 # 05-05-2025 01:30am - 06-05-2025 18:59pm
 
@@ -66,8 +66,8 @@
       [x] Prácticamente lo mismo que libros
     [x] De artículos
       [x] Un buscador de texto rápido
-[ ] Añadidas algunas opciones en configuraciones » preferencias de usuario
-  [ ] Para fondos, rutiner, etc.
+[x] Añadidas algunas opciones en configuraciones » preferencias de usuario
+  [x] Para fondos, rutiner, etc.
 
 ----
 

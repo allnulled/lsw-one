@@ -38,9 +38,6 @@
     async $resetReportState() {
       Vue.prototype.$trace("LswConductometriaReport.$resetReportState");
       this.result = false;
-      this.$state = {
-        // @DEFAULT-STATE:
-      };
     }
 
     async $rebuildCallback() {

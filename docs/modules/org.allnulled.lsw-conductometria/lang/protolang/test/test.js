@@ -12,7 +12,7 @@ describe("Protolang Parser and API Test", function (it) {
     ensure({ ProtolangParser }).type("object");
   });
 
-  const examplesFolder = path.resolve(__dirname + "/../examples");
+  const examplesFolder = path.resolve(__dirname + "/examples");
   const exampleFiles = fs.readdirSync(examplesFolder);
   for (let index = 0; index < exampleFiles.length; index++) {
     const file = exampleFiles[index];

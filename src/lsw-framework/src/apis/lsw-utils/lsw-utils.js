@@ -399,9 +399,23 @@
 
   LswUtils.createAsyncFunction = function(code, parameters = []) {
     const AsyncFunction = (async function() {}).constructor;
-    const asyncFunction = new AsyncFunction(code);
+    const asyncFunction = new AsyncFunction(...parameters, code);
     return asyncFunction;
   };
+
+  LswUtils.createSyncFunction = function(code, parameters = []) {
+    const syncFunction = new Function(...parameters, code);
+    return syncFunction;
+  };
+
+  LswUtils.callSyncFunction = function(code, parameters = {}, scope = globalThis) {
+    const parameterKeys = Object.keys(parameters);
+    const parameterValues = Object.values(parameters);
+    const syncFunction = new Function(...parameterKeys, code);
+    return syncFunction.call(scope, ...parameterValues);
+  };
+
+  LswUtils.arrays = {};
 
   LswUtils.extractFirstStringOr = function(txt, defaultValue = "") {
     if(!txt.startsWith('"')) return defaultValue;
@@ -411,7 +425,34 @@
     const extractedSubstr = txt.substr(0, pos);
     // // @OK: No escapamos, porque se entiende que no se va a usar ese string en el concepto nunca.
     return JSON.parse(extractedSubstr);
-  }
+  };
+
+  LswUtils.uniquizeArray = function(list) {
+    const appeared = [];
+    for(let index=0; index<list.length; index++) {
+      const item = list[index];
+      const pos = appeared.indexOf(item);
+      if(pos === -1) {
+        appeared.push(item);
+      }
+    }
+    return appeared;
+  };
+
+  LswUtils.arrays.uniquizeArray = LswUtils.uniquizeArray;
+  
+  LswUtils.arrays.getMissingInFirst = function(a, b) {
+    const excludeds = [];
+    for(let index=0; index<b.length; index++) {
+      const b_item = b[index];
+      const pos = a.indexOf(b_item);
+      if(pos === -1) {
+        excludeds.push(b_item);
+      }
+    }
+    return excludeds;
+  };
+
   // @code.end: LswUtils
 
   return LswUtils;

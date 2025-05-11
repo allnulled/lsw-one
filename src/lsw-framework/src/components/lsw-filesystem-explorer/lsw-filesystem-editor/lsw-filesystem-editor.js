@@ -10,7 +10,7 @@ Vue.component("LswFilesystemEditor", {
     filecontents: {
       type: String,
       required: true
-    }
+    },
   },
   data() {
     return {
@@ -44,6 +44,14 @@ Vue.component("LswFilesystemEditor", {
       } else {
         this.currentFontfamily = "monospace";
       }
+    },
+    async saveDocument() {
+      this.$trace("lsw-filesystem-editor.methods.saveDocument");
+      await this.$lsw.fs.write_file(this.explorer.current_node, this.contents);
+      this.$lsw.toasts.send({
+        title: "Documento guardado",
+        text: "El documento se guardó correctamente"
+      });
     }
   },
   mounted() {

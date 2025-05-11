@@ -523,21 +523,14 @@ Vue.component("LswFilesystemExplorer", {
       //*/
       await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.md", `
 
-Rutina 1
+Piensa en cosas bonitas
 
-Rutina 2
-
-Rutina 3
-
-Rutina 4
-
-Rutina 5
-
-Rutina 6
-
-Rutina 7
-
-Rutina 8
+- Cosas bonitas
+- Cosas bonitas
+- Cosas bonitas
+- Más cosas bonitas
+- Más cosas más bonitas
+- Más todavía
 
 `.trim());
       await this.$lsw.fs.ensureFile("/kernel/settings/randomizables.env", `
@@ -664,13 +657,35 @@ await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", `
 `.trim());
 await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", `
 
+const conceptos = await lsw.database.selectMany("Concepto");
+const acciones = await lsw.database.selectMany("Accion");
+const acciones_virtuales = await lsw.database.selectMany("Accion_virtual");
+const propagadores = await lsw.database.selectMany("Propagador_de_concepto");
+const prototipos = await lsw.database.selectMany("Propagador_prototipo");
+const acumulaciones_objeto = acciones_virtuales.reduce((out, it) => {
+  if(!(it.en_concepto in out)) {
+    out[it.en_concepto] = 0;
+  }
+  out[it.en_concepto] += (LswTimer.utils.fromDurationstringToMilliseconds(it.tiene_duracion) || 0);
+  return out;
+}, {});
+const acumulaciones = Object.keys(acumulaciones_objeto).sort((c1, c2) => {
+  return c2 > c1 ? 1 : -1;
+}).map(id => {
+  const ms = acumulaciones_objeto[id];
+  return {
+    nombre: id,
+    total: LswTimer.utils.fromMillisecondsToDurationstring(ms)
+  };
+});
+
 return {
-  "Todos los conceptos": [],
-  "Todas las acciones": [],
-  "Todos los propagadores": [],
-  "Todos los propagadores prototipo": [],
-  "Todas las acciones virtuales": [],
-  "Los estados acumulados": [],
+  "Acumulaciones virtuales": acumulaciones,
+  "Conceptos": conceptos,
+  "Acciones": acciones,
+  "Acciones virtuales": acciones_virtuales,
+  "Propagadores": propagadores,
+  "Propagadores prototipo": prototipos,
 };
 
 `.trim());
@@ -695,6 +710,10 @@ rel desayunar
       await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/concepto");
       await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/funcion");
       await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
+      await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", `
+        
+      `.trim());
+      await this.$lsw.fs.ensureDirectory("/kernel/components");
       await this.$lsw.fs.ensureFile("/kernel/boot.js", `
 
 // Cuidadito con este script que te cargas la app

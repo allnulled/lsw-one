@@ -57,6 +57,11 @@ Vue.component("LswPageTables", {
         });
       }
       this.tablesAsList = tablesAsList;
+    },
+  },
+  computed: {
+    tablesAsIdsList() {
+      return Object.keys(this.tablesAsList || {});
     }
   },
   mounted() {

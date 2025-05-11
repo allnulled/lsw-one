@@ -87,6 +87,13 @@ button.iconized_button {
     font-size: 12px;
 }
 
+button.has_light_bg {
+    background-color: #22222687;
+    color: white;
+    border: 1px solid #3c3c3e;
+    box-shadow: 0 0 3px black;
+}
+
 button>span.button_text {
     font-size: 13px !important;
 }
@@ -424,6 +431,11 @@ pre.codeblock {
     border: 3px double rgb(170, 133, 133);
     border-radius: 3pt;
     box-shadow: 0 0 4px black;
+}
+
+.texto_markdown.sin_decorar {
+    border: 0px solid rgb(170, 133, 133);
+    border-radius: 0pt;
 }
 
 .texto_markdown>p:first-child {

@@ -45,7 +45,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_prototipo", {
           hasFormatter: false,
           hasLabel: "Tiene función:",
           hasDescription: "Código JavaScript asociado al propagador prototipo",
-          hasPlaceholder: "...",
+          hasPlaceholder: "console.log('Hello from propagador', arguments)",
           hasExtraAttributes: {},
         },
         tiene_parametros: {
@@ -57,8 +57,8 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_prototipo", {
           },
           hasFormatter: false,
           hasLabel: "Tiene parámetros:",
-          hasDescription: "Array de strings en JSON para los parámetros de la función (etiquetas de parámetro solamente)",
-          hasPlaceholder: "...",
+          hasDescription: "Array de strings en JSON para los parámetros de la función (raw injection)",
+          hasPlaceholder: "argument0, argument1, argument2",
           hasExtraAttributes: {},
         }
       }

@@ -18692,7 +18692,7 @@ return Store;
       if (minuto !== false) {
         out += ("" + minuto).padStart(2, '0');
       }
-      if(addSeconds) {
+      if (addSeconds) {
         const segundo = date.getSeconds();
         out += ":";
         out += ("" + segundo).padStart(2, '0');
@@ -18702,6 +18702,74 @@ return Store;
       console.log(error);
       return date;
     }
+  };
+
+  Timeformat_utils.parseToNumberOrReturn = function (txt, defaultValue) {
+    const output = parseFloat(txt);
+    return isNaN(output) ? defaultValue : output;
+  };
+
+  Timeformat_utils.fromDurationstringToMilliseconds = function (durationString) {
+    const lines = Timeformat_parser.parse(durationString);
+    if (lines.length === 0) {
+      return 0;
+    } else if (lines.length !== 1) {
+      throw new Error("Only accepted 1 expression")
+    }
+    const line = lines[0];
+    let ms = 0;
+    if (line.anios) {
+      ms += line.anios * 1000 * 60 * 60 * 24 * 365;
+    }
+    if (line.meses) {
+      ms += line.meses * 1000 * 60 * 60 * 24 * 30;
+    }
+    if (line.dias) {
+      ms += line.dias * 1000 * 60 * 60 * 24;
+    }
+    if (line.horas) {
+      ms += line.horas * 1000 * 60 * 60;
+    }
+    if (line.minutos) {
+      ms += line.minutos * 1000 * 60;
+    }
+    if (line.segundos) {
+      ms += line.segundos * 1000;
+    }
+    if (line.milisegundos) {
+      ms += line.milisegundos;
+    }
+    return ms;
+  };
+
+  Timeformat_utils.fromMillisecondsToDurationstring = function (ms) {
+    const units = {
+      y: 1000 * 60 * 60 * 24 * 365,
+      mon: 1000 * 60 * 60 * 24 * 30,
+      d: 1000 * 60 * 60 * 24,
+      h: 1000 * 60 * 60,
+      min: 1000 * 60,
+      s: 1000,
+      ms: 1
+    };
+    let remaining = ms;
+    const parts = [];
+    for (const [unit, value] of Object.entries(units)) {
+      const amount = Math.floor(remaining / value);
+      if (amount > 0) {
+        parts.push(`${amount}${unit}`);
+        remaining %= value;
+      }
+    }
+    return parts.join(' ') || "0min";
+  };
+
+  Timeformat_utils.multiplyDuration = function (duration, multiplier) {
+    const operand = Timeformat_utils.parseToNumberOrReturn(multiplier, 0);
+    const durationMiliSource = Timeformat_utils.fromDurationstringToMilliseconds(duration);
+    const durationMiliDest = durationMiliSource * operand;
+    const durationDest = Timeformat_utils.fromMillisecondsToDurationstring(durationMiliDest);
+    return durationDest;
   };
 
   return {
@@ -19682,9 +19750,23 @@ return Store;
 
   LswUtils.createAsyncFunction = function(code, parameters = []) {
     const AsyncFunction = (async function() {}).constructor;
-    const asyncFunction = new AsyncFunction(code);
+    const asyncFunction = new AsyncFunction(...parameters, code);
     return asyncFunction;
   };
+
+  LswUtils.createSyncFunction = function(code, parameters = []) {
+    const syncFunction = new Function(...parameters, code);
+    return syncFunction;
+  };
+
+  LswUtils.callSyncFunction = function(code, parameters = {}, scope = globalThis) {
+    const parameterKeys = Object.keys(parameters);
+    const parameterValues = Object.values(parameters);
+    const syncFunction = new Function(...parameterKeys, code);
+    return syncFunction.call(scope, ...parameterValues);
+  };
+
+  LswUtils.arrays = {};
 
   LswUtils.extractFirstStringOr = function(txt, defaultValue = "") {
     if(!txt.startsWith('"')) return defaultValue;
@@ -19694,7 +19776,34 @@ return Store;
     const extractedSubstr = txt.substr(0, pos);
     // // @OK: No escapamos, porque se entiende que no se va a usar ese string en el concepto nunca.
     return JSON.parse(extractedSubstr);
-  }
+  };
+
+  LswUtils.uniquizeArray = function(list) {
+    const appeared = [];
+    for(let index=0; index<list.length; index++) {
+      const item = list[index];
+      const pos = appeared.indexOf(item);
+      if(pos === -1) {
+        appeared.push(item);
+      }
+    }
+    return appeared;
+  };
+
+  LswUtils.arrays.uniquizeArray = LswUtils.uniquizeArray;
+  
+  LswUtils.arrays.getMissingInFirst = function(a, b) {
+    const excludeds = [];
+    for(let index=0; index<b.length; index++) {
+      const b_item = b[index];
+      const pos = a.indexOf(b_item);
+      if(pos === -1) {
+        excludeds.push(b_item);
+      }
+    }
+    return excludeds;
+  };
+
   // @code.end: LswUtils
 
   return LswUtils;
@@ -24314,83 +24423,98 @@ Vue.component("LswCalendario", {
 // @code.end: LswCalendario API
 // @code.start: LswTable API | @$section: Vue.js (v2) Components » Lsw Table API » LswTable component
 Vue.component("LswTable", {
-  template: `<div class="lsw_table"
-    style="padding-top: 4px;">
+  template: `<div class="lsw_table pad_top_1">
     <div>
-        <div class="lsw_table_top_panel">
-            <div class="flex_row centered" style="gap: 2px;">
-                <div class="flex_1">
+        <div class="lsw_table_top_panel pad_horizontal_1">
+            <div class="flex_row centered pad_top_1 pad_bottom_1">
+                <div class="flex_1 pad_right_1">
                     *️⃣
                 </div>
                 <div class="flex_100 title_box">{{ title }}</div>
-                <div class="flex_1" v-for="topButton, topButtonIndex in attachedTopButtons" v-bind:key="'table-button-' + topButtonIndex">
+                <div class="flex_1 pad_left_1" v-for="topButton, topButtonIndex in attachedTopButtons" v-bind:key="'table-button-' + topButtonIndex">
                     <button class="" v-on:click="topButton.event">
                         {{ topButton.text }}
                     </button>
                 </div>
-                <div class="flex_1">
+                <div class="flex_1 pad_left_1">
                     <button class="cursor_pointer"
                         v-on:click="digestOutput">🛜</button>
                 </div>
-                <div class="flex_1">
-                    <button class="table_menu_div width_100"
-                        v-on:click="toggleMenu"
-                        :class="{activated: isShowingMenu === true}">
-                        <span v-if="hasFiltersApplying">🔴</span>
-                        <span v-else>⚪️</span>
-                    </button>
-                </div>
             </div>
-        </div>
-        <div v-if="isShowingMenu">
-            <div class="">
-                <div class="table_navigation_menu_cell"
-                    colspan="1000">
-                    <div class="table_navigation_menu">
-                        <div class="flex_row centered">
-                            <div class="flex_1 nowrap">Estás en: </div>
-                            <div class="flex_100 left_padded_1">
-                                <select class="width_100 text_align_right"
-                                    v-model="isShowingSubpanel">
-                                    <option value="Paginador">Paginador (en: {{ itemsPerPage }})</option>
-                                    <option value="Buscador">Buscador {{ searcher.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
-                                    <option value="Extensor">Extensor {{ extender.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
-                                    <option value="Filtro">Filtro {{ filter.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
-                                    <option value="Ordenador">Ordenador {{ sorter.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <hr />
-                        <div v-if="isShowingSubpanel === 'Extensor'">
-                            <textarea spellcheck="false"
-                                v-model="extender"
-                                :placeholder="placeholderForExtensor"></textarea>
-                        </div>
-                        <div v-if="isShowingSubpanel === 'Filtro'">
-                            <textarea spellcheck="false"
-                                v-model="filter"
-                                :placeholder="placeholderForFiltro"></textarea>
-                        </div>
-                        <div v-if="isShowingSubpanel === 'Ordenador'">
-                            <textarea spellcheck="false"
-                                v-model="sorter"
-                                :placeholder="placeholderForOrdenador"></textarea>
-                        </div>
-                        <div v-if="isShowingSubpanel === 'Buscador'">
+            <div class="flex_row centered pad_bottom_1">
+                <div class="flex_100">
+                    <div class="flex_row">
+                        <div class="flex_100">
                             <input spellcheck="false"
                                 class="width_100"
                                 type="text"
                                 v-model="searcher"
+                                style="min-height: 25px;"
                                 v-on:keypress.enter="digestOutput"
-                                :placeholder="placeholderForBuscador" />
+                                :placeholder="placeholderForBuscador"
+                            />
                         </div>
-                        <div v-if="isShowingSubpanel === 'Paginador'">
-                            <input spellcheck="false"
-                                class="width_100"
-                                type="number"
-                                v-model="itemsPerPage"
-                                v-on:keypress.enter="digestOutput"
-                                :placeholder="placeholderForPaginador" />
+                        <div class="flex_1 pad_left_1">
+                            <button class="width_100"
+                                v-on:click="toggleMenu"
+                                :class="{activated: isShowingMenu === true}">
+                                <span v-if="hasFiltersApplying">🔴</span>
+                                <span v-else>⚪️</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="isShowingMenu">
+                <div class="">
+                    <div class="table_navigation_menu_cell"
+                        colspan="1000">
+                        <div class="table_navigation_menu">
+                            <div class="flex_row centered">
+                                <div class="flex_1 nowrap">Estás en: </div>
+                                <div class="flex_100 left_padded_1">
+                                    <select class="width_100 text_align_right"
+                                        v-model="isShowingSubpanel">
+                                        <option value="Paginador">Paginador (en: {{ itemsPerPage }})</option>
+                                        <option value="Buscador">Buscador {{ searcher.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
+                                        <option value="Extensor">Extensor {{ extender.length ? \`(con: \${extender.length}B)\` : '' }}</option>
+                                        <option value="Filtro">Filtro {{ filter.length ? \`(con: \${filter.length}B)\` : '' }}</option>
+                                        <option value="Ordenador">Ordenador {{ sorter.length ? \`(con: \${sorter.length}B)\` : '' }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr />
+                            <div v-if="isShowingSubpanel === 'Extensor'">
+                                <textarea spellcheck="false"
+                                    v-model="extender"
+                                    :placeholder="placeholderForExtensor"></textarea>
+                            </div>
+                            <div v-if="isShowingSubpanel === 'Filtro'">
+                                <textarea spellcheck="false"
+                                    v-model="filter"
+                                    :placeholder="placeholderForFiltro"></textarea>
+                            </div>
+                            <div v-if="isShowingSubpanel === 'Ordenador'">
+                                <textarea spellcheck="false"
+                                    v-model="sorter"
+                                    :placeholder="placeholderForOrdenador"></textarea>
+                            </div>
+                            <div v-if="isShowingSubpanel === 'Buscador'">
+                                <input spellcheck="false"
+                                    class="width_100"
+                                    type="text"
+                                    v-model="searcher"
+                                    v-on:keypress.enter="digestOutput"
+                                    :placeholder="placeholderForBuscador" />
+                            </div>
+                            <div v-if="isShowingSubpanel === 'Paginador'">
+                                <input spellcheck="false"
+                                    class="width_100"
+                                    type="number"
+                                    v-model="itemsPerPageOnForm"
+                                    v-on:keypress.enter="digestOutput"
+                                    :placeholder="placeholderForPaginador" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -24403,20 +24527,28 @@ Vue.component("LswTable", {
                 <div class="flex_row centered">
                     <div class="flex_1 pagination_button_box first_box">
                         <div class="pagination_button first_button"
-                            v-on:click="goToFirstPage">⏪</div>
+                            v-on:click="goToFirstPage"
+                            v-if="currentPage !== 0">⏪</div>
+                        <div class="pagination_button cursor_default" v-else>◼️</div>
                     </div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
-                            v-on:click="decreasePage">◀️</div>
+                            v-on:click="decreasePage"
+                            v-if="currentPage !== 0">◀️</div>
+                        <div class="pagination_button cursor_default" v-else>◾️</div>
                     </div>
                     <div class="flex_100 text_align_center">Pág. {{ currentPage+1 }}/{{ totalOfPages }} - máx: {{ itemsPerPage }}</div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
-                            v-on:click="increasePage">▶️</div>
+                            v-on:click="increasePage"
+                            v-if="(currentPage+1) !== totalOfPages">▶️</div>
+                        <div class="pagination_button cursor_default" v-else>◾️</div>
                     </div>
                     <div class="flex_1 pagination_button_box last_box">
                         <div class="pagination_button last_button"
-                            v-on:click="goToLastPage">⏩</div>
+                            v-on:click="goToLastPage"
+                            v-if="(currentPage+1) !== totalOfPages">⏩</div>
+                        <div class="pagination_button cursor_default" v-else>◼️</div>
                     </div>
                 </div>
             </div>
@@ -24527,31 +24659,41 @@ Vue.component("LswTable", {
             </tbody>
         </table>
     </div>
+    
     <div class="paginator_widget this_code_is_duplicated_always">
         <div>
             <div>
                 <div class="flex_row centered">
                     <div class="flex_1 pagination_button_box first_box">
                         <div class="pagination_button first_button"
-                            v-on:click="goToFirstPage">⏪</div>
+                            v-on:click="goToFirstPage"
+                            v-if="currentPage !== 0">⏪</div>
+                        <div class="pagination_button cursor_default" v-else>◼️</div>
                     </div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
-                            v-on:click="decreasePage">◀️</div>
+                            v-on:click="decreasePage"
+                            v-if="currentPage !== 0">◀️</div>
+                        <div class="pagination_button cursor_default" v-else>◾️</div>
                     </div>
                     <div class="flex_100 text_align_center">Pág. {{ currentPage+1 }}/{{ totalOfPages }} - máx: {{ itemsPerPage }}</div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
-                            v-on:click="increasePage">▶️</div>
+                            v-on:click="increasePage"
+                            v-if="(currentPage+1) !== totalOfPages">▶️</div>
+                        <div class="pagination_button cursor_default" v-else>◾️</div>
                     </div>
                     <div class="flex_1 pagination_button_box last_box">
                         <div class="pagination_button last_button"
-                            v-on:click="goToLastPage">⏩</div>
+                            v-on:click="goToLastPage"
+                            v-if="(currentPage+1) !== totalOfPages">⏩</div>
+                        <div class="pagination_button cursor_default" v-else>◼️</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
 </div>`,
   props: {
     initialInput: {
@@ -24594,13 +24736,14 @@ Vue.component("LswTable", {
       input,
       title: this.initialSettings?.title || "",
       isShowingMenu: this.initialSettings?.isShowingMenu || false,
-      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Buscador",
+      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Filtro", // "Buscador", ...
       selectedRows: [],
       choosenRows: this.initialChoosenValue || [],
       searcher: this.initialSettings?.searcher || "",
       extender: this.initialSettings?.extender || "",
       filter: this.initialSettings?.filter || "",
       sorter: this.initialSettings?.sorter || "",
+      itemsPerPageOnForm: this.initialSettings?.itemsPerPage || 10,
       itemsPerPage: this.initialSettings?.itemsPerPage || 10,
       currentPage: this.initialSettings?.currentPage || 0,
       columnsAsList: this.initialSettings?.columnsAsList || [],
@@ -24769,6 +24912,9 @@ Vue.component("LswTable", {
     digestPagination() {
       this.$trace("lsw-table.methods.digestPagination");
       const page = this.currentPage;
+      Inject_form_state_of_items_per_page_here: {
+        this.itemsPerPage = this.itemsPerPageOnForm;
+      }
       const items = this.itemsPerPage;
       const firstPosition = items * (page);
       this.selectedRows = [];
@@ -24802,7 +24948,7 @@ Vue.component("LswTable", {
   watch: {
     itemsPerPage(value) {
       this.$trace("lsw-table.watch.itemsPerPage");
-      this.digestPagination();
+      /// this.digestPagination();
     },
     currentPage(value) {
       this.$trace("lsw-table.watch.currentPage");
@@ -24834,6 +24980,10 @@ Vue.component("LswTable", {
       this.$trace("lsw-table.computed.totalOfPages");
       return Math.ceil(this.output.length / this.itemsPerPage) || 1;
     },
+    currentLastPage() {
+      this.$trace("lsw-table.computed.currentLastPage");
+      return Math.floor(this.output.length / this.itemsPerPage) || 1;
+    }
   },
   mounted() {
     this.$trace("lsw-table.mounted");
@@ -25826,11 +25976,12 @@ Vue.component("LswToasts", {
       }
       return out;
     },
-    showError(error, propagate = false, log = true) {
+    showError(error, args = {}, propagate = false, log = true) {
       this.$trace("lsw-toasts.methods.showError");
       const output = this.send({
         title: "Un error ocurrió",
-        text: error.name + ": " + error.message
+        text: error.name + ": " + error.message,
+        ...args,
       });
       if(log) {
         console.log(error);
@@ -26476,6 +26627,14 @@ Vue.component("LswPageTables", {
     </h3>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb"
         :database-explorer="databaseExplorer" />
+    <div v-if="tablesAsList">
+        <div class="pad_horizontal_1 pad_bottom_1">
+            <div class="h4">Tablas disponibles:</div>
+        </div>
+        <div class="pad_left_2 pad_right_2 pad_bottom_1" v-for="idTable, indexTable in tablesAsList" v-bind:key="'table_id_' + idTable.id">
+            <button class="supermini width_100 text_align_left" v-on:click="() => openTable(idTable.id)">{{ idTable.id }}</button>
+        </div>
+    </div>
     <lsw-table v-if="tablesAsList && tablesAsList.length"
         :initial-input="tablesAsList"
         :initial-settings="{
@@ -26546,6 +26705,11 @@ Vue.component("LswPageTables", {
         });
       }
       this.tablesAsList = tablesAsList;
+    },
+  },
+  computed: {
+    tablesAsIdsList() {
+      return Object.keys(this.tablesAsList || {});
     }
   },
   mounted() {
@@ -27110,21 +27274,14 @@ Vue.component("LswFilesystemExplorer", {
       //*/
       await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.md", `
 
-Rutina 1
+Piensa en cosas bonitas
 
-Rutina 2
-
-Rutina 3
-
-Rutina 4
-
-Rutina 5
-
-Rutina 6
-
-Rutina 7
-
-Rutina 8
+- Cosas bonitas
+- Cosas bonitas
+- Cosas bonitas
+- Más cosas bonitas
+- Más cosas más bonitas
+- Más todavía
 
 `.trim());
       await this.$lsw.fs.ensureFile("/kernel/settings/randomizables.env", `
@@ -27251,13 +27408,35 @@ await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", `
 `.trim());
 await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", `
 
+const conceptos = await lsw.database.selectMany("Concepto");
+const acciones = await lsw.database.selectMany("Accion");
+const acciones_virtuales = await lsw.database.selectMany("Accion_virtual");
+const propagadores = await lsw.database.selectMany("Propagador_de_concepto");
+const prototipos = await lsw.database.selectMany("Propagador_prototipo");
+const acumulaciones_objeto = acciones_virtuales.reduce((out, it) => {
+  if(!(it.en_concepto in out)) {
+    out[it.en_concepto] = 0;
+  }
+  out[it.en_concepto] += (LswTimer.utils.fromDurationstringToMilliseconds(it.tiene_duracion) || 0);
+  return out;
+}, {});
+const acumulaciones = Object.keys(acumulaciones_objeto).sort((c1, c2) => {
+  return c2 > c1 ? 1 : -1;
+}).map(id => {
+  const ms = acumulaciones_objeto[id];
+  return {
+    nombre: id,
+    total: LswTimer.utils.fromMillisecondsToDurationstring(ms)
+  };
+});
+
 return {
-  "Todos los conceptos": [],
-  "Todas las acciones": [],
-  "Todos los propagadores": [],
-  "Todos los propagadores prototipo": [],
-  "Todas las acciones virtuales": [],
-  "Los estados acumulados": [],
+  "Acumulaciones virtuales": acumulaciones,
+  "Conceptos": conceptos,
+  "Acciones": acciones,
+  "Acciones virtuales": acciones_virtuales,
+  "Propagadores": propagadores,
+  "Propagadores prototipo": prototipos,
 };
 
 `.trim());
@@ -27282,6 +27461,10 @@ rel desayunar
       await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/concepto");
       await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/funcion");
       await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
+      await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", `
+        
+      `.trim());
+      await this.$lsw.fs.ensureDirectory("/kernel/components");
       await this.$lsw.fs.ensureFile("/kernel/boot.js", `
 
 // Cuidadito con este script que te cargas la app
@@ -27363,7 +27546,8 @@ Vue.component("LswFilesystemEditor", {
     <textarea class="editor" :style="{
         fontSize: currentFontsize + 'px',
         fontFamily: currentFontfamily
-    }" v-model="contents" spellcheck="false" />
+    }" v-model="contents" spellcheck="false" 
+    v-on:keydown.ctrl.s.prevent="saveDocument" />
 </div>`,
   props: {
     explorer: {
@@ -27373,7 +27557,7 @@ Vue.component("LswFilesystemEditor", {
     filecontents: {
       type: String,
       required: true
-    }
+    },
   },
   data() {
     return {
@@ -27407,6 +27591,14 @@ Vue.component("LswFilesystemEditor", {
       } else {
         this.currentFontfamily = "monospace";
       }
+    },
+    async saveDocument() {
+      this.$trace("lsw-filesystem-editor.methods.saveDocument");
+      await this.$lsw.fs.write_file(this.explorer.current_node, this.contents);
+      this.$lsw.toasts.send({
+        title: "Documento guardado",
+        text: "El documento se guardó correctamente"
+      });
     }
   },
   mounted() {
@@ -27856,18 +28048,15 @@ Vue.component("LswWikiArticulos", {
     <div class="pad_top_1">
         <div class="caja_de_mensaje_sobre_articulos">
             <div class=""
-                v-if="isSearching"
-                style="color: rgb(255, 196, 86);">
+                v-if="isSearching">
                 Buscando artículos...
             </div>
             <div class=""
-                v-else-if="!articulos"
-                style="color: rgb(245, 89, 78);">
+                v-else-if="!articulos">
                 No se alcanzaron a encontrar los artículos.
             </div>
             <div class=""
-                v-else-if="!articulos.length"
-                style="color: rgb(183, 215, 210);">
+                v-else-if="!articulos.length">
                 No se encontraron artículos según la búsqueda.
             </div>
             <div class=""
@@ -29192,9 +29381,11 @@ Vue.component("LswAgendaAccionesViewer", {
                 <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                 <div class="flex_1 nowrap">
                     <button class="iconized_button padded_vertically_1"
-                        v-on:click="randomizeDay">+ 🎲</button>
+                        v-on:click="openRandomizerFile">{🎲}</button>
                     <button class="iconized_button padded_vertically_1"
-                        v-on:click="cleanRandomizedDays">🔥 🎲</button>
+                        v-on:click="randomizeDay">+🎲</button>
+                    <button class="iconized_button padded_vertically_1"
+                        v-on:click="cleanRandomizedDays">🔥🎲</button>
                     <button class="iconized_button padded_vertically_1"
                         v-on:click="showAllHours"
                         style="display: none;">🔓*</button>
@@ -29284,17 +29475,17 @@ Vue.component("LswAgendaAccionesViewer", {
                         <div class="campo"
                             v-if="accion.tiene_parametros">
                             <div class="clave">Parámetros: </div>
-                            <div class="valor texto_markdown" v-html="marked.parse(accion.tiene_parametros)"></div>
+                            <div class="valor texto_markdown sin_decorar" v-html="marked.parse(accion.tiene_parametros)"></div>
                         </div>
                         <div class="campo"
                             v-if="accion.tiene_comentarios">
                             <div class="clave">Comentarios: </div>
-                            <div class="valor texto_markdown" v-html="(accion.tiene_comentarios)"></div>
+                            <div class="valor texto_markdown sin_decorar" v-html="(accion.tiene_comentarios)"></div>
                         </div>
                         <div class="campo"
                             v-if="accion.tiene_resultados">
                             <div class="clave">Resultados: </div>
-                            <div class="valor texto_markdown" v-html="(accion.tiene_resultados)"></div>
+                            <div class="valor texto_markdown sin_decorar" v-html="(accion.tiene_resultados)"></div>
                         </div>
                     </div>
                 </div>
@@ -29433,6 +29624,17 @@ Vue.component("LswAgendaAccionesViewer", {
     };
   },
   methods: {
+    openRandomizerFile() {
+      this.$trace("lsw-agenda-acciones-viewer.methods.openRandomizerFile");
+      this.$lsw.dialogs.open({
+        title: "Editar randomizables.env",
+        template: `
+          <div>
+            <lsw-filesystem-explorer opened-by="/kernel/settings/randomizables.env" :absolute-layout="true" />
+          </div>
+        `,
+      });
+    },
     changeDate(selectedDate) {
       this.$trace("lsw-agenda-acciones-viewer.methods.changeDate");
       this.selectedDate = selectedDate;
@@ -30321,14 +30523,30 @@ Vue.component("LswAgendaPropagadorSearch", {
 // @code.start: LswConductometria API | @$section: Vue.js (v2) Components » LswAgenda API » LswConductometria API » LswConductometria component
 Vue.component("LswConductometria", {
   template: `<div class="LswConductometria">
-  <template v-if="isLoaded === false">
-    <button class="supermini width_100" v-on:click="reloadEverything">Virtualizar conductometria</button>
+  <template>
+    <div class="flex_row centered">
+      <div class="flex_100" v-if="isLoaded === false">
+        <button class="supermini width_100 text_align_left" v-on:click="reloadEverything">🔮 Iniciar conductometría</button>
+      </div>
+      <div class="flex_100" v-else>
+        <h4>🔮 Conductometría</h4>
+      </div>
+      <div class="flex_1 pad_left_1" v-if="isLoaded === true">
+        <button class="supermini" v-on:click="reloadEverything">🔄</button>
+      </div>
+      <div class="flex_1 pad_left_1">
+        <button class="supermini" v-on:click="goToScripts">{📂}</button>
+      </div>
+      <div class="flex_1 pad_left_1">
+        <button class="supermini" v-on:click="goToReports">📂📊</button>
+      </div>
+    </div>
   </template>
   <template v-if="isLoaded === null">
-    <div class="">Se está virtualizando la conductometría.</div>
+    <div class="pad_top_1">⏳ Cargando, un momento, por favor. ⏳</div>
   </template>
   <template v-else-if="isLoaded === true">
-    <div>
+    <div class="pad_top_1">
       <h4>
         <div class="flex_row centered">
           <div class="flex_100">
@@ -30336,12 +30554,6 @@ Vue.component("LswConductometria", {
           </div>
           <div class="flex_1 pad_left_1">
             <button class="supermini" v-on:click="reloadEverything">🛜</button>
-          </div>
-          <div class="flex_1 pad_left_1">
-            <button class="supermini" style="min-width: 25px;" v-on:click="goToScripts">{ }</button>
-          </div>
-          <div class="flex_1 pad_left_1">
-            <button class="supermini" v-on:click="goToReports">📂 ↗️</button>
           </div>
         </div>
       </h4>
@@ -30425,11 +30637,15 @@ Vue.component("LswConductometria", {
         }
       });
     },
+    showError(error, ...args) {
+      Vue.prototype.$lsw.toasts.showError(error, ...args);
+    }
   },
   watch: {},
   mounted() {
     try {
       this.$trace("lsw-conductometria.mounted");
+      this.$lsw.conductometria = LswConductometria.create(this);
     } catch(error) {
       this.$lsw.toasts.showError(error);
     }
@@ -30456,13 +30672,14 @@ Vue.component("LswConductometria", {
       return new this(...args);
     }
 
-    constructor(options = {}) {
+    constructor(component = false) {
       Vue.prototype.$trace("lswConductometria.constructor");
+      this.$component = component;
     }
 
-    async reload(component) {
+    async reload() {
       Vue.prototype.$trace("lswConductometria.reload");
-      const virtualization = new LswConductometriaVirtualization(component);
+      const virtualization = LswConductometriaVirtualization.create(this.$component);
       await virtualization.$resetVirtualTables();
       await virtualization.$reloadProtolangScriptBoot();
       await virtualization.$virtualizePropagations();
@@ -30483,14 +30700,16 @@ Vue.component("LswConductometria", {
 
     reportErrorFromComponent(error) {
       Vue.prototype.$trace("lswConductometriaVirtualization.reportErrorFromComponent");
+      this.DEBUG("Lsw-cond-virt.reportErrorFromComponent");
       console.log(error);
-      if(this.$component && (typeof this.$component.addError === "function")) {
+      if (this.$component && (typeof this.$component.addError === "function")) {
         this.$component.addError(error);
       }
     }
 
     async $resetVirtualTables() {
       Vue.prototype.$trace("lswConductometriaVirtualization.$resetVirtualTables");
+      this.DEBUG("Lsw-cond-virt.$resetVirtualTables");
       await Vue.prototype.$lsw.database.deleteMany("Accion_virtual", it => true);
       await Vue.prototype.$lsw.database.deleteMany("Propagador_prototipo", it => true);
       await Vue.prototype.$lsw.database.deleteMany("Propagador_de_concepto", it => true);
@@ -30498,6 +30717,7 @@ Vue.component("LswConductometria", {
 
     async $reloadProtolangScriptBoot() {
       Vue.prototype.$trace("lswConductometriaVirtualization.$reloadProtolangScriptBoot");
+      this.DEBUG("Lsw-cond-virt.$reloadProtolangScriptBoot");
       const protoSource = await Vue.prototype.$lsw.fs.read_file("/kernel/agenda/proto/boot.proto");
       return await this.$evaluateProtolangScript(protoSource, {
         sourcePath: "/kernel/agenda/script/boot.proto"
@@ -30506,6 +30726,7 @@ Vue.component("LswConductometria", {
 
     async $evaluateProtolangScript(source, parameters) {
       Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateProtolangScript");
+      this.DEBUG("Lsw-cond-virt.$evaluateProtolangScript");
       const ast = Vue.prototype.$lsw.parsers.proto.parse(source, {
         options: parameters
       });
@@ -30525,15 +30746,19 @@ Vue.component("LswConductometria", {
 
     async $evaluateInclude(sentence) {
       Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateInclude");
+      this.DEBUG("Lsw-cond-virt.$evaluateInclude");
+      this.DEBUG(sentence);
       let isFile = undefined;
       let isDirectory = undefined;
       const allFiles = [];
       const filepath = sentence.path;
       Read_node: {
+        this.DEBUG("read node");
         isFile = await Vue.prototype.$lsw.fs.is_file(filepath);
         isDirectory = await Vue.prototype.$lsw.fs.is_directory(filepath);;
         if (isFile) {
-          console.log("[*] Reading file: ", filepath);
+          Vue.prototype.$trace("[*] Reading file: ", filepath);
+          this.DEBUG("[*] Reading file: ", filepath);
           const contents = await Vue.prototype.$lsw.fs.read_file(filepath);
           allFiles.push({
             incBy: sentence,
@@ -30541,18 +30766,21 @@ Vue.component("LswConductometria", {
             contents: contents
           });
         } else if (isDirectory) {
-          console.log("[*] Reading directory: ", filepath);
+          Vue.prototype.$trace("[*] Reading directory: ", filepath);
+          this.DEBUG("[*] Reading directory: ", filepath);
           const subfilesMap = await Vue.prototype.$lsw.fs.read_directory(filepath);
           const subfiles = Object.keys(subfilesMap);
           Iterating_subfiles:
           for (let indexSubfile = 0; indexSubfile < subfiles.length; indexSubfile++) {
             const subfile = subfiles[indexSubfile];
+            this.DEBUG("iterating subfile:", subfile);
             const subfilepath = Vue.prototype.$lsw.fs.resolve_path(filepath, subfile);
             const is_file = await Vue.prototype.$lsw.fs.is_file(subfilepath);
             if (!is_file) {
               continue Iterating_subfiles;
             }
-            console.log("[*] Reading subfile: ", subfilepath);
+            Vue.prototype.$trace("[*] Reading subfile: ", subfilepath);
+            this.DEBUG("[*] Reading subfile: ", subfilepath);
             const filecontents = await Vue.prototype.$lsw.fs.read_file(subfilepath);
             allFiles.push({
               incBy: sentence,
@@ -30564,9 +30792,10 @@ Vue.component("LswConductometria", {
           throw new Error(`File does not exits «${filepath}» on «lswConductometriaVirtualization.$evaluateInclude»`);
         }
       }
-      console.log("[*] Evaluating all subfiles:", allFiles);
+      Vue.prototype.$trace("[*] Evaluating all subfiles:", allFiles);
+      this.DEBUG("[*] Evaluating all subfiles:", allFiles);
       Evaluate_subnodes: {
-        for(let indexFile=0; indexFile<allFiles.length; indexFile++) {
+        for (let indexFile = 0; indexFile < allFiles.length; indexFile++) {
           const metafile = allFiles[indexFile];
           const file = metafile.file;
           const contents = metafile.contents;
@@ -30579,17 +30808,19 @@ Vue.component("LswConductometria", {
 
     async $evaluateDefine(sentence) {
       Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateDefine");
+      this.DEBUG("Lsw-cond-virt.$evaluateDefine");
       const { names } = sentence;
       // @TODO: insertar names en Concepto
       Iterating_names:
-      for(let index=0; index<names.length; index++) {
+      for (let index = 0; index < names.length; index++) {
         const name = names[index];
+        this.DEBUG("in name:", name);
         try {
           await Vue.prototype.$lsw.database.insert("Concepto", {
             tiene_nombre: name,
           });
         } catch (error) {
-          if(error.message === "Error on «browsie.insert» operation over store «Concepto»: A mutation operation in the transaction failed because a constraint was not satisfied.") {
+          if (error.message === "Error on «browsie.insert» operation over store «Concepto»: A mutation operation in the transaction failed because a constraint was not satisfied.") {
             continue Iterating_names;
           }
           await this.reportErrorFromComponent(error);
@@ -30599,9 +30830,11 @@ Vue.component("LswConductometria", {
 
     async $evaluateFunction(sentence) {
       Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateFunction");
+      this.DEBUG("Lsw-cond-virt.$evaluateFunction");
       const { name, params, code } = sentence;
       // @TODO: insertar name+params+code en Propagador_prototipo
       try {
+        this.DEBUG("inserting prototipo:", name);
         await Vue.prototype.$lsw.database.insert("Propagador_prototipo", {
           tiene_nombre: name,
           tiene_parametros: JSON.stringify(params),
@@ -30614,44 +30847,306 @@ Vue.component("LswConductometria", {
 
     async $evaluateRelation(sentence) {
       Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateRelation");
+      this.DEBUG("Lsw-cond-virt.$evaluateRelation");
       const { name, effects, triggers } = sentence;
       Iterating_effects:
-      for(let indexEffect=0; indexEffect<effects.length; indexEffect++) {
+      for (let indexEffect = 0; indexEffect < effects.length; indexEffect++) {
         const effect = effects[indexEffect];
-        const { concept, value } = effect;
+        const { consecuencia, ratio, argumentos } = effect;
+        this.DEBUG("inserting propagador:", name);
         await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
           tiene_propagador_prototipo: "multiplicador",
-          tiene_concepto_origen: name,
-          tiene_concepto_destino: concept,
-          tiene_parametros_extra: value,
+          tiene_concepto_disparador: name,
+          tiene_concepto_destino: consecuencia,
+          tiene_parametros_extra: ratio + (argumentos ? (", " + argumentos) : ''),
+          tiene_codigo: null,
         });
       }
       Iterating_triggers:
-      for(let indexTrigger=0; indexTrigger<triggers.length; indexTrigger++) {
+      for (let indexTrigger = 0; indexTrigger < triggers.length; indexTrigger++) {
         const trigger = triggers[indexTrigger];
-        if(trigger.type === "trigger-by-call") {
-          const { name: propagador, args } = trigger;
-          await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
-            tiene_propagador_prototipo: propagador,
-            tiene_concepto_origen: name,
-            tiene_concepto_destino: LswUtils.extractFirstStringOr(args, ""),
-            tiene_parametros_extra: args,
-          });
-        } else if(trigger.type === "trigger-by-code") {
-          await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
-            tiene_propagador_prototipo: propagador,
-            tiene_concepto_origen: name,
-            tiene_concepto_destino: LswUtils.extractFirstStringOr(args, ""),
-            tiene_parametros_extra: args,
-            tiene_codigo: trigger.code
-          });
+        if (trigger.type === "trigger by prototype") {
+          const { prototipo, conceptos, argumentos } = trigger;
+          if (conceptos) {
+            for (let index = 0; index < conceptos.length; index++) {
+              const concepto = conceptos[index];
+              Insertar_propagador_con_consecuencia: {
+                await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
+                  tiene_propagador_prototipo: prototipo,
+                  tiene_concepto_disparador: name,
+                  tiene_concepto_destino: concepto,
+                  tiene_parametros_extra: argumentos,
+                  tiene_codigo: null,
+                });
+              }
+            }
+          } else {
+            Insertar_propagador_por_llamada: {
+              await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
+                tiene_propagador_prototipo: prototipo,
+                tiene_concepto_disparador: name,
+                tiene_concepto_destino: null,
+                tiene_parametros_extra: argumentos,
+                tiene_codigo: null,
+              });
+            }
+          }
+        } else if (trigger.type === "trigger by code") {
+          Insertar_propagador_por_codigo_directo: {
+            await Vue.prototype.$lsw.database.insert("Propagador_de_concepto", {
+              tiene_propagador_prototipo: null,
+              tiene_concepto_disparador: name,
+              tiene_concepto_destino: null,
+              tiene_parametros_extra: null,
+              tiene_codigo: trigger.code
+            });
+          }
         }
       }
     }
 
-    $virtualizePropagations() {
-      Vue.prototype.$trace("lswConductometriaVirtualization.$virtualizePropagations");
+    $toJsExtension(txt) {
+      return txt.replace(/\.js$/g, "") + ".js";
+    }
 
+    async $virtualizePropagations() {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$virtualizePropagations");
+      this.DEBUG("Lsw-cond-virt.$virtualizePropagations");
+      const accionesReales = await Vue.prototype.$lsw.database.selectMany("Accion", accion => true);
+      // console.log("Acciones reales", accionesReales);
+      const errorOptions = {
+        timeout: 1000 * 10
+      };
+      Iterando_acciones_reales:
+      for (let indexAccionReal = 0; indexAccionReal < accionesReales.length; indexAccionReal++) {
+        const accionReal = accionesReales[indexAccionReal];
+        Virtualizar_accion_real: {
+          await this.addVirtualAction(accionReal);
+        }
+      }
+    }
+
+    $showError(error, options = {}, propagate = false, log = true) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$showError");
+      this.DEBUG("Lsw-cond-virt.$showError");
+      try {
+        this.$component.showError(error, options, propagate, log);
+      } catch (error) {
+        console.log("[!] Could not notify to vue component about this previous error");
+      }
+      if (propagate) {
+        throw error;
+      }
+    }
+
+    async addVirtualAction(accion_inicial) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.addVirtualAction");
+      this.DEBUG("Lsw-cond-virt.addVirtualAction");
+      Validaciones_minimas: {
+        break Validaciones_minimas;
+        const ensure1 = $ensure({ accion_inicial }, 1).type("object").to.have.keys(["en_concepto", "tiene_inicio", "tiene_duracion"]);
+        ensure1.its("en_concepto").type("string");
+        ensure1.its("tiene_inicio").type("string").its("length").to.be.greaterThan(0);
+        ensure1.its("tiene_duracion").type("string").its("length").to.be.greaterThan(0);
+      }
+      Filtramos_los_estados_no_completados: {
+        if (accion_inicial.tiene_estado === 'pendiente') {
+          return "IGNORED BECAUSE OF STATE PENDING";
+        }
+        if (accion_inicial.tiene_estado === 'fallida') {
+          return "IGNORED BECAUSE OF STATE FAILED";
+        }
+      }
+      let conc_inicial = accion_inicial.en_concepto;
+      let asoc_propags = false;
+      let asoc_proto_ids = false;
+      let asoc_protos_found = false;
+      let asoc_proto_ids_found = false;
+      let asoc_proto_ids_missing = false;
+      let asoc_protos_as_map = false;
+      Insertar_accion_virtual: {
+        await Vue.prototype.$lsw.database.insert("Accion_virtual", accion_inicial);
+      }
+      Extraer_propags: {
+        asoc_propags = await Vue.prototype.$lsw.database.selectMany("Propagador_de_concepto", propag => {
+          return propag.tiene_concepto_disparador === conc_inicial;
+        });
+        if (!asoc_propags) {
+          return "NO ASSOCIATED PROPAGATORS FOUND";
+        }
+      }
+      Extraer_protos: {
+        asoc_proto_ids = LswUtils.uniquizeArray(asoc_propags.map(propag => {
+          return propag.tiene_propagador_prototipo;
+        }));
+        asoc_protos_found = await Vue.prototype.$lsw.database.selectMany("Propagador_prototipo", proto_it => {
+          return asoc_proto_ids.indexOf(proto_it.tiene_nombre) !== -1;
+        });
+        asoc_proto_ids_found = LswUtils.arrays.uniquizeArray(asoc_protos_found.map(proto_it => proto_it.tiene_nombre));
+        asoc_proto_ids_missing = LswUtils.arrays.getMissingInFirst(asoc_proto_ids_found, asoc_proto_ids);
+        asoc_protos_as_map = asoc_protos_found.reduce((out, proto_it) => {
+          const nombre = proto_it.tiene_nombre;
+          out[nombre] = proto_it;
+          return out;
+        }, {});
+        if (asoc_proto_ids_missing.length) {
+          this.$showError(new Error("[!] Cuidado: no se encontraron los siguientes «Propagador_prototipo»: " + asoc_proto_ids_missing.join(", ")));
+        }
+      }
+      let propagation_molecule = {};
+      Resolver_propags_con_protos_y_propagar: {
+        for (let index_propag = 0; index_propag < asoc_propags.length; index_propag++) {
+          const propag = asoc_propags[index_propag];
+          const proto_id = propag.tiene_propagador_prototipo;
+          const proto_it = asoc_protos_as_map[proto_id];
+          try {
+            await this.$propagateVirtualAction(accion_inicial, propag, proto_it);
+          } catch (error) {
+            this.$showError(error);
+          }
+        }
+      }
+    }
+
+    async $propagateVirtualAction(accion, propagador_de_concepto, propagador_prototipo = false) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$propagateVirtualAction");
+      this.DEBUG("Lsw-cond-virt.$propagateVirtualAction");
+      try {
+        let concepto_origen = undefined;
+        let concepto_destino = undefined;
+        let funcion_propagadora = undefined;
+        let funcion_propagadora_parametros = [];
+        let funcion_propagadora_ambito = this;
+        Validaciones_minimas: {
+          this.DEBUG("Lsw-cond-virt.$propagateVirtualAction::Validaciones_minimas");
+          const ensure1 = $ensure({ accion }, 1).type("object")
+          ensure1.its("en_concepto").type("string");
+          ensure1.its("tiene_inicio").type("string").its("length").to.be.greaterThan(0);
+          ensure1.its("tiene_duracion").type("string").its("length").to.be.greaterThan(0);
+          const ensure2 = $ensure({ propagador_de_concepto }, 1).type("object");
+          const ensure3 = $ensure({ propagador_prototipo }, 1).type(["object", "boolean"]);
+          // console.log("propagador_prototipo", propagador_prototipo);
+        }
+        const {
+          tiene_nombre,     // un texto
+          tiene_funcion,    // un JavaScript (cuerpo de función)
+          tiene_parametros: tiene_parametros_prototipo, // un JSON bi-array
+        } = propagador_prototipo;
+        const {
+          tiene_propagador_prototipo,  // un Propagador_prototipo.tiene_nombre
+          tiene_concepto_disparador,       // un Concepto.tiene_nombre
+          tiene_concepto_destino,      // un Concepto.tiene_nombre
+          tiene_parametros: tiene_parametros_asociado, // un JSON bi-array
+          tiene_parametros_extra,      // un JavaScript (solo parámetros)
+          tiene_codigo,                // un JavaScript (cuerpo de función)
+        } = propagador_de_concepto;
+        Extraemos_conceptos: {
+          this.DEBUG("Lsw-cond-virt.$propagateVirtualAction::Extraemos_conceptos");
+          const conceptos_origen_matched = await Vue.prototype.$lsw.database.selectMany("Concepto", conc => conc.tiene_nombre === tiene_concepto_disparador);
+          concepto_origen = conceptos_origen_matched[0] || undefined;
+          const conceptos_destino_matched = await Vue.prototype.$lsw.database.selectMany("Concepto", conc => conc.tiene_nombre === tiene_concepto_destino);
+          concepto_destino = conceptos_destino_matched[0] || undefined;
+        }
+        Check_point: {
+          // console.log("accion", accion);
+          // console.log("concepto_origen", concepto_origen);
+          // console.log("concepto_destino", concepto_destino);
+          // console.log("funcion_propagadora", funcion_propagadora);
+          // console.log("funcion_propagadora_parametros", funcion_propagadora_parametros);
+          // console.log("funcion_propagadora_ambito", funcion_propagadora_ambito);
+          // console.log("CHECKPOINT!");
+        }
+        let propagacion_resultado = {};
+        Fabricamos_la_funcion_propagadora_y_la_llamamos: {
+          this.DEBUG("Lsw-cond-virt.$propagateVirtualAction::Fabricamos_la_funcion_propagadora_y_la_llamamos");
+          const propagacion_params = (() => {
+            try {
+              return JSON.parse(tiene_parametros_prototipo);
+            } catch (error) {
+              return [];
+            }
+          })();
+          const propagacion_source = tiene_funcion;
+          if (!propagacion_source) {
+            break Fabricamos_la_funcion_propagadora_y_la_llamamos;
+          }
+          const propagacion_callback = LswUtils.createAsyncFunction(propagacion_source, propagacion_params);
+          if (!propagacion_callback) {
+            break Fabricamos_la_funcion_propagadora_y_la_llamamos;
+          }
+          this.$debugEvaluation(propagacion_callback.toString(), "$propagateVirtualAction")
+          try {
+            const propagacion_context = {
+              accion,
+              propagador_de_concepto,
+              propagador_prototipo
+            };
+            const propagacion_callback_wrapper = LswUtils.createSyncFunction(`return propagacion_callback(propagacion_context, ${tiene_parametros_asociado || "{}"}, ${tiene_parametros_extra || "undefined"})`, [
+              "propagacion_context",
+              "propagacion_callback",
+            ]);
+            this.$debugEvaluation(propagacion_callback_wrapper.toString(), "$propagateVirtualAction")
+            propagacion_resultado = await propagacion_callback_wrapper.call(this, propagacion_context, propagacion_callback);
+          } catch (error) {
+            this.$showError(error);
+          }
+        }
+        let accionVirtual = undefined;
+        Fabricamos_nueva_accion: {
+          this.DEBUG("Lsw-cond-virt.$propagateVirtualAction::Fabricamos_nueva_accion");
+          if (!concepto_destino?.tiene_nombre) {
+            return "NO TIENE CONCEPTO DESTINO";
+          }
+          if (!concepto_origen?.tiene_nombre) {
+            return "NO TIENE CONCEPTO ORIGEN";
+          }
+          accionVirtual = this.createDefaultAction({
+            en_concepto: concepto_destino.tiene_nombre,
+            desde_concepto: concepto_origen.tiene_nombre,
+            tiene_estado: "propagada",
+            tiene_inicio: accion.tiene_inicio,
+            tiene_duracion: accion.tiene_duracion,
+            tiene_accion_anterior: accion.id,
+            tiene_accion_origen: undefined,
+            viene_de_propagador_de_concepto: propagador_de_concepto.id,
+            viene_de_propagador_prototipo: propagador_prototipo.tiene_nombre,
+            ...propagacion_resultado
+          });
+        }
+        Insertamos_accion_en_virtuales: {
+          this.DEBUG("Lsw-cond-virt.$propagateVirtualAction::Insertamos_accion_en_virtuales");
+          this.DEBUG(accionVirtual);
+          await this.addVirtualAction(accionVirtual);
+        }
+        // @TODO: fabricar la función propagadora y enchufarla.
+        // @TODO: fabricar la función propagadora y enchufarla.
+        // @TODO: fabricar la función propagadora y enchufarla.
+        // @TODO: fabricar la función propagadora y enchufarla.
+        // @TODO: fabricar la función propagadora y enchufarla.
+      } catch (error) {
+        this.$showError(error);
+      }
+    }
+
+    $debugEvaluation(jsCode, traceId) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.$debugEvaluation");
+      this.DEBUG("Lsw-cond-virt.$debugEvaluation");
+      console.log("[*] Evaluating js from: " + traceId);
+      console.log(jsCode);
+    }
+
+    createDefaultAction(overwrites = {}) {
+      Vue.prototype.$trace("lswConductometriaVirtualization.createDefaultAction");
+      this.DEBUG("Lsw-cond-virt.createDefaultAction");
+      return Object.assign({
+        en_concepto: "?",
+        tiene_inicio: LswTimer.utils.fromDateToDatestring(new Date()),
+        tiene_duracion: "1min",
+      }, overwrites);
+    }
+
+    DEBUG(...args) {
+      console.log(...args);
     }
 
   }
@@ -30798,9 +31293,6 @@ Vue.component("LswConductometriaReport", {
     async $resetReportState() {
       Vue.prototype.$trace("LswConductometriaReport.$resetReportState");
       this.result = false;
-      this.$state = {
-        // @DEFAULT-STATE:
-      };
     }
 
     async $rebuildCallback() {
@@ -31525,7 +32017,7 @@ Vue.component("LswDateControl", {
     const respectivePlaceholder = this.generatePlaceholder();
     return {
       uuid: LswRandomizer.getRandomString(5),
-      value: this.settings?.initialValue || this.settings?.column?.hasInitialValue() || "",
+      value: this.settings?.initialValue || this.settings?.column?.hasInitialValue?.call() || "",
       isEditable: true,
       isShowingCalendar: false,
       respectivePlaceholder,
@@ -32115,7 +32607,7 @@ Vue.component("LswSchemaBasedForm", {
                                     <button class="mini danger_button nowrap"
                                         v-if="isUpdateOperation"
                                         v-on:click="deleteRow">🔥 #{{model.rowId}}</button>
-                                    <button class="margin_left_1 nowrap" v-on:click="submitForm">⚡️</button>
+                                    <button class="has_light_bg margin_left_1 nowrap" v-on:click="submitForm">⚡️</button>
                                 </div>
                             </div>
                         </div>

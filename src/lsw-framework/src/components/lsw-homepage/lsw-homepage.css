@@ -1,0 +1,25 @@
+.lsw_homepage {}
+
+.lista_apps {
+
+}
+.lista_apps {
+    padding-left: 15px;
+}
+.lsw_homepage > .lista_apps {
+    padding-left: 0px;
+}
+.item_app {
+    padding-top: 1px;
+}
+.nombre_app {
+    background-color: rgba(0,0,0,0.3);
+    border: 1px solid #333;
+    border-radius: 3pt;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.nombre_app:hover {
+    background-color: rgba(0,0,0,0.6);
+}

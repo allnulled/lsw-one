@@ -4,22 +4,22 @@
             v-if="selectedDate">
             <div class="flex_row centered">
                 <div class="flex_1 margin_right_1">
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="() => selectForm('new')"
                         :class="{activated: selectedForm === 'new'}">#️⃣</button>
                 </div>
                 <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                 <div class="flex_1 nowrap">
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="openRandomizerFile">{🎲}</button>
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="randomizeDay">+🎲</button>
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="cleanRandomizedDays">🔥🎲</button>
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="showAllHours"
                         style="display: none;">🔓*</button>
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="hideAllHours"
                         style="display: none;">🔒*</button>
                 </div>
@@ -141,7 +141,7 @@
             <div class="hour_lapse_separator">
                 <div class="flex_row centered">
                     <div class="flex_1 pad_right_1">
-                        <button class="iconized_button nowrap"
+                        <button class="supermini nowrap"
                             style="margin-right: 1px;"
                             v-on:click="() => selectHour(franja.hora)"
                             :class="{activated: selectedForm === franja.hora}">#️⃣</button>
@@ -154,9 +154,9 @@
                     <div class="flex_1">
                         <div class="flex_1 flex_row centered">
                             <span v-on:click="() => toggleHour(franja.hora)">
-                                <button class="iconized_button nowrap activated"
+                                <button class="supermini nowrap activated"
                                     v-if="hiddenDateHours.indexOf(franja.hora) === -1">🔓</button>
-                                <button class="iconized_button nowrap"
+                                <button class="supermini nowrap"
                                     v-else>🔒</button>
                             </span>
                         </div>

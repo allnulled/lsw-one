@@ -106,7 +106,10 @@ rel correr
       clickPicas() {
         this.$trace("App.methods.clickPicas");
         document.querySelector("#the_picas_button").click();
-      }
+      },
+      goToHomepage() {
+        this.$refs.desktop.selectApplication("homepage");
+      },
     },
     mounted() {
       console.log("[*] Application mounted.");

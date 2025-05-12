@@ -1,77 +1,30 @@
-LswLifecycle.start().then(async output => {
-  console.log("[*] App lifecycle ended.");
+(function() {
 
-  // Vue.prototype.$lsw.logger.deactivate();
+  const runner = async output => {
   
-  const goTo = {
-    async aniadirNota() {
-      LswDom.querySelectorFirst(".home_bottom_panel > button", "+ 💬").click();
-    },
-    async verNotas() {
-      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "💬").click();
-    },
-    async calendario() {
-      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
-    },
-    async reportesDeCalendario() {
-      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
-      await LswDom.waitForMilliseconds(100);
-      LswDom.querySelectorFirst("button.nowrap", "📊").click();
-      await LswDom.waitForMilliseconds(100);
-      LswDom.querySelectorFirst("button", "🔮 Iniciar conductometría").click();
-      
-    },
-    async abrirNavegacionRapida() {
-      LswDom.querySelectorFirst(".lsw_apps_button > button", "🌍").click();
-    },
-    async abrirTareasPosterioresDeNavegacionRapida() {
-      LswDom.querySelectorFirst(".lsw_apps_viewer_button button", "🕓 Tareas posteriores").click();
-    },
-    async configuraciones() {
-      LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
-      await LswDom.waitForMilliseconds(100);
-      LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
-    },
-    async abrirWiki() {
-      LswDom.querySelectorFirst(".mobile_off_panel_cell", "🔬").click();
-      Abrir_articulos: {
-        await LswDom.waitForMilliseconds(100);
-        LswDom.querySelectorFirst(".lsw_wiki button.supermini", "🔬").click();
-        return;
-      }
-      Abrir_libros: {
-        await LswDom.waitForMilliseconds(100);
-        LswDom.querySelectorFirst(".lsw_wiki button.supermini", "📚").click();
-      }
-      Abrir_un_libro: {
-        await LswDom.waitForMilliseconds(100);
-        LswDom.querySelectorFirst(".nota_button .small_font", "Boot").click();
-      }
+    console.log("[*] App lifecycle ended.");
+  
+    Logger_activation: {
+      // Vue.prototype.$lsw.logger.deactivate();
+      // Vue.prototype.$lsw.logger.activate();
     }
-  }
-
-  Work_relocation: {
-    await LswDom.waitForMilliseconds(100);
-    await goTo.reportesDeCalendario();
-    try {
-      Inject_kernel_bootjs: {
-        await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
+  
+    Work_relocation: {
+      try {
+        Inject_kernel_bootjs: {
+          await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
+        }
+      } catch (error) {
+        Vue.prototype.$lsw.toasts.send({
+          title: "Errores en el boot",
+          text: "El boot lanzó un error: (" + error.name + ") " + error.message,
+        });
       }
-    } catch (error) {
-      Vue.prototype.$lsw.toasts.send({
-        title: "Errores en el boot",
-        text: "El boot lanzó un error: (" + error.name + ") " + error.message,
-      })
+      return;
     }
-    return;
-    await LswDom.waitForMilliseconds(100);
-    await goTo.abrirWiki();
-    await LswDom.waitForMilliseconds(100);
-    await goTo.abrirNavegacionRapida();
-    await LswDom.waitForMilliseconds(100);
-    await goTo.abrirTareasPosterioresDeNavegacionRapida();
-    return;
-  }
+  
+  };
 
+  LswLifecycle.start().then(runner).catch(console.error);
 
-}).catch(console.error);
+})();

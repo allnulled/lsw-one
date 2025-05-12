@@ -1,4 +1,4 @@
-// @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
+// @code.start: LswConductometriaReport API | @$section: Vue.js (v2) Components » LswConductometriaReport API » LswConductometriaReport API » LswConductometriaReport component
 Vue.component("LswConductometriaReport", {
   name: "LswConductometriaReport",
   template: $template,
@@ -47,7 +47,7 @@ Vue.component("LswConductometriaReport", {
           }
         }
       });
-    }
+    },
   },
   watch: {
 
@@ -64,4 +64,4 @@ Vue.component("LswConductometriaReport", {
     }
   }
 });
-// @code.end: LswAgenda API
+// @code.end: LswConductometriaReport API

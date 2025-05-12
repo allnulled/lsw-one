@@ -76,6 +76,32 @@ table.basic_table > thead > tr > th:last-child {
 .width_1 { width: 1%; }
 .width_auto { width: auto; }
 /* // @code.end: Lsw Styling Framework */
+.lsw_homepage {}
+
+.lista_apps {
+
+}
+.lista_apps {
+    padding-left: 15px;
+}
+.lsw_homepage > .lista_apps {
+    padding-left: 0px;
+}
+.item_app {
+    padding-top: 1px;
+}
+.nombre_app {
+    background-color: rgba(0,0,0,0.3);
+    border: 1px solid #333;
+    border-radius: 3pt;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.nombre_app:hover {
+    background-color: rgba(0,0,0,0.6);
+}
+
 :root {
     --altura_de_dias_de_calendario: 40px;
 }
@@ -2388,7 +2414,7 @@ table.tabla_de_conductometria .minibutton {
     border-left: 1px solid #333;
     height: 100%;
     padding-top: 8px;
-    min-width: 60px;
+    min-width: 30px;
     font-size: 24px;
     cursor: pointer;
 }

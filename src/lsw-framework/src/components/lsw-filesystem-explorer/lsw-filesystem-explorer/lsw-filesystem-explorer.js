@@ -669,7 +669,9 @@ const acumulaciones_objeto = acciones_virtuales.reduce((out, it) => {
   out[it.en_concepto] += (LswTimer.utils.fromDurationstringToMilliseconds(it.tiene_duracion) || 0);
   return out;
 }, {});
-const acumulaciones = Object.keys(acumulaciones_objeto).sort((c1, c2) => {
+const acumulaciones = Object.keys(acumulaciones_objeto).sort((k1, k2) => {
+  const c1 = acumulaciones_objeto[k1];
+  const c2 = acumulaciones_objeto[k2];
   return c2 > c1 ? 1 : -1;
 }).map(id => {
   const ms = acumulaciones_objeto[id];

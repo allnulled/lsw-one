@@ -4,7 +4,28 @@
         <select class="flex_100" v-model="selectedSection">
             <option value="datos">Base de datos</option>
             <option value="preferencias">Preferencias de usuario</option>
+            <option value="documentacion">Documentación</option>
         </select>
+    </div>
+    <div class="section margin_top_1" v-if="selectedSection === 'documentacion'">
+        <h3>Configuraciones » Documentación</h3>
+        <hr />
+        <h4>Links de documentación</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startCodeReference">Ir a referencia del código</button>
+                </div>
+                <div class="flex_100 explanation_text">te lleva a la documentación oficial del código de `allnulled@lsw-one`.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startGithubHomepage">Ir a repositorio del código</button>
+                </div>
+                <div class="flex_100 explanation_text">te lleva a la página oficial del proyecto de `allnulled@lsw-one`.</div>
+            </div>
+        </div>
+        <hr />
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'datos'">
         <h3>Configuraciones » Base de datos</h3>

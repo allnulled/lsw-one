@@ -31,6 +31,7 @@ module.exports = [
   `${basepath}/lsw-framework/src/apis/lsw-tester/universal-tester.js`,
   // LSW DOM:
   `${basepath}/lsw-framework/src/apis/lsw-dom/lsw-dom.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-dom/lsw-dom-irruptor.js`,
   // LSW VUE2:
   `${basepath}/lsw-framework/src/apis/lsw-dom/lsw-vue2.js`,
   // LSW PROXIFIER:
@@ -92,6 +93,10 @@ module.exports = [
   `${basepath}/lsw-framework/src/directives/v-xform/v-xform.js`,
   // `${basepath}/lsw-framework/src/directives/v-form/v-form.js`, // Por si se requiere pero en principio no y debe eliminarse
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // HOMEPAGE:
+  `${basepath}/lsw-framework/src/components/lsw-homepage/lsw-homepage`,
+  // SOURCEABLE:
+  `${basepath}/lsw-framework/src/components/lsw-sourceable/lsw-sourceable`,
   // CALENDARIO:
   `${basepath}/lsw-framework/src/components/lsw-calendario/lsw-calendario`,
   // TABLE:

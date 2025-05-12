@@ -175,6 +175,14 @@ Vue.component("LswConfigurationsPage", {
         template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/randomizables.env" />`,
       });
     },
+    startCodeReference() {
+      this.$trace("lsw-configurations-page.methods.startCodeReference");
+      this.$window.open("https://allnulled.github.io/lsw-one/reference", "_blank");
+    },
+    startGithubHomepage() {
+      this.$trace("lsw-configurations-page.methods.startGithubHomepage");
+      this.$window.open("https://github.com/allnulled/lsw-one", "_blank");
+    },
     async saveBackup() {
       this.$trace("lsw-configurations-page.methods.saveBackup");
       const allData = await LswDatabase.exportDatabase("lsw_default_database");

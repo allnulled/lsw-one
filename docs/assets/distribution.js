@@ -14370,6 +14370,73 @@ if (process?.env?.NODE_ENV === "test") {
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
+    window['LswDomIrruptor'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswDomIrruptor'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+
+  // @code.start: LswDomIrruptor class | @section: Lsw Dom Irruptor API » LswDomIrruptor class
+  const LswDomIrruptor = class {
+
+    static async aniadirNota() {
+      LswDom.querySelectorFirst(".home_bottom_panel > button", "+ 💬").click();
+    }
+    static async verNotas() {
+      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "💬").click();
+    }
+    static async calendario() {
+      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
+    }
+    static async reportesDeCalendario() {
+      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button.nowrap", "📊").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button", "🔮 Iniciar conductometría").click();
+      
+    }
+    static async abrirNavegacionRapida() {
+      LswDom.querySelectorFirst(".lsw_apps_button > button", "🌍").click();
+    }
+    static async abrirTareasPosterioresDeNavegacionRapida() {
+      LswDom.querySelectorFirst(".lsw_apps_viewer_button button", "🕓 Tareas posteriores").click();
+    }
+    static async configuraciones() {
+      LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
+    }
+    static async abrirWiki() {
+      LswDom.querySelectorFirst(".mobile_off_panel_cell", "🔬").click();
+      Abrir_articulos: {
+        await LswDom.waitForMilliseconds(100);
+        LswDom.querySelectorFirst(".lsw_wiki button.supermini", "🔬").click();
+        return;
+      }
+      Abrir_libros: {
+        await LswDom.waitForMilliseconds(100);
+        LswDom.querySelectorFirst(".lsw_wiki button.supermini", "📚").click();
+      }
+      Abrir_un_libro: {
+        await LswDom.waitForMilliseconds(100);
+        LswDom.querySelectorFirst(".nota_button .small_font", "Boot").click();
+      }
+    }
+
+  }
+
+  return LswDomIrruptor;
+  // @code.end: LswDomIrruptor class
+
+});
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
     window['LswVue2'] = mod;
   }
   if (typeof global !== 'undefined') {
@@ -23787,6 +23854,207 @@ Vue.directive("focus", {
 
 });
 // @code.end: LswXForm API
+const homepage_apps_events = {
+  "base de datos": function() {
+    
+  },
+  "calendario": function() {
+    
+  },
+  "sistema de ficheros": function() {
+    
+  },
+  "configuraciones": function() {
+    
+  },
+  "calendario": function() {
+    
+  },
+  "tareas posteriores": function() {
+    
+  },
+  "tareas anteriores": function() {
+    
+  },
+  "conductometria": function() {
+    
+  },
+  "notas": function() {
+    
+  },
+  "nueva nota": function() {
+    
+  },
+  "enciclopedia": function() {
+    
+  },
+  "nuevo articulo": function() {
+    
+  },
+};
+
+// @code.start: LswHomepage API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswHomepage component
+Vue.component("LswHomepage", {
+  template: `<div class="lsw_homepage">
+    <h4 class="pad_bottom_1">📟 Apps disponibles 📟</h4>
+    <div class="lista_apps" style="font-size: 10px;">
+        <div class="item_app">
+            <div class="nombre_app flex_row centered" v-on:click="abrirApp('base de datos')">
+                <div class="flex_100">↗️ Base de datos</div>
+                <div class="flex_1 nowrap">📦</div>
+            </div>
+        </div>
+        <div class="item_app">
+            <div class="nombre_app flex_row centered" v-on:click="abrirApp('sistema de ficheros')">
+                <div class="flex_100">↗️ Sistema de ficheros</div>
+                <div class="flex_1 nowrap">📂</div>
+            </div>
+        </div>
+        <div class="item_app">
+            <div class="nombre_app flex_row centered" v-on:click="abrirApp('configuraciones')">
+                <div class="flex_100">↗️ Configuraciones</div>
+                <div class="flex_1 nowrap">🔧</div>
+            </div>
+        </div>
+        <div class="item_app">
+            <div class="nombre_app flex_row centered" v-on:click="abrirApp('calendario')">
+                <div class="flex_100">↗️ Calendario</div>
+                <div class="flex_1 nowrap">📆</div>
+            </div>
+            <div class="lista_apps">
+                <div class="item_app">
+                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('despues')">
+                        <div class="flex_100">➡️ Tareas posteriores</div>
+                        <div class="flex_1 nowrap">🕔 ➡️</div>
+                    </div>
+                </div>
+                <div class="item_app">
+                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('antes')">
+                        <div class="flex_100">➡️ Tareas anteriores</div>
+                        <div class="flex_1 nowrap">⬅️ 🕔</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="item_app">
+            <div class="nombre_app flex_row centered" v-on:click="abrirApp('notas')">
+                <div class="flex_100">↗️ Notas</div>
+                <div class="flex_1 nowrap">💬</div>
+            </div>
+            <div class="lista_apps">
+                <div class="item_app">
+                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('nueva nota')">
+                        <div class="flex_100">➡️ Nueva nota</div>
+                        <div class="flex_1 nowrap">+ 💬</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="item_app">
+            <div class="nombre_app flex_row centered" v-on:click="abrirApp('enciclopedia')">
+                <div class="flex_100">↗️ Enciclopedia</div>
+                <div class="flex_1 nowrap">🔬</div>
+            </div>
+            <div class="lista_apps">
+                <div class="item_app">
+                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('nuevo articulo')">
+                        <div class="flex_100">➡️ Nuevo artículo</div>
+                        <div class="flex_1 nowrap">+ 🔬</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`,
+  props: {
+    appsViewer: {
+      type: Object,
+      required: true,
+    }
+  },
+  data() {
+    this.$trace("lsw-homepage.data");
+    return {};
+  },
+  methods: {
+    async abrirApp(appId) {
+      this.$trace("lsw-homepage.methods.abrirApp");
+      this.$lsw.toasts.send({
+        title: "Yendo a: " + appId,
+      });
+      this.appsViewer.selectApplication(appId);
+    }
+  },
+  watch: {},
+  mounted() {
+    this.$trace("lsw-homepage.mounted");
+    
+  },
+  unmounted() {
+    this.$trace("lsw-homepage.unmounted");
+    
+  }
+});
+// @code.end: LswHomepage API
+// @code.start: LswSourceable API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswSourceable component
+Vue.component("LswSourceable", {
+  template: `<div class="lsw_sourceable">
+    <template v-if="!isLoaded">
+        Cargando componente. Por favor, aguarde...
+    </template>
+    <template>
+        <component :is="componentId" />
+    </template>
+</div>`,
+  props: {
+    fixedId: {
+      type: [String, Boolean],
+      default: () => false,
+    },
+    source: {
+      type: [String, Boolean],
+      default: () => false,
+    },
+    composition: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  data() {
+    this.$trace("lsw-sourceable.data");
+    const reflectedId = this.fixedId || LswRandomizer.getRandomString(10);
+    return {
+      isLoaded: false,
+      componentId: "lsw-sourceable-" + reflectedId,
+    };
+  },
+  methods: {
+    loadReflection() {
+      this.$trace("lsw-sourceable.methods.loadReflection");
+      const that = this;
+      const source = this.source || this.$slots.default;
+      Vue.component(this.componentId, {
+        template: "<template>" + source + "</template>",
+        ...this.composition,
+      });
+      this.isLoaded = true;
+    },
+    unloadReflection() {
+      this.$trace("lsw-sourceable.methods.loadReflection");
+      delete Vue.options.components[this.componentId];
+    }
+  },
+  watch: {},
+  mounted() {
+    this.$trace("lsw-sourceable.mounted");
+    this.loadReflection();
+  },
+  unmounted() {
+    this.$trace("lsw-sourceable.unmounted");
+    this.unloadReflection();
+  }
+});
+// @code.end: LswSourceable API
 // @code.start: LswCalendario API | @$section: Vue.js (v2) Components » LswCalendario API » LswCalendario component
 Vue.component("LswCalendario", {
   template: `<div class="Component LswCalendario">
@@ -27447,7 +27715,9 @@ const acumulaciones_objeto = acciones_virtuales.reduce((out, it) => {
   out[it.en_concepto] += (LswTimer.utils.fromDurationstringToMilliseconds(it.tiene_duracion) || 0);
   return out;
 }, {});
-const acumulaciones = Object.keys(acumulaciones_objeto).sort((c1, c2) => {
+const acumulaciones = Object.keys(acumulaciones_objeto).sort((k1, k2) => {
+  const c1 = acumulaciones_objeto[k1];
+  const c2 = acumulaciones_objeto[k2];
   return c2 > c1 ? 1 : -1;
 }).map(id => {
   const ms = acumulaciones_objeto[id];
@@ -29401,22 +29671,22 @@ Vue.component("LswAgendaAccionesViewer", {
             v-if="selectedDate">
             <div class="flex_row centered">
                 <div class="flex_1 margin_right_1">
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="() => selectForm('new')"
                         :class="{activated: selectedForm === 'new'}">#️⃣</button>
                 </div>
                 <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                 <div class="flex_1 nowrap">
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="openRandomizerFile">{🎲}</button>
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="randomizeDay">+🎲</button>
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="cleanRandomizedDays">🔥🎲</button>
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="showAllHours"
                         style="display: none;">🔓*</button>
-                    <button class="iconized_button padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="hideAllHours"
                         style="display: none;">🔒*</button>
                 </div>
@@ -29538,7 +29808,7 @@ Vue.component("LswAgendaAccionesViewer", {
             <div class="hour_lapse_separator">
                 <div class="flex_row centered">
                     <div class="flex_1 pad_right_1">
-                        <button class="iconized_button nowrap"
+                        <button class="supermini nowrap"
                             style="margin-right: 1px;"
                             v-on:click="() => selectHour(franja.hora)"
                             :class="{activated: selectedForm === franja.hora}">#️⃣</button>
@@ -29551,9 +29821,9 @@ Vue.component("LswAgendaAccionesViewer", {
                     <div class="flex_1">
                         <div class="flex_1 flex_row centered">
                             <span v-on:click="() => toggleHour(franja.hora)">
-                                <button class="iconized_button nowrap activated"
+                                <button class="supermini nowrap activated"
                                     v-if="hiddenDateHours.indexOf(franja.hora) === -1">🔓</button>
-                                <button class="iconized_button nowrap"
+                                <button class="supermini nowrap"
                                     v-else>🔒</button>
                             </span>
                         </div>
@@ -30692,6 +30962,7 @@ Vue.component("LswConductometria", {
   }
 })(function () {
 
+  // @code.start: LswConductometria API | @$section: Vue.js (v2) Components » LswAgenda API » LswConductometria API » LswConductometria class
   const LswConductometria = class {
 
     static create(...args) {
@@ -31179,24 +31450,37 @@ Vue.component("LswConductometria", {
   }
 
   return LswConductometria;
+  // @code.end: LswConductometria API
 
 });
-// @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
+// @code.start: LswConductometriaReport API | @$section: Vue.js (v2) Components » LswConductometriaReport API » LswConductometriaReport API » LswConductometriaReport component
 Vue.component("LswConductometriaReport", {
   name: "LswConductometriaReport",
   template: `<div class="lsw_conductometria_reports">
+    <h4 class="pad_1">Reporte: </h4>
+    <h3 class="pad_1">{{ reportId }}</h3>
     <div v-if="!isLoaded">
         <div class="">Reporte cargando. Un momento por favor...</div>
     </div>
     <div class="pad_1" v-else>
         <div class="report_block" v-if="Array.isArray(report)">
-            <lsw-table :initial-input="report" :initial-settings="{title: reportId}" />
-        </div>
-        <div class="report_block" v-if="typeof report === 'object'">
             <h4>
                 <div class="flex_row centered">
                     <div class="flex_100">
-                        Desglose de reporte:
+                        Contenido de reporte por dato:
+                    </div>
+                    <div class="flex_1">
+                        <button class="supermini" v-on:click="openReportSource">📄 ↗️</button>
+                    </div>
+                </div>
+            </h4>
+            <lsw-table :initial-input="report" :initial-settings="{title: reportId}" />
+        </div>
+        <div class="report_block" v-else-if="typeof report === 'object'">
+            <h4>
+                <div class="flex_row centered">
+                    <div class="flex_100">
+                        Índice de reporte por datos:
                     </div>
                     <div class="flex_1">
                         <button class="supermini" v-on:click="openReportSource">📄 ↗️</button>
@@ -31209,10 +31493,30 @@ Vue.component("LswConductometriaReport", {
                     <div class="linkable_text has_light_bg" v-on:click="() => goToReportTitle(reportIndex)">{{ reportIndex }}</div>
                 </li>
             </ul>
+            <h4>
+                <div class="flex_row centered">
+                    <div class="flex_100">
+                        Secciones de reporte por datos:
+                    </div>
+                </div>
+            </h4>
             <div v-for="reportItem, reportIndex in report"
                 v-bind:key="'report-' + reportIndex">
                 <lsw-table :initial-input="reportItem" :initial-settings="{title: reportIndex}" :ref="'report_' + reportIndex" />
             </div>
+        </div>
+        <div class="report_block" v-if="typeof report === 'string'">
+            <h4>
+                <div class="flex_row centered">
+                    <div class="flex_100">
+                        Contenido de reporte por plantilla:
+                    </div>
+                    <div class="flex_1">
+                        <button class="supermini" v-on:click="openReportSource">📄 ↗️</button>
+                    </div>
+                </div>
+            </h4>
+            <lsw-sourceable :source="report"></lsw-sourceable>
         </div>
     </div>
 </div>`,
@@ -31261,7 +31565,7 @@ Vue.component("LswConductometriaReport", {
           }
         }
       });
-    }
+    },
   },
   watch: {
 
@@ -31278,7 +31582,7 @@ Vue.component("LswConductometriaReport", {
     }
   }
 });
-// @code.end: LswAgenda API
+// @code.end: LswConductometriaReport API
 
 (function (factory) {
   const mod = factory();
@@ -32644,7 +32948,7 @@ Vue.component("LswSchemaBasedForm", {
                         <div class="flex_1 flex_row centered">
                             <button class="supermini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos propios'}"
-                                v-on:click="() => selectSection('campos propios')">🧱</button>
+                                v-on:click="() => selectSection('campos propios')">📟</button>
                             <button class="supermini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos reflejos'}"
                                 v-on:click="() => selectSection('campos reflejos')">↔️</button>
@@ -33181,7 +33485,28 @@ Vue.component("LswConfigurationsPage", {
         <select class="flex_100" v-model="selectedSection">
             <option value="datos">Base de datos</option>
             <option value="preferencias">Preferencias de usuario</option>
+            <option value="documentacion">Documentación</option>
         </select>
+    </div>
+    <div class="section margin_top_1" v-if="selectedSection === 'documentacion'">
+        <h3>Configuraciones » Documentación</h3>
+        <hr />
+        <h4>Links de documentación</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startCodeReference">Ir a referencia del código</button>
+                </div>
+                <div class="flex_100 explanation_text">te lleva a la documentación oficial del código de \`allnulled@lsw-one\`.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startGithubHomepage">Ir a repositorio del código</button>
+                </div>
+                <div class="flex_100 explanation_text">te lleva a la página oficial del proyecto de \`allnulled@lsw-one\`.</div>
+            </div>
+        </div>
+        <hr />
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'datos'">
         <h3>Configuraciones » Base de datos</h3>
@@ -33466,6 +33791,14 @@ Vue.component("LswConfigurationsPage", {
         template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/randomizables.env" />`,
       });
     },
+    startCodeReference() {
+      this.$trace("lsw-configurations-page.methods.startCodeReference");
+      this.$window.open("https://allnulled.github.io/lsw-one/reference", "_blank");
+    },
+    startGithubHomepage() {
+      this.$trace("lsw-configurations-page.methods.startGithubHomepage");
+      this.$window.open("https://github.com/allnulled/lsw-one", "_blank");
+    },
     async saveBackup() {
       this.$trace("lsw-configurations-page.methods.saveBackup");
       const allData = await LswDatabase.exportDatabase("lsw_default_database");
@@ -33555,8 +33888,8 @@ rel correr
     template: `<div class="app app_component position_relative">
     <lsw-automensajes-viewer ref="desktop" />
     <div class="home_bottom_panel">
-        <button class="" v-on:click="goToAddArticulo">+ 🔬</button>
-        <button class="" v-on:click="goToAddNota">+ 💬</button>
+        <button class="" v-on:click="goToAddArticulo">+🔬</button>
+        <button class="" v-on:click="goToAddNota">+💬</button>
         <button class="" v-on:click="goToCalendario">📅</button>
         <!--button class="" v-on:click="goToAddArticulo">+ 🔬</button>
         <button class="" v-on:click="goToAddRecordatorio">+ 🪧</button-->
@@ -33570,6 +33903,7 @@ rel correr
             <div class="mobile_off_panel_cell" v-on:click="goToEnciclopedia">🔬</div>
             <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
             <div class="mobile_off_panel_cell" v-on:click="clickPicas">♠️</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToHomepage">📟</div>
         </div>
     </div>
     <lsw-clockwatcher />
@@ -33657,7 +33991,10 @@ rel correr
       clickPicas() {
         this.$trace("App.methods.clickPicas");
         document.querySelector("#the_picas_button").click();
-      }
+      },
+      goToHomepage() {
+        this.$refs.desktop.selectApplication("homepage");
+      },
     },
     mounted() {
       console.log("[*] Application mounted.");
@@ -47085,10 +47422,10 @@ Vue.component("LswAutomensajesViewer", {
       selectedFontsize: 12,
       automessagingId: undefined,
       automessagingSeconds: 0,
-      simboloActual: "🎮", // "♠️",
+      simboloActual: "✴️", // "♠️",
       // simboloActual: LswRandomizer.getRandomItem("🌅🌄🌠🎇🎆🌇🌆🏙🌃🌌🌉🌁".split("")),
       
-      // simboloActual: LswRandomizer.getRandomItem("🐶🐱🐵🐗🐴🐌🐜🌋🏭🏢🏬🏣🚀🛸🚁🎲🎯🎳🎮🗽🗼🛟🎱🐞🌝🌛🌜🌚🌕🌖🌗🌘🌑🌒🌓🌔🌙🌎🌍🌏🪐💫⭐️🌟✨⚡️☄️💥🔥🌪🌈🐉🐲🐦‍🔥🌵🎄🌲🌳🌴🪹🪺🪵🌱🌿🍀🍁🍄🍄‍🟫🌾💐🌷🪷🌹🥀🌺🎪🤹🤹‍♂️🤹‍♀️🎭🎨🎼🎹🥁🪘🪇🎷🎺🪗🎸🪕🎻🪈♟🎰🧩🚗🚕🚙🎬🎤🎧💧💦🫧☔️☂️🌊🍏🍎🍐🍊🍋🍋‍🟩🍌🍉🍇🍓🫐🍈🍒🍑🥭🍍🥥🥝🍅🍆🥑🥦🫛".split("")),
+      // simboloActual: LswRandomizer.getRandomItem("🐶🐱🐵🐗🐴🐌🐜🌋🏭🏢🏬🏣🚀🛸🚁🎲🎯🎳✴️🗽🗼🛟🎱🐞🌝🌛🌜🌚🌕🌖🌗🌘🌑🌒🌓🌔🌙🌎🌍🌏🪐💫⭐️🌟✨⚡️☄️💥🔥🌪🌈🐉🐲🐦‍🔥🌵🎄🌲🌳🌴🪹🪺🪵🌱🌿🍀🍁🍄🍄‍🟫🌾💐🌷🪷🌹🥀🌺🎪🤹🤹‍♂️🤹‍♀️🎭🎨🎼🎹🥁🪘🪇🎷🎺🪗🎸🪕🎻🪈♟🎰🧩🚗🚕🚙🎬🎤🎧💧💦🫧☔️☂️🌊🍏🍎🍐🍊🍋🍋‍🟩🍌🍉🍇🍓🫐🍈🍒🍑🥭🍍🥥🥝🍅🍆🥑🥦🫛".split("")),
     };
   },
   methods: {
@@ -47178,7 +47515,7 @@ Vue.component("LswAutomensajesViewer", {
 Vue.component("LswAppsViewerButton", {
   template: `<div class="lsw_apps_viewer_button">
     <div class="lsw_apps_button">
-        <button class="supermini rounded" v-on:click="open">🌍</button>
+        <button class="supermini rounded" v-on:click="openHomepage">📟</button>
     </div>
     <div class="position_relative">
         <div class="hidden_menu"
@@ -47281,6 +47618,9 @@ Vue.component("LswAppsViewerButton", {
       }
       this.close();
     },
+    openHomepage() {
+      this.selectApplication("homepage");
+    }
   },
   watch: {},
   async mounted() {
@@ -47463,6 +47803,14 @@ Vue.component("LswAppsViewerPanel", {
                     v-bind:key="'configuraciones'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
                         <lsw-configurations-page />
+                    </div>
+                </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'homepage'"
+                    v-bind:key="'homepage'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-homepage :apps-viewer="this" />
                     </div>
                 </div>
 
@@ -51732,81 +52080,34 @@ try {
   console.error(error);
   console.log("[!] Boot failed");
 }
-LswLifecycle.start().then(async output => {
-  console.log("[*] App lifecycle ended.");
+(function() {
 
-  // Vue.prototype.$lsw.logger.deactivate();
+  const runner = async output => {
   
-  const goTo = {
-    async aniadirNota() {
-      LswDom.querySelectorFirst(".home_bottom_panel > button", "+ 💬").click();
-    },
-    async verNotas() {
-      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "💬").click();
-    },
-    async calendario() {
-      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
-    },
-    async reportesDeCalendario() {
-      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
-      await LswDom.waitForMilliseconds(100);
-      LswDom.querySelectorFirst("button.nowrap", "📊").click();
-      await LswDom.waitForMilliseconds(100);
-      LswDom.querySelectorFirst("button", "🔮 Iniciar conductometría").click();
-      
-    },
-    async abrirNavegacionRapida() {
-      LswDom.querySelectorFirst(".lsw_apps_button > button", "🌍").click();
-    },
-    async abrirTareasPosterioresDeNavegacionRapida() {
-      LswDom.querySelectorFirst(".lsw_apps_viewer_button button", "🕓 Tareas posteriores").click();
-    },
-    async configuraciones() {
-      LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
-      await LswDom.waitForMilliseconds(100);
-      LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
-    },
-    async abrirWiki() {
-      LswDom.querySelectorFirst(".mobile_off_panel_cell", "🔬").click();
-      Abrir_articulos: {
-        await LswDom.waitForMilliseconds(100);
-        LswDom.querySelectorFirst(".lsw_wiki button.supermini", "🔬").click();
-        return;
-      }
-      Abrir_libros: {
-        await LswDom.waitForMilliseconds(100);
-        LswDom.querySelectorFirst(".lsw_wiki button.supermini", "📚").click();
-      }
-      Abrir_un_libro: {
-        await LswDom.waitForMilliseconds(100);
-        LswDom.querySelectorFirst(".nota_button .small_font", "Boot").click();
-      }
+    console.log("[*] App lifecycle ended.");
+  
+    Logger_activation: {
+      // Vue.prototype.$lsw.logger.deactivate();
+      // Vue.prototype.$lsw.logger.activate();
     }
-  }
-
-  Work_relocation: {
-    await LswDom.waitForMilliseconds(100);
-    await goTo.reportesDeCalendario();
-    try {
-      Inject_kernel_bootjs: {
-        await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
+  
+    Work_relocation: {
+      try {
+        Inject_kernel_bootjs: {
+          await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
+        }
+      } catch (error) {
+        Vue.prototype.$lsw.toasts.send({
+          title: "Errores en el boot",
+          text: "El boot lanzó un error: (" + error.name + ") " + error.message,
+        });
       }
-    } catch (error) {
-      Vue.prototype.$lsw.toasts.send({
-        title: "Errores en el boot",
-        text: "El boot lanzó un error: (" + error.name + ") " + error.message,
-      })
+      return;
     }
-    return;
-    await LswDom.waitForMilliseconds(100);
-    await goTo.abrirWiki();
-    await LswDom.waitForMilliseconds(100);
-    await goTo.abrirNavegacionRapida();
-    await LswDom.waitForMilliseconds(100);
-    await goTo.abrirTareasPosterioresDeNavegacionRapida();
-    return;
-  }
+  
+  };
 
+  LswLifecycle.start().then(runner).catch(console.error);
 
-}).catch(console.error);
+})();
 });

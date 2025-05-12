@@ -11,6 +11,7 @@
   }
 })(function () {
 
+  // @code.start: LswConductometria API | @$section: Vue.js (v2) Components » LswAgenda API » LswConductometria API » LswConductometria class
   const LswConductometria = class {
 
     static create(...args) {
@@ -498,5 +499,6 @@
   }
 
   return LswConductometria;
+  // @code.end: LswConductometria API
 
 });

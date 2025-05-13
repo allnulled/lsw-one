@@ -92,9 +92,10 @@ Vue.component("LswWikiLibros", {
         return "";
       }
       let out = "";
-      const { id, subtree } = treeNode;
+      const { id, link, subtree } = treeNode;
+      const reference = id || link;
       const articulosCoincidentes = await this.$lsw.database.selectMany("Articulo", articulo => {
-        return articulo.tiene_titulo === id;
+        return articulo.tiene_titulo === reference;
       });
       out += `### ${id}\n\n`;
       if(articulosCoincidentes && articulosCoincidentes.length) {

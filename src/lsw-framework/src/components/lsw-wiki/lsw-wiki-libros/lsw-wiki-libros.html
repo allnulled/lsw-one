@@ -34,7 +34,7 @@
                     <div class="lsw_wiki_libro_viewer_root" v-if="libro in loadedLibros">
                         <lsw-wiki-libro-viewer :arbol="loadedLibros[libro]" :indice-de-arbol="0" :on-click-link="abrirArticulo">
                             <template v-slot:default="{ arbol }">
-                                <lsw-wiki-articulo-viewer :articulo-id="arbol.link" />
+                                <lsw-wiki-articulo-viewer :articulo-id="arbol.link || arbol.id" />
                             </template>
                         </lsw-wiki-libro-viewer>
                     </div>

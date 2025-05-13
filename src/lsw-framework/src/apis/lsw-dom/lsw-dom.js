@@ -76,6 +76,12 @@
       });
     }
 
+    static extractPlaintextFromHtmltext(htmlText) {
+      const el1 = document.createElement("div");
+      el1.innerHTML = htmlText;
+      return el1.textContent;
+    }
+
   };
   // @code.end: LswDom class
 

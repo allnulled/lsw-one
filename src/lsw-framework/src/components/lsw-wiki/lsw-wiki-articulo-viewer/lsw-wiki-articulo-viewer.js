@@ -25,10 +25,9 @@ Vue.component("LswWikiArticuloViewer", {
     async loadContent() {
       this.$trace("lsw-wiki-articulo-viewer.methods.loadContent");
       const matchedRows = await this.$lsw.database.selectMany("Articulo", articulo => {
-        console.log(articulo);
         return articulo.tiene_titulo === this.articuloId;
       });
-      console.log(matchedRows);
+      console.log("[*] Artículos coincidentes:", matchedRows);
       try {
         if(matchedRows.length === 0) {
           throw new Error(`Articulo no encontrado por «${this.articuloId}»`);

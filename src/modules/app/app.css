@@ -398,21 +398,24 @@ pre.codeblock {
     padding-bottom: 2px;
     padding-left: 4px;
     padding-right: 4px;
-    background-color: rgba(255,255,255,0.3);
+    background-color: rgba(255,255,255,0.4);
     color: black;
-    text-shadow: 0 0 1px white;
+    text-shadow: 0 0 1px black;
     cursor: pointer;
 }
 .list_button:hover {
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(255,255,255,0.6);
 }
 .list_button.activated {
-    background-color: rgba(255,255,255,0.7);
+    background-color: rgba(255,255,255,0.8);
 }
 
 
 
 .texto_markdown {}
+.texto_markdown.light_bg {
+    background-color: rgba(0,0,0,0.85);
+}
 .texto_markdown h1,
 .texto_markdown h2,
 .texto_markdown h3,
@@ -425,7 +428,7 @@ pre.codeblock {
 .texto_markdown {
     padding: 7px;
     margin: 0px;
-    background-color: rgba(19, 3, 43, 0.4);
+    background-color: rgba(19, 3, 43, 0.7);
     color: #FFF;
     text-shadow: 0 0 1px #fff;
     border: 3px double rgb(170, 133, 133);

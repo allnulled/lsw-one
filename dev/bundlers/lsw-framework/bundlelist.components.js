@@ -105,6 +105,9 @@ module.exports = [
   // DATA EXPLORER:
   `${basepath}/lsw-framework/src/components/lsw-data-explorer/lsw-data-explorer/lsw-data-explorer`,
   `${basepath}/lsw-framework/src/components/lsw-data-explorer/lsw-data-implorer/lsw-data-implorer`,
+  // DATA PRINTER:
+  `${basepath}/lsw-framework/src/components/lsw-data-printer-button/lsw-data-printer-button`,
+  `${basepath}/lsw-framework/src/components/lsw-data-printer-report/lsw-data-printer-report`,
   // DIALOGS:
   `${basepath}/lsw-framework/src/components/lsw-dialogs/lsw-dialogs`,
   // WINDOWS AND PROCESSES:

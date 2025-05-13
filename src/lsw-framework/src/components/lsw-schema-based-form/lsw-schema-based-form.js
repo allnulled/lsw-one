@@ -210,6 +210,17 @@ Vue.component("LswSchemaBasedForm", {
       this.$trace("lsw-schema-based-form.methods.submitForm");
       return await this.$refs.schemaForm0.$xform.submit();
     },
+    passToPrinter() {
+      this.$trace("lsw-schema-based-form.methods.passToPrinter");
+      const value = this.$refs.schemaForm0.$xform.getValue();
+      this.$lsw.dialogs.open({
+        title: "Impresión de estado de formulario",
+        template: `
+          <lsw-data-printer-report :input="input" />
+        `,
+        factory: { data: { input: value } },
+      });
+    },
     async deleteRow() {
       this.$trace("lsw-schema-based-form.methods.deleteRow");
       const confirmed = await this.$lsw.dialogs.open({

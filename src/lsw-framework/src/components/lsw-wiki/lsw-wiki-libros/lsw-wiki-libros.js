@@ -70,7 +70,44 @@ Vue.component("LswWikiLibros", {
           data: { libro }
         }
       });
-    }
+    },
+    async printLibro(libroId) {
+      this.$trace("LswWikiLibros.methods.printLibro");
+      const libroTree = await this.loadLibro(libroId);
+      const libroTexted = await this.resolveLibroTree(libroTree)
+      await this.$lsw.dialogs.open({
+        id: LswRandomizer.getRandomString(10),
+        title: "Imprimir libro",
+        template: `
+          <lsw-data-printer-report :input="libro" />
+        `,
+        factory: {
+          data: { libro: libroTexted }
+        }
+      });
+    },
+    async resolveLibroTree(treeNode) {
+      this.$trace("LswWikiLibros.methods.resolveLibroTree");
+      if(typeof treeNode === "undefined") {
+        return "";
+      }
+      let out = "";
+      const { id, subtree } = treeNode;
+      const articulosCoincidentes = await this.$lsw.database.selectMany("Articulo", articulo => {
+        return articulo.tiene_titulo === id;
+      });
+      out += `### ${id}\n\n`;
+      if(articulosCoincidentes && articulosCoincidentes.length) {
+        const articuloTextualizado = articulosCoincidentes.map(articulo => articulo.tiene_contenido).join("\n\n");
+        out += `${articuloTextualizado || ""}\n\n`;
+      }
+      if(typeof subtree === "object") {
+        for(let prop in subtree) {
+          out += await this.resolveLibroTree(subtree[prop]);
+        }
+      }
+      return out;
+    },
   },
   watch: {
     

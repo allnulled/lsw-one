@@ -1,5 +1,13 @@
 # Último commit:
 
+# 12-05-2025 21:55pm
+
+[ ] botón para visualizar en txt: 🔤
+  [ ] en libros
+  [ ] en artículos
+  [ ] en ítems de la base de datos (cualquier json)
+  [ ] en tablas (con un estado concreto) de la base de datos (también json)
+
 # 09-05-2025 12:57am
 
 [x] Protolang (el parser): lenguaje para:

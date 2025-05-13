@@ -14361,6 +14361,12 @@ if (process?.env?.NODE_ENV === "test") {
       });
     }
 
+    static extractPlaintextFromHtmltext(htmlText) {
+      const el1 = document.createElement("div");
+      el1.innerHTML = htmlText;
+      return el1.textContent;
+    }
+
   };
   // @code.end: LswDom class
 
@@ -14403,6 +14409,16 @@ if (process?.env?.NODE_ENV === "test") {
     static async abrirNavegacionRapida() {
       LswDom.querySelectorFirst(".lsw_apps_button > button", "🌍").click();
     }
+    static async abrirBaseDeDatos() {
+      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("div", "↗️ Base de datos").click();
+    }
+    static async abrirAccionesVirtuales() {
+      await this.abrirBaseDeDatos();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button", "Accion_virtual").click();
+    }
     static async abrirTareasPosterioresDeNavegacionRapida() {
       LswDom.querySelectorFirst(".lsw_apps_viewer_button button", "🕓 Tareas posteriores").click();
     }
@@ -14413,18 +14429,22 @@ if (process?.env?.NODE_ENV === "test") {
     }
     static async abrirWiki() {
       LswDom.querySelectorFirst(".mobile_off_panel_cell", "🔬").click();
+    }
+    static async abrirWikiArticulos() {
+      await this.abrirWiki();
+      await LswDom.waitForMilliseconds();
       Abrir_articulos: {
         await LswDom.waitForMilliseconds(100);
         LswDom.querySelectorFirst(".lsw_wiki button.supermini", "🔬").click();
         return;
       }
+    }
+    static async abrirWikiLibros() {
+      await this.abrirWiki();
+      await LswDom.waitForMilliseconds();
       Abrir_libros: {
         await LswDom.waitForMilliseconds(100);
         LswDom.querySelectorFirst(".lsw_wiki button.supermini", "📚").click();
-      }
-      Abrir_un_libro: {
-        await LswDom.waitForMilliseconds(100);
-        LswDom.querySelectorFirst(".nota_button .small_font", "Boot").click();
       }
     }
 
@@ -19898,8 +19918,64 @@ return Store;
     return excludeds;
   };
 
-  // @code.end: LswUtils
+  LswUtils.fromJsonToNatural = function(json, nivel = 0) {
+    // @CHATGPT:
+    const indent = '  '.repeat(nivel);
+    let texto = '';
+    if (Array.isArray(json)) {
+      texto += `${indent}Esta es una lista con ${json.length} elemento(s):\n`;
+      json.forEach((item, index) => {
+        texto += `${indent}- Elemento ${index + 1}: `;
+        if (typeof item === 'object' && item !== null) {
+          texto += '\n' + LswUtils.fromJsonToNatural(item, nivel + 1);
+        } else {
+          texto += `${LswUtils.naturalizeValue(item)}\n`;
+        }
+      });
+    } else if (typeof json === 'object' && json !== null) {
+      const keys = Object.keys(json);
+      texto += `${indent}Este objeto tiene ${keys.length} propiedad(es):\n`;
+      for (const key of keys) {
+        const valor = json[key];
+        texto += `${indent}- La propiedad "${key}" `;
+        if (typeof valor === 'object' && valor !== null) {
+          texto += `contiene:\n` + LswUtils.fromJsonToNatural(valor, nivel + 1);
+        } else {
+          texto += `tiene ${LswUtils.naturalizeValue(valor)}.\n`;
+        }
+      }
+    } else {
+      texto += `${indent}${LswUtils.naturalizeValue(json)}\n`;
+    }
+    return texto;
+  };
 
+  LswUtils.naturalizeValue = function(valor) {
+    switch (typeof valor) {
+      case 'string':
+        return `un texto que dice "${valor}"`;
+      case 'number':
+        return `un número con valor ${valor}`;
+      case 'boolean':
+        return valor ? 'el valor verdadero' : 'el valor falso';
+      case 'object':
+        return valor === null ? 'un valor nulo' : 'un objeto';
+      default:
+        return 'un valor desconocido';
+    }
+  };
+
+  LswUtils.downloadFile = function(filename, filecontent) {
+    const blob = new Blob([filecontent], { type: "text/plain" });
+    const enlace = document.createElement("a");
+    enlace.href = URL.createObjectURL(blob);
+    enlace.download = filename;
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+  };
+  // @code.end: LswUtils
+  
   return LswUtils;
 
 });
@@ -24732,6 +24808,9 @@ Vue.component("LswTable", {
                     </button>
                 </div>
                 <div class="flex_1 pad_left_1">
+                    <lsw-data-printer-button class="cursor_pointer" :input="() => output" />
+                </div>
+                <div class="flex_1 pad_left_1">
                     <button class="cursor_pointer"
                         v-on:click="digestOutput">🛜</button>
                 </div>
@@ -25628,6 +25707,269 @@ Vue.component('LswDataImplorer', {
   }
 });
 // @code.end: LswDataImplorer API
+// @code.start: LswDataPrinterButton API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswDataPrinterButton component
+Vue.component("LswDataPrinterButton", {
+  template: `<button class="lsw_data_printer_button" v-on:click="openViewer">
+    💾
+</button>`,
+  props: {
+    input: {
+      type: [Object, String, Boolean, Number, Function],
+      default: () => false,
+    },
+  },
+  data() {
+    this.$trace("lsw-data-printer-button.data");
+    return {
+      inputType: typeof(this.input),
+      formatType: undefined,
+    };
+  },
+  methods: {
+    async openViewer() {
+      this.$trace("lsw-data-printer-button.methods.openViewer");
+      let input = this.input;
+      if(this.inputType === "function") {
+        input = await this.input();
+      }
+      this.formatType = typeof input;
+      this.$lsw.dialogs.open({
+        title: "Impresión de «" + this.formatType + "»",
+        template: `
+          <lsw-data-printer-report :input="input" />
+        `,
+        factory: { data: { input } },
+      });
+    }
+  },
+  watch: {},
+  mounted() {
+    this.$trace("lsw-data-printer-button.mounted");
+    
+  },
+  unmounted() {
+    this.$trace("lsw-data-printer-button.unmounted");
+    
+  }
+});
+// @code.end: LswDataPrinterButton API
+// @code.start: LswDataPrinterReport API | @$section: Vue.js (v2) Components » LswDataPrinterReport component
+Vue.component("LswDataPrinterReport", {
+  template: `<div class="lsw_data_printer_report">
+    <div class="pad_2">
+        <h4>Reporte de impresión</h4>
+    </div>
+    <div class="pad_1 pad_top_0">
+        <select class="width_100" v-model="selectedSection">
+            <option v-for="val, valIndex in availableOptions" :value="val">{{ val }}</option>
+        </select>
+    </div>
+    <div class="seccion pad_1 pad_top_0" v-if="selectedSection === 'Crudo'" v-bind:key="'section_Crudo'">
+        <div class="pad_1 flex_row centered">
+            <div class="flex_100">
+                <h5>Versión cruda</h5>
+            </div>
+            <div class="flex_1">
+                <button class="supermini" v-on:click="copyCrude">Copiar</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="downloadCrude">Descargar</button>
+            </div>
+        </div>
+        <div class="pad_1">
+            <pre class="texto_markdown light_bg small_font">{{ input }}</pre>
+        </div>
+    </div>
+    <div class="seccion pad_1 pad_top_0" v-else-if="selectedSection === 'Natural'" v-bind:key="'section_Natural'">
+        <div class="pad_1 flex_row centered">
+            <div class="flex_100">
+                <h5>Versión natural</h5>
+            </div>
+            <div class="flex_1">
+                <button class="supermini" v-on:click="copyNatural">Copiar</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="downloadNatural">Descargar</button>
+            </div>
+        </div>
+        <div class="pad_1">
+            <pre class="texto_markdown light_bg small_font">{{ inputNatural }}</pre>
+        </div>
+    </div>
+    <div class="seccion pad_1 pad_top_0" v-else-if="selectedSection === 'Markdown'" v-bind:key="'section_Markdown'">
+        <div class="pad_1 flex_row centered">
+            <div class="flex_100">
+                <h5>Versión markdown (interpretado como)</h5>
+            </div>
+            <div class="flex_1">
+                <button class="supermini" v-on:click="copyMarkdown">Copiar</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="downloadMarkdown">Descargar</button>
+            </div>
+        </div>
+        <div class="pad_1">
+            <div class="texto_markdown light_bg small_font" v-html="inputMarkdown"></div>
+        </div>
+    </div>
+    <div class="seccion pad_1 pad_top_0" v-else-if="selectedSection === 'Solo texto plano'" v-bind:key="'section_Solo_texto_plano'">
+        <div class="pad_1 flex_row centered">
+            <div class="flex_100">
+                <h5>Versión texto plano (solo texto)</h5>
+            </div>
+            <div class="flex_1">
+                <button class="supermini" v-on:click="copyPlain">Copiar</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="downloadPlain">Descargar</button>
+            </div>
+        </div>
+        <div class="pad_1">
+            <pre class="texto_markdown light_bg small_font">{{ inputPlain }}</pre>
+        </div>
+    </div>
+</div>`,
+  props: {
+    input: {
+      type: [Object, String, Boolean, Number],
+      default: () => false,
+    },
+  },
+  data() {
+    this.$trace("lsw-data-printer-report.data");
+    const inputType = typeof(this.input);
+    const availableOptions = (() => {
+      switch(inputType) {
+        case "string":
+          return ["Crudo", "Markdown", "Solo texto plano"];
+        default:
+          return ["Crudo", "Natural"];
+      }
+    })();
+    return {
+      availableOptions,
+      selectedSection: "Crudo",
+      inputType,
+    };
+  },
+  methods: {
+    copyCrude() {
+      this.$trace("lsw-data-printer-report.methods.copyCrude");
+      const json = JSON.stringify(this.input, null, 2);
+      this.$window.navigator.clipboard.writeText(json);
+      this.$lsw.toasts.send({
+        title: "Texto copiado correctamente!"
+      });
+    },
+    askForFilename() {
+      return this.$lsw.dialogs.open({
+        title: "Descargar en fichero",
+        template: `
+          <div class="pad_1">
+            <div>¿Qué nombre de fichero quieres para la descarga?</div>
+            <input class="width_100 margin_top_1" type="text" v-model="value" />
+            <hr />
+            <div class="flex_row centered pad_1">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="accept">Descargar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: { data: { value: "" } },
+      });
+    },
+    async downloadCrude() {
+      this.$trace("lsw-data-printer-report.methods.downloadCrude");
+      const filename = await this.askForFilename();
+      if(filename === -1) return;
+      LswUtils.downloadFile(filename, JSON.stringify(this.input, null, 2));
+    },
+    copyNatural() {
+      this.$trace("lsw-data-printer-report.methods.copyNatural");
+      const text = this.inputNatural;
+      this.$window.navigator.clipboard.writeText(text);
+      this.$lsw.toasts.send({
+        title: "Texto copiado correctamente!"
+      });
+    },
+    async downloadNatural() {
+      this.$trace("lsw-data-printer-report.methods.downloadNatural");
+      const filename = await this.askForFilename();
+      if(filename === -1) return;
+      LswUtils.downloadFile(filename, this.inputNatural);
+    },
+    copyMarkdown() {
+      this.$trace("lsw-data-printer-report.methods.copyMarkdown");
+      const text = this.inputMarkdown;
+      this.$window.navigator.clipboard.writeText(text);
+      this.$lsw.toasts.send({
+        title: "Texto copiado correctamente!"
+      });
+    },
+    async downloadMarkdown() {
+      this.$trace("lsw-data-printer-report.methods.downloadMarkdown");
+      const filename = await this.askForFilename();
+      if(filename === -1) return;
+      LswUtils.downloadFile(filename, this.inputMarkdown);
+    },
+    copyHtml() {
+      this.$trace("lsw-data-printer-report.methods.copyHtml");
+      const text = this.inputHtml;
+      this.$window.navigator.clipboard.writeText(text);
+      this.$lsw.toasts.send({
+        title: "Texto copiado correctamente!"
+      });
+    },
+    async downloadHtml() {
+      this.$trace("lsw-data-printer-report.methods.downloadHtml");
+      return this.$window.alert("Exportación a HTML no disponible. xD");
+      const filename = await this.askForFilename();
+    },
+    copyPlain() {
+      this.$trace("lsw-data-printer-report.methods.copyPlain");
+      const text = this.inputPlain;
+      this.$window.navigator.clipboard.writeText(text);
+      this.$lsw.toasts.send({
+        title: "Texto copiado correctamente!"
+      });
+    },
+    async downloadPlain() {
+      this.$trace("lsw-data-printer-report.methods.downloadPlain");
+      const filename = await this.askForFilename();
+      if(filename === -1) return;
+      LswUtils.downloadFile(filename, this.inputPlain);
+    }
+  },
+  computed: {
+    inputNatural() {
+      this.$trace("lsw-data-printer-report.computed.inputNatural");
+      return LswUtils.fromJsonToNatural(this.input);
+    },
+    inputMarkdown() {
+      this.$trace("lsw-data-printer-report.computed.inputMarkdown");
+      return marked.parse(this.input);
+    },
+    inputPlain() {
+      this.$trace("lsw-data-printer-report.computed.inputPlain");
+      return LswDom.extractPlaintextFromHtmltext(this.inputMarkdown);
+    }
+  },
+  watch: {},
+  mounted() {
+    this.$trace("lsw-data-printer-report.mounted");
+    
+  },
+  unmounted() {
+    this.$trace("lsw-data-printer-report.unmounted");
+    
+  }
+});
+// @code.end: LswDataPrinterReport API
 (function () {
 
   // @code.start: LswDialogs API | @$section: Vue.js (v2) Components » LswDialogs API » LswDialogs classes and functions
@@ -28093,13 +28435,21 @@ Vue.component("LswWikiLibros", {
         <template v-for="libro, libroIndex in libros">
             <div class=""
                 v-bind:key="'libro_boton_' + libroIndex">
-                <div class="flex_row" :class="libroIndex === 0 ? '' : 'pad_top_1'">
+                <div class="flex_row" :class="libroIndex === 0 ? '' : ''">
                     <div class="flex_100 list_buttons">
                         <button class="supermini list_button width_100 text_align_left"
                             v-on:click="() => toggleLibro(libro)"
                             :class="{activated: selectedLibros.indexOf(libro) !== -1}">
                             <div class="flex_row">
                                 <div class="flex_100">{{ getLibroName(libro) }}</div>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="flex_1 pad_left_1">
+                        <button class="supermini list_button width_100 text_align_left"
+                            v-on:click="() => printLibro(libro)">
+                            <div class="flex_row">
+                                <div class="flex_100 small_font">💾</div>
                             </div>
                         </button>
                     </div>
@@ -28193,7 +28543,44 @@ Vue.component("LswWikiLibros", {
           data: { libro }
         }
       });
-    }
+    },
+    async printLibro(libroId) {
+      this.$trace("LswWikiLibros.methods.printLibro");
+      const libroTree = await this.loadLibro(libroId);
+      const libroTexted = await this.resolveLibroTree(libroTree)
+      await this.$lsw.dialogs.open({
+        id: LswRandomizer.getRandomString(10),
+        title: "Imprimir libro",
+        template: `
+          <lsw-data-printer-report :input="libro" />
+        `,
+        factory: {
+          data: { libro: libroTexted }
+        }
+      });
+    },
+    async resolveLibroTree(treeNode) {
+      this.$trace("LswWikiLibros.methods.resolveLibroTree");
+      if(typeof treeNode === "undefined") {
+        return "";
+      }
+      let out = "";
+      const { id, subtree } = treeNode;
+      const articulosCoincidentes = await this.$lsw.database.selectMany("Articulo", articulo => {
+        return articulo.tiene_titulo === id;
+      });
+      out += `### ${id}\n\n`;
+      if(articulosCoincidentes && articulosCoincidentes.length) {
+        const articuloTextualizado = articulosCoincidentes.map(articulo => articulo.tiene_contenido).join("\n\n");
+        out += `${articuloTextualizado || ""}\n\n`;
+      }
+      if(typeof subtree === "object") {
+        for(let prop in subtree) {
+          out += await this.resolveLibroTree(subtree[prop]);
+        }
+      }
+      return out;
+    },
   },
   watch: {
     
@@ -28679,10 +29066,9 @@ Vue.component("LswWikiArticuloViewer", {
     async loadContent() {
       this.$trace("lsw-wiki-articulo-viewer.methods.loadContent");
       const matchedRows = await this.$lsw.database.selectMany("Articulo", articulo => {
-        console.log(articulo);
         return articulo.tiene_titulo === this.articuloId;
       });
-      console.log(matchedRows);
+      console.log("[*] Artículos coincidentes:", matchedRows);
       try {
         if(matchedRows.length === 0) {
           throw new Error(`Articulo no encontrado por «${this.articuloId}»`);
@@ -32943,8 +33329,7 @@ Vue.component("LswSchemaBasedForm", {
                             </div>
                         </div>
                     </div>
-                    <div class="flex_row centered schema_form_top_panel"
-                        style="">
+                    <div class="flex_row centered schema_form_top_panel">
                         <div class="flex_1 flex_row centered">
                             <button class="supermini margin_left_1 nowrap"
                                 :class="{activated: section === 'campos propios'}"
@@ -32955,6 +33340,8 @@ Vue.component("LswSchemaBasedForm", {
                         </div>
                         <div class="flex_100"></div>
                         <div class="flex_1 flex_row centered">
+                            <button class="supermini margin_right_1 nowrap"
+                                v-on:click="passToPrinter">💾</button>
                             <button class="supermini margin_right_1 nowrap"
                                 v-on:click="validateForm">✅</button>
                             <button class="supermini margin_right_1 nowrap"
@@ -33297,6 +33684,17 @@ Vue.component("LswSchemaBasedForm", {
     async submitForm(v) {
       this.$trace("lsw-schema-based-form.methods.submitForm");
       return await this.$refs.schemaForm0.$xform.submit();
+    },
+    passToPrinter() {
+      this.$trace("lsw-schema-based-form.methods.passToPrinter");
+      const value = this.$refs.schemaForm0.$xform.getValue();
+      this.$lsw.dialogs.open({
+        title: "Impresión de estado de formulario",
+        template: `
+          <lsw-data-printer-report :input="input" />
+        `,
+        factory: { data: { input: value } },
+      });
     },
     async deleteRow() {
       this.$trace("lsw-schema-based-form.methods.deleteRow");

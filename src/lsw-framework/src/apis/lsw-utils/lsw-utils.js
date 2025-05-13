@@ -453,8 +453,64 @@
     return excludeds;
   };
 
-  // @code.end: LswUtils
+  LswUtils.fromJsonToNatural = function(json, nivel = 0) {
+    // @CHATGPT:
+    const indent = '  '.repeat(nivel);
+    let texto = '';
+    if (Array.isArray(json)) {
+      texto += `${indent}Esta es una lista con ${json.length} elemento(s):\n`;
+      json.forEach((item, index) => {
+        texto += `${indent}- Elemento ${index + 1}: `;
+        if (typeof item === 'object' && item !== null) {
+          texto += '\n' + LswUtils.fromJsonToNatural(item, nivel + 1);
+        } else {
+          texto += `${LswUtils.naturalizeValue(item)}\n`;
+        }
+      });
+    } else if (typeof json === 'object' && json !== null) {
+      const keys = Object.keys(json);
+      texto += `${indent}Este objeto tiene ${keys.length} propiedad(es):\n`;
+      for (const key of keys) {
+        const valor = json[key];
+        texto += `${indent}- La propiedad "${key}" `;
+        if (typeof valor === 'object' && valor !== null) {
+          texto += `contiene:\n` + LswUtils.fromJsonToNatural(valor, nivel + 1);
+        } else {
+          texto += `tiene ${LswUtils.naturalizeValue(valor)}.\n`;
+        }
+      }
+    } else {
+      texto += `${indent}${LswUtils.naturalizeValue(json)}\n`;
+    }
+    return texto;
+  };
 
+  LswUtils.naturalizeValue = function(valor) {
+    switch (typeof valor) {
+      case 'string':
+        return `un texto que dice "${valor}"`;
+      case 'number':
+        return `un número con valor ${valor}`;
+      case 'boolean':
+        return valor ? 'el valor verdadero' : 'el valor falso';
+      case 'object':
+        return valor === null ? 'un valor nulo' : 'un objeto';
+      default:
+        return 'un valor desconocido';
+    }
+  };
+
+  LswUtils.downloadFile = function(filename, filecontent) {
+    const blob = new Blob([filecontent], { type: "text/plain" });
+    const enlace = document.createElement("a");
+    enlace.href = URL.createObjectURL(blob);
+    enlace.download = filename;
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+  };
+  // @code.end: LswUtils
+  
   return LswUtils;
 
 });

@@ -416,7 +416,8 @@ table.lsw_table_itself>thead>tr>th.button_header {
     border: 1px solid #88888888;
     margin-bottom: 4px;
 }
-.lsw_table_top_panel button {
+.lsw_table_top_panel_1 button,
+.lsw_table_top_panel_2 button {
     font-size: 16px;
     padding: 0px;
     height: auto;
@@ -427,6 +428,10 @@ table.lsw_table_itself>thead>tr>th.button_header {
 }
 .lsw_table_top_button {
     margin-right: 2px;
+}
+.lsw_table_config_panel > div {
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 .lsw_data_implorer {
     
@@ -2207,7 +2212,11 @@ button>span.button_text {
 
 button[disabled] {
     cursor: default;
+    border: 1px solid rgba(255,255,255,0.2);
     background-color: #484848;
+}
+button[disabled]:hover {
+    box-shadow: 0 0 0px transparent;
 }
 
 textarea {
@@ -2519,7 +2528,9 @@ pre.codeblock {
 
 
 
-.texto_markdown {}
+.texto_markdown {
+    min-height: 32px;
+}
 .texto_markdown.light_bg {
     background-color: rgba(0,0,0,0.85);
 }
@@ -2573,6 +2584,7 @@ pre.codeblock {
 
 /* CSS-CLASSES */
 :root {
+    --padding_min: 2px;
     --padding_0: 0px;
     --padding_1: 4px;
     --padding_2: 8px;
@@ -2611,6 +2623,16 @@ pre.codeblock {
 .pad_horizontal_1 {
     padding-left: var(--padding_1);
     padding-right: var(--padding_1);
+}
+
+.pad_vertical_min {
+    padding-top: var(--padding_min);
+    padding-bottom: var(--padding_min);
+}
+
+.pad_horizontal_min {
+    padding-left: var(--padding_min);
+    padding-right: var(--padding_min);
 }
 
 .pad_vertical_0 {
@@ -2653,6 +2675,22 @@ pre.codeblock {
 
 .pad_right_1 {
     padding-right: var(--padding_1);
+}
+
+.pad_top_min {
+    padding-top: var(--padding_min);
+}
+
+.pad_bottom_min {
+    padding-bottom: var(--padding_min);
+}
+
+.pad_left_min {
+    padding-left: var(--padding_min);
+}
+
+.pad_right_min {
+    padding-right: var(--padding_min);
 }
 
 .pad_top_0 {
@@ -2929,4 +2967,12 @@ pre.codeblock {
 
 .smallest_font {
     font-size: 9px;
+}
+
+.min_height_14px {
+    min-height: 14px;
+}
+
+.min_height_33px {
+    min-height: 33px;
 }

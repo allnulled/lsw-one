@@ -6,7 +6,7 @@
                 <div class="flex_1 margin_right_1">
                     <button class="supermini padded_vertically_1"
                         v-on:click="() => selectForm('new')"
-                        :class="{activated: selectedForm === 'new'}">#️⃣</button>
+                        :class="{activated: selectedForm === 'new'}">➕</button>
                 </div>
                 <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                 <div class="flex_1 nowrap">
@@ -144,7 +144,7 @@
                         <button class="supermini nowrap"
                             style="margin-right: 1px;"
                             v-on:click="() => selectHour(franja.hora)"
-                            :class="{activated: selectedForm === franja.hora}">#️⃣</button>
+                            :class="{activated: selectedForm === franja.hora}">➕</button>
                     </div>
                     <div class="flex_100">
                         <span>{{ $lsw.timer.utils.formatHourFromMomento(franja) }}</span>
@@ -199,7 +199,7 @@
                             </div>
                             <div class="flex_1 hour_task_editer pill_middle button_pill_cell">
                                 <button class="" v-on:click="() => openUpdateTaskDialog(tarea)"
-                                    :class="{activated: selectedForm === tarea.id}">#️⃣</button>
+                                    :class="{activated: selectedForm === tarea.id}">➕</button>
                             </div>
                             <div class="flex_1 hour_task_editer pill_end button_pill_cell">
                                 <button class="danger_button" v-on:click="(e) => openDeleteTaskDialog(tarea, e)">❌</button>

@@ -156,7 +156,8 @@ table.lsw_table_itself>thead>tr>th.button_header {
     border: 1px solid #88888888;
     margin-bottom: 4px;
 }
-.lsw_table_top_panel button {
+.lsw_table_top_panel_1 button,
+.lsw_table_top_panel_2 button {
     font-size: 16px;
     padding: 0px;
     height: auto;
@@ -167,4 +168,8 @@ table.lsw_table_itself>thead>tr>th.button_header {
 }
 .lsw_table_top_button {
     margin-right: 2px;
+}
+.lsw_table_config_panel > div {
+    padding-top: 4px;
+    padding-bottom: 4px;
 }

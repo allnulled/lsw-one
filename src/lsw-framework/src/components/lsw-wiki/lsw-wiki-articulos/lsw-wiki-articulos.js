@@ -155,6 +155,85 @@ Vue.component("LswWikiArticulos", {
           }
         }
       });
+      this.loadArticulos();
+    }, 
+    async deleteArticulo(articulo) {
+      this.$trace("lsw-wiki-articulos.methods.deleteArticulo");
+      const articulosComponent = this;
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Eliminar artículo",
+        template: `
+          <div class="pad_2">
+            <div class="">¿Estás seguro que quieres eliminar el artículo?</div>
+            <pre class="codeblock margin_top_2 margin_bottom_2">{{ articulo }}</pre>
+            <hr />
+            <div class="flex_row centered">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_right_1">
+                <button class="flex_1" v-on:click="() => accept(true)">Aceptar</button>
+              </div>
+              <div class="flex_1">
+                <button class="flex_1 " v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: { articulo },
+          methods: {}
+        }
+      });
+      if(respuesta !== true) return;
+      await this.$lsw.database.delete("Articulo", articulo.id);
+      this.$lsw.toasts.send({
+        title: "Artículo eliminado correctamente",
+        text: "El artículo fue eliminado correctamente"
+      });
+      this.loadArticulos();
+    },
+    async sendArticuloToNotas(articulo) {
+      this.$trace("lsw-spontaneous-table-nota.methods.sendArticuloToNotas");
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Pasar artículo a notas",
+        template: `
+          <div class="pad_1">
+            <div>Vas a pasar el siguiente artículo a nota: </div>
+            <div class="pad_2">
+              <pre class="codeblock">{{ articulo }}</pre>
+            </div>
+            <div>¿Estás seguro?</div>
+            <hr/>
+            <div class="flex_row centered text_align_right">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_right_1">
+                <button class="supermini danger_button" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: { data: { articulo } },
+      });
+      if(respuesta === -1) return;
+      const notaNew = Object.assign({
+        tiene_titulo: '',
+        tiene_fecha: '',
+        tiene_estado: "creada",
+        tiene_categorias: '',
+        tiene_contenido: '',
+        tiene_garantia: '',
+        tiene_tags: '',
+      }, articulo);
+      delete notaNew.id;
+      await this.$lsw.database.insert("Nota", notaNew);
+      await this.$lsw.database.delete("Articulo", articulo.id);
+      this.$lsw.toasts.send({
+        title: "Artículo a nota bien",
+        text: "El artículo ha sido pasado a nota correctamente",
+      });
+      this.loadArticulos();
     }
   },
   watch: {

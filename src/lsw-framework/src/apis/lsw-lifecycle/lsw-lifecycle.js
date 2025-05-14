@@ -35,6 +35,8 @@
       "onSchemaLoaded",
       "onLoadDatabase",
       "onDatabaseLoaded",
+      "onLoadComponents",
+      "onComponentsLoaded",
       // "onLoadModules",
       // "onModulesLoaded",
       "onInstallModules",
@@ -181,6 +183,29 @@
     onDatabaseLoaded: function () {
       this.$trace("onDatabaseLoaded", []);
       return this.hooks.emit("app:database_loaded");
+    },
+    onLoadComponents: async function () {
+      this.$trace("onLoadComponents", []);
+      Load_components: {
+        const allComponents = await Vue.prototype.$lsw.fs.read_directory("/kernel/components");
+        const errores = [];
+        for(let componentId in allComponents) {
+          try {
+            await Vue.prototype.$lsw.fs.import_as_component(`/kernel/components/${componentId}/${componentId}`);
+          } catch (error) {
+            errores.push(error);
+          }
+        }
+        if(errores.length) {
+          console.log("[!] Errores en onLoadComponents:");
+          console.log(errores);
+        }
+      }
+      return this.hooks.emit("app:load_components");
+    },
+    onComponentsLoaded: function () {
+      this.$trace("onComponentsLoaded", []);
+      return this.hooks.emit("app:components_loaded");
     },
     onLoadApplication: function () {
       this.$trace("onLoadApplication", []);

@@ -67,6 +67,21 @@ Vue.component("LswWiki", {
         this.isLoadedCategorias = true;
       }, 100);
     },
+    goToAddArticulo() {
+      this.$trace("lsw-wiki.methods.goToAddArticulo");
+      this.$lsw.dialogs.open({
+        title: "Añadir nuevo artículo",
+        template: `<lsw-spontaneous-form-articulo :on-submitted="closeAndRefresh" />`,
+        factory: {
+          methods: {
+            closeAndRefresh() {
+              this.close();
+              // @DONT because maybe you have something in hands.
+            }
+          }
+        },
+      });
+    }
   },
   watch: {
     

@@ -309,7 +309,7 @@ Vue.component("LswFilesystemExplorer", {
       Setup_panel_right_on_file: {
         const rightButtonsOnFile = [
           {
-            text: "💾",
+            text: "🖨️",
             click: () => this.processToSaveFile(),
           }, {
             text: "↔️",

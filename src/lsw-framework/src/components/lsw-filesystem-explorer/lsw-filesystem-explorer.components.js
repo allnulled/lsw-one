@@ -418,7 +418,7 @@ Vue.component("LswFilesystemExplorer", {
           classes: "reversed",
           click: () => this.goUp(),
         }, {
-          text: "💾",
+          text: "🖨️",
           click: () => this.processToSaveFile(),
         }, {
           text: "↔️",

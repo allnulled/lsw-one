@@ -1,16 +1,21 @@
 <div class="page_tables page">
-    <h3 class="flex_row centered">
-        <div class="flex_100">📦 Tablas de {{ args.database }}</div>
-        <button class="flex_1" style="visibility: hidden;"></button>
-    </h3>
+    <div class="flex_row centered">
+        <div class="flex_1 centered">
+            <button v-on:click="$noop" disabled="true">✳️</button>
+        </div>
+        <div class="flex_100 pad_left_1">
+            <h3 class="display_inline_block nowrap">📦 Tablas de {{ args.database }}</h3>
+            <div class="display_inline_block">[{{ args.database }}]</div>
+        </div>
+    </div>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb"
         :database-explorer="databaseExplorer" />
     <div v-if="tablesAsList">
-        <div class="pad_horizontal_1 pad_bottom_1">
+        <div class="pad_bottom_1">
             <div class="h4">Tablas disponibles:</div>
         </div>
-        <div class="pad_left_2 pad_right_2 pad_bottom_1" v-for="idTable, indexTable in tablesAsList" v-bind:key="'table_id_' + idTable.id">
-            <button class="supermini width_100 text_align_left" v-on:click="() => openTable(idTable.id)">{{ idTable.id }}</button>
+        <div class="" style="padding-bottom:1px;" v-for="tableData, tableIndex, tableCounter in tablesAsList" v-bind:key="'table_id_' + tableData.id">
+            <button class="supermini width_100 text_align_left" v-on:click="() => openTable(tableData.id)">{{ tableIndex + 1 }}. {{ tableData.id }}</button>
         </div>
     </div>
     <lsw-table v-if="tablesAsList && tablesAsList.length"

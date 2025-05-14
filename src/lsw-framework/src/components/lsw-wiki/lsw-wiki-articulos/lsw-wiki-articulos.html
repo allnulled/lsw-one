@@ -45,12 +45,12 @@
         <template v-for="articulo, articuloIndex in articulos">
             <div class="articulo_box"
                 v-bind:key="'articulo_de_wiki_' + articulo.id">
-                <div class="flex_row centered pad_top_1">
+                <div class="flex_row centered pad_top_min">
                     <button class="supermini list_button width_100"
                         :class="{activated: openedArticulos.indexOf(articulo.id) !== -1}"
                         v-on:click="() => toggleArticulo(articulo.id)">
                         <div class="flex_column">
-                            <div class="flex_1 flex_row centered">
+                            <div class="flex_1 flex_row centered min_height_14px">
                                 <div class="flex_100 shortable_text text_align_left">
                                     {{ articulo.tiene_titulo }}
                                 </div>
@@ -65,11 +65,27 @@
                             </div>
                         </div>
                     </button>
-                    <button class="supermini margin_left_1" v-on:click="() => editArticulo(articulo)">↗️</button>
+                    <button class="supermini margin_left_1"
+                        v-on:click="() => editArticulo(articulo)">↗️</button>
                 </div>
-                <div class="pad_top_1" v-if="openedArticulos.indexOf(articulo.id) !== -1">
-                    <div class="articulo_detalles texto_markdown rutiner_box pad_1">
-                        <div v-html="marked.parse(articulo.tiene_contenido)"></div>
+                <div class="pad_top_1"
+                    v-if="openedArticulos.indexOf(articulo.id) !== -1">
+                    <div class="position_relative">
+                        <div class="position_absolute top_0 right_0 flex_row centered pad_top_1 pad_right_1">
+                            <div class="flex_100"></div>
+                            <div class="flex_1">
+                                <button class="supermini" v-on:click="() => sendArticuloToNotas(articulo)">⬅️💬</button>
+                            </div>
+                            <div class="flex_1 pad_left_1">
+                                <button class="supermini" v-on:click="() => deleteArticulo(articulo)">❌</button>
+                            </div>
+                            <div class="flex_1 pad_left_1">
+                                <button class="supermini" v-on:click="() => editArticulo(articulo)">✏️</button>
+                            </div>
+                        </div>
+                        <div class="articulo_detalles texto_markdown rutiner_box pad_1 min_height_33px">
+                            <div v-html="marked.parse(articulo.tiene_contenido)"></div>
+                        </div>
                     </div>
                 </div>
             </div>

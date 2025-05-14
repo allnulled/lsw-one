@@ -174,6 +174,65 @@ Vue.component("LswSpontaneousTableNota", {
           }
         }
       });
+    },
+    goToAddNota() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToEditNota");
+      const that = this;
+      this.$lsw.dialogs.open({
+        title: "Añadir nota",
+        template: `<lsw-spontaneous-form-nota :on-submitted="closeAndRefresh" />`,
+        factory: {
+          methods: {
+            closeAndRefresh() {
+              this.close();
+              that.loadNotes();
+            }
+          }
+        }
+      });
+    },
+    async sendNotaToArticulos(nota) {
+      this.$trace("lsw-spontaneous-table-nota.methods.sendNotaToArticulos");
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Pasar nota a artículo",
+        template: `
+          <div class="pad_1">
+            <div>Vas a pasar la siguiente nota a artículo: </div>
+            <div class="pad_2">
+              <pre class="codeblock">{{ nota }}</pre>
+            </div>
+            <div>¿Estás seguro?</div>
+            <hr/>
+            <div class="flex_row centered text_align_right">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_right_1">
+                <button class="supermini danger_button" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: { data: { nota } },
+      });
+      if(respuesta === -1) return;
+      const articuloNew = Object.assign({
+        tiene_titulo: '',
+        tiene_fecha: '',
+        tiene_categorias: '',
+        tiene_contenido: '',
+        tiene_garantia: '',
+        tiene_tags: '',
+      }, nota);
+      delete articuloNew.id;
+      await this.$lsw.database.insert("Articulo", articuloNew);
+      await this.$lsw.database.delete("Nota", nota.id);
+      this.$lsw.toasts.send({
+        title: "Nota a artículo bien",
+        text: "La nota ha sido pasada a artículo correctamente",
+      });
+      this.loadNotes();
     }
   },
   watch: {},

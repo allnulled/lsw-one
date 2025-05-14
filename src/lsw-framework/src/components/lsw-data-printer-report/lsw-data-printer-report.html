@@ -2,8 +2,9 @@
     <div class="pad_2">
         <h4>Reporte de impresión</h4>
     </div>
-    <div class="pad_1 pad_top_0">
-        <select class="width_100" v-model="selectedSection">
+    <div class="flex_row centered  pad_1 pad_top_0">
+        <div class="flex_1">Versión: </div>
+        <select class="flex_100 width_100" v-model="selectedSection">
             <option v-for="val, valIndex in availableOptions" :value="val">{{ val }}</option>
         </select>
     </div>

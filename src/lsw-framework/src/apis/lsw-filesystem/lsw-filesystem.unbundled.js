@@ -55,6 +55,50 @@
       }
     }
 
+    async import_as_component(filepath, parameters = [], scope = this) {
+      this.trace("import_as_component", [filepath]);
+      let htmlContents = "", cssContents = "", jsContents = "";
+      try {
+        htmlContents = await this.read_file(filepath + ".html")
+      } catch (error) {
+        console.log(error);
+        htmlContents = "";
+      }
+      try {
+        cssContents = await this.read_file(filepath + ".css")
+      } catch (error) {
+        console.log(error);
+        cssContents = "";
+      }
+      try {
+        jsContents = await this.read_file(filepath + ".js")
+      } catch (error) {
+        console.log(error);
+        jsContents = "";
+      }
+      jsContents = jsContents.replace(/\$template/g, JSON.stringify(htmlContents));
+      Import_css: {
+        let cssEl = document.querySelector(`[data-filepath='${filepath}']`);
+        if(cssEl) {
+          cssEl.remove();
+        }
+        const styleEl = document.createElement("style");
+        styleEl.setAttribute("data-filepath", filepath);
+        styleEl.textContent = cssContents;
+        document.body.appendChild(styleEl);
+      }
+      Import_js: {
+        const jsCallback = LswUtils.createAsyncFunction(jsContents);
+        try {
+          return await jsCallback.call(scope, ...parameters);
+        } catch (error) {
+          console.log("[!] Error importing js from component:");
+          console.log(error);
+          throw error;
+        }
+      }
+    }
+
     async evaluateAsJavascriptFile(filepath, scope = undefined) {
       this.trace("evaluateAsJavascriptFile", [filepath]);
       const fileContents = await this.read_file(filepath);

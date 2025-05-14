@@ -22,6 +22,10 @@ body {
   border: 0px solid #333;
   border-top: 0px solid #333;
 }
+.section_for_index ul.index_list {
+  white-space: nowrap;
+}
+.section_for_index ul.index_list > li {}
 .documentator_code_snippet_block {
   box-shadow: 2px 2px 4px black;
 }

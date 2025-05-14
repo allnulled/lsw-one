@@ -17,7 +17,7 @@
                         <button class="supermini list_button width_100 text_align_left"
                             v-on:click="() => printLibro(libro)">
                             <div class="flex_row">
-                                <div class="flex_100 small_font">💾</div>
+                                <div class="flex_100 small_font">🖨️</div>
                             </div>
                         </button>
                     </div>
@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <div class="pad_top_1" v-if="selectedLibros.indexOf(libro) !== -1">
-                    <div class="lsw_wiki_libro_viewer_root" v-if="libro in loadedLibros">
+                    <div class="" v-if="libro in loadedLibros">
                         <lsw-wiki-libro-viewer :arbol="loadedLibros[libro]" :indice-de-arbol="0" :on-click-link="abrirArticulo">
                             <template v-slot:default="{ arbol }">
                                 <lsw-wiki-articulo-viewer :articulo-id="arbol.link || arbol.id" />

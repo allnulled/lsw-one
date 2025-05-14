@@ -1,12 +1,15 @@
 <div>
-    <h3>
-        <span>
-            <button v-on:click="goBack">⬅️</button>
-        </span>
-        <span> 📦 </span>
-        <span>{{ args.table }} [all]</span>
-        <span>[{{ args.database }}]</span>
-    </h3>
+    <div>
+        <div class="flex_row centered">
+            <div class="flex_1">
+                <button v-on:click="goBack">⬅️</button>
+            </div>
+            <div class="flex_100 pad_left_1">
+                <h3 class="display_inline_block nowrap"> 📦 {{ args.table }} [*]</h3>
+                <div class="display_inline_block">[{{ args.database }}]</div>
+            </div>
+        </div>
+    </div>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb" :database-explorer="databaseExplorer" />
     <lsw-table
         :initial-input="rows" v-if="rows"

@@ -229,9 +229,9 @@ const inject_scripts = function (options) {
 
 const file_to_schema = function(section_ids) {
   let code = "";
-  code += "<div class='documentator_section'>"
+  code += "<div class='documentator_section section_for_index'>"
   code += "<h3 class='documentator_section_title'>Index of document</h3>";
-  code += "<ul>";
+  code += "<ul class='index_list'>";
   for(let index=0; index<section_ids.length; index++) {
     const section_id = section_ids[index];
     code += "<li>";

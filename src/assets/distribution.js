@@ -19146,6 +19146,8 @@ return Store;
       "onSchemaLoaded",
       "onLoadDatabase",
       "onDatabaseLoaded",
+      "onLoadComponents",
+      "onComponentsLoaded",
       // "onLoadModules",
       // "onModulesLoaded",
       "onInstallModules",
@@ -19292,6 +19294,29 @@ return Store;
     onDatabaseLoaded: function () {
       this.$trace("onDatabaseLoaded", []);
       return this.hooks.emit("app:database_loaded");
+    },
+    onLoadComponents: async function () {
+      this.$trace("onLoadComponents", []);
+      Load_components: {
+        const allComponents = await Vue.prototype.$lsw.fs.read_directory("/kernel/components");
+        const errores = [];
+        for(let componentId in allComponents) {
+          try {
+            await Vue.prototype.$lsw.fs.import_as_component(`/kernel/components/${componentId}/${componentId}`);
+          } catch (error) {
+            errores.push(error);
+          }
+        }
+        if(errores.length) {
+          console.log("[!] Errores en onLoadComponents:");
+          console.log(errores);
+        }
+      }
+      return this.hooks.emit("app:load_components");
+    },
+    onComponentsLoaded: function () {
+      this.$trace("onComponentsLoaded", []);
+      return this.hooks.emit("app:components_loaded");
     },
     onLoadApplication: function () {
       this.$trace("onLoadApplication", []);
@@ -20766,6 +20791,50 @@ return Store;
       const existsFilepath2 = await this.exists(filepath2);
       if (!existsFilepath2) {
         await this.make_directory(filepath2);
+      }
+    }
+
+    async import_as_component(filepath, parameters = [], scope = this) {
+      this.trace("import_as_component", [filepath]);
+      let htmlContents = "", cssContents = "", jsContents = "";
+      try {
+        htmlContents = await this.read_file(filepath + ".html")
+      } catch (error) {
+        console.log(error);
+        htmlContents = "";
+      }
+      try {
+        cssContents = await this.read_file(filepath + ".css")
+      } catch (error) {
+        console.log(error);
+        cssContents = "";
+      }
+      try {
+        jsContents = await this.read_file(filepath + ".js")
+      } catch (error) {
+        console.log(error);
+        jsContents = "";
+      }
+      jsContents = jsContents.replace(/\$template/g, JSON.stringify(htmlContents));
+      Import_css: {
+        let cssEl = document.querySelector(`[data-filepath='${filepath}']`);
+        if(cssEl) {
+          cssEl.remove();
+        }
+        const styleEl = document.createElement("style");
+        styleEl.setAttribute("data-filepath", filepath);
+        styleEl.textContent = cssContents;
+        document.body.appendChild(styleEl);
+      }
+      Import_js: {
+        const jsCallback = LswUtils.createAsyncFunction(jsContents);
+        try {
+          return await jsCallback.call(scope, ...parameters);
+        } catch (error) {
+          console.log("[!] Error importing js from component:");
+          console.log(error);
+          throw error;
+        }
       }
     }
 
@@ -24797,25 +24866,29 @@ Vue.component("LswTable", {
   template: `<div class="lsw_table pad_top_1">
     <div>
         <div class="lsw_table_top_panel pad_horizontal_1">
-            <div class="flex_row centered pad_top_1 pad_bottom_1">
+            <div class="lsw_table_top_panel_1 flex_row centered pad_top_1 pad_bottom_1">
                 <div class="flex_1 pad_right_1">
                     *️⃣
                 </div>
                 <div class="flex_100 title_box">{{ title }}</div>
-                <div class="flex_1 pad_left_1" v-for="topButton, topButtonIndex in attachedTopButtons" v-bind:key="'table-button-' + topButtonIndex">
-                    <button class="" v-on:click="topButton.event">
+                <div class="flex_1 pad_left_1"
+                    v-for="topButton, topButtonIndex in attachedTopButtons"
+                    v-bind:key="'table-button-' + topButtonIndex">
+                    <button class=""
+                        v-on:click="topButton.event">
                         {{ topButton.text }}
                     </button>
                 </div>
                 <div class="flex_1 pad_left_1">
-                    <lsw-data-printer-button class="cursor_pointer" :input="() => output" />
+                    <lsw-data-printer-button class="cursor_pointer"
+                        :input="() => output" />
                 </div>
                 <div class="flex_1 pad_left_1">
                     <button class="cursor_pointer"
                         v-on:click="digestOutput">🛜</button>
                 </div>
             </div>
-            <div class="flex_row centered pad_bottom_1">
+            <div class="lsw_table_top_panel_2 flex_row centered pad_bottom_1">
                 <div class="flex_100">
                     <div class="flex_row">
                         <div class="flex_100">
@@ -24825,8 +24898,7 @@ Vue.component("LswTable", {
                                 v-model="searcher"
                                 style="min-height: 25px;"
                                 v-on:keypress.enter="digestOutput"
-                                :placeholder="placeholderForBuscador"
-                            />
+                                :placeholder="placeholderForBuscador" />
                         </div>
                         <div class="flex_1 pad_left_1">
                             <button class="width_100"
@@ -24845,49 +24917,108 @@ Vue.component("LswTable", {
                         colspan="1000">
                         <div class="table_navigation_menu">
                             <div class="flex_row centered">
-                                <div class="flex_1 nowrap">Estás en: </div>
+                                <div class="flex_1 nowrap">🔸 Estás en: </div>
                                 <div class="flex_100 left_padded_1">
                                     <select class="width_100 text_align_right"
                                         v-model="isShowingSubpanel">
-                                        <option value="Paginador">Paginador (en: {{ itemsPerPage }})</option>
                                         <option value="Buscador">Buscador {{ searcher.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
+                                        <option value="Paginador">Paginador (en: {{ itemsPerPage }})</option>
+                                        <option value="Columnas">Columnas {{ columnsOrder.length ? \`(con: \${columnsOrder.length}B)\` : '' }}
+                                        </option>
                                         <option value="Extensor">Extensor {{ extender.length ? \`(con: \${extender.length}B)\` : '' }}</option>
                                         <option value="Filtro">Filtro {{ filter.length ? \`(con: \${filter.length}B)\` : '' }}</option>
-                                        <option value="Ordenador">Ordenador {{ sorter.length ? \`(con: \${sorter.length}B)\` : '' }}</option>
+                                        <option value="Ordenador">Orden {{ sorter.length ? \`(con: \${sorter.length}B)\` : '' }}</option>
+                                        <option value="Todo">Todo a la vez</option>
                                     </select>
                                 </div>
                             </div>
                             <hr />
-                            <div v-if="isShowingSubpanel === 'Extensor'">
-                                <textarea spellcheck="false"
-                                    v-model="extender"
-                                    :placeholder="placeholderForExtensor"></textarea>
-                            </div>
-                            <div v-if="isShowingSubpanel === 'Filtro'">
-                                <textarea spellcheck="false"
-                                    v-model="filter"
-                                    :placeholder="placeholderForFiltro"></textarea>
-                            </div>
-                            <div v-if="isShowingSubpanel === 'Ordenador'">
-                                <textarea spellcheck="false"
-                                    v-model="sorter"
-                                    :placeholder="placeholderForOrdenador"></textarea>
-                            </div>
-                            <div v-if="isShowingSubpanel === 'Buscador'">
-                                <input spellcheck="false"
-                                    class="width_100"
-                                    type="text"
-                                    v-model="searcher"
-                                    v-on:keypress.enter="digestOutput"
-                                    :placeholder="placeholderForBuscador" />
-                            </div>
-                            <div v-if="isShowingSubpanel === 'Paginador'">
-                                <input spellcheck="false"
-                                    class="width_100"
-                                    type="number"
-                                    v-model="itemsPerPageOnForm"
-                                    v-on:keypress.enter="digestOutput"
-                                    :placeholder="placeholderForPaginador" />
+                            <div class="lsw_table_config_panel">
+                                <div v-if="(isShowingSubpanel === 'Buscador') || (isShowingSubpanel === 'Todo')">
+                                    <h4>Buscador por texto</h4>
+                                    <input spellcheck="false"
+                                        class="width_100"
+                                        type="text"
+                                        v-model="searcher"
+                                        v-on:keypress.enter="digestOutput"
+                                        :placeholder="placeholderForBuscador" />
+                                </div>
+                                <div v-if="(isShowingSubpanel === 'Filtro') || (isShowingSubpanel === 'Todo')">
+                                    <h4>Filtro de filas</h4>
+                                    <textarea spellcheck="false"
+                                        v-model="filter"
+                                        :placeholder="placeholderForFiltro"></textarea>
+                                </div>
+                                <div v-if="(isShowingSubpanel === 'Extensor') || (isShowingSubpanel === 'Todo')">
+                                    <h4>Extensor de propiedades</h4>
+                                    <textarea spellcheck="false"
+                                        v-model="extender"
+                                        :placeholder="placeholderForExtensor"></textarea>
+                                </div>
+                                <div v-if="(isShowingSubpanel === 'Ordenador') || (isShowingSubpanel === 'Todo')">
+                                    <h4>Ordenador de filas</h4>
+                                    <textarea spellcheck="false"
+                                        v-model="sorter"
+                                        :placeholder="placeholderForOrdenador"></textarea>
+                                </div>
+                                <div v-if="(isShowingSubpanel === 'Columnas') || (isShowingSubpanel === 'Todo')">
+                                    <h4>Ordenador de columnas</h4>
+                                    <div class="flex_row centered">
+                                        <div class="flex_100">
+                                            <input type="text"
+                                                class="width_100"
+                                                v-model="columnsOrderInput"
+                                                v-on:keypress.enter="updateColumnsOrderFromInput"
+                                                placeholder="Ej: age, name, id" />
+                                        </div>
+                                        <div class="flex_1 pad_left_1">
+                                            <button class=""
+                                                v-on:click="updateColumnsOrderFromInput">↩️</button>
+                                        </div>
+                                    </div>
+                                    <ol>
+                                        <li v-for="columnRule, columnIndex in columnsOrder"
+                                            v-bind:key="'column_order_' + columnIndex">
+                                            <b>Columna {{ columnIndex+1 }}.</b> {{ columnRule }}
+                                        </li>
+                                    </ol>
+                                </div>
+                                <div v-if="(isShowingSubpanel === 'Paginador') || (isShowingSubpanel === 'Todo')">
+                                    <h4>Página de resultados</h4>
+                                    <div class="flex_row">
+                                        <div class="flex_1 pad_right_1">
+                                            <button class="" v-on:click="decreasePage">-</button>
+                                        </div>
+                                        <div class="flex_100">
+                                            <input spellcheck="false"
+                                                class="width_100 text_align_center"
+                                                type="number"
+                                                v-model="currentPageOnForm"
+                                                v-on:keypress.enter="digestOutput"
+                                                :placeholder="placeholderForPaginador" />
+                                        </div>
+                                        <div class="flex_1 pad_left_1">
+                                            <button class="" v-on:click="increasePage">+</button>
+                                        </div>
+                                    </div>
+                                    <h4 class="margin_top_1">Items por página</h4>
+                                    <div class="flex_row">
+                                        <div class="flex_1 pad_right_1">
+                                            <button class="" v-on:click="decreaseItemsPerPage">-</button>
+                                        </div>
+                                        <div class="flex_100">
+                                            <input spellcheck="false"
+                                                class="width_100 text_align_center"
+                                                type="number"
+                                                v-model="itemsPerPageOnForm"
+                                                v-on:keypress.enter="digestOutput"
+                                                :placeholder="placeholderForPaginador" />
+                                        </div>
+                                        <div class="flex_1 pad_left_1">
+                                            <button class="" v-on:click="increaseItemsPerPage">+</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -24903,26 +25034,30 @@ Vue.component("LswTable", {
                         <div class="pagination_button first_button"
                             v-on:click="goToFirstPage"
                             v-if="currentPage !== 0">⏪</div>
-                        <div class="pagination_button cursor_default" v-else>◼️</div>
+                        <div class="pagination_button cursor_default"
+                            v-else>◼️</div>
                     </div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
                             v-on:click="decreasePage"
                             v-if="currentPage !== 0">◀️</div>
-                        <div class="pagination_button cursor_default" v-else>◾️</div>
+                        <div class="pagination_button cursor_default"
+                            v-else>◾️</div>
                     </div>
                     <div class="flex_100 text_align_center">Pág. {{ currentPage+1 }}/{{ totalOfPages }} - máx: {{ itemsPerPage }}</div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
                             v-on:click="increasePage"
                             v-if="(currentPage+1) !== totalOfPages">▶️</div>
-                        <div class="pagination_button cursor_default" v-else>◾️</div>
+                        <div class="pagination_button cursor_default"
+                            v-else>◾️</div>
                     </div>
                     <div class="flex_1 pagination_button_box last_box">
                         <div class="pagination_button last_button"
                             v-on:click="goToLastPage"
                             v-if="(currentPage+1) !== totalOfPages">⏩</div>
-                        <div class="pagination_button cursor_default" v-else>◼️</div>
+                        <div class="pagination_button cursor_default"
+                            v-else>◼️</div>
                     </div>
                 </div>
             </div>
@@ -24971,35 +25106,46 @@ Vue.component("LswTable", {
                                     </button>
                                 </td>
                                 <!--Selectable cell:-->
-                                <td class="index_cell" v-if="selectable === 'one'">
+                                <td class="index_cell"
+                                    v-if="selectable === 'one'">
                                     <span v-on:click="() => toggleChoosenRow(row[choosableId])">
-                                        <button class="supermini activated" v-if="choosenRows === row[choosableId]">
+                                        <button class="supermini activated"
+                                            v-if="choosenRows === row[choosableId]">
                                             <!--input type="radio" :checked="true" /-->
                                             ☑️
                                         </button>
-                                        <button class="supermini" v-else>
+                                        <button class="supermini"
+                                            v-else>
                                             🔘
                                             <!--input type="radio" :checked="false" /-->
                                         </button>
                                     </span>
                                 </td>
-                                <td class="index_cell" v-else-if="selectable === 'many'">
+                                <td class="index_cell"
+                                    v-else-if="selectable === 'many'">
                                     <label>
-                                        <input type="checkbox" v-model="choosenRows" :value="row[choosableId]" />
+                                        <input type="checkbox"
+                                            v-model="choosenRows"
+                                            :value="row[choosableId]" />
                                     </label>
                                 </td>
                                 <!--Row buttons cells:-->
-                                <td class="button_cell" v-for="attachedColumn, attachedColumnIndex in attachedColumns"
+                                <td class="button_cell"
+                                    v-for="attachedColumn, attachedColumnIndex in attachedColumns"
                                     v-bind:key="'attached-column-' + attachedColumnIndex">
-                                    <button class="supermini" v-on:click="() => rowButtons[attachedColumnIndex].event(row, rowIndex, attachedColumn)">{{ attachedColumn.text }}</button>
+                                    <button class="supermini"
+                                        v-on:click="() => rowButtons[attachedColumnIndex].event(row, rowIndex, attachedColumn)">{{
+                                        attachedColumn.text }}</button>
                                 </td>
                                 <!--Object properties cells:-->
-                                <td class="data_cell" v-for="columnKey, columnIndex in headers"
+                                <td class="data_cell"
+                                    v-for="columnKey, columnIndex in headers"
                                     v-bind:key="'column-' + columnIndex"
                                     :title="JSON.stringify(row[columnKey])">
                                     <template v-if="columnsAsList.indexOf(columnKey) !== -1 && Array.isArray(row[columnKey])">
                                         <ul>
-                                            <li v-for="item, itemIndex in row[columnKey]" v-bind:key="'column-' + columnIndex + '-item-' + itemIndex">
+                                            <li v-for="item, itemIndex in row[columnKey]"
+                                                v-bind:key="'column-' + columnIndex + '-item-' + itemIndex">
                                                 {{ itemIndex + 1 }}. {{ item }}
                                             </li>
                                         </ul>
@@ -25033,7 +25179,7 @@ Vue.component("LswTable", {
             </tbody>
         </table>
     </div>
-    
+
     <div class="paginator_widget this_code_is_duplicated_always">
         <div>
             <div>
@@ -25042,32 +25188,36 @@ Vue.component("LswTable", {
                         <div class="pagination_button first_button"
                             v-on:click="goToFirstPage"
                             v-if="currentPage !== 0">⏪</div>
-                        <div class="pagination_button cursor_default" v-else>◼️</div>
+                        <div class="pagination_button cursor_default"
+                            v-else>◼️</div>
                     </div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
                             v-on:click="decreasePage"
                             v-if="currentPage !== 0">◀️</div>
-                        <div class="pagination_button cursor_default" v-else>◾️</div>
+                        <div class="pagination_button cursor_default"
+                            v-else>◾️</div>
                     </div>
                     <div class="flex_100 text_align_center">Pág. {{ currentPage+1 }}/{{ totalOfPages }} - máx: {{ itemsPerPage }}</div>
                     <div class="flex_1 pagination_button_box">
                         <div class="pagination_button"
                             v-on:click="increasePage"
                             v-if="(currentPage+1) !== totalOfPages">▶️</div>
-                        <div class="pagination_button cursor_default" v-else>◾️</div>
+                        <div class="pagination_button cursor_default"
+                            v-else>◾️</div>
                     </div>
                     <div class="flex_1 pagination_button_box last_box">
                         <div class="pagination_button last_button"
                             v-on:click="goToLastPage"
                             v-if="(currentPage+1) !== totalOfPages">⏩</div>
-                        <div class="pagination_button cursor_default" v-else>◼️</div>
+                        <div class="pagination_button cursor_default"
+                            v-else>◼️</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
 </div>`,
   props: {
     initialInput: {
@@ -25101,6 +25251,10 @@ Vue.component("LswTable", {
     initialChoosenValue: {
       type: [],
       default: () => []
+    },
+    storageId: {
+      type: [String, Boolean],
+      default: () => false
     }
   },
   data() {
@@ -25110,7 +25264,7 @@ Vue.component("LswTable", {
       input,
       title: this.initialSettings?.title || "",
       isShowingMenu: this.initialSettings?.isShowingMenu || false,
-      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Filtro", // "Buscador", ...
+      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Todo", // "Buscador", ...
       selectedRows: [],
       choosenRows: this.initialChoosenValue || [],
       searcher: this.initialSettings?.searcher || "",
@@ -25120,15 +25274,17 @@ Vue.component("LswTable", {
       itemsPerPageOnForm: this.initialSettings?.itemsPerPage || 10,
       itemsPerPage: this.initialSettings?.itemsPerPage || 10,
       currentPage: this.initialSettings?.currentPage || 0,
+      currentPageOnForm: (this.initialSettings?.currentPage+1) || 1,
       columnsAsList: this.initialSettings?.columnsAsList || [],
       columnsOrder: this.initialSettings?.columnsOrder || [],
+      columnsOrderInput: (this.initialSettings?.columnsOrder || []).join(", "),
       output: [],
       paginatedOutput: [],
       headers: [],
       attachedHeaders: this._adaptRowButtonsToHeaders(this.rowButtons),
       attachedColumns: this._adaptRowButtonsToColumns(this.rowButtons),
       attachedTopButtons: this._adaptRowButtonsToColumns(this.tableButtons),
-      placeholderForExtensor: "data.map(function(it, i) {\n  return /* you start here */ || {};\n});",
+      placeholderForExtensor: "data.map(function(it, i) {\n  return Object.assign({}, it, /* you start here */ || {});\n});",
       placeholderForOrdenador: "data.sort(function(a, b) {\n  return /* you start here */;\n});",
       placeholderForFiltro: "data.filter(function(it, i) {\n  return /* you start here */;\n});",
       placeholderForBuscador: "Búsqueda de texto rápida",
@@ -25285,7 +25441,7 @@ Vue.component("LswTable", {
     },
     digestPagination() {
       this.$trace("lsw-table.methods.digestPagination");
-      const page = this.currentPage;
+      const page = this.currentPageOnForm - 1;
       Inject_form_state_of_items_per_page_here: {
         this.itemsPerPage = this.itemsPerPageOnForm;
       }
@@ -25317,6 +25473,35 @@ Vue.component("LswTable", {
         });
       }
       return attachedColumns;
+    },
+    updateColumnsOrderFromInput() {
+      this.$trace("lsw-table.methods.updateColumnsOrderFromInput");
+      this.columnsOrder = this.columnsOrderInput.split(",").map(it => it.trim());
+      this.digestOutput();
+    },
+    increaseItemsPerPage() {
+      this.$trace("lsw-table.methods.increaseItemsPerPage");
+      this.itemsPerPageOnForm++;
+    },
+    decreaseItemsPerPage() {
+      this.$trace("lsw-table.methods.decreaseItemsPerPage");
+      this.itemsPerPageOnForm--;
+    },
+    loadState() {
+      this.$trace("lsw-table.methods.loadState");
+      // @TODO...
+      // @TODO...
+      // @TODO...
+      // @TODO...
+      // @TODO...
+    },
+    saveState() {
+      this.$trace("lsw-table.methods.saveState");
+      // @TODO...
+      // @TODO...
+      // @TODO...
+      // @TODO...
+      // @TODO...
     }
   },
   watch: {
@@ -25326,6 +25511,7 @@ Vue.component("LswTable", {
     },
     currentPage(value) {
       this.$trace("lsw-table.watch.currentPage");
+      this.currentPageOnForm = value + 1;
       this.digestPagination();
     },
     choosenRows(v) {
@@ -25361,6 +25547,7 @@ Vue.component("LswTable", {
   },
   mounted() {
     this.$trace("lsw-table.mounted");
+    this.loadState();
     this.digestOutput();
   }
 });
@@ -25710,7 +25897,7 @@ Vue.component('LswDataImplorer', {
 // @code.start: LswDataPrinterButton API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswDataPrinterButton component
 Vue.component("LswDataPrinterButton", {
   template: `<button class="lsw_data_printer_button" v-on:click="openViewer">
-    💾
+    🖨️
 </button>`,
   props: {
     input: {
@@ -25759,8 +25946,9 @@ Vue.component("LswDataPrinterReport", {
     <div class="pad_2">
         <h4>Reporte de impresión</h4>
     </div>
-    <div class="pad_1 pad_top_0">
-        <select class="width_100" v-model="selectedSection">
+    <div class="flex_row centered  pad_1 pad_top_0">
+        <div class="flex_1">Versión: </div>
+        <select class="flex_100 width_100" v-model="selectedSection">
             <option v-for="val, valIndex in availableOptions" :value="val">{{ val }}</option>
         </select>
     </div>
@@ -26884,7 +27072,7 @@ Vue.component("LswDatabaseExplorer", {
 // @code.start: LswDatabaseBreadcrumb API | @$section: Vue.js (v2) Components » LswDatabaseBreadcrumb API » LswDatabaseBreadcrumb API
 Vue.component("LswDatabaseBreadcrumb", {
   template: `<div class="database_breadcrumb">
-    <span>Estás en: </span>
+    <span>🔸 Estás en: </span>
     <template v-for="item, itemIndex in breadcrumb">
         <span v-bind:key="'breadcrumb_item_' + itemIndex">
             <span v-if="itemIndex !== 0"> » </span>
@@ -26991,14 +27179,17 @@ Vue.component("LswPageDatabases", {
 // @code.start: LswPageRows API | @$section: Vue.js (v2) Components » LswPageRows API » LswPageRows API
 Vue.component("LswPageRows", {
   template: `<div>
-    <h3>
-        <span>
-            <button v-on:click="goBack">⬅️</button>
-        </span>
-        <span> 📦 </span>
-        <span>{{ args.table }} [all]</span>
-        <span>[{{ args.database }}]</span>
-    </h3>
+    <div>
+        <div class="flex_row centered">
+            <div class="flex_1">
+                <button v-on:click="goBack">⬅️</button>
+            </div>
+            <div class="flex_100 pad_left_1">
+                <h3 class="display_inline_block nowrap"> 📦 {{ args.table }} [*]</h3>
+                <div class="display_inline_block">[{{ args.database }}]</div>
+            </div>
+        </div>
+    </div>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb" :database-explorer="databaseExplorer" />
     <lsw-table
         :initial-input="rows" v-if="rows"
@@ -27258,18 +27449,23 @@ Vue.component("LswPageSchema", {
 // @code.start: LswPageTables API | @$section: Vue.js (v2) Components » LswPageTables API » LswPageTables API
 Vue.component("LswPageTables", {
   template: `<div class="page_tables page">
-    <h3 class="flex_row centered">
-        <div class="flex_100">📦 Tablas de {{ args.database }}</div>
-        <button class="flex_1" style="visibility: hidden;"></button>
-    </h3>
+    <div class="flex_row centered">
+        <div class="flex_1 centered">
+            <button v-on:click="\$noop" disabled="true">✳️</button>
+        </div>
+        <div class="flex_100 pad_left_1">
+            <h3 class="display_inline_block nowrap">📦 Tablas de {{ args.database }}</h3>
+            <div class="display_inline_block">[{{ args.database }}]</div>
+        </div>
+    </div>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb"
         :database-explorer="databaseExplorer" />
     <div v-if="tablesAsList">
-        <div class="pad_horizontal_1 pad_bottom_1">
+        <div class="pad_bottom_1">
             <div class="h4">Tablas disponibles:</div>
         </div>
-        <div class="pad_left_2 pad_right_2 pad_bottom_1" v-for="idTable, indexTable in tablesAsList" v-bind:key="'table_id_' + idTable.id">
-            <button class="supermini width_100 text_align_left" v-on:click="() => openTable(idTable.id)">{{ idTable.id }}</button>
+        <div class="" style="padding-bottom:1px;" v-for="tableData, tableIndex, tableCounter in tablesAsList" v-bind:key="'table_id_' + tableData.id">
+            <button class="supermini width_100 text_align_left" v-on:click="() => openTable(tableData.id)">{{ tableIndex + 1 }}. {{ tableData.id }}</button>
         </div>
     </div>
     <lsw-table v-if="tablesAsList && tablesAsList.length"
@@ -27697,7 +27893,7 @@ Vue.component("LswFilesystemExplorer", {
       Setup_panel_right_on_file: {
         const rightButtonsOnFile = [
           {
-            text: "💾",
+            text: "🖨️",
             click: () => this.processToSaveFile(),
           }, {
             text: "↔️",
@@ -28449,7 +28645,7 @@ Vue.component("LswWikiLibros", {
                         <button class="supermini list_button width_100 text_align_left"
                             v-on:click="() => printLibro(libro)">
                             <div class="flex_row">
-                                <div class="flex_100 small_font">💾</div>
+                                <div class="flex_100 small_font">🖨️</div>
                             </div>
                         </button>
                     </div>
@@ -28463,7 +28659,7 @@ Vue.component("LswWikiLibros", {
                     </div>
                 </div>
                 <div class="pad_top_1" v-if="selectedLibros.indexOf(libro) !== -1">
-                    <div class="lsw_wiki_libro_viewer_root" v-if="libro in loadedLibros">
+                    <div class="" v-if="libro in loadedLibros">
                         <lsw-wiki-libro-viewer :arbol="loadedLibros[libro]" :indice-de-arbol="0" :on-click-link="abrirArticulo">
                             <template v-slot:default="{ arbol }">
                                 <lsw-wiki-articulo-viewer :articulo-id="arbol.link || arbol.id" />
@@ -28759,12 +28955,12 @@ Vue.component("LswWikiArticulos", {
         <template v-for="articulo, articuloIndex in articulos">
             <div class="articulo_box"
                 v-bind:key="'articulo_de_wiki_' + articulo.id">
-                <div class="flex_row centered pad_top_1">
+                <div class="flex_row centered pad_top_min">
                     <button class="supermini list_button width_100"
                         :class="{activated: openedArticulos.indexOf(articulo.id) !== -1}"
                         v-on:click="() => toggleArticulo(articulo.id)">
                         <div class="flex_column">
-                            <div class="flex_1 flex_row centered">
+                            <div class="flex_1 flex_row centered min_height_14px">
                                 <div class="flex_100 shortable_text text_align_left">
                                     {{ articulo.tiene_titulo }}
                                 </div>
@@ -28779,11 +28975,27 @@ Vue.component("LswWikiArticulos", {
                             </div>
                         </div>
                     </button>
-                    <button class="supermini margin_left_1" v-on:click="() => editArticulo(articulo)">↗️</button>
+                    <button class="supermini margin_left_1"
+                        v-on:click="() => editArticulo(articulo)">↗️</button>
                 </div>
-                <div class="pad_top_1" v-if="openedArticulos.indexOf(articulo.id) !== -1">
-                    <div class="articulo_detalles texto_markdown rutiner_box pad_1">
-                        <div v-html="marked.parse(articulo.tiene_contenido)"></div>
+                <div class="pad_top_1"
+                    v-if="openedArticulos.indexOf(articulo.id) !== -1">
+                    <div class="position_relative">
+                        <div class="position_absolute top_0 right_0 flex_row centered pad_top_1 pad_right_1">
+                            <div class="flex_100"></div>
+                            <div class="flex_1">
+                                <button class="supermini" v-on:click="() => sendArticuloToNotas(articulo)">⬅️💬</button>
+                            </div>
+                            <div class="flex_1 pad_left_1">
+                                <button class="supermini" v-on:click="() => deleteArticulo(articulo)">❌</button>
+                            </div>
+                            <div class="flex_1 pad_left_1">
+                                <button class="supermini" v-on:click="() => editArticulo(articulo)">✏️</button>
+                            </div>
+                        </div>
+                        <div class="articulo_detalles texto_markdown rutiner_box pad_1 min_height_33px">
+                            <div v-html="marked.parse(articulo.tiene_contenido)"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -28943,6 +29155,85 @@ Vue.component("LswWikiArticulos", {
           }
         }
       });
+      this.loadArticulos();
+    }, 
+    async deleteArticulo(articulo) {
+      this.$trace("lsw-wiki-articulos.methods.deleteArticulo");
+      const articulosComponent = this;
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Eliminar artículo",
+        template: `
+          <div class="pad_2">
+            <div class="">¿Estás seguro que quieres eliminar el artículo?</div>
+            <pre class="codeblock margin_top_2 margin_bottom_2">{{ articulo }}</pre>
+            <hr />
+            <div class="flex_row centered">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_right_1">
+                <button class="flex_1" v-on:click="() => accept(true)">Aceptar</button>
+              </div>
+              <div class="flex_1">
+                <button class="flex_1 " v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: { articulo },
+          methods: {}
+        }
+      });
+      if(respuesta !== true) return;
+      await this.$lsw.database.delete("Articulo", articulo.id);
+      this.$lsw.toasts.send({
+        title: "Artículo eliminado correctamente",
+        text: "El artículo fue eliminado correctamente"
+      });
+      this.loadArticulos();
+    },
+    async sendArticuloToNotas(articulo) {
+      this.$trace("lsw-spontaneous-table-nota.methods.sendArticuloToNotas");
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Pasar artículo a notas",
+        template: `
+          <div class="pad_1">
+            <div>Vas a pasar el siguiente artículo a nota: </div>
+            <div class="pad_2">
+              <pre class="codeblock">{{ articulo }}</pre>
+            </div>
+            <div>¿Estás seguro?</div>
+            <hr/>
+            <div class="flex_row centered text_align_right">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_right_1">
+                <button class="supermini danger_button" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: { data: { articulo } },
+      });
+      if(respuesta === -1) return;
+      const notaNew = Object.assign({
+        tiene_titulo: '',
+        tiene_fecha: '',
+        tiene_estado: "creada",
+        tiene_categorias: '',
+        tiene_contenido: '',
+        tiene_garantia: '',
+        tiene_tags: '',
+      }, articulo);
+      delete notaNew.id;
+      await this.$lsw.database.insert("Nota", notaNew);
+      await this.$lsw.database.delete("Articulo", articulo.id);
+      this.$lsw.toasts.send({
+        title: "Artículo a nota bien",
+        text: "El artículo ha sido pasado a nota correctamente",
+      });
+      this.loadArticulos();
     }
   },
   watch: {
@@ -28962,7 +29253,7 @@ Vue.component("LswWikiArticulos", {
 Vue.component("LswWikiCategorias", {
   name: "LswWikiCategorias",
   template: `<div class="lsw_wiki_categorias">
-    <div class="lsw_wiki_libro_viewer_root">
+    <div class="">
         <lsw-wiki-libro-viewer :arbol="categorias" :indice-de-arbol="0" :on-click-link="abrirCategoria">
             <template v-slot:default="{ arbol }">
                 {{ arbol }}
@@ -29028,17 +29319,17 @@ Vue.component("LswWikiCategorias", {
 Vue.component("LswWikiArticuloViewer", {
   name: "LswWikiArticuloViewer",
   template: `<div class="lsw_wiki_articulo_viewer">
-    <div v-if="error">
+    <div class="pad_2" v-if="error">
         {{ error.name }}: {{ error.message }}
     </div>
     <template v-if="isLoaded">
         <template v-if="selectedArticulos && selectedArticulos.length">
-            <div class="pad_left_2">
+            <div class="pad_2">
                 <div v-for="articulo, articuloIndex in selectedArticulos" v-bind:key="'articulo_' + articuloIndex">
                     - Mostrando artículo {{ articuloIndex + 1 }}. «{{ articulo.tiene_titulo }}»
                 </div>
             </div>
-            <div v-if="markdownContent">
+            <div class="pad_2 pad_top_0" v-if="markdownContent">
                 <div class="texto_markdown rutiner_box pad_1" v-html="markdownContent"></div>
             </div>
         </template>
@@ -29254,6 +29545,9 @@ Vue.component("LswWiki", {
             <div class="flex_1">
                 <div class="pad_left_1"><button :class="{activated: selectedSection === 'articulos'}" class="supermini" v-on:click="() => selectSection('articulos')">🔬</button></div>
             </div>
+            <div class="flex_1">
+                <div class="pad_left_1"><button class="supermini" v-on:click="() => goToAddArticulo()">➕</button></div>
+            </div>
         </div>
     </h4>
     <hr />
@@ -29376,6 +29670,21 @@ Vue.component("LswWiki", {
         this.isLoadedCategorias = true;
       }, 100);
     },
+    goToAddArticulo() {
+      this.$trace("lsw-wiki.methods.goToAddArticulo");
+      this.$lsw.dialogs.open({
+        title: "Añadir nuevo artículo",
+        template: `<lsw-spontaneous-form-articulo :on-submitted="closeAndRefresh" />`,
+        factory: {
+          methods: {
+            closeAndRefresh() {
+              this.close();
+              // @DONT because maybe you have something in hands.
+            }
+          }
+        },
+      });
+    }
   },
   watch: {
     
@@ -30060,7 +30369,7 @@ Vue.component("LswAgendaAccionesViewer", {
                 <div class="flex_1 margin_right_1">
                     <button class="supermini padded_vertically_1"
                         v-on:click="() => selectForm('new')"
-                        :class="{activated: selectedForm === 'new'}">#️⃣</button>
+                        :class="{activated: selectedForm === 'new'}">➕</button>
                 </div>
                 <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                 <div class="flex_1 nowrap">
@@ -30198,7 +30507,7 @@ Vue.component("LswAgendaAccionesViewer", {
                         <button class="supermini nowrap"
                             style="margin-right: 1px;"
                             v-on:click="() => selectHour(franja.hora)"
-                            :class="{activated: selectedForm === franja.hora}">#️⃣</button>
+                            :class="{activated: selectedForm === franja.hora}">➕</button>
                     </div>
                     <div class="flex_100">
                         <span>{{ \$lsw.timer.utils.formatHourFromMomento(franja) }}</span>
@@ -30253,7 +30562,7 @@ Vue.component("LswAgendaAccionesViewer", {
                             </div>
                             <div class="flex_1 hour_task_editer pill_middle button_pill_cell">
                                 <button class="" v-on:click="() => openUpdateTaskDialog(tarea)"
-                                    :class="{activated: selectedForm === tarea.id}">#️⃣</button>
+                                    :class="{activated: selectedForm === tarea.id}">➕</button>
                             </div>
                             <div class="flex_1 hour_task_editer pill_end button_pill_cell">
                                 <button class="danger_button" v-on:click="(e) => openDeleteTaskDialog(tarea, e)">❌</button>
@@ -33342,7 +33651,7 @@ Vue.component("LswSchemaBasedForm", {
                         <div class="flex_100"></div>
                         <div class="flex_1 flex_row centered">
                             <button class="supermini margin_right_1 nowrap"
-                                v-on:click="passToPrinter">💾</button>
+                                v-on:click="passToPrinter">🖨️</button>
                             <button class="supermini margin_right_1 nowrap"
                                 v-on:click="validateForm">✅</button>
                             <button class="supermini margin_right_1 nowrap"
@@ -47803,7 +48112,7 @@ Vue.component("LswAutomensajesViewer", {
                 </div>
             </div>
             <div class="flex_1 pad_left_1">
-                <button class="supermini rounded" id="the_picas_button" v-on:click="procedureForPicas">{{ simboloActual }}</button>
+                <button class="rounded" id="the_picas_button" v-on:click="procedureForPicas">{{ simboloActual }}</button>
             </div>
         </div>
     </div>
@@ -47914,7 +48223,7 @@ Vue.component("LswAutomensajesViewer", {
 Vue.component("LswAppsViewerButton", {
   template: `<div class="lsw_apps_viewer_button">
     <div class="lsw_apps_button">
-        <button class="supermini rounded" v-on:click="openHomepage">📟</button>
+        <button class="rounded" v-on:click="openHomepage">📟</button>
     </div>
     <div class="position_relative">
         <div class="hidden_menu"
@@ -48745,7 +49054,15 @@ Vue.component("LswSpontaneousTableLista", {
 // @code.start: LswSpontaneousTableNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableNota API » LswSpontaneousTableNota component
 Vue.component("LswSpontaneousTableNota", {
   template: `<div class="lsw_spontaneos_table_nota">
-    <h4>📒 Últimas notas:</h4>
+    <div class="flex_row centered">
+        <div class="flex_100">
+            <h4>📒 Últimas notas:</h4>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="goToAddNota">➕</button>
+        </div>
+    </div>
     <div class="pad_top_1">
         <div class="flex_row centered">
             <div class="flex_1">
@@ -48762,7 +49079,6 @@ Vue.component("LswSpontaneousTableNota", {
                 </span>
                 <button class="supermini"
                     v-on:click="loadNotes">🛜</button>
-
             </div>
             <div class="flex_1">
                 <button class="supermini"
@@ -48800,11 +49116,13 @@ Vue.component("LswSpontaneousTableNota", {
                 <div class="pad_top_1"
                     v-if="selectedNotas.indexOf(nota.id) !== -1">
                     <div class="position_relative">
-                        <div class="markdown_text"
+                        <div class="texto_markdown"
                             v-html="\$window.marked.parse(nota.tiene_contenido)"
                             style="font-size: 11px;"></div>
                         <div class="position_absolute top_0 right_0 pad_right_1 pad_top_1">
                             <div class="flex_row centered">
+                                <button class="supermini margin_right_1"
+                                    v-on:click="() => sendNotaToArticulos(nota)"> 🔬➡️ </button>
                                 <button class="supermini margin_right_1"
                                     v-on:click="() => goToDeleteNota(nota)">❌</button>
                                 <button class="supermini"
@@ -49024,6 +49342,65 @@ Vue.component("LswSpontaneousTableNota", {
           }
         }
       });
+    },
+    goToAddNota() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToEditNota");
+      const that = this;
+      this.$lsw.dialogs.open({
+        title: "Añadir nota",
+        template: `<lsw-spontaneous-form-nota :on-submitted="closeAndRefresh" />`,
+        factory: {
+          methods: {
+            closeAndRefresh() {
+              this.close();
+              that.loadNotes();
+            }
+          }
+        }
+      });
+    },
+    async sendNotaToArticulos(nota) {
+      this.$trace("lsw-spontaneous-table-nota.methods.sendNotaToArticulos");
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Pasar nota a artículo",
+        template: `
+          <div class="pad_1">
+            <div>Vas a pasar la siguiente nota a artículo: </div>
+            <div class="pad_2">
+              <pre class="codeblock">{{ nota }}</pre>
+            </div>
+            <div>¿Estás seguro?</div>
+            <hr/>
+            <div class="flex_row centered text_align_right">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_right_1">
+                <button class="supermini danger_button" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: { data: { nota } },
+      });
+      if(respuesta === -1) return;
+      const articuloNew = Object.assign({
+        tiene_titulo: '',
+        tiene_fecha: '',
+        tiene_categorias: '',
+        tiene_contenido: '',
+        tiene_garantia: '',
+        tiene_tags: '',
+      }, nota);
+      delete articuloNew.id;
+      await this.$lsw.database.insert("Articulo", articuloNew);
+      await this.$lsw.database.delete("Nota", nota.id);
+      this.$lsw.toasts.send({
+        title: "Nota a artículo bien",
+        text: "La nota ha sido pasada a artículo correctamente",
+      });
+      this.loadNotes();
     }
   },
   watch: {},
@@ -52494,6 +52871,7 @@ try {
       try {
         Inject_kernel_bootjs: {
           await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
+          await LswDomIrruptor.abrirBaseDeDatos();
         }
       } catch (error) {
         Vue.prototype.$lsw.toasts.send({

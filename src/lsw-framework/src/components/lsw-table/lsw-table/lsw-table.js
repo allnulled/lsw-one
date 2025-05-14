@@ -33,6 +33,10 @@ Vue.component("LswTable", {
     initialChoosenValue: {
       type: [],
       default: () => []
+    },
+    storageId: {
+      type: [String, Boolean],
+      default: () => false
     }
   },
   data() {
@@ -42,7 +46,7 @@ Vue.component("LswTable", {
       input,
       title: this.initialSettings?.title || "",
       isShowingMenu: this.initialSettings?.isShowingMenu || false,
-      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Filtro", // "Buscador", ...
+      isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Todo", // "Buscador", ...
       selectedRows: [],
       choosenRows: this.initialChoosenValue || [],
       searcher: this.initialSettings?.searcher || "",
@@ -52,15 +56,17 @@ Vue.component("LswTable", {
       itemsPerPageOnForm: this.initialSettings?.itemsPerPage || 10,
       itemsPerPage: this.initialSettings?.itemsPerPage || 10,
       currentPage: this.initialSettings?.currentPage || 0,
+      currentPageOnForm: (this.initialSettings?.currentPage+1) || 1,
       columnsAsList: this.initialSettings?.columnsAsList || [],
       columnsOrder: this.initialSettings?.columnsOrder || [],
+      columnsOrderInput: (this.initialSettings?.columnsOrder || []).join(", "),
       output: [],
       paginatedOutput: [],
       headers: [],
       attachedHeaders: this._adaptRowButtonsToHeaders(this.rowButtons),
       attachedColumns: this._adaptRowButtonsToColumns(this.rowButtons),
       attachedTopButtons: this._adaptRowButtonsToColumns(this.tableButtons),
-      placeholderForExtensor: "data.map(function(it, i) {\n  return /* you start here */ || {};\n});",
+      placeholderForExtensor: "data.map(function(it, i) {\n  return Object.assign({}, it, /* you start here */ || {});\n});",
       placeholderForOrdenador: "data.sort(function(a, b) {\n  return /* you start here */;\n});",
       placeholderForFiltro: "data.filter(function(it, i) {\n  return /* you start here */;\n});",
       placeholderForBuscador: "Búsqueda de texto rápida",
@@ -217,7 +223,7 @@ Vue.component("LswTable", {
     },
     digestPagination() {
       this.$trace("lsw-table.methods.digestPagination");
-      const page = this.currentPage;
+      const page = this.currentPageOnForm - 1;
       Inject_form_state_of_items_per_page_here: {
         this.itemsPerPage = this.itemsPerPageOnForm;
       }
@@ -249,6 +255,35 @@ Vue.component("LswTable", {
         });
       }
       return attachedColumns;
+    },
+    updateColumnsOrderFromInput() {
+      this.$trace("lsw-table.methods.updateColumnsOrderFromInput");
+      this.columnsOrder = this.columnsOrderInput.split(",").map(it => it.trim());
+      this.digestOutput();
+    },
+    increaseItemsPerPage() {
+      this.$trace("lsw-table.methods.increaseItemsPerPage");
+      this.itemsPerPageOnForm++;
+    },
+    decreaseItemsPerPage() {
+      this.$trace("lsw-table.methods.decreaseItemsPerPage");
+      this.itemsPerPageOnForm--;
+    },
+    loadState() {
+      this.$trace("lsw-table.methods.loadState");
+      // @TODO...
+      // @TODO...
+      // @TODO...
+      // @TODO...
+      // @TODO...
+    },
+    saveState() {
+      this.$trace("lsw-table.methods.saveState");
+      // @TODO...
+      // @TODO...
+      // @TODO...
+      // @TODO...
+      // @TODO...
     }
   },
   watch: {
@@ -258,6 +293,7 @@ Vue.component("LswTable", {
     },
     currentPage(value) {
       this.$trace("lsw-table.watch.currentPage");
+      this.currentPageOnForm = value + 1;
       this.digestPagination();
     },
     choosenRows(v) {
@@ -293,6 +329,7 @@ Vue.component("LswTable", {
   },
   mounted() {
     this.$trace("lsw-table.mounted");
+    this.loadState();
     this.digestOutput();
   }
 });

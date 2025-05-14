@@ -1,12 +1,17 @@
 # Último commit:
 
+# 14-05-2025 12:51pm
+
+[x] Se carga automáticamente /kernel/componentes (lifecycle, onLoadComponents)
+  [x] usando el .html, .js y .css
+
 # 12-05-2025 21:55pm
 
-[ ] botón para visualizar en txt: 🔤
-  [ ] en libros
-  [ ] en artículos
-  [ ] en ítems de la base de datos (cualquier json)
-  [ ] en tablas (con un estado concreto) de la base de datos (también json)
+[x] botón para visualizar en txt: 🔤
+  [x] en libros
+  [x] en artículos
+  [x] en ítems de la base de datos (cualquier json)
+  [x] en tablas (con un estado concreto) de la base de datos (también json)
 
 # 09-05-2025 12:57am
 

@@ -1,5 +1,13 @@
 <div class="lsw_spontaneos_table_nota">
-    <h4>📒 Últimas notas:</h4>
+    <div class="flex_row centered">
+        <div class="flex_100">
+            <h4>📒 Últimas notas:</h4>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="goToAddNota">➕</button>
+        </div>
+    </div>
     <div class="pad_top_1">
         <div class="flex_row centered">
             <div class="flex_1">
@@ -16,7 +24,6 @@
                 </span>
                 <button class="supermini"
                     v-on:click="loadNotes">🛜</button>
-
             </div>
             <div class="flex_1">
                 <button class="supermini"
@@ -54,11 +61,13 @@
                 <div class="pad_top_1"
                     v-if="selectedNotas.indexOf(nota.id) !== -1">
                     <div class="position_relative">
-                        <div class="markdown_text"
+                        <div class="texto_markdown"
                             v-html="$window.marked.parse(nota.tiene_contenido)"
                             style="font-size: 11px;"></div>
                         <div class="position_absolute top_0 right_0 pad_right_1 pad_top_1">
                             <div class="flex_row centered">
+                                <button class="supermini margin_right_1"
+                                    v-on:click="() => sendNotaToArticulos(nota)"> 🔬➡️ </button>
                                 <button class="supermini margin_right_1"
                                     v-on:click="() => goToDeleteNota(nota)">❌</button>
                                 <button class="supermini"

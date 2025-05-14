@@ -2189,6 +2189,14 @@ button.supermini.activated {
     background-color: default;
 }
 
+button.superbig {
+    min-width: auto;
+    min-width: 25px;
+    min-height: auto;
+    padding: 4px;
+    font-size: 30px !important;
+}
+
 button.bright_border {
     background-color: transparent;
 }

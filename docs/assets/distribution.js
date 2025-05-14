@@ -27893,7 +27893,7 @@ Vue.component("LswFilesystemExplorer", {
       Setup_panel_right_on_file: {
         const rightButtonsOnFile = [
           {
-            text: "🖨️",
+            text: "💾",
             click: () => this.processToSaveFile(),
           }, {
             text: "↔️",
@@ -48112,7 +48112,7 @@ Vue.component("LswAutomensajesViewer", {
                 </div>
             </div>
             <div class="flex_1 pad_left_1">
-                <button class="rounded" id="the_picas_button" v-on:click="procedureForPicas">{{ simboloActual }}</button>
+                <button class="rounded superbig" id="the_picas_button" v-on:click="procedureForPicas">{{ simboloActual }}</button>
             </div>
         </div>
     </div>
@@ -48223,7 +48223,7 @@ Vue.component("LswAutomensajesViewer", {
 Vue.component("LswAppsViewerButton", {
   template: `<div class="lsw_apps_viewer_button">
     <div class="lsw_apps_button">
-        <button class="rounded" v-on:click="openHomepage">📟</button>
+        <button class="rounded superbig" v-on:click="openHomepage">📟</button>
     </div>
     <div class="position_relative">
         <div class="hidden_menu"

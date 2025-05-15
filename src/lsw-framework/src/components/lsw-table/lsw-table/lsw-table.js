@@ -37,6 +37,10 @@ Vue.component("LswTable", {
     storageId: {
       type: [String, Boolean],
       default: () => false
+    },
+    storageStrategy: {
+      type: String,
+      default: () => "ufs/lsw", // No otras de momento.
     }
   },
   data() {
@@ -269,22 +273,124 @@ Vue.component("LswTable", {
       this.$trace("lsw-table.methods.decreaseItemsPerPage");
       this.itemsPerPageOnForm--;
     },
-    loadState() {
+    getStoragePathFor(id) {
+      this.$trace("lsw-table.methods.getStoragePathFor");
+      return this.$lsw.fs.resolve_path("/kernel/settings/table/storage/", id);
+    },
+    async loadState() {
       this.$trace("lsw-table.methods.loadState");
-      // @TODO...
-      // @TODO...
-      // @TODO...
-      // @TODO...
-      // @TODO...
+      Check_strategy_and_validation: {
+        if(this.storageStrategy !== "ufs/lsw") {
+          console.log(`[*] Could not load state on lsw-table because of: UnknownStorageStrategy (=${this.storageStrategy})`);
+          return -1;
+        }
+        if(!this.storageId) {
+          // console.log(`[*] Could not load state on lsw-table because of: NoStorageId (=${this.storageId})`);
+          return -2;
+        }
+      }
+      const storagePath = this.getStoragePathFor(this.storageId);
+      const storageJson = await (() => {
+        try {
+          return this.$lsw.fs.read_file(storagePath);
+        } catch (error) {
+          console.log(`[*] Could not load state on lsw-table because of: BadStoragePath (=${this.storagePath})`);
+          return undefined;
+        }
+      })();
+      if(typeof storageJson !== "string") {
+        console.log(`[*] Could not load state on lsw-table because of: JsonStorageNotString (=${typeof storageJson})`);
+        return -3;
+      }
+      let storageData = undefined;
+      try {
+        storageData = JSON.parse(storageJson);
+      } catch (error) {
+        console.log(`[*] Could not load state on lsw-table because of: JsonStorageNotParseable (${error.name}=${error.message})`);
+        return -4;
+      }
+      Cargar_estado: {
+        if(typeof storageData !== "object") {
+          console.log(`[*] Could not load state on lsw-table because of: StorageDataNotObject (${typeof storageData})`);
+          return -5;
+        }
+        console.log("[*] Loading lsw-table state from: ", storageData);
+        Object.assign(this, storageData);
+      }
     },
     saveState() {
       this.$trace("lsw-table.methods.saveState");
-      // @TODO...
-      // @TODO...
-      // @TODO...
-      // @TODO...
-      // @TODO...
-    }
+      Check_strategy_and_validation: {
+        if(this.storageStrategy !== "ufs/lsw") {
+          console.log(`[*] Could not save state on lsw-table because of: UnknownStorageStrategy (=${this.storageStrategy})`);
+          return -1;
+        }
+        if(!this.storageId) {
+          // console.log(`[*] Could not save state on lsw-table because of: NoStorageId (=${this.storageId})`);
+          return -2;
+        }
+      }
+      const storagePath = this.getStoragePathFor(this.storageId);
+      const storageState = this.extractState();
+      const storageJson = JSON.stringify(storageState, null, 2);
+      Guardar_estado: {
+        console.log("[*] Saving lsw-table state as: ", storageState);
+        this.$lsw.fs.write_file(storagePath, storageJson);
+        this.$lsw.toasts.send({
+          title: "Estado de tabla guardado",
+          text: "Con identificador: " + this.storageId,
+        });
+      }
+      return true;
+    },
+    extractState() {
+      this.$trace("lsw-table.methods.extractState");
+      return LswUtils.extractPropertiesFrom(this, [
+        // "input",
+        "title",
+        "isShowingMenu",
+        "isShowingSubpanel",
+        "selectedRows",
+        "choosenRows",
+        "searcher",
+        "extender",
+        "filter",
+        "sorter",
+        "itemsPerPageOnForm",
+        "itemsPerPage",
+        "currentPage",
+        "currentPageOnForm",
+        "columnsAsList",
+        "columnsOrder",
+        "columnsOrderInput",
+        // "output",
+        // "paginatedOutput",
+        "headers",
+        // "attachedHeaders",
+        // "attachedColumns",
+        // "attachedTopButtons",
+        // "placeholderForExtensor",
+        // "placeholderForOrdenador",
+        // "placeholderForFiltro",
+        // "placeholderForBuscador",
+        // "placeholderForPaginador",
+      ], [
+        "input",
+        "output",
+        "paginatedOutput",
+        "attachedHeaders",
+        "attachedColumns",
+        "attachedTopButtons",
+        "placeholderForExtensor",
+        "placeholderForOrdenador",
+        "placeholderForFiltro",
+        "placeholderForBuscador",
+        "placeholderForPaginador",
+      ], {
+        isShowingMenu: false,
+        isShowingSubpanel: "Todo",
+      });
+    },
   },
   watch: {
     itemsPerPage(value) {
@@ -315,7 +421,25 @@ Vue.component("LswTable", {
       };
       if (this.searcher.length) {
         return true;
-      };
+      }
+      if (this.currentPage !== 0) {
+        return true;
+      }
+      if ((this.currentPage+1) !== this.currentPageOnForm) {
+        return true;
+      }
+      if (this.itemsPerPage < 10) {
+        return true;
+      }
+      if (this.itemsPerPageOnForm !== this.itemsPerPage) {
+        return true;
+      }
+      if(this.columnsOrderInput !== "id") {
+        return true;
+      }
+      if(this.columnsOrder.length !== 1) {
+        return true;
+      }
       return false;
     },
     totalOfPages() {

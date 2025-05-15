@@ -715,6 +715,7 @@ rel desayunar
       await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", `
         
       `.trim());
+      await this.$lsw.fs.ensureDirectory("/kernel/settings/table/storage");
       await this.$lsw.fs.ensureDirectory("/kernel/components");
       await this.$lsw.fs.ensureFile("/kernel/boot.js", `
 

@@ -31,6 +31,7 @@ Vue.component("LswWikiCategorias", {
               :initial-args="{
                 database: 'lsw_default_database',
                 table: 'Articulo',
+                tableStorageId: 'categoria-' + categoriaId,
                 filterCallback: it => it.tiene_categorias && (it.tiene_categorias.toLowerCase().indexOf(categoriaId.toLowerCase()) !== -1),
               }"
             />

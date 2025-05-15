@@ -429,9 +429,13 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .lsw_table_top_button {
     margin-right: 2px;
 }
-.lsw_table_config_panel > div {
+.lsw_table_config_panel > div.config_panel {
     padding-top: 4px;
     padding-bottom: 4px;
+}
+.config_panel > h5 {
+    
+    border-bottom: 1px solid black;
 }
 .lsw_data_implorer {
     
@@ -1058,6 +1062,15 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
 
 .articulo_detalles {
     min-height: 40px;
+}
+
+.articulo_categorias_box {
+    color: rgb(255, 255, 255);
+    text-shadow: 0 0 1px black;
+    font-style: italic;
+    font-size: 10px;
+    padding: 1px;
+    padding-top: 4px;
 }
 .lsw_wiki_categorias {}
 .lsw_wiki_articulo_viewer {
@@ -2515,7 +2528,7 @@ pre.codeblock {
     padding-bottom: 1px;
 }
 .list_button {
-    margin-top: 1px;
+    margin-top: 0px;
     border: 1px solid white;
     border-radius: 3pt;
     padding-top: 2px;

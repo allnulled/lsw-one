@@ -397,18 +397,18 @@
     return response;
   };
 
-  LswUtils.createAsyncFunction = function(code, parameters = []) {
-    const AsyncFunction = (async function() {}).constructor;
+  LswUtils.createAsyncFunction = function (code, parameters = []) {
+    const AsyncFunction = (async function () { }).constructor;
     const asyncFunction = new AsyncFunction(...parameters, code);
     return asyncFunction;
   };
 
-  LswUtils.createSyncFunction = function(code, parameters = []) {
+  LswUtils.createSyncFunction = function (code, parameters = []) {
     const syncFunction = new Function(...parameters, code);
     return syncFunction;
   };
 
-  LswUtils.callSyncFunction = function(code, parameters = {}, scope = globalThis) {
+  LswUtils.callSyncFunction = function (code, parameters = {}, scope = globalThis) {
     const parameterKeys = Object.keys(parameters);
     const parameterValues = Object.values(parameters);
     const syncFunction = new Function(...parameterKeys, code);
@@ -417,22 +417,22 @@
 
   LswUtils.arrays = {};
 
-  LswUtils.extractFirstStringOr = function(txt, defaultValue = "") {
-    if(!txt.startsWith('"')) return defaultValue;
+  LswUtils.extractFirstStringOr = function (txt, defaultValue = "") {
+    if (!txt.startsWith('"')) return defaultValue;
     const pos1 = txt.substr(1).indexOf('"');
-    if(pos1 === -1) return defaultValue;
+    if (pos1 === -1) return defaultValue;
     const pos = pos1 - 1;
     const extractedSubstr = txt.substr(0, pos);
     // // @OK: No escapamos, porque se entiende que no se va a usar ese string en el concepto nunca.
     return JSON.parse(extractedSubstr);
   };
 
-  LswUtils.uniquizeArray = function(list) {
+  LswUtils.uniquizeArray = function (list) {
     const appeared = [];
-    for(let index=0; index<list.length; index++) {
+    for (let index = 0; index < list.length; index++) {
       const item = list[index];
       const pos = appeared.indexOf(item);
-      if(pos === -1) {
+      if (pos === -1) {
         appeared.push(item);
       }
     }
@@ -440,20 +440,20 @@
   };
 
   LswUtils.arrays.uniquizeArray = LswUtils.uniquizeArray;
-  
-  LswUtils.arrays.getMissingInFirst = function(a, b) {
+
+  LswUtils.arrays.getMissingInFirst = function (a, b) {
     const excludeds = [];
-    for(let index=0; index<b.length; index++) {
+    for (let index = 0; index < b.length; index++) {
       const b_item = b[index];
       const pos = a.indexOf(b_item);
-      if(pos === -1) {
+      if (pos === -1) {
         excludeds.push(b_item);
       }
     }
     return excludeds;
   };
 
-  LswUtils.fromJsonToNatural = function(json, nivel = 0) {
+  LswUtils.fromJsonToNatural = function (json, nivel = 0) {
     // @CHATGPT:
     const indent = '  '.repeat(nivel);
     let texto = '';
@@ -485,7 +485,7 @@
     return texto;
   };
 
-  LswUtils.naturalizeValue = function(valor) {
+  LswUtils.naturalizeValue = function (valor) {
     switch (typeof valor) {
       case 'string':
         return `un texto que dice "${valor}"`;
@@ -500,7 +500,7 @@
     }
   };
 
-  LswUtils.downloadFile = function(filename, filecontent) {
+  LswUtils.downloadFile = function (filename, filecontent) {
     const blob = new Blob([filecontent], { type: "text/plain" });
     const enlace = document.createElement("a");
     enlace.href = URL.createObjectURL(blob);
@@ -509,8 +509,23 @@
     enlace.click();
     document.body.removeChild(enlace);
   };
+
+  LswUtils.extractPropertiesFrom = function (base, props = [], voidedProps = [], overridings = {}) {
+    const out = {};
+    for (let index = 0; index < props.length; index++) {
+      const propId = props[index];
+      if (propId in base) {
+        out[propId] = base[propId];
+      }
+    }
+    for(let index=0; index<voidedProps.length; index++) {
+      const propId = voidedProps[index];
+      delete out[propId];
+    }
+    return Object.assign(out, overridings);
+  };
   // @code.end: LswUtils
-  
+
   return LswUtils;
 
 });

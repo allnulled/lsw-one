@@ -169,7 +169,11 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .lsw_table_top_button {
     margin-right: 2px;
 }
-.lsw_table_config_panel > div {
+.lsw_table_config_panel > div.config_panel {
     padding-top: 4px;
     padding-bottom: 4px;
+}
+.config_panel > h5 {
+    
+    border-bottom: 1px solid black;
 }

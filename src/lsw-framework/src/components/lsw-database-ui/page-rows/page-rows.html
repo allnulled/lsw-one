@@ -12,6 +12,7 @@
     </div>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb" :database-explorer="databaseExplorer" />
     <lsw-table
+        :storage-id="getTableId()"
         :initial-input="rows" v-if="rows"
         :initial-settings="{
             title: 'Registros de ' + args.table,

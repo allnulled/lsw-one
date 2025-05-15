@@ -403,7 +403,7 @@ pre.codeblock {
     padding-bottom: 1px;
 }
 .list_button {
-    margin-top: 1px;
+    margin-top: 0px;
     border: 1px solid white;
     border-radius: 3pt;
     padding-top: 2px;

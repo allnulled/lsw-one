@@ -45,6 +45,13 @@ Vue.component("LswPageRows", {
         database: this.database,
       });
     },
+    getTableId() {
+      if(this.args.tableStorageId) {
+        return this.args.tableStorageId + '.json';
+      } else {
+        return 'lsw-database-ui.page-rows.' + this.args.database + '.' + this.args.table + '.json';
+      }
+    },
     async loadRows() {
       this.$trace("lsw-page-rows.methods.loadRows", arguments);
       this.connection = this.connection ?? new LswDatabaseAdapter(this.database);

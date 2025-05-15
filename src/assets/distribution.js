@@ -19887,18 +19887,18 @@ return Store;
     return response;
   };
 
-  LswUtils.createAsyncFunction = function(code, parameters = []) {
-    const AsyncFunction = (async function() {}).constructor;
+  LswUtils.createAsyncFunction = function (code, parameters = []) {
+    const AsyncFunction = (async function () { }).constructor;
     const asyncFunction = new AsyncFunction(...parameters, code);
     return asyncFunction;
   };
 
-  LswUtils.createSyncFunction = function(code, parameters = []) {
+  LswUtils.createSyncFunction = function (code, parameters = []) {
     const syncFunction = new Function(...parameters, code);
     return syncFunction;
   };
 
-  LswUtils.callSyncFunction = function(code, parameters = {}, scope = globalThis) {
+  LswUtils.callSyncFunction = function (code, parameters = {}, scope = globalThis) {
     const parameterKeys = Object.keys(parameters);
     const parameterValues = Object.values(parameters);
     const syncFunction = new Function(...parameterKeys, code);
@@ -19907,22 +19907,22 @@ return Store;
 
   LswUtils.arrays = {};
 
-  LswUtils.extractFirstStringOr = function(txt, defaultValue = "") {
-    if(!txt.startsWith('"')) return defaultValue;
+  LswUtils.extractFirstStringOr = function (txt, defaultValue = "") {
+    if (!txt.startsWith('"')) return defaultValue;
     const pos1 = txt.substr(1).indexOf('"');
-    if(pos1 === -1) return defaultValue;
+    if (pos1 === -1) return defaultValue;
     const pos = pos1 - 1;
     const extractedSubstr = txt.substr(0, pos);
     // // @OK: No escapamos, porque se entiende que no se va a usar ese string en el concepto nunca.
     return JSON.parse(extractedSubstr);
   };
 
-  LswUtils.uniquizeArray = function(list) {
+  LswUtils.uniquizeArray = function (list) {
     const appeared = [];
-    for(let index=0; index<list.length; index++) {
+    for (let index = 0; index < list.length; index++) {
       const item = list[index];
       const pos = appeared.indexOf(item);
-      if(pos === -1) {
+      if (pos === -1) {
         appeared.push(item);
       }
     }
@@ -19930,20 +19930,20 @@ return Store;
   };
 
   LswUtils.arrays.uniquizeArray = LswUtils.uniquizeArray;
-  
-  LswUtils.arrays.getMissingInFirst = function(a, b) {
+
+  LswUtils.arrays.getMissingInFirst = function (a, b) {
     const excludeds = [];
-    for(let index=0; index<b.length; index++) {
+    for (let index = 0; index < b.length; index++) {
       const b_item = b[index];
       const pos = a.indexOf(b_item);
-      if(pos === -1) {
+      if (pos === -1) {
         excludeds.push(b_item);
       }
     }
     return excludeds;
   };
 
-  LswUtils.fromJsonToNatural = function(json, nivel = 0) {
+  LswUtils.fromJsonToNatural = function (json, nivel = 0) {
     // @CHATGPT:
     const indent = '  '.repeat(nivel);
     let texto = '';
@@ -19975,7 +19975,7 @@ return Store;
     return texto;
   };
 
-  LswUtils.naturalizeValue = function(valor) {
+  LswUtils.naturalizeValue = function (valor) {
     switch (typeof valor) {
       case 'string':
         return `un texto que dice "${valor}"`;
@@ -19990,7 +19990,7 @@ return Store;
     }
   };
 
-  LswUtils.downloadFile = function(filename, filecontent) {
+  LswUtils.downloadFile = function (filename, filecontent) {
     const blob = new Blob([filecontent], { type: "text/plain" });
     const enlace = document.createElement("a");
     enlace.href = URL.createObjectURL(blob);
@@ -19999,8 +19999,23 @@ return Store;
     enlace.click();
     document.body.removeChild(enlace);
   };
+
+  LswUtils.extractPropertiesFrom = function (base, props = [], voidedProps = [], overridings = {}) {
+    const out = {};
+    for (let index = 0; index < props.length; index++) {
+      const propId = props[index];
+      if (propId in base) {
+        out[propId] = base[propId];
+      }
+    }
+    for(let index=0; index<voidedProps.length; index++) {
+      const propId = voidedProps[index];
+      delete out[propId];
+    }
+    return Object.assign(out, overridings);
+  };
   // @code.end: LswUtils
-  
+
   return LswUtils;
 
 });
@@ -24923,19 +24938,21 @@ Vue.component("LswTable", {
                                         v-model="isShowingSubpanel">
                                         <option value="Buscador">Buscador {{ searcher.length ? \`(con: \${searcher.length}B)\` : '' }}</option>
                                         <option value="Paginador">Paginador (en: {{ itemsPerPage }})</option>
-                                        <option value="Columnas">Columnas {{ columnsOrder.length ? \`(con: \${columnsOrder.length}B)\` : '' }}
-                                        </option>
+                                        <option value="Columnas">Columnas {{ columnsOrder.length ? \`(con: \${columnsOrder.length}B)\` : '' }}</option>
                                         <option value="Extensor">Extensor {{ extender.length ? \`(con: \${extender.length}B)\` : '' }}</option>
                                         <option value="Filtro">Filtro {{ filter.length ? \`(con: \${filter.length}B)\` : '' }}</option>
                                         <option value="Ordenador">Orden {{ sorter.length ? \`(con: \${sorter.length}B)\` : '' }}</option>
                                         <option value="Todo">Todo a la vez</option>
                                     </select>
                                 </div>
+                                <div class="flex_1 pad_left_1" v-if="storageId">
+                                    <button class="" v-on:click="saveState">💾</button>
+                                </div>
                             </div>
                             <hr />
                             <div class="lsw_table_config_panel">
-                                <div v-if="(isShowingSubpanel === 'Buscador') || (isShowingSubpanel === 'Todo')">
-                                    <h4>Buscador por texto</h4>
+                                <div class="config_panel" v-if="(isShowingSubpanel === 'Buscador') || (isShowingSubpanel === 'Todo')">
+                                    <h5>Buscador por texto</h5>
                                     <input spellcheck="false"
                                         class="width_100"
                                         type="text"
@@ -24943,26 +24960,26 @@ Vue.component("LswTable", {
                                         v-on:keypress.enter="digestOutput"
                                         :placeholder="placeholderForBuscador" />
                                 </div>
-                                <div v-if="(isShowingSubpanel === 'Filtro') || (isShowingSubpanel === 'Todo')">
-                                    <h4>Filtro de filas</h4>
+                                <div class="config_panel" v-if="(isShowingSubpanel === 'Filtro') || (isShowingSubpanel === 'Todo')">
+                                    <h5>Filtro de filas</h5>
                                     <textarea spellcheck="false"
                                         v-model="filter"
                                         :placeholder="placeholderForFiltro"></textarea>
                                 </div>
-                                <div v-if="(isShowingSubpanel === 'Extensor') || (isShowingSubpanel === 'Todo')">
-                                    <h4>Extensor de propiedades</h4>
+                                <div class="config_panel" v-if="(isShowingSubpanel === 'Extensor') || (isShowingSubpanel === 'Todo')">
+                                    <h5>Extensor de propiedades</h5>
                                     <textarea spellcheck="false"
                                         v-model="extender"
                                         :placeholder="placeholderForExtensor"></textarea>
                                 </div>
-                                <div v-if="(isShowingSubpanel === 'Ordenador') || (isShowingSubpanel === 'Todo')">
-                                    <h4>Ordenador de filas</h4>
+                                <div class="config_panel" v-if="(isShowingSubpanel === 'Ordenador') || (isShowingSubpanel === 'Todo')">
+                                    <h5>Ordenador de filas</h5>
                                     <textarea spellcheck="false"
                                         v-model="sorter"
                                         :placeholder="placeholderForOrdenador"></textarea>
                                 </div>
-                                <div v-if="(isShowingSubpanel === 'Columnas') || (isShowingSubpanel === 'Todo')">
-                                    <h4>Ordenador de columnas</h4>
+                                <div class="config_panel" v-if="(isShowingSubpanel === 'Columnas') || (isShowingSubpanel === 'Todo')">
+                                    <h5>Ordenador de columnas</h5>
                                     <div class="flex_row centered">
                                         <div class="flex_100">
                                             <input type="text"
@@ -24983,8 +25000,8 @@ Vue.component("LswTable", {
                                         </li>
                                     </ol>
                                 </div>
-                                <div v-if="(isShowingSubpanel === 'Paginador') || (isShowingSubpanel === 'Todo')">
-                                    <h4>Página de resultados</h4>
+                                <div class="config_panel" v-if="(isShowingSubpanel === 'Paginador') || (isShowingSubpanel === 'Todo')">
+                                    <h5>Página de resultados</h5>
                                     <div class="flex_row">
                                         <div class="flex_1 pad_right_1">
                                             <button class="" v-on:click="decreasePage">-</button>
@@ -25001,7 +25018,7 @@ Vue.component("LswTable", {
                                             <button class="" v-on:click="increasePage">+</button>
                                         </div>
                                     </div>
-                                    <h4 class="margin_top_1">Items por página</h4>
+                                    <h5 class="margin_top_1">Items por página</h5>
                                     <div class="flex_row">
                                         <div class="flex_1 pad_right_1">
                                             <button class="" v-on:click="decreaseItemsPerPage">-</button>
@@ -25018,6 +25035,9 @@ Vue.component("LswTable", {
                                             <button class="" v-on:click="increaseItemsPerPage">+</button>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="pad_bottom_0" v-if="isShowingSubpanel === 'Todo'">
+                                    <button class="width_100" v-on:click="digestOutput">🛜</button>
                                 </div>
                             </div>
                         </div>
@@ -25255,6 +25275,10 @@ Vue.component("LswTable", {
     storageId: {
       type: [String, Boolean],
       default: () => false
+    },
+    storageStrategy: {
+      type: String,
+      default: () => "ufs/lsw", // No otras de momento.
     }
   },
   data() {
@@ -25487,22 +25511,124 @@ Vue.component("LswTable", {
       this.$trace("lsw-table.methods.decreaseItemsPerPage");
       this.itemsPerPageOnForm--;
     },
-    loadState() {
+    getStoragePathFor(id) {
+      this.$trace("lsw-table.methods.getStoragePathFor");
+      return this.$lsw.fs.resolve_path("/kernel/settings/table/storage/", id);
+    },
+    async loadState() {
       this.$trace("lsw-table.methods.loadState");
-      // @TODO...
-      // @TODO...
-      // @TODO...
-      // @TODO...
-      // @TODO...
+      Check_strategy_and_validation: {
+        if(this.storageStrategy !== "ufs/lsw") {
+          console.log(`[*] Could not load state on lsw-table because of: UnknownStorageStrategy (=${this.storageStrategy})`);
+          return -1;
+        }
+        if(!this.storageId) {
+          // console.log(`[*] Could not load state on lsw-table because of: NoStorageId (=${this.storageId})`);
+          return -2;
+        }
+      }
+      const storagePath = this.getStoragePathFor(this.storageId);
+      const storageJson = await (() => {
+        try {
+          return this.$lsw.fs.read_file(storagePath);
+        } catch (error) {
+          console.log(`[*] Could not load state on lsw-table because of: BadStoragePath (=${this.storagePath})`);
+          return undefined;
+        }
+      })();
+      if(typeof storageJson !== "string") {
+        console.log(`[*] Could not load state on lsw-table because of: JsonStorageNotString (=${typeof storageJson})`);
+        return -3;
+      }
+      let storageData = undefined;
+      try {
+        storageData = JSON.parse(storageJson);
+      } catch (error) {
+        console.log(`[*] Could not load state on lsw-table because of: JsonStorageNotParseable (${error.name}=${error.message})`);
+        return -4;
+      }
+      Cargar_estado: {
+        if(typeof storageData !== "object") {
+          console.log(`[*] Could not load state on lsw-table because of: StorageDataNotObject (${typeof storageData})`);
+          return -5;
+        }
+        console.log("[*] Loading lsw-table state from: ", storageData);
+        Object.assign(this, storageData);
+      }
     },
     saveState() {
       this.$trace("lsw-table.methods.saveState");
-      // @TODO...
-      // @TODO...
-      // @TODO...
-      // @TODO...
-      // @TODO...
-    }
+      Check_strategy_and_validation: {
+        if(this.storageStrategy !== "ufs/lsw") {
+          console.log(`[*] Could not save state on lsw-table because of: UnknownStorageStrategy (=${this.storageStrategy})`);
+          return -1;
+        }
+        if(!this.storageId) {
+          // console.log(`[*] Could not save state on lsw-table because of: NoStorageId (=${this.storageId})`);
+          return -2;
+        }
+      }
+      const storagePath = this.getStoragePathFor(this.storageId);
+      const storageState = this.extractState();
+      const storageJson = JSON.stringify(storageState, null, 2);
+      Guardar_estado: {
+        console.log("[*] Saving lsw-table state as: ", storageState);
+        this.$lsw.fs.write_file(storagePath, storageJson);
+        this.$lsw.toasts.send({
+          title: "Estado de tabla guardado",
+          text: "Con identificador: " + this.storageId,
+        });
+      }
+      return true;
+    },
+    extractState() {
+      this.$trace("lsw-table.methods.extractState");
+      return LswUtils.extractPropertiesFrom(this, [
+        // "input",
+        "title",
+        "isShowingMenu",
+        "isShowingSubpanel",
+        "selectedRows",
+        "choosenRows",
+        "searcher",
+        "extender",
+        "filter",
+        "sorter",
+        "itemsPerPageOnForm",
+        "itemsPerPage",
+        "currentPage",
+        "currentPageOnForm",
+        "columnsAsList",
+        "columnsOrder",
+        "columnsOrderInput",
+        // "output",
+        // "paginatedOutput",
+        "headers",
+        // "attachedHeaders",
+        // "attachedColumns",
+        // "attachedTopButtons",
+        // "placeholderForExtensor",
+        // "placeholderForOrdenador",
+        // "placeholderForFiltro",
+        // "placeholderForBuscador",
+        // "placeholderForPaginador",
+      ], [
+        "input",
+        "output",
+        "paginatedOutput",
+        "attachedHeaders",
+        "attachedColumns",
+        "attachedTopButtons",
+        "placeholderForExtensor",
+        "placeholderForOrdenador",
+        "placeholderForFiltro",
+        "placeholderForBuscador",
+        "placeholderForPaginador",
+      ], {
+        isShowingMenu: false,
+        isShowingSubpanel: "Todo",
+      });
+    },
   },
   watch: {
     itemsPerPage(value) {
@@ -25533,7 +25659,25 @@ Vue.component("LswTable", {
       };
       if (this.searcher.length) {
         return true;
-      };
+      }
+      if (this.currentPage !== 0) {
+        return true;
+      }
+      if ((this.currentPage+1) !== this.currentPageOnForm) {
+        return true;
+      }
+      if (this.itemsPerPage < 10) {
+        return true;
+      }
+      if (this.itemsPerPageOnForm !== this.itemsPerPage) {
+        return true;
+      }
+      if(this.columnsOrderInput !== "id") {
+        return true;
+      }
+      if(this.columnsOrder.length !== 1) {
+        return true;
+      }
       return false;
     },
     totalOfPages() {
@@ -27192,6 +27336,7 @@ Vue.component("LswPageRows", {
     </div>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb" :database-explorer="databaseExplorer" />
     <lsw-table
+        :storage-id="getTableId()"
         :initial-input="rows" v-if="rows"
         :initial-settings="{
             title: 'Registros de ' + args.table,
@@ -27244,6 +27389,13 @@ Vue.component("LswPageRows", {
       return this.databaseExplorer.selectPage("LswPageTables", {
         database: this.database,
       });
+    },
+    getTableId() {
+      if(this.args.tableStorageId) {
+        return this.args.tableStorageId + '.json';
+      } else {
+        return 'lsw-database-ui.page-rows.' + this.args.database + '.' + this.args.table + '.json';
+      }
     },
     async loadRows() {
       this.$trace("lsw-page-rows.methods.loadRows", arguments);
@@ -28299,6 +28451,7 @@ rel desayunar
       await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", `
         
       `.trim());
+      await this.$lsw.fs.ensureDirectory("/kernel/settings/table/storage");
       await this.$lsw.fs.ensureDirectory("/kernel/components");
       await this.$lsw.fs.ensureFile("/kernel/boot.js", `
 
@@ -28998,6 +29151,9 @@ Vue.component("LswWikiArticulos", {
                         </div>
                     </div>
                 </div>
+                <div class="articulo_categorias_box" v-if="articulo.tiene_categorias">
+                    <div>🧲 {{ articulo.tiene_categorias }}</div>
+                </div>
             </div>
         </template>
     </div>
@@ -29291,6 +29447,7 @@ Vue.component("LswWikiCategorias", {
               :initial-args="{
                 database: 'lsw_default_database',
                 table: 'Articulo',
+                tableStorageId: 'categoria-' + categoriaId,
                 filterCallback: it => it.tiene_categorias && (it.tiene_categorias.toLowerCase().indexOf(categoriaId.toLowerCase()) !== -1),
               }"
             />
@@ -34607,10 +34764,10 @@ rel correr
     <lsw-toasts />
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
+            <div class="mobile_off_panel_cell" v-on:click="clickPicas">✴️</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
             <div class="mobile_off_panel_cell" v-on:click="goToCalendario">📅</div>
             <div class="mobile_off_panel_cell" v-on:click="goToEnciclopedia">🔬</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
-            <div class="mobile_off_panel_cell" v-on:click="clickPicas">♠️</div>
             <div class="mobile_off_panel_cell" v-on:click="goToHomepage">📟</div>
         </div>
     </div>
@@ -48896,9 +49053,9 @@ Vue.component("LswSpontaneousFormNota", {
     <h4 class="margin_bottom_1px">📒 Añadir nota:</h4>
     <div class="flex_row">
         <div class="flex_100">
+            <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
             <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de nota" v-model="tiene_titulo" />
             <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de nota." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido"></textarea>
-            <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
             <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias"></textarea>
         </div>
         <div class="flex_1 pad_left_1">
@@ -52863,8 +53020,11 @@ try {
     console.log("[*] App lifecycle ended.");
   
     Logger_activation: {
-      // Vue.prototype.$lsw.logger.deactivate();
-      // Vue.prototype.$lsw.logger.activate();
+      if(window.location.href.startsWith("https://")) {
+        Vue.prototype.$lsw.logger.deactivate();
+      } else {
+        Vue.prototype.$lsw.logger.activate();
+      }
     }
   
     Work_relocation: {

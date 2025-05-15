@@ -5,8 +5,11 @@
     console.log("[*] App lifecycle ended.");
   
     Logger_activation: {
-      // Vue.prototype.$lsw.logger.deactivate();
-      // Vue.prototype.$lsw.logger.activate();
+      if(window.location.href.startsWith("https://")) {
+        Vue.prototype.$lsw.logger.deactivate();
+      } else {
+        Vue.prototype.$lsw.logger.activate();
+      }
     }
   
     Work_relocation: {

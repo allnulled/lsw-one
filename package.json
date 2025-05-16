@@ -14,6 +14,7 @@
     "build:framework": "node dev/bundlers/lsw-framework/bundler.js",
     "build:distribution": "node dev/bundlers/distribution/bundler.js",
     "build:dist": "node dev/bundlers/distribution/bundler.js",
+    "build:mobile": "bash mobile/lsw-one/rebuild.sh",
     "reloader": "node src/lsw-framework/src/apis/lsw-reloader/starter.js"
   },
   "keywords": [],

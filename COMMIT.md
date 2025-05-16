@@ -1,5 +1,26 @@
 # Último commit:
 
+# 15-05-2025 17:47pm - 03:39am
+
+[x] deduplicar título lsw-database
+[x] soporte para configuraciones en /kernel/settings/user.env:
+  [x] app.username
+  [x] app.clock_message
+[x] botón de soporte para compilar md a html
+  [x] que cargue por lazy-loading
+[x] botón de soporte para compilar pegjs a js
+  [x] que cargue por lazy-loading PEGjs
+[x] meter highlight.js (por lazy-loading) en:
+  [x] js
+  [x] css
+  [x] html
+[x] embellecedor de código (por lazy-loading) en:
+  [x] js
+  [x] css
+  [x] html
+[x] botón de descargar fichero
+[ ] meter en impresora el fabricar pdf (aunque sea en imagen solo de momento)
+
 # 14-05-2025 12:51pm
 
 [x] Se carga automáticamente /kernel/componentes (lifecycle, onLoadComponents)
@@ -25,19 +46,19 @@
   [x] carpetas:
     [x] /kernel/agenda/proto/boot.proto
     [x] /kernel/agenda/report/*.js
-[ ] proceso en lsw-conductometria.api.js:
+[x] proceso en lsw-conductometria.api.js:
   [x] borrar:
     [x] propagadores de concepto
     [x] propagadores prototipo
     [x] acciones virtuales
-  [ ] iterar acciones reales
+  [x] iterar acciones reales
     [x] ir ejecutando propagadores
       [x] con multiplicador ya automático funcionando
     [x] ir inflando acciones virtuales
     [x] ir propagando recursivamente acciones virtuales
-[ ] reportes de conductometria
+[x] reportes de conductometria
   [x] acepta para dialog+table
-  [ ] acepta para dialog+template
+  [x] acepta para dialog+template
 [x] mejorar lsw-table para que sea más ligera
 
 # 06-05-2025 18:59pm - ?

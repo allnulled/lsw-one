@@ -102,6 +102,10 @@ button.has_light_bg {
     box-shadow: 0 0 3px black;
 }
 
+button.has_light_bg:hover {
+    background-color: #41416c87;
+}
+
 button>span.button_text {
     font-size: 13px !important;
 }

@@ -24,6 +24,12 @@ module.exports = [
   `${basepath}/lsw-framework/src/apis/lsw-reloader/reloadable.js`,
   // LSW ENSURER:
   `${basepath}/lsw-framework/src/apis/lsw-ensurer/ensure.js`,
+  // LSW CONSTANTS:
+  `${basepath}/lsw-framework/src/apis/lsw-constants/lsw-constants.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-constants/global-constants.js`,
+  // LSW LAZY LOADER:
+  `${basepath}/lsw-framework/src/apis/lsw-lazy-loader/lsw-lazy-loader.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-lazy-loader/lazy-loads.js`,
   // LSW TREE PARSER:
   `${basepath}/lsw-framework/src/apis/lsw-tree-parser/tripilang.parser.js`,
   `${basepath}/lsw-framework/src/apis/lsw-tree-parser/lsw-tree-parser.js`,
@@ -102,6 +108,8 @@ module.exports = [
   // TABLE:
   `${basepath}/lsw-framework/src/components/lsw-table/lsw-table/lsw-table`,
   `${basepath}/lsw-framework/src/components/lsw-table/lsw-table-transformers/lsw-table-transformers`,
+  // CODE VIEWER:
+  `${basepath}/lsw-framework/src/components/lsw-code-viewer/lsw-code-viewer`,
   // DATA EXPLORER:
   `${basepath}/lsw-framework/src/components/lsw-data-explorer/lsw-data-explorer/lsw-data-explorer`,
   `${basepath}/lsw-framework/src/components/lsw-data-explorer/lsw-data-implorer/lsw-data-implorer`,

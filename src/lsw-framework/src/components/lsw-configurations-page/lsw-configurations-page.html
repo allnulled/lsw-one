@@ -50,21 +50,27 @@
         <div class="margin_top_1">
             <div class="flex_row centered">
                 <div class="flex_1">
-                    <button class=" supermini margin_right_1" v-on:click="saveBackup">Guardar estado</button>
+                    <button class="supermini margin_right_1" v-on:click="saveBackup">Guardar estado</button>
                 </div>
                 <div class="flex_100 explanation_text">sobreescribirá la copia de seguridad anterior con el estado actual de datos.</div>
             </div>
             <div class="flex_row centered margin_top_1">
                 <div class="flex_1">
-                    <button class=" supermini margin_right_1" v-on:click="loadBackup">Inyectar copia</button>
+                    <button class="supermini margin_right_1" v-on:click="loadBackup">Inyectar copia</button>
                 </div>
                 <div class="flex_100 explanation_text">insertará los datos de la copia de seguridad anterior en el estado actual de datos.</div>
             </div>
             <div class="flex_row centered margin_top_1">
                 <div class="flex_1">
-                    <button class=" supermini margin_right_1" v-on:click="toggleCurrentBackup">Ver copia actual</button>
+                    <button class="supermini margin_right_1" v-on:click="toggleCurrentBackup">Ver copia actual</button>
                 </div>
                 <div class="flex_100 explanation_text">mostrará en un diálogo el JSON de la copia de seguridad actual.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini danger_button margin_right_1" v-on:click="deleteCurrentBackup">Eliminar copia actual</button>
+                </div>
+                <div class="flex_100 explanation_text">eliminará la copia de seguridad actual.</div>
             </div>
             <div v-if="isShowingCurrentBackup">
                 <pre class="codeblock">{{ currentBackup }}</pre>
@@ -83,6 +89,16 @@
     </div>
     <div class="section margin_top_1" v-if="selectedSection === 'preferencias'">
         <h3>Configuraciones » Preferencias de usuario</h3>
+        <hr />
+        <h4>Preferencias de usuario simples</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startConfigureUserIdentity">Configurar</button>
+                </div>
+                <div class="flex_100 explanation_text">permite cambiar el nombre de usuario y otros datos simples (1 línea) como el mensaje debajo del reloj.</div>
+            </div>
+        </div>
         <hr />
         <h4>Fondos de pantalla</h4>
         <div class="margin_top_1">

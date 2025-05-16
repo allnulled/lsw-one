@@ -15,6 +15,7 @@
                     v-on="settings.input?.events || {}"
                     v-bind="settings.input?.props || {}"
                     v-xform.input="{name: '*',onValidate: settings.input?.onValidate || $noop}"
+                    spellcheck="false"
                     ref="textInput" />
             </div>
             <lsw-control-error />

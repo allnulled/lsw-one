@@ -11,17 +11,6 @@
   }
 })(function () {
 
-  /**
-   * 
-   * 
-   * @$section: Lsw LswLifecycle API » LswLifecycle class
-   * @type: class
-   * @extends: Object
-   * @vendor: lsw
-   * @namespace: LswLifecycle
-   * @source code: La clase está definida así:
-   * 
-   */
   // @code.start: LswLifecycle class | @section: Lsw LswLifecycle API » LswLifecycle class
   const cycle = LswCycler.from({
 

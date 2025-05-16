@@ -440,6 +440,15 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .lsw_data_implorer {
     
 }
+.lsw_code_viewer {}
+.lsw_code_viewer_area {
+    box-shadow: 0 0 4px black;
+    border: 1px solid black;
+    border-radius: 4pt;
+    overflow: hidden;
+    margin: 0px;
+    margin-top: 4px;
+}
 .lsw_data_explorer {
     
 }
@@ -1188,6 +1197,9 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
 }
 .clockwatcher_box {
 
+}
+.clock_message {
+    font-size: 13px;
 }
 .lsw_agenda {}
 
@@ -2225,6 +2237,10 @@ button.has_light_bg {
     color: white;
     border: 1px solid #3c3c3e;
     box-shadow: 0 0 3px black;
+}
+
+button.has_light_bg:hover {
+    background-color: #41416c87;
 }
 
 button>span.button_text {

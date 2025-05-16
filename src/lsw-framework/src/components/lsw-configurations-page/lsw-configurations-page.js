@@ -22,6 +22,10 @@ Vue.component("LswConfigurationsPage", {
       }
       this.isShowingCurrentBackup = newState;
     },
+    deleteCurrentBackup() {
+      this.$trace("lsw-configurations-page.methods.deleteCurrentBackup");
+      return this.$lsw.backuper.deleteLastBackup();
+    },
     selectSection(seccion) {
       this.$trace("lsw-configurations-page.methods.selectSection");
       this.selectSection = seccion;
@@ -173,6 +177,13 @@ Vue.component("LswConfigurationsPage", {
       this.$dialogs.open({
         title: "Configurar acciones randomizables",
         template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/randomizables.env" />`,
+      });
+    },
+    startConfigureUserIdentity() {
+      this.$trace("lsw-configurations-page.methods.startConfigureUserIdentity");
+      this.$dialogs.open({
+        title: "Configurar identidad de usuario",
+        template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/user.env" />`,
       });
     },
     startCodeReference() {

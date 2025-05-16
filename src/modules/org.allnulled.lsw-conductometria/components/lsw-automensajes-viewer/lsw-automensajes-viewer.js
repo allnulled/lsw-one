@@ -90,6 +90,7 @@ Vue.component("LswAutomensajesViewer", {
       this.$window.$automensajesUi = this;
       // this.startAutomessaging();
       this.isMounted = true;
+      this.refreshAutomessaging();
     } catch(error) {
       console.log(error);
     }

@@ -323,14 +323,63 @@ Vue.component("LswFilesystemExplorer", {
             click: () => this.processToDeleteFile(),
           }
         ];
-        // @INJECTABLE: add custom buttons for extensions:
-        if (this.current_node.endsWith(".js")) {
-          // @BUTTON to execute JavaScript:
-          rightButtonsOnFile.push({
-            text: "⚡️",
-            classes: "danger_button",
-            click: () => this.processToExecuteFile(),
-          });
+        BUTTON_INJECTION_HERE__RIGHT_PANEL: {
+          // @INJECTABLE: add custom buttons for extensions:
+          Button_to_execute_javascript: {
+            if (this.current_node.endsWith(".js")) {
+              rightButtonsOnFile.push({
+                text: "⚡️",
+                classes: "danger_button",
+                click: () => this.processToExecuteFile(),
+              });
+            }
+          }
+          Button_to_compile_markdown_to_html: {
+            if (this.current_node.endsWith(".md")) {
+              rightButtonsOnFile.push({
+                text: "🔩",
+                classes: "",
+                click: () => this.processToCompileMarkdown(),
+              });
+            }
+          }
+          Button_to_compile_pegjs_to_js: {
+            if (this.current_node.endsWith(".pegjs")) {
+              rightButtonsOnFile.push({
+                text: "🔩",
+                classes: "",
+                click: () => this.processToCompilePegjs(),
+              });
+            }
+          }
+          Button_to_format_code: {
+            if (this.current_node.endsWith(".html")) {
+              rightButtonsOnFile.push({
+                text: "{html}",
+                classes: "",
+                click: () => this.processToFormatHtml(),
+              });
+            } else if (this.current_node.endsWith(".css")) {
+              rightButtonsOnFile.push({
+                text: "{css}",
+                classes: "",
+                click: () => this.processToFormatCss(),
+              });
+            } else if (this.current_node.endsWith(".js")) {
+              rightButtonsOnFile.push({
+                text: "{js}",
+                classes: "",
+                click: () => this.processToFormatJs(),
+              });
+            }
+          }
+          Button_to_download_file: {
+            rightButtonsOnFile.push({
+              text: "📥",
+              classes: "",
+              click: () => this.processToDownloadFile(),
+            });
+          }
         }
         this.$refs.panelRight.setButtons(...rightButtonsOnFile);
       }
@@ -343,13 +392,45 @@ Vue.component("LswFilesystemExplorer", {
             text: "➖",
             click: () => this.decreaseFontsize(),
           }, {
-            text: "✍🏻|💻",
+            text: "✍🏻|🐒",
             click: () => this.toggleFontfamily(),
           }
         ];
-        // @INJECTABLE: add custom buttons for extensions:
-        if (this.current_node.endsWith(".js")) {
-          // @OK
+        BUTTON_INJECTION_HERE__BOTTOM_PANEL: {
+          // @INJECTABLE: add custom buttons for extensions:
+          Button_to_view_code: {
+            if (this.current_node.endsWith(".js")) {
+              bottomButtonsOnFile.push({
+                text: "🌈",
+                click: () => this.openCodeViewerForJs()
+              });
+            } else if (this.current_node.endsWith(".css")) {
+              bottomButtonsOnFile.push({
+                text: "🌈",
+                click: () => this.openCodeViewerForCss()
+              });
+            } else if (this.current_node.endsWith(".html")) {
+              bottomButtonsOnFile.push({
+                text: "🌈",
+                click: () => this.openCodeViewerForHtml()
+              });
+            }
+          }
+          Button_to_view_html: {
+            if (this.current_node.endsWith(".html")) {
+              bottomButtonsOnFile.push({
+                text: "📻",
+                classes: "",
+                click: () => this.processToViewHtml(),
+              });
+            } else if(this.current_node.endsWith(".md")) {
+              bottomButtonsOnFile.push({
+                text: "📻",
+                classes: "",
+                click: () => this.processToViewMarkdown(),
+              });
+            }
+          }
         }
         this.$refs.panelBottom.setButtons(...bottomButtonsOnFile);
       }
@@ -487,242 +568,264 @@ Vue.component("LswFilesystemExplorer", {
       }
     },
     async initializeFilesystemForLsw() {
-      /*
-      const DEFAULT_ACCIONES = {
-        "Trackeo de números de conducta/agenda": [{ porcion: 500 }],
-        "Trackeo de conceptos/relaciones": [{ porcion: 500 }],
-        "Trackeo de ideas/notas": [{ porcion: 1 }],
-        "Programación de interfaces gráficas": [{ porcion: 500 }],
-        "Arquitectura por patrones": [{ porcion: 200 }],
-        "Arquitectura de la realidad": [{ porcion: 200 }],
-        "Arquitectura del yo": [{ porcion: 200 }],
-        "Lenguajes formales": [{ porcion: 1 }],
-        "Investigación de cocina/nutrición/química": [{ porcion: 200 }],
-        "Investigación de nutrición": [{ porcion: 1 }],
-        "Investigación de química": [{ porcion: 1 }],
-        "Investigación de física": [{ porcion: 1 }],
-        "Investigación de matemáticas": [{ porcion: 1 }],
-        "Investigación de geometría": [{ porcion: 1 }],
-        "Investigación de canvas/perspectiva": [{ porcion: 1 }],
-        "Investigación de medicina/biología/fisiología": [{ porcion: 100 }],
-        "Investigación de musculación/flexibilidad": [{ porcion: 100 }],
-        "Investigación de las emociones": [{ porcion: 100 }],
-        "Cocinar/Comer": [{ cada: "6h", minimo: "1h" }],
-        "Pasarlo bien con la perrillo": [{ cada: "6h", minimo: "1h" }],
-        "Cuidados de plantas": [{ porcion: 1 }],
-        "Cuidados del hogar": [{ porcion: 1 }],
-        "Actividad física": [{ porcion: 500 }, { nunca_despues_de: "comer", durante: "2h" }, { cada: "24h", minimo: "20min" }],
-        "Optimización de RAM": [{ porcion: 500 }],
-        "Autocontrol/Autobservación/Autoanálisis": [{ porcion: 500 }],
-        "Meditación/Relajación": [{ porcion: 500 }],
-        "Paisajismo": [{ cada: "3h", minimo: "20min" }],
-        "Dibujo 3D/Perspectiva/Geometría/Mates": [{ porcion: 1 }],
-        "Dibujo artístico/anime/abstracto/esquemista/conceptualista": [{ porcion: 1 }],
-        "Reflexión/Diálogo interno": [{ porcion: 500 }],
-      };
-      //*/
-      await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.md", `
-
-Piensa en cosas bonitas
-
-- Cosas bonitas
-- Cosas bonitas
-- Cosas bonitas
-- Más cosas bonitas
-- Más cosas más bonitas
-- Más todavía
-
-`.trim());
-      await this.$lsw.fs.ensureFile("/kernel/settings/randomizables.env", `
-
-Trackeo de números de conducta/agenda = 1
-Trackeo de conceptos/relaciones = 1
-Trackeo de ideas/notas = 1
-Programación de interfaces gráficas = 1
-Arquitectura por patrones = 1
-Arquitectura de la realidad = 1
-Arquitectura del yo = 1
-Lenguajes formales = 1
-Investigación de cocina/nutrición/química = 1
-Investigación de nutrición = 1
-Investigación de química = 1
-Investigación de física = 1
-Investigación de matemáticas = 1
-Investigación de geometría = 1
-Investigación de canvas/perspectiva = 1
-Investigación de medicina/biología/fisiología = 1
-Investigación de musculación/flexibilidad = 1
-Investigación de las emociones = 1
-Actividad física = 1
-Optimización de RAM = 1
-Autocontrol/Autobservación/Autoanálisis = 1
-Meditación/Relajación = 1
-Paisajismo = 1
-Dibujo 3D/Perspectiva/Geometría/Mates = 1
-Dibujo artístico/anime/abstracto/esquemista/conceptualista = 1
-Reflexión/Diálogo interno = 1
-
-`.trim());
-      await this.$lsw.fs.ensureFile("/kernel/settings/backgrounds.env", `
-
-assets/images/montania1.png
-assets/images/playa1.png
-assets/images/playa2.png
-
-`.trim());
-      await this.$lsw.fs.ensureFile("/kernel/settings/automessages.env", `
-
-Sé tu propia luz.
-Lo conseguiremos.
-Todo se andará.
-Sigamos adelante.
-En algún momento encontraremos la luz.
-
-`.trim());
-      await this.$lsw.fs.ensureFile("/kernel/wiki/libros/Boot.tri", `
-
-@{
-  "categorias": [],
-  "asco": [],
-  "de": [],
-  "persona": [],
-  "universal": "ok"
-}
-Boot [Artículo para el boot] {
-  @{
-    "autor": "github.com/allnulled",
-    "mensaje": "Dios, métete tu puto universo por tu puto culo de rata malnacida, no?",
-    "año": 2025
-  }
-  Capitulo 1 {}
-  Otro más nuevo [Otro más nuevo] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 3 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 4 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 5 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 6 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-}
-  
-`.trim());
-await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", `
-
-Árbol de categorías [] {
-  Biología [] {
-    Vegetal [] {}
-    Animal [] {}
-    Social [] {}
-  }
-  Medicina [] {
-    Fisiología [] {}
-    Nutrición [] {}
-  }
-  Química [] {}
-  Física [] {}
-  Matemáticas [] {
-    Programación [] {}
-    Lógica abstracta [] {}
-  }
-  Arte [] {}
-}
-
-`.trim());
-await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", `
-
-const conceptos = await lsw.database.selectMany("Concepto");
-const acciones = await lsw.database.selectMany("Accion");
-const acciones_virtuales = await lsw.database.selectMany("Accion_virtual");
-const propagadores = await lsw.database.selectMany("Propagador_de_concepto");
-const prototipos = await lsw.database.selectMany("Propagador_prototipo");
-const acumulaciones_objeto = acciones_virtuales.reduce((out, it) => {
-  if(!(it.en_concepto in out)) {
-    out[it.en_concepto] = 0;
-  }
-  out[it.en_concepto] += (LswTimer.utils.fromDurationstringToMilliseconds(it.tiene_duracion) || 0);
-  return out;
-}, {});
-const acumulaciones = Object.keys(acumulaciones_objeto).sort((k1, k2) => {
-  const c1 = acumulaciones_objeto[k1];
-  const c2 = acumulaciones_objeto[k2];
-  return c2 > c1 ? 1 : -1;
-}).map(id => {
-  const ms = acumulaciones_objeto[id];
-  return {
-    nombre: id,
-    total: LswTimer.utils.fromMillisecondsToDurationstring(ms)
-  };
-});
-
-return {
-  "Acumulaciones virtuales": acumulaciones,
-  "Conceptos": conceptos,
-  "Acciones": acciones,
-  "Acciones virtuales": acciones_virtuales,
-  "Propagadores": propagadores,
-  "Propagadores prototipo": prototipos,
-};
-
-`.trim());
-      await this.$lsw.fs.ensureFile("/kernel/agenda/proto/boot.proto", `
-
-inc /kernel/agenda/proto/concepto
-inc /kernel/agenda/proto/funcion
-inc /kernel/agenda/proto/relacion
-
-def desayunar, comer, cenar
-
-fun unEjemplo: param1, param2 {
-  console.log("Solo un ejemplo.");
-}
-
-rel desayunar
-  > consumir * 1
-  > abstenerse * 0
-  >> unEjemplo: 500, 1000
-
-`.trim());
+      this.$trace("lsw-filesystem-explorer.methods.initializeFilesystemForLsw");
+      await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.md", LswConstants.global.pick("rutiner.md"));
+      await this.$lsw.fs.ensureFile("/kernel/settings/randomizables.env", LswConstants.global.pick("randomizables.env"));
+      await this.$lsw.fs.ensureFile("/kernel/settings/backgrounds.env", LswConstants.global.pick("backgrounds.env"));
+      await this.$lsw.fs.ensureFile("/kernel/settings/automessages.env", LswConstants.global.pick("automessages.env"));
+      await this.$lsw.fs.ensureFile("/kernel/settings/user.env", LswConstants.global.pick("user.env"));
+      await this.$lsw.fs.ensureFile("/kernel/wiki/libros/Boot.tri", LswConstants.global.pick("Boot.tri"));
+      await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", LswConstants.global.pick("categorias.tri"));
+      await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", LswConstants.global.pick("report/inicio.js"));
+      await this.$lsw.fs.ensureFile("/kernel/agenda/proto/boot.proto", LswConstants.global.pick("boot.proto"));
       await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/concepto");
       await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/funcion");
       await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
-      await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", `
-        
-      `.trim());
+      await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", LswConstants.global.pick("multiplicador.js"));
       await this.$lsw.fs.ensureDirectory("/kernel/settings/table/storage");
       await this.$lsw.fs.ensureDirectory("/kernel/components");
-      await this.$lsw.fs.ensureFile("/kernel/boot.js", `
-
-// Cuidadito con este script que te cargas la app
-// y luego tienes que borrar la caché para volver a tenerla.
-        
-        `.trim());
+      await this.$lsw.fs.ensureFile("/kernel/boot.js", LswConstants.global.pick("boot.js"));
+    },
+    async openCodeViewerForJs() {
+      this.$trace("lsw-filesystem-explorer.methods.openCodeViewerForJs");
+      console.log(this.current_node_contents);
+      this.$lsw.dialogs.open({
+        title: "Visualizando código JS",
+        template: `
+          <div class="pad_1">
+            <div class="">{{ file }}:</div>
+            <hr />
+            <lsw-code-viewer :code="code" language="js" />
+          </div>`,
+        factory: {
+          data: {
+            file: this.current_node,
+            code: this.$refs.editor.getContents(),
+          }
+        },
+      })
+    },
+    async openCodeViewerForCss() {
+      this.$trace("lsw-filesystem-explorer.methods.openCodeViewerForCss");
+      this.$lsw.dialogs.open({
+        title: "Visualizando código CSS",
+        template: `
+          <div class="pad_1">
+            <div class="">{{ file }}:</div>
+            <hr />
+            <lsw-code-viewer :code="code" language="css" />
+          </div>`,
+        factory: {
+          data: {
+            file: this.current_node,
+            code: this.$refs.editor.getContents(),
+          }
+        },
+      })
+    },
+    async openCodeViewerForHtml() {
+      this.$trace("lsw-filesystem-explorer.methods.openCodeViewerForHtml");
+      this.$lsw.dialogs.open({
+        title: "Visualizando código HTML",
+        template: `
+          <div class="pad_1">
+            <div class="">{{ file }}:</div>
+            <hr />
+            <lsw-code-viewer :code="code" language="html" />
+          </div>`,
+        factory: {
+          data: {
+            file: this.current_node,
+            code: this.$refs.editor.getContents(),
+          }
+        },
+      })
+    },
+    async processToCompileMarkdown() {
+      this.$trace("lsw-filesystem.explorer.methods.processToCompileMarkdown");
+      const mdContent = this.$refs.editor.getContents();
+      const htmlContent = marked.parse(mdContent);
+      const fileoutput = await this.$lsw.dialogs.open({
+        title: "Compilar markdown a html",
+        template: `
+          <div class="pad_1">
+            <div>¿A qué fichero quieres exportar el html? Especifica solo el nombre:</div>
+            <!--lsw-sourceable :code="htmlContent"-->
+            <input class="width_100" type="text" v-model="value" />
+            <hr />
+            <div class="flex_row centered">
+              <div class="flex_100"></div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            value: this.current_node.replace(this.current_node_basedir, "").replace(/\.md$/, ".html"),
+          }
+        }
+      });
+      if(typeof fileoutput !== "string") {
+        return;
+      }
+      const filepath = this.$lsw.fs.resolve_path(this.current_node_basedir, fileoutput);
+      try {
+        this.$lsw.fs.write_file(filepath, htmlContent);
+        this.$lsw.toasts.send({
+          title: "Markdown compilado a HTML",
+          text: "La salida está en: " + filepath,
+        });
+      } catch (error) {
+        this.$lsw.toasts.showError(error, false, true);
+      }
+    },
+    async processToCompilePegjs() {
+      this.$trace("lsw-filesystem.explorer.methods.processToCompilePegjs");
+      const currentFile = this.current_node;
+      const pegjsContent = this.$refs.editor.getContents();
+      const parserOptions = await this.$lsw.dialogs.open({
+        title: "Compilar pegjs a js",
+        template: `
+          <div class="pad_1">
+            <div>Global a la que exportar:</div>
+            <input class="width_100" type="text" v-model="value.exportVar" />
+            <hr />
+            <div>Fichero final:</div>
+            <input class="width_100" type="text" v-model="value.output" />
+            <hr />
+            <div>Formato de exportación:</div>
+            <input class="width_100" type="text" v-model="value.format" />
+            <hr />
+            <div class="flex_row centered">
+              <div class="flex_100"></div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            value: {
+              format: 'globals',
+              output: this.current_node.replace(this.current_node_basedir, "").replace(/\.pegjs/g, ".js"),
+              exportVar: 'DemoParser',
+            }
+          }
+        }
+      });
+      if(typeof parserOptions !== "object") return;
+      const fileoutput = parserOptions.output;
+      const parserFormat = parserOptions.format;
+      const parserExporter = parserOptions.exportVar;
+      await this.$lsw.lazyLoads.loadPegjs();
+      const filepath = this.$lsw.fs.resolve_path(this.current_node_basedir, fileoutput);
+      try {
+        const jsContent = PEG.buildParser(pegjsContent, {
+          output: "source",
+          format: parserFormat,
+          exportVar: parserExporter,
+        });
+        this.$lsw.fs.write_file(filepath, jsContent);
+        this.$lsw.toasts.send({
+          title: "Pegjs compilado a JavaScript",
+          text: "La salida está en: " + filepath,
+        });
+      } catch (error) {
+        this.$lsw.toasts.showError(error, false, true);
+      }
+    },
+    async processToFormatHtml() {
+      this.$trace("lsw-filesystem.exporer.methods.processToFormatHtml");
+      try {
+        const input = this.$refs.editor.getContents();
+        await this.$lsw.lazyLoads.loadBeautifier();
+        const output = beautifier.html(input);
+        this.$refs.editor.setContents(output);
+      } catch (error) {
+        this.$lsw.toasts.showError(error, false, true);
+      }
+    },
+    async processToFormatCss() {
+      this.$trace("lsw-filesystem.exporer.methods.processToFormatCss");
+      try {
+        const input = this.$refs.editor.getContents();
+        await this.$lsw.lazyLoads.loadBeautifier();
+        const output = beautifier.css(input);
+        this.$refs.editor.setContents(output);
+      } catch (error) {
+        this.$lsw.toasts.showError(error, false, true);
+      }
+    },
+    async processToFormatJs() {
+      this.$trace("lsw-filesystem.exporer.methods.processToFormatJs");
+      try {
+        const input = this.$refs.editor.getContents();
+        await this.$lsw.lazyLoads.loadBeautifier();
+        const output = beautifier.js(input);
+        this.$refs.editor.setContents(output);
+      } catch (error) {
+        this.$lsw.toasts.showError(error, false, true);
+      }
+    },
+    async processToDownloadFile() {
+      this.$trace("lsw-filesystem.explorer.methods.processToDownloadFile");
+      const filename = this.current_node.replace(this.current_node_basedir, "");
+      const confirmation = await this.$lsw.dialogs.open({
+        title: "Descargar fichero",
+        template: `
+          <div class="pad_1">
+            <div class="pad_top_1">¿Qué nombre quieres para el fichero a descargar?</div>
+            <input type="text" class="width_100 margin_top_1" v-model="value" /> 
+            <hr />
+            <div class="flex_row centered pad_top_1">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini danger_button" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini " v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>`,
+        factory: { data: { value: filename } },
+      });
+      if(typeof confirmation !== "string") return;
+      const filecontents = this.current_node_contents;
+      LswUtils.downloadFile(filename, filecontents);
+    },
+    processToViewHtml() {
+      this.$trace("lsw-filesystem.explorer.methods.processToCompilePegjs");
+      const htmlContent = this.$refs.editor.getContents();
+      return this.$lsw.dialogs.open({
+        title: "Ver html en vivo",
+        template: `
+          <div class="pad_1">
+            ${htmlContent}
+          </div>
+        `,
+      });
+    },
+    processToViewMarkdown() {
+      this.$trace("lsw-filesystem.explorer.methods.processToCompilePegjs");
+      const mdContent = this.$refs.editor.getContents();
+      const htmlContent = marked.parse(mdContent);
+      return this.$lsw.dialogs.open({
+        title: "Ver markdown en vivo",
+        template: `
+          <div class="pad_1">
+            ${htmlContent}
+          </div>
+        `,
+      });
     }
   },
   watch: {

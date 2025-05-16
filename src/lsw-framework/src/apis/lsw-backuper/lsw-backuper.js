@@ -51,6 +51,11 @@
       localStorage[this.options.storageId] = JSON.stringify(backupJson, null, 2);
     }
 
+    deleteLastBackup() {
+      this.$trace("deleteLastBackup", arguments);
+      delete localStorage[this.options.storageId];
+    }
+
   };
 
   return LswBackuper;

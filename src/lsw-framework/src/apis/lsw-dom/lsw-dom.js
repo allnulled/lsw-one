@@ -82,6 +82,46 @@
       return el1.textContent;
     }
 
+    static findCssRulesContaining(selector) {
+      const matchingRules = [];
+      for (const styleSheet of document.styleSheets) {
+        let rules;
+        try {
+          rules = styleSheet.cssRules || styleSheet.rules;
+        } catch (e) {
+          // Evita errores por CORS en hojas de estilo externas
+          continue;
+        }
+        if (!rules) continue;
+        for (const rule of rules) {
+          if (rule.selectorText && rule.selectorText.includes(selector)) {
+            matchingRules.push(rule);
+          }
+        }
+      }
+      return matchingRules;
+    }
+
+    static hasCssRulesContaining(selector) {
+      const matchingRules = [];
+      for (const styleSheet of document.styleSheets) {
+        let rules;
+        try {
+          rules = styleSheet.cssRules || styleSheet.rules;
+        } catch (e) {
+          // Evita errores por CORS en hojas de estilo externas
+          continue;
+        }
+        if (!rules) continue;
+        for (const rule of rules) {
+          if (rule.selectorText && rule.selectorText.includes(selector)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
   };
   // @code.end: LswDom class
 

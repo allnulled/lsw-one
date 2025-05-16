@@ -16,7 +16,11 @@
       try {
         Inject_kernel_bootjs: {
           await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
-          await LswDomIrruptor.abrirBaseDeDatos();
+        }
+        Inject_development_point: {
+          if(window.location.href.startsWith("http://")) {
+            await LswDomIrruptor.abrirBaseDeDatos();
+          }
         }
       } catch (error) {
         Vue.prototype.$lsw.toasts.send({

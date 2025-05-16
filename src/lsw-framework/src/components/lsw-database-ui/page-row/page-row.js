@@ -59,7 +59,7 @@ Vue.component("LswPageRow", {
     async loadRow() {
       this.$trace("lsw-page-row.methods.loadRow", arguments);
       try {
-        if(this.rowId === -1) {
+        if (this.rowId === -1) {
           return false;
         }
         this.connection = this.connection ?? new LswDatabaseAdapter(this.database);
@@ -68,33 +68,39 @@ Vue.component("LswPageRow", {
         this.row = matches[0];
       } catch (error) {
         console.log("Error loading row:", error);
+        this.$lsw.toasts.showError(error);
         throw error;
       } finally {
         this.row = false;
       }
     },
-    async upsertRow(v) {
+    async upsertRow(value) {
       this.$trace("lsw-page-row.methods.upsertRow", arguments);
-      const existsRow = this.rowId || ((typeof (this.row) === "object") && (typeof (this.row.id) === "number") && (this.row.id !== -1));
-      let id = this.rowId || this.row.id;
-      const operation = (existsRow && (id !== -1)) ? "update" : "insert";
-      if (operation === "insert") {
-        id = await this.$lsw.database.insert(this.table, v);
-      } else {
-        await this.$lsw.database.update(this.table, id, v);
-      }
-      lsw.toasts.send({
-        title: `Nueva ${operation === 'insert' ? 'inserción' : 'actualización'}`,
-        text: `El registro #${id} de «${this.table}» fue ${operation === 'insert' ? 'insertado' : 'actualizado'} correctamente.`
-      });
-      if(operation === "insert") {
-        this.databaseExplorer.selectPage("LswPageRow", {
-          database: this.database,
-          table: this.table,
-          rowId: id
+      try {
+        const existsRow = this.rowId || ((typeof (this.row) === "object") && (typeof (this.row.id) === "number") && (this.row.id !== -1));
+        let id = this.rowId || this.row.id;
+        const operation = (existsRow && (id !== -1)) ? "update" : "insert";
+        if (operation === "insert") {
+          id = await this.$lsw.database.insert(this.table, value);
+        } else {
+          await this.$lsw.database.update(this.table, id, value);
+        }
+        this.$lsw.toasts.send({
+          title: `Nueva ${operation === 'insert' ? 'inserción' : 'actualización'}`,
+          text: `El registro #${id} de «${this.table}» fue ${operation === 'insert' ? 'insertado' : 'actualizado'} correctamente.`
         });
-      } else {
-        // @OK.
+        if (operation === "insert") {
+          this.databaseExplorer.selectPage("LswPageRow", {
+            database: this.database,
+            table: this.table,
+            rowId: id
+          });
+        } else {
+          // @OK.
+        }
+      } catch (error) {
+        console.log(error);
+        this.$lsw.toasts.showError(error);
       }
     }
   },

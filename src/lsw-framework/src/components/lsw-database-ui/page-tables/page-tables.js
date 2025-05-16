@@ -26,6 +26,7 @@ Vue.component("LswPageTables", {
       database: this.args.database,
       tables: false,
       tablesAsList: false,
+      isShowingSchema: false,
     }
   },
   methods: {
@@ -40,6 +41,9 @@ Vue.component("LswPageTables", {
         database: this.database,
         table: table
       });
+    },
+    toggleSchema() {
+      this.isShowingSchema = !this.isShowingSchema;
     }
   },
   watch: {

@@ -20,6 +20,8 @@ try {
       Vue.prototype.$lsw.windows = null;
       Vue.prototype.$lsw.dialogs = null;
       Vue.prototype.$lsw.toasts = null;
+      Vue.prototype.$lsw.lazyLoader = LswLazyLoader.global;
+      Vue.prototype.$lsw.lazyLoads = LswLazyLoads;
       Vue.prototype.$lsw.proxifier = $proxifier;
       Vue.prototype.$lsw.wiki = null;
       Vue.prototype.$lsw.agenda = null;
@@ -49,6 +51,8 @@ try {
       Vue.prototype.$lsw.classes.Formtypes = LswFormtypes;
       Vue.prototype.$lsw.classes.Schema = LswSchema;
       Vue.prototype.$lsw.classes.Lifecycle = LswLifecycle;
+      Vue.prototype.$lsw.classes.LazyLoader = LswLazyLoader;
+      Vue.prototype.$lsw.classes.LazyLoads = LswLazyLoads;
       Vue.prototype.$lsw.classes.DatabaseVirtualizer = LswDatabaseVirtualizer;
       // Vue.prototype.$lsw.classes.DatabaseAdapter = LswDatabaseAdapter;
       Vue.prototype.$lsw.classes.Timer = LswTimer;

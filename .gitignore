@@ -4,3 +4,5 @@ dev/documentation/documentator/src/translations/output
 **.png
 evaluacion-continua
 mobile
+src/assets/android
+docs/assets/android

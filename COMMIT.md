@@ -1,5 +1,11 @@
 # Último commit:
 
+# 16-05-2025 15:34pm
+
+[x] Desbloquear la importación de JSON para base de datos
+[x] Recompilar la aplicación móvil
+[x] Cambiar el link
+
 # 15-05-2025 17:47pm - 03:39am
 
 [x] deduplicar título lsw-database

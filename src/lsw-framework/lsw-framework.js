@@ -35374,7 +35374,7 @@ Vue.component("LswConfigurationsPage", {
           <div class="flex_row centered">
             <div class="flex_100 pad_1">Importación de JSON:</div>
           </div>
-          <textarea class="width_100" style="min-height: 220px;" v-model="value.importation" disabled="true" placeholder="Por ejemplo: {store:[{},{},{}]}"></textarea>
+          <textarea class="width_100" style="min-height: 220px;" v-model="value.importation" placeholder="Por ejemplo: {NombreDeStore:[{},{},{}]}"></textarea>
           <hr />
           <div class="pad_1 text_align_right">
             <button class="supermini danger_button" v-on:click="sendForm">Importar</button>

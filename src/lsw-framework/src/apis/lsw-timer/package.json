@@ -1,11 +1,11 @@
 {
-  "name": "@allnulled/timeformat",
+  "name": "@allnulled/lsw-timer",
   "version": "1.0.1",
   "description": "Parser simple para fecha, hora, rango, duración y lista.",
-  "main": "timeformat.bundled.js",
+  "main": "lsw-timer.bundled.js",
   "scripts": {
     "up": "npm run build && bash up.sh",
-    "build": "npx pegjs --format globals --export-var Timeformat_parser -o timeformat.js timeformat.pegjs && node fix1.js",
+    "build": "npx pegjs --format globals --export-var Timeformat_parser -o lsw-timer.js lsw-timer.pegjs && node fix1.js",
     "test": "node test.js"
   },
   "keywords": [

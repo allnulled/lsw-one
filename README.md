@@ -6,8 +6,8 @@ Complemento personal de software.
 
 - web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android:
-   - última versión: [https://limewire.com/d/273df#9uE9JiUmIK](https://limewire.com/d/273df#9uE9JiUmIK)
-   - versión del 16 de mayo de 2025: [https://limewire.com/d/273df#9uE9JiUmIK](https://limewire.com/d/273df#9uE9JiUmIK)
+   - última versión: [https://limewire.com/d/Mrfnh#KhXWBctbGg](https://limewire.com/d/Mrfnh#KhXWBctbGg)
+   - versión del 19 de mayo de 2025: [https://limewire.com/d/Mrfnh#KhXWBctbGg](https://limewire.com/d/Mrfnh#KhXWBctbGg)
 - github: [https://github.com/allnulled/lsw-one](https://github.com/allnulled/lsw-one)
 - documentación: [https://allnulled.github.io/lsw-one/reference](https://allnulled.github.io/lsw-one/reference)
 
@@ -64,6 +64,8 @@ En el filesystem virtual de la app puedes configurar:
    - Para el mensaje rutinario.
 - [/kernel/settings/user.env](#):
    - Para preferencias de usuario simples.
+- [/kernel/settings/goals/factory](#):
+   - Funciones que devuelven los parámetros de un objetivo.
 - [/kernel/wiki/categorias.tri](#):
    - Para las categorías disponibles desde la enciclopedia.
    - Sí, **tripilang** (los *.tri) no está documentado. Pero no es difícil.

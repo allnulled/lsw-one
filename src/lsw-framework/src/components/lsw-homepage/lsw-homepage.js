@@ -37,7 +37,7 @@ const homepage_apps_events = {
   },
 };
 
-// @code.start: LswHomepage API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswHomepage component
+// @code.start: LswHomepage API | @$section: Vue.js (v2) Components » LswHomepage component
 Vue.component("LswHomepage", {
   template: $template,
   props: {

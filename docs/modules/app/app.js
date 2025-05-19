@@ -110,6 +110,29 @@ rel correr
       goToHomepage() {
         this.$refs.desktop.selectApplication("homepage");
       },
+      async initializeFilesystemForLsw() {
+        this.$trace("lsw-filesystem-explorer.methods.initializeFilesystemForLsw");
+        await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.md", LswConstants.global.pick("rutiner.md"));
+        await this.$lsw.fs.ensureFile("/kernel/settings/randomizables.env", LswConstants.global.pick("randomizables.env"));
+        await this.$lsw.fs.ensureFile("/kernel/settings/backgrounds.env", LswConstants.global.pick("backgrounds.env"));
+        await this.$lsw.fs.ensureFile("/kernel/settings/automessages.env", LswConstants.global.pick("automessages.env"));
+        await this.$lsw.fs.ensureFile("/kernel/settings/user.env", LswConstants.global.pick("user.env"));
+        await this.$lsw.fs.ensureFile("/kernel/wiki/libros/Boot.tri", LswConstants.global.pick("Boot.tri"));
+        await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", LswConstants.global.pick("categorias.tri"));
+        await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", LswConstants.global.pick("report/inicio.js"));
+        await this.$lsw.fs.ensureFile("/kernel/agenda/proto/boot.proto", LswConstants.global.pick("boot.proto"));
+        await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/concepto");
+        await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/funcion");
+        await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
+        await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", LswConstants.global.pick("multiplicador.js"));
+        await this.$lsw.fs.ensureDirectory("/kernel/settings/table/storage");
+        await this.$lsw.fs.delete_directory("/kernel/settings/goals");
+        await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-3-veces.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-3-veces.js"));
+        await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-4h.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-4h.js"));
+        await this.$lsw.fs.ensureFile("/kernel/settings/goals/list/focus.env", LswConstants.global.pick("/kernel/settings/goals/list/focus.env"));
+        await this.$lsw.fs.ensureDirectory("/kernel/components");
+        await this.$lsw.fs.ensureFile("/kernel/boot.js", LswConstants.global.pick("boot.js"));
+      },
     },
     mounted() {
       console.log("[*] Application mounted.");
@@ -122,6 +145,7 @@ rel correr
           $lsw: this.$lsw,
           appComponent: this,
         }));
+        this.initializeFilesystemForLsw();
       }
     }
   });

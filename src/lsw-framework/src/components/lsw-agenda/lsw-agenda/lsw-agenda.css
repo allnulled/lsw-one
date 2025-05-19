@@ -521,12 +521,12 @@ bajar(B) 100
 
 .selected_day_title {
     background-color: #0f0f0f61;
-    color: #c4e8bc;
+    color: #FFF;
     padding: 4px;
     border: 0px solid black;
-    font-weight: bold;
-    text-shadow: 0 0 1px black;
+    text-shadow: 0 0 2px black;
     min-height: auto;
+    font-size: 10px;
 }
 
 .tasks_viewer {

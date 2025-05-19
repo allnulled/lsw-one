@@ -1,4 +1,4 @@
-// @code.start: LswDataPrinterButton API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswDataPrinterButton component
+// @code.start: LswDataPrinterButton API | @$section: Vue.js (v2) Components » LswDataPrinterButton component
 Vue.component("LswDataPrinterButton", {
   template: $template,
   props: {

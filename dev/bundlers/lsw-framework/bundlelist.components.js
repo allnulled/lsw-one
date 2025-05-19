@@ -62,7 +62,7 @@ module.exports = [
   // LSW STORE:
   `${basepath}/lsw-framework/src/apis/lsw-store/dist/store.unbundled.js`,
   // LSW TIMER:
-  `${basepath}/lsw-framework/src/apis/lsw-timer/timeformat.bundled.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-timer/lsw-timer.bundled.js`,
   // LSW INTRUDER:
   `${basepath}/lsw-framework/src/apis/lsw-intruder/lsw-intruder.js`,
   // LSW CYCLER:
@@ -85,6 +85,8 @@ module.exports = [
   // `${basepath}/lsw-framework/src/apis/lsw-database-adapter/LswDatabaseAdapter.js`, // Por si se requiere pero en principio no y debe eliminarse
   // LSW DEPENDER:
   `${basepath}/lsw-framework/src/apis/lsw-depender/lsw-depender.js`,
+  // LSW ERROR HANDLER:
+  `${basepath}/lsw-framework/src/apis/lsw-error-handler/lsw-error-handler.js`,
   // LSW BACKUPER:
   `${basepath}/lsw-framework/src/apis/lsw-backuper/lsw-backuper.js`,
   // LSW TYPER:
@@ -153,6 +155,9 @@ module.exports = [
   `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-utils/lsw-wiki-utils.js`,
   // CLOCKWATCHER:
   `${basepath}/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher`,
+  // GOALS VIEWER:
+  `${basepath}/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-api.js`,
+  `${basepath}/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer`,
   // AGENDA:
   `${basepath}/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda`,
   `${basepath}/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add`,
@@ -195,6 +200,10 @@ module.exports = [
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control`,
   // SCHEMA-BASED FORMS:
   `${basepath}/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form`,
+  // BARS GRAPH:
+  `${basepath}/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar`,
+  `${basepath}/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph`,
+  `${basepath}/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.api.js`,
   // NOTAS:
   `${basepath}/lsw-framework/src/components/lsw-notes/lsw-notes`,
   `${basepath}/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page`,

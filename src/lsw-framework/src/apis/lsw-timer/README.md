@@ -2,7 +2,7 @@
 
 Parser simple para fecha, hora, rango, duración y lista.
 
-Branch of [@allnulled/timeformat](https://github.com/allnulled/timeformat).
+Branch of [@allnulled/lsw-timer](https://github.com/allnulled/lsw-timer).
 
 ## Instalación
 
@@ -19,7 +19,7 @@ require("@allnulled/lsw-timer");
 Y en html tienes que:
 
 ```html
-<script src="node_modules/@allnulled/lsw-timer/timeformat.js"></script>
+<script src="node_modules/@allnulled/lsw-timer/lsw-timer.js"></script>
 ```
 
 ## Uso

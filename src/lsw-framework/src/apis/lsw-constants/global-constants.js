@@ -1,44 +1,56 @@
 LswConstants.global.define("rutiner.md", `
 
-Piensa en cosas bonitas
+Aprovecha para poner algo guapo aquí.
 
-- Cosas bonitas
-- Cosas bonitas
-- Cosas bonitas
-- Más cosas bonitas
-- Más cosas más bonitas
-- Más todavía
+Y se te irá recordando.
 
 `.trim());
 
 LswConstants.global.define("randomizables.env", `
 
-Trackeo de números de conducta/agenda = 1
-Trackeo de conceptos/relaciones = 1
-Trackeo de ideas/notas = 1
-Programación de interfaces gráficas = 1
-Arquitectura por patrones = 1
-Arquitectura de la realidad = 1
-Arquitectura del yo = 1
-Lenguajes formales = 1
-Investigación de cocina/nutrición/química = 1
-Investigación de nutrición = 1
-Investigación de química = 1
-Investigación de física = 1
-Investigación de matemáticas = 1
-Investigación de geometría = 1
-Investigación de canvas/perspectiva = 1
-Investigación de medicina/biología/fisiología = 1
-Investigación de musculación/flexibilidad = 1
-Investigación de las emociones = 1
-Actividad física = 1
-Optimización de RAM = 1
-Autocontrol/Autobservación/Autoanálisis = 1
-Meditación/Relajación = 1
-Paisajismo = 1
-Dibujo 3D/Perspectiva/Geometría/Mates = 1
-Dibujo artístico/anime/abstracto/esquemista/conceptualista = 1
-Reflexión/Diálogo interno = 1
+números = 1
+conceptos = 1
+ideas = 1
+interfaces gráficas = 1
+patrones = 1
+arquitectura de la realidad = 1
+arquitectura del yo = 1
+lenguajes formales = 1
+cocina = 1
+nutrición = 1
+química = 1
+nutrición = 1
+química = 1
+física = 1
+matemáticas = 1
+geometría = 1
+canvas = 1
+perspectiva = 1
+medicina = 1
+biología = 1
+fisiología = 1
+musculación = 1
+flexibilidad = 1
+emociones = 1
+actividad física = 1
+optimización de ram = 1
+autocontrol = 1
+autobservación = 1
+autoanálisis = 1
+meditación = 1
+relajación = 1
+paisajismo = 1
+dibujo 3d = 1
+perspectiva = 1
+geometría = 1
+mates = 1
+dibujo artístico = 1
+anime = 1
+abstracto = 1
+esquemista = 1
+conceptualista = 1
+reflexión = 1
+diálogo interno = 1
 
 `.trim());
 
@@ -225,4 +237,36 @@ LswConstants.global.define("user.env", `
 app.username=usuario
 app.clock_message=💎
         
+`.trim());
+
+LswConstants.global.define("/kernel/settings/goals/factory/fisico-3-veces.js", `
+
+return LswGoals.ensureActionHasMinimumTimesToday("actividad física", 3, {
+  id: "actividad física",
+  urgencia: 0,
+  completado: "Actividad física 3 veces al día completada",
+  fallido: "Hay que hacer 3 veces de actividad física al día",
+});
+
+`.trim());
+
+LswConstants.global.define("/kernel/settings/goals/factory/fisico-4h.js", `
+
+  
+return LswGoals.ensureActionHasMinimumDurationToday("actividad física", "4h", {
+  id: "actividad física",
+  urgencia: 0,
+  completado: "Actividad física 4 horas mínimo veces al día completada",
+  fallido: "Hay que hacer 4 horas mínimo de actividad física al día",
+});
+
+`.trim());
+
+LswConstants.global.define("/kernel/settings/goals/list/focus.env", `
+
+nombre=enfócate
+urgencia=100
+mensaje=ok
+intervalo=2025-05-17 - 2025/12/30
+
 `.trim());

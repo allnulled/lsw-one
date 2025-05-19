@@ -27,8 +27,8 @@ Vue.component("LswAppsViewerPanel", {
     },
     getSimboloEstadoAccion(estado) {
       return (estado === "completada") ? "💚" :
-      (estado === "pendiente") ? "❓" :
-      (estado === "fallida") ? "🔥" : "";
+        (estado === "pendiente") ? "❓" :
+          (estado === "fallida") ? "🔥" : "";
     },
     async loadAcciones() {
       this.$trace("lsw-apps-viewer-panel.methods.loadAcciones");
@@ -44,7 +44,7 @@ Vue.component("LswAppsViewerPanel", {
         try {
           const dateAccion = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
           const areSameDay = LswTimer.utils.areSameDayDates(dateAccion, estaHora);
-          if(!areSameDay) return;
+          if (!areSameDay) return;
           if (dateAccion >= estaHora) {
             accionesDespues.push(accion);
           } else {
@@ -60,7 +60,7 @@ Vue.component("LswAppsViewerPanel", {
     },
     getSorterOfAccionesAntes() {
       this.$trace("lsw-apps-viewer-panel.methods.getSorterOfAccionesAntes");
-      return function(accion1, accion2) {
+      return function (accion1, accion2) {
         let inicio1, inicio2;
         try {
           inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
@@ -73,12 +73,12 @@ Vue.component("LswAppsViewerPanel", {
           return -1;
         }
         const firstIsLower = inicio1 < inicio2;
-        return firstIsLower ? 1 : -1 ;
+        return firstIsLower ? 1 : -1;
       };
     },
     getSorterOfAccionesDespues() {
       this.$trace("lsw-apps-viewer-panel.methods.getSorterOfAccionesDespues");
-      return function(accion1, accion2) {
+      return function (accion1, accion2) {
         let inicio1, inicio2;
         try {
           inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
@@ -91,7 +91,7 @@ Vue.component("LswAppsViewerPanel", {
           return -1;
         }
         const firstIsLower = inicio1 <= inicio2;
-        return firstIsLower ? -1 : 1 ;
+        return firstIsLower ? -1 : 1;
       };
     },
     async alternarEstado(accion) {

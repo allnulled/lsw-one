@@ -1,4 +1,4 @@
-require(__dirname + "/timeformat.bundled.js");
+require(__dirname + "/lsw-timer.bundled.js");
 
 const main = async function () {
   try {

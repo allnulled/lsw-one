@@ -1,5 +1,39 @@
 # Último commit:
 
+# 19-05-2025 00:36am
+
+[x] Goals viewer
+  [x] con su bars-graph
+    [x] que funciona siempre con porcentajes
+    [x] que permite reflejar varias propiedades por row
+    [x] que permite cambiar de vista según propiedad concreta
+    [x] que asigna color según valor y polaridad
+      [x] que la polaridad sea una propiedad factible
+  [x] con su bars-graph-bar
+[x] diálogos en vez de forms embedidos en agenda para new y edit accion
+
+
+# 17-05-2025 10:59am
+
+[ ] Widget de lsw-goals-viewer
+  [ ] son funciones js
+  [ ] que se recogen de un directorio
+    [ ] /kernel/settings/goals/*.js
+  [ ] pueden especificar:
+    [ ] urgencia: para ponerse arriba o abajo por sí solo
+    [ ] titulo: nombre del objetivo
+    [ ] mensaje: mensaje informativo del estado actual
+    [ ] métricas: datos implicados en el objetivo y sus estados
+      [ ] con algo con porcentaje
+      [ ] con algo con color (color control)
+      [ ] que sirva para pintar barras de colores
+    [ ] intervalo
+  [ ] dar botón de conductometría también
+  [ ] incrustarlo en tareas posteriores
+[ ] Formularios de nuevas instancias:
+  [ ] que ahora están embedidos
+  [ ] pasarlos a diálogos todos
+
 # 16-05-2025 15:34pm
 
 [x] Desbloquear la importación de JSON para base de datos

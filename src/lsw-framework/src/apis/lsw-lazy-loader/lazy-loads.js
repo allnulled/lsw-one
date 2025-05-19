@@ -10,6 +10,8 @@
     module.exports = mod;
   }
 })(function () {
+
+  // @code.start: LswLazyLoads class | @section: Lsw LazyLoader API » LswLazyLoads class
   
   LswLazyLoader.global.register({
     alias: "highlight.js:global",
@@ -84,5 +86,7 @@
   };
 
   return LswLazyLoads;
+
+  // @code.end: LswLazyLoads class
 
 });

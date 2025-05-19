@@ -13,6 +13,12 @@
 
   class LswFilesystem extends UFS_manager.idb_driver {
 
+    async scan_directory(...args) {
+      this.trace("scan_directory", [...args]);
+      const filesAsMap = await this.read_directory(...args);
+      return Object.keys(filesAsMap);
+    }
+
     async ensureFile(filepath, contents) {
       this.trace("ensureFile", [filepath, contents]);
       const pathParts = filepath.split("/").filter(file => file.trim() !== "");
@@ -118,7 +124,7 @@
     }
 
     evaluateAsDotenvText(fileContents) {
-      this.trace("evaluateAsDotenvText", []);
+      this.trace("evaluateAsDotenvText", [fileContents]);
       const result = fileContents.split(/\n/).filter(line => line.trim() !== "").reduce((output, line) => {
         const [ id, value = "" ] = line.split(/\=/);
         output[id.trim()] = (value || "").trim();

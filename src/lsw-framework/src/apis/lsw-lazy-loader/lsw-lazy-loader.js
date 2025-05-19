@@ -11,7 +11,7 @@
   }
 })(function () {
 
-  // @code.start: LswLazyLoader class | @section: Lsw LswLazyLoader API » LswLazyLoader class
+  // @code.start: LswLazyLoader class | @section: Lsw LazyLoader API » LswLazyLoader class
 
   const UnsolvedLazyLoadModule = class {
 

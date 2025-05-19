@@ -1,4 +1,4 @@
-// @code.start: LswSourceable API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswSourceable component
+// @code.start: LswSourceable API | @$section: Vue.js (v2) Components » LswSourceable component
 Vue.component("LswSourceable", {
   template: $template,
   props: {

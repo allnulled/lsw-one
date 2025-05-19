@@ -157,7 +157,7 @@
       Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateDefine");
       this.DEBUG("Lsw-cond-virt.$evaluateDefine");
       const { names } = sentence;
-      // @TODO: insertar names en Concepto
+      // @DONE: insertar names en Concepto
       Iterating_names:
       for (let index = 0; index < names.length; index++) {
         const name = names[index];
@@ -179,7 +179,7 @@
       Vue.prototype.$trace("lswConductometriaVirtualization.$evaluateFunction");
       this.DEBUG("Lsw-cond-virt.$evaluateFunction");
       const { name, params, code } = sentence;
-      // @TODO: insertar name+params+code en Propagador_prototipo
+      // @DONE: insertar name+params+code en Propagador_prototipo
       try {
         this.DEBUG("inserting prototipo:", name);
         await Vue.prototype.$lsw.database.insert("Propagador_prototipo", {

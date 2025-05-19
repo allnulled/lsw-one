@@ -11,6 +11,8 @@
   }
 })(function () {
   
+  // @code.start: LswIntruder class | @section: Lsw Intruder API » LswIntruder class
+
   const IntruderJob = class {
 
     constructor(options = {}) {
@@ -95,5 +97,7 @@
   }
 
   return LswIntruder;
+
+  // @code.end: LswIntruder class
 
 });

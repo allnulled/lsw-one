@@ -16,6 +16,7 @@ Vue.component("LswAgendaAccionesViewer", {
     this.$trace("lsw-agenda-acciones-viewer.data");
     return {
       isLoading: true,
+      isShowingGoals: true,
       selectedDate: this.initialDate,
       selectedAccion: "",
       selectedForm: false,
@@ -28,6 +29,30 @@ Vue.component("LswAgendaAccionesViewer", {
   methods: {
     openRandomizerFile() {
       this.$trace("lsw-agenda-acciones-viewer.methods.openRandomizerFile");
+      Load_secretly_random_actions_as_concepts: {
+        setTimeout(async () => {
+          const randomizables = await this.$lsw.fs.evaluateAsDotenvFileOrReturn("/kernel/settings/randomizables.env", {});
+          const names = Object.keys(randomizables);
+          const knownNames = await this.$lsw.database.selectMany("Concepto", c => {
+            return names.indexOf(c.tiene_nombre) !== -1;
+          });
+          const missingNames = LswUtils.arrays.getMissingInFirst(knownNames, names);
+          const conceptos = missingNames.map(name => {
+            return {
+              tiene_nombre: name,
+              tiene_comentarios: "",
+            }
+          });
+          for(let indexConcepto=0; indexConcepto<conceptos.length; indexConcepto++) {
+            const concepto = conceptos[indexConcepto];
+            try {
+              await this.$lsw.database.insert("Concepto", concepto);
+            } catch (error) {
+              // @BADLUCK
+            }
+          }
+        }, 0);
+      }
       this.$lsw.dialogs.open({
         title: "Editar randomizables.env",
         template: `
@@ -136,6 +161,7 @@ Vue.component("LswAgendaAccionesViewer", {
         } else if (this.sorterStrategy === "despues") {
           this.selectedDateTasks = selectedDateTasks;
           const momentoActual = new Date();
+          momentoActual.setHours(0);
           this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
             const dateInicio = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
             try {
@@ -425,6 +451,85 @@ Vue.component("LswAgendaAccionesViewer", {
       await this.$lsw.database.update('Accion', tarea.id, v);
       this.selectedForm = tarea.id;
       this.loadDateTasks();
+    },
+    openNewRowDialog() {
+      this.$trace("lsw-agenda-acciones-viewer.methods.openNewRowDialog");
+      const that = this;
+      this.$lsw.dialogs.open({
+        title: "Crear acción",
+        template: `
+          <lsw-schema-based-form
+            :on-submit="v => onInsertTask(v)"
+            :on-delete-row="loadDateTasks"
+            :overriden-values="{
+              tiene_estado: 'pendiente',
+              tiene_inicio: $lsw.timer.utils.formatDatestringFromDate(selectedDate, 1)
+              + ' '
+              + $lsw.timer.utils.fromDateToHour(selectedDate, true)
+            }"
+            :model="{
+              connection: $lsw.database,
+              databaseId: 'lsw_default_database',
+              rowId: -1,
+              tableId: 'Accion',
+            }"
+          />
+        `,
+        factory: {
+          data: {
+            selectedDate: that.selectedDate,
+          },
+          methods: {
+            onInsertTask(v) {
+              that.onInsertTask(v)
+              this.cancel();
+            },
+            loadDateTasks() {
+              that.loadDateTasks();
+              this.cancel();
+            },
+          }
+        }
+      });
+    },
+    openEditRowDialog(accion) {
+      this.$trace("lsw-agenda-acciones-viewer.methods.openEditRowDialog");
+      const that = this;
+      this.$lsw.dialogs.open({
+        title: "Editar acción",
+        template: `
+
+          <lsw-schema-based-form
+            :on-submit="v => onUpdateTask(v, accion)"
+            :on-delete-row="loadDateTasks"
+            :overriden-values="{
+                tiene_inicio: accion.tiene_inicio
+            }"
+            :model="{
+                connection: $lsw.database,
+                databaseId: 'lsw_default_database',
+                rowId: accion.id,
+                tableId: 'Accion',
+            }"
+          />
+        `,
+        factory: {
+          data: {
+            accion,
+            selectedDate: that.selectedDate,
+          },
+          methods: {
+            onUpdateTask(v, accion) {
+              that.onUpdateTask(v, accion);
+              this.cancel();
+            },
+            loadDateTasks() {
+              that.loadDateTasks();
+              this.cancel();
+            },
+          }
+        }
+      });
     },
   },
   watch: {

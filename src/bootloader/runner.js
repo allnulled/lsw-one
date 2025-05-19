@@ -19,7 +19,7 @@
         }
         Inject_development_point: {
           if(window.location.href.startsWith("http://")) {
-            await LswDomIrruptor.abrirBaseDeDatos();
+            // await LswDomIrruptor.abrirBaseDeDatos();
           }
         }
       } catch (error) {

@@ -1317,15 +1317,18 @@
 
   // @code.start: LswTimer API | @$section: LswTimer API » LswTimer classes and functions
   // exported to LswTimer
-  const Timeformat_utils = {};
+  const LswTimer = {
+    utils: {},
+    parser: Timeformat_parser,
+  };
 
-  Timeformat_utils.formatHour = function (horaInput, minutoInput) {
+  LswTimer.utils.formatHour = function (horaInput, minutoInput) {
     const hora = ("" + horaInput).padStart(2, '0');
     const minuto = ("" + minutoInput).padStart(2, '0');
     return `${hora}:${minuto}`;
   };
 
-  Timeformat_utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false, setOnlyHour = false) {
+  LswTimer.utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false, setOnlyHour = false) {
     if (typeof dateObject === "undefined") {
       return undefined;
     }
@@ -1345,9 +1348,9 @@
     return `${anio}/${mes}/${dia} ${laHora}`;
   };
 
-  Timeformat_utils.fromDateToDatestring = Timeformat_utils.formatDatestringFromDate;
+  LswTimer.utils.fromDateToDatestring = LswTimer.utils.formatDatestringFromDate;
 
-  Timeformat_utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
+  LswTimer.utils.getDateFromMomentoText = function (momentoText, setMeridian = false) {
     const momentoBrute = Timeformat_parser.parse(momentoText)[0];
     const date = new Date();
     if (momentoBrute.anio) {
@@ -1365,10 +1368,10 @@
     return date;
   };
 
-  Timeformat_utils.fromDatestringToDate = Timeformat_utils.getDateFromMomentoText;
+  LswTimer.utils.fromDatestringToDate = LswTimer.utils.getDateFromMomentoText;
 
-  Timeformat_utils.formatDatetimeFromMomento = function (momentoBrute, setMeridian = false) {
-    const momento = Timeformat_utils.toPlainObject(momentoBrute);
+  LswTimer.utils.formatDatetimeFromMomento = function (momentoBrute, setMeridian = false) {
+    const momento = LswTimer.utils.toPlainObject(momentoBrute);
     const anio = ("" + (momento.anio ?? 0)).padStart(4, '0');
     const mes = ("" + (momento.mes ?? 0)).padStart(2, '0');
     const dia = ("" + (momento.dia ?? 0)).padStart(2, '0');
@@ -1377,23 +1380,23 @@
     return `${anio}/${mes}/${dia} ${hora}:${minuto}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
   };
 
-  Timeformat_utils.formatHourFromMomento = function (momentoBrute, setMeridian = false) {
-    const momento = Timeformat_utils.toPlainObject(momentoBrute);
+  LswTimer.utils.formatHourFromMomento = function (momentoBrute, setMeridian = false) {
+    const momento = LswTimer.utils.toPlainObject(momentoBrute);
     const hora = ("" + (momento.hora ?? 0)).padStart(2, '0');
     const minuto = ("" + (momento.minuto ?? 0)).padStart(2, '0');
     return `${hora}:${minuto}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
   };
 
-  Timeformat_utils.formatHourFromMomentoCode = function (momentoCode, setMeridian = false) {
+  LswTimer.utils.formatHourFromMomentoCode = function (momentoCode, setMeridian = false) {
     const momentoBruteList = Timeformat_parser.parse(momentoCode);
     const momentoBrute = momentoBruteList[0];
-    const momento = Timeformat_utils.toPlainObject(momentoBrute);
+    const momento = LswTimer.utils.toPlainObject(momentoBrute);
     const hora = ("" + (momento.hora ?? 0)).padStart(2, '0');
     const minuto = ("" + (momento.minuto ?? 0)).padStart(2, '0');
     return `${hora}:${minuto}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
   };
 
-  Timeformat_utils.addDuracionToMomento = function (momentoBrute, duracion) {
+  LswTimer.utils.addDuracionToMomento = function (momentoBrute, duracion) {
     const momentoFinal = {};
     const duracionParsed = Timeformat_parser.parse(duracion)[0];
     const props = ["anio", "mes", "dia", "hora", "minuto", "segundo"];
@@ -1408,7 +1411,7 @@
     return momentoFinal;
   };
 
-  Timeformat_utils.toPlainObject = function (obj) {
+  LswTimer.utils.toPlainObject = function (obj) {
     const seen = new WeakSet();
     return JSON.parse(JSON.stringify(obj, (key, value) => {
       if (typeof value === "object" && value !== null) {
@@ -1419,7 +1422,7 @@
     }));
   };
 
-  Timeformat_utils.isDurationOrThrow = function (text) {
+  LswTimer.utils.isDurationOrThrow = function (text) {
     const errorMessage = "It must be a duration only, like 0y 0mon 0d 0h 0min 0s 0ms";
     try {
       const ast = Timeformat_parser.parse(text);
@@ -1433,7 +1436,7 @@
     return true;
   };
 
-  Timeformat_utils.isDatetimeOrThrow = function (text) {
+  LswTimer.utils.isDatetimeOrThrow = function (text) {
     const errorMessage = "It must be a datetime only, like 2025/01/01 00:00";
     try {
       const ast = Timeformat_parser.parse(text);
@@ -1447,7 +1450,7 @@
     return true;
   };
 
-  Timeformat_utils.isDateOrThrow = function (text) {
+  LswTimer.utils.isDateOrThrow = function (text) {
     const errorMessage = "It must be a date only, like 2025/01/01";
     try {
       const ast = Timeformat_parser.parse(text);
@@ -1461,7 +1464,7 @@
     return true;
   };
 
-  Timeformat_utils.isHourOrThrow = function (text) {
+  LswTimer.utils.isHourOrThrow = function (text) {
     const errorMessage = "It must be an hour only, like 00:00 or 23:00";
     try {
       const ast = Timeformat_parser.parse(text);
@@ -1475,7 +1478,7 @@
     return true;
   };
 
-  Timeformat_utils.formatDateToSpanish = function (date) {
+  LswTimer.utils.formatDateToSpanish = function (date) {
     const anio = date.getFullYear();
     const month = date.getMonth();
     const day = date.getDate();
@@ -1506,7 +1509,7 @@
     return `${diaSemana}, ${day} de ${mes} del ${anio}`;
   }
 
-  Timeformat_utils.formatMomentoObjectToMomentoString = function (momento) {
+  LswTimer.utils.formatMomentoObjectToMomentoString = function (momento) {
     let out = "";
     const { anio = false, mes = false, dia = false, hora = false, minuto = false, segundo = false, milisegundo = false } = momento;
     if (anio !== false) {
@@ -1539,7 +1542,7 @@
     return out.trim();
   };
 
-  Timeformat_utils.areSameDayDates = function (date1, date2) {
+  LswTimer.utils.areSameDayDates = function (date1, date2) {
     const areSameYear = date1.getFullYear() === date2.getFullYear();
     const areSameMonth = date1.getMonth() === date2.getMonth();
     const areSameDate = date1.getDate() === date2.getDate();
@@ -1547,7 +1550,7 @@
     return areSameDay;
   };
 
-  Timeformat_utils.extractHourFromDatestring = function (date) {
+  LswTimer.utils.extractHourFromDatestring = function (date) {
     try {
       return date.split(" ")[1];
     } catch (error) {
@@ -1556,7 +1559,7 @@
     }
   };
 
-  Timeformat_utils.fromDateToHour = function (date, addSeconds = false) {
+  LswTimer.utils.fromDateToHour = function (date, addSeconds = false) {
     try {
       const hora = date.getHours();
       const minuto = date.getMinutes();
@@ -1580,12 +1583,12 @@
     }
   };
 
-  Timeformat_utils.parseToNumberOrReturn = function (txt, defaultValue) {
+  LswTimer.utils.parseToNumberOrReturn = function (txt, defaultValue) {
     const output = parseFloat(txt);
     return isNaN(output) ? defaultValue : output;
   };
 
-  Timeformat_utils.fromDurationstringToMilliseconds = function (durationString) {
+  LswTimer.utils.fromDurationstringToMilliseconds = function (durationString) {
     const lines = Timeformat_parser.parse(durationString);
     if (lines.length === 0) {
       return 0;
@@ -1618,7 +1621,7 @@
     return ms;
   };
 
-  Timeformat_utils.fromMillisecondsToDurationstring = function (ms) {
+  LswTimer.utils.fromMillisecondsToDurationstring = function (ms) {
     const units = {
       y: 1000 * 60 * 60 * 24 * 365,
       mon: 1000 * 60 * 60 * 24 * 30,
@@ -1637,21 +1640,18 @@
         remaining %= value;
       }
     }
-    return parts.join(' ') || "0min";
+    return parts.join(' ');
   };
 
-  Timeformat_utils.multiplyDuration = function (duration, multiplier) {
-    const operand = Timeformat_utils.parseToNumberOrReturn(multiplier, 0);
-    const durationMiliSource = Timeformat_utils.fromDurationstringToMilliseconds(duration);
+  LswTimer.utils.multiplyDuration = function (duration, multiplier) {
+    const operand = LswTimer.utils.parseToNumberOrReturn(multiplier, 0);
+    const durationMiliSource = LswTimer.utils.fromDurationstringToMilliseconds(duration);
     const durationMiliDest = durationMiliSource * operand;
-    const durationDest = Timeformat_utils.fromMillisecondsToDurationstring(durationMiliDest);
+    const durationDest = LswTimer.utils.fromMillisecondsToDurationstring(durationMiliDest);
     return durationDest;
   };
 
-  return {
-    parser: Timeformat_parser,
-    utils: Timeformat_utils
-  };
+  return LswTimer;
   // @code.end: LswTimer API
 
 });

@@ -150,6 +150,17 @@
       return JSON.stringify(obj, this.replacerFactory(), 2);
     }
 
+    stringifyForTracing(obj) {
+      if(typeof obj === "object") {
+        if(obj._isVue) {
+          return "[Vue instance::" + obj.$options.name + "]";
+        } else if(obj === window) {
+          return "[Window instance]";
+        }
+      }
+      return JSON.stringify(obj, this.replacerFactory(), 2);
+    }
+
     $emit(event, args) {
       if(!(event in this.$events)) {
         return "void::event not defined";
@@ -178,7 +189,7 @@
       }
       for (let index = 0; index < elements.length; index++) {
         const element = elements[index];
-        const stringification = typeof element === "string" ? element : this.stringifyForDebugging(element);
+        const stringification = typeof element === "string" ? element : this.stringifyForTracing(element);
         message += " " + stringification;
       }
       Event_triggering: {

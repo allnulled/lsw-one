@@ -17384,6 +17384,17 @@ intervalo=2025-05-17 - 2025/12/30
       return JSON.stringify(obj, this.replacerFactory(), 2);
     }
 
+    stringifyForTracing(obj) {
+      if(typeof obj === "object") {
+        if(obj._isVue) {
+          return "[Vue instance::" + obj.$options.name + "]";
+        } else if(obj === window) {
+          return "[Window instance]";
+        }
+      }
+      return JSON.stringify(obj, this.replacerFactory(), 2);
+    }
+
     $emit(event, args) {
       if(!(event in this.$events)) {
         return "void::event not defined";
@@ -17412,7 +17423,7 @@ intervalo=2025-05-17 - 2025/12/30
       }
       for (let index = 0; index < elements.length; index++) {
         const element = elements[index];
-        const stringification = typeof element === "string" ? element : this.stringifyForDebugging(element);
+        const stringification = typeof element === "string" ? element : this.stringifyForTracing(element);
         message += " " + stringification;
       }
       Event_triggering: {
@@ -19717,8 +19728,10 @@ return Store;
       "onDatabaseLoaded",
       "onLoadComponents",
       "onComponentsLoaded",
-      // "onLoadModules",
-      // "onModulesLoaded",
+      "onLoadCordovaSupport",
+      "onCordovaSupportLoaded",
+      "onLoadModules",
+      "onModulesLoaded",
       "onInstallModules",
       "onModulesInstalled",
       "onLoadApplication",
@@ -19887,6 +19900,44 @@ return Store;
       this.$trace("onComponentsLoaded", []);
       return this.hooks.emit("app:components_loaded");
     },
+    onLoadCordovaSupport: async function() {
+      this.$trace("onLoadCordovaSupport", []);
+      Try_to_download_cordova: {
+        await importer.scriptSrc("cordova.js").then(() => {
+          console.log("[*] Cordova support loaded");
+          this.hooks.register("app:application_mounted", "cordova_loaded:org.allnulled.lsw.mobile", function() {
+            try {
+              Vue.prototype.$lsw.toasts.send({
+                title: "Cordova was enabled",
+                text: "You can access Cordova APIs"
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          });
+          return true;
+        }).catch(error => {
+          console.error(error);
+          console.log("[!] Support for Cordova was dismissed");
+          this.hooks.register("app:application_mounted", "cordova_loaded:org.allnulled.lsw.mobile", function() {
+            try {
+              Vue.prototype.$lsw.toasts.send({
+                title: "Cordova was not enabled",
+                text: "Cordova APIs are not accessible"
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          });
+          return false;
+        });
+      }
+      return await this.hooks.emit("app:load_cordova_support");
+    },
+    onCordovaSupportLoaded: async function() {
+      this.$trace("onCordovaSupportLoaded", []);
+      return await this.hooks.emit("app:cordova_support_loaded");
+    },
     onLoadApplication: function () {
       this.$trace("onLoadApplication", []);
       return this.hooks.emit("app:load_application");
@@ -19928,7 +19979,12 @@ return Store;
       return Vue.prototype.$lsw.importer.scriptAsync(`modules/${moduleId}/${subpath}`);
     },
 
-    start: function () {
+    onApplicationMounted: function() {
+      this.$trace("onApplicationMounted", []);
+      return this.hooks.emit("app:application_mounted");
+    },
+
+    start: function () { 
       this.$trace("start", []);
       return this.run(this.steps);
     },
@@ -27773,8 +27829,16 @@ Vue.component("LswToasts", {
       this.messageCounter = 0;
     }
 
+    HOOKED_METHODS = [
+      "log",
+      "info",
+      "warn",
+      "error",
+      "debug",
+    ];
+
     hookConsole() {
-      Object.keys(console).forEach(method => {
+      this.HOOKED_METHODS.forEach(method => {
         if (typeof console[method] === 'function') {
           console[method] = (...args) => {
             this.writeToHtml(method, args);
@@ -27846,7 +27910,7 @@ Vue.component("LswToasts", {
     }
 
     restoreConsole() {
-      Object.keys(this.originalConsole).forEach(method => {
+      this.HOOKED_METHODS.forEach(method => {
         console[method] = this.originalConsole[method];
       });
     }
@@ -27863,14 +27927,22 @@ Vue.component("LswConsoleHooker", {
   template: `<div class="console-hooker" :class="{hide:!is_shown}">
     <div class="console_viewer">
         <div class="console_box">
-            <div class="console_box_title" style="display: flex; flex-direction: row; width: 100%; align-items: center;">
-                <span style="flex: 100;">console hooker</span>
+            <div class="console_box_title">
+                <span style="flex: 100;"></span>
                 <span style="flex: 1;">
-                    <button v-on:click="hide">X</button>
+                    <button class="supermini" v-on:click="hide">❌</button>
                 </span>
             </div>
             <div class="console_box_output_container">
                 <div class="console_box_output" id="lsw-console-hooker-output"></div>
+            </div>
+            <div class="flex_row">
+                <div class="flex_100 pad_right_1">
+                    <input class="supermini width_100" type="text" ref="commandInput" v-on:keypress.enter="executeInput" />
+                </div>
+                <div class="flex_1">
+                    <button class="supermini" v-on:click="executeInput">🔦</button>
+                </div>
             </div>
         </div>
     </div>
@@ -27888,16 +27960,43 @@ Vue.component("LswConsoleHooker", {
     },
     hide() {
       this.is_shown = false;
+    },
+    executeInput() {
+      const input = this.$refs.commandInput.value;
+      try {
+        const result = this.$window.eval(input);
+        console.log(result);
+      } catch (error) {
+        console.error({
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        });
+      }
+      this.$refs.commandInput.value = "";
     }
   },
   mounted() {
     this.instance = new ConsoleHooker("lsw-console-hooker-output");
-    if(process.env.NODE_ENV !== "production") {
+    Desactivar_consola: {
+      // this.instance.restoreConsole();
+      // this.hide();
     }
-    this.instance.restoreConsole();
-    this.hide();
-    this.$vue.prototype.$consoleHooker = this;
-    this.$window.LswConsoleHooker = this;
+    Activar_consola: {
+      // this.instance.hookConsole();
+      this.show();
+    }
+    Hacerlo_condicionalmente: {
+      if(process.env.NODE_ENV !== "production") {
+        
+      } else {
+
+      }
+    }
+    Exportar_consola: {
+      this.$vue.prototype.$consoleHooker = this;
+      this.$window.LswConsoleHooker = this;
+    }
   },
   unmounted() {
 
@@ -35997,6 +36096,19 @@ Vue.component("LswConfigurationsPage", {
             </div>
         </div>
         <hr />
+        <h4>Debugger</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1" v-if="isDebuggerLoaded">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="toggleTracer">
+                        <span v-if="\$lsw.logger.\$options.active">Activado</span>
+                        <span v-else="\$lsw.logger.\$options.active">Desactivado</span>
+                    </button>
+                </div>
+                <div class="flex_100 explanation_text">permite activar/desactivar las trazas de la aplicación.</div>
+            </div>
+        </div>
+        <hr />
         <h4>Fondos de pantalla</h4>
         <div class="margin_top_1">
             <div class="flex_row centered margin_top_1">
@@ -36056,6 +36168,7 @@ Vue.component("LswConfigurationsPage", {
   data() {
     this.$trace("lsw-configurations-page.data", arguments);
     return {
+      isDebuggerLoaded: true,
       selectedSection: "preferencias", // puede ser: datos, preferencias
       currentBackup: false,
     };
@@ -36340,6 +36453,19 @@ Vue.component("LswConfigurationsPage", {
         text: "La copia de seguridad fue importada al estado actual con éxito."
       });
     },
+    toggleTracer() {
+      this.$trace("lsw-configurations-page.methods.toggleTracer");
+      this.isDebuggerLoaded = false;
+      const isActive = this.$lsw.logger.$options.active;
+      if(isActive) {
+        this.$lsw.logger.deactivate();
+      } else {
+        this.$lsw.logger.activate();
+      }
+      setTimeout(() => {
+        this.isDebuggerLoaded = true;
+      }, 1);
+    },
     startConfigureBoot() {
       this.$trace("lsw-configurations-page.methods.startConfigureBoot");
       this.$dialogs.open({
@@ -36516,7 +36642,7 @@ rel correr
         await this.$lsw.fs.ensureFile("/kernel/boot.js", LswConstants.global.pick("boot.js"));
       },
     },
-    mounted() {
+    async mounted() {
       console.log("[*] Application mounted.");
       this.isMounted = true;
       if (isFirstTime) {
@@ -36527,7 +36653,8 @@ rel correr
           $lsw: this.$lsw,
           appComponent: this,
         }));
-        this.initializeFilesystemForLsw();
+        await this.initializeFilesystemForLsw();
+        await LswLifecycle.onApplicationMounted();
       }
     }
   });

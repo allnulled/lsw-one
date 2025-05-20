@@ -8,7 +8,7 @@
                     v-bind:key="'app_acciones_anteriores'">
                     <h4 class="pad_bottom_1">
                         <div class="flex_row centered">
-                            <div class="flex_100">⬅️ 🕓 Antes de las {{ getHoraActual() }}:</div>
+                            <div class="flex_100">⬅️ 🕓 Antes de las {{ horaActual }}:</div>
                             <div class="flex_1">
                                 <button class="supermini"
                                     v-on:click="() => selectApplication('calendario')">📅</button>
@@ -29,7 +29,7 @@
                     v-bind:key="'app_acciones_posteriores'">
                     <h4 class="pad_bottom_1">
                         <div class="flex_row centered">
-                            <div class="flex_100">🕓 ➡️ Después de las {{ getHoraActual() }}:</div>
+                            <div class="flex_100">🕓 ➡️ Después de las {{ horaActual }}:</div>
                             <div class="flex_1">
                                 <button class="supermini"
                                     v-on:click="() => selectApplication('calendario')">📅</button>

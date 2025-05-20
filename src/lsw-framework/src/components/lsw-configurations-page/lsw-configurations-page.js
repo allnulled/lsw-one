@@ -8,6 +8,7 @@ Vue.component("LswConfigurationsPage", {
   data() {
     this.$trace("lsw-configurations-page.data", arguments);
     return {
+      isDebuggerLoaded: true,
       selectedSection: "preferencias", // puede ser: datos, preferencias
       currentBackup: false,
     };
@@ -291,6 +292,19 @@ Vue.component("LswConfigurationsPage", {
         title: "Backup importado",
         text: "La copia de seguridad fue importada al estado actual con éxito."
       });
+    },
+    toggleTracer() {
+      this.$trace("lsw-configurations-page.methods.toggleTracer");
+      this.isDebuggerLoaded = false;
+      const isActive = this.$lsw.logger.$options.active;
+      if(isActive) {
+        this.$lsw.logger.deactivate();
+      } else {
+        this.$lsw.logger.activate();
+      }
+      setTimeout(() => {
+        this.isDebuggerLoaded = true;
+      }, 1);
     },
     startConfigureBoot() {
       this.$trace("lsw-configurations-page.methods.startConfigureBoot");

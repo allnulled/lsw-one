@@ -97,6 +97,19 @@
             </div>
         </div>
         <hr />
+        <h4>Debugger</h4>
+        <div class="margin_top_1">
+            <div class="flex_row centered margin_top_1" v-if="isDebuggerLoaded">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="toggleTracer">
+                        <span v-if="$lsw.logger.$options.active">Activado</span>
+                        <span v-else="$lsw.logger.$options.active">Desactivado</span>
+                    </button>
+                </div>
+                <div class="flex_100 explanation_text">permite activar/desactivar las trazas de la aplicación.</div>
+            </div>
+        </div>
+        <hr />
         <h4>Fondos de pantalla</h4>
         <div class="margin_top_1">
             <div class="flex_row centered margin_top_1">

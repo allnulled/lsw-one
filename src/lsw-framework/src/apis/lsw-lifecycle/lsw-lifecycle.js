@@ -26,8 +26,10 @@
       "onDatabaseLoaded",
       "onLoadComponents",
       "onComponentsLoaded",
-      // "onLoadModules",
-      // "onModulesLoaded",
+      "onLoadCordovaSupport",
+      "onCordovaSupportLoaded",
+      "onLoadModules",
+      "onModulesLoaded",
       "onInstallModules",
       "onModulesInstalled",
       "onLoadApplication",
@@ -196,6 +198,44 @@
       this.$trace("onComponentsLoaded", []);
       return this.hooks.emit("app:components_loaded");
     },
+    onLoadCordovaSupport: async function() {
+      this.$trace("onLoadCordovaSupport", []);
+      Try_to_download_cordova: {
+        await importer.scriptSrc("cordova.js").then(() => {
+          console.log("[*] Cordova support loaded");
+          this.hooks.register("app:application_mounted", "cordova_loaded:org.allnulled.lsw.mobile", function() {
+            try {
+              Vue.prototype.$lsw.toasts.send({
+                title: "Cordova was enabled",
+                text: "You can access Cordova APIs"
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          });
+          return true;
+        }).catch(error => {
+          console.error(error);
+          console.log("[!] Support for Cordova was dismissed");
+          this.hooks.register("app:application_mounted", "cordova_loaded:org.allnulled.lsw.mobile", function() {
+            try {
+              Vue.prototype.$lsw.toasts.send({
+                title: "Cordova was not enabled",
+                text: "Cordova APIs are not accessible"
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          });
+          return false;
+        });
+      }
+      return await this.hooks.emit("app:load_cordova_support");
+    },
+    onCordovaSupportLoaded: async function() {
+      this.$trace("onCordovaSupportLoaded", []);
+      return await this.hooks.emit("app:cordova_support_loaded");
+    },
     onLoadApplication: function () {
       this.$trace("onLoadApplication", []);
       return this.hooks.emit("app:load_application");
@@ -237,7 +277,12 @@
       return Vue.prototype.$lsw.importer.scriptAsync(`modules/${moduleId}/${subpath}`);
     },
 
-    start: function () {
+    onApplicationMounted: function() {
+      this.$trace("onApplicationMounted", []);
+      return this.hooks.emit("app:application_mounted");
+    },
+
+    start: function () { 
       this.$trace("start", []);
       return this.run(this.steps);
     },

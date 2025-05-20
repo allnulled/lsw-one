@@ -136,7 +136,7 @@ rel correr
         await this.$lsw.fs.ensureFile("/kernel/boot.js", LswConstants.global.pick("boot.js"));
       },
     },
-    mounted() {
+    async mounted() {
       console.log("[*] Application mounted.");
       this.isMounted = true;
       if (isFirstTime) {
@@ -147,7 +147,8 @@ rel correr
           $lsw: this.$lsw,
           appComponent: this,
         }));
-        this.initializeFilesystemForLsw();
+        await this.initializeFilesystemForLsw();
+        await LswLifecycle.onApplicationMounted();
       }
     }
   });

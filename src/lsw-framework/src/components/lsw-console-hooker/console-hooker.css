@@ -5,7 +5,7 @@
     margin: 0px;
     padding: 0px;
     z-index: 1000;
-    position: absolute;
+    position: fixed;
     top: auto;
     right: 30px;
     left: 30px;
@@ -13,10 +13,11 @@
     padding: 4px;
 }
 .console-hooker .console_box {
+    position: relative;
     max-height: 120px;
     font-size: 12px;
     color: black;
-    background-color: rgba(255,255,255,0.6);
+    background: #000000db;
     border: 3px double #030;
     border-radius: 2pt;
     text-shadow: 0 0 1px black;
@@ -24,9 +25,16 @@
     flex-direction: column;
 }
 .console_box_title {
+    display: inline-block;
+    width: auto;
     padding: 4px;
-    background-color: rgba(0,0,0,0.6);
+    background-color: transparent;
     color: white;
+    position: absolute;
+    top: 0px;
+    left: auto;
+    right: 0px;
+    bottom: auto;
 }
 .console_box_output_container {
     overflow: scroll;
@@ -34,4 +42,8 @@
 .console_box_output {
     padding: 4px;
     flex: 100;
+    color: #62992a;
+    font-size: 10px;
+    white-space: pre;
+    width: 100%;
 }

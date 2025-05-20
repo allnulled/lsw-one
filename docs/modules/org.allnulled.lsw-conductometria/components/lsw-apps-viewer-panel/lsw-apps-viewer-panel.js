@@ -11,6 +11,7 @@ Vue.component("LswAppsViewerPanel", {
       selectedApplication: 'despues', // 'antes', 'despues'
       accionesAntes: false,
       accionesDespues: false,
+      horaActual: LswTimer.utils.fromDateToHour(new Date()),
     };
   },
   methods: {
@@ -132,9 +133,9 @@ Vue.component("LswAppsViewerPanel", {
       }
       await this.$lsw.database.insert("Articulo", response);
     },
-    getHoraActual() {
-      this.$trace("lsw-windows-main-tab.methods.getHoraActual", arguments);
-      return LswTimer.utils.fromDateToHour(new Date());
+    updateHoraActual() {
+      this.$trace("lsw-windows-main-tab.methods.updateHoraActual", arguments);
+      this.horaActual = LswTimer.utils.fromDateToHour(new Date());
     }
   },
   watch: {},

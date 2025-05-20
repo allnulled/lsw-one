@@ -142,6 +142,10 @@ input[type="text"] {
     border: 1px solid #CCC;
 }
 
+input[type="text"].supermini {
+    min-height: 24px;
+}
+
 select {
     min-height: 40px;
     min-height: var(--button_height);

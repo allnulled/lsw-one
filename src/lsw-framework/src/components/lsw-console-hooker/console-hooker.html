@@ -1,14 +1,22 @@
 <div class="console-hooker" :class="{hide:!is_shown}">
     <div class="console_viewer">
         <div class="console_box">
-            <div class="console_box_title" style="display: flex; flex-direction: row; width: 100%; align-items: center;">
-                <span style="flex: 100;">console hooker</span>
+            <div class="console_box_title">
+                <span style="flex: 100;"></span>
                 <span style="flex: 1;">
-                    <button v-on:click="hide">X</button>
+                    <button class="supermini" v-on:click="hide">❌</button>
                 </span>
             </div>
             <div class="console_box_output_container">
                 <div class="console_box_output" id="lsw-console-hooker-output"></div>
+            </div>
+            <div class="flex_row">
+                <div class="flex_100 pad_right_1">
+                    <input class="supermini width_100" type="text" ref="commandInput" v-on:keypress.enter="executeInput" />
+                </div>
+                <div class="flex_1">
+                    <button class="supermini" v-on:click="executeInput">🔦</button>
+                </div>
             </div>
         </div>
     </div>

@@ -20,8 +20,16 @@
       this.messageCounter = 0;
     }
 
+    HOOKED_METHODS = [
+      "log",
+      "info",
+      "warn",
+      "error",
+      "debug",
+    ];
+
     hookConsole() {
-      Object.keys(console).forEach(method => {
+      this.HOOKED_METHODS.forEach(method => {
         if (typeof console[method] === 'function') {
           console[method] = (...args) => {
             this.writeToHtml(method, args);
@@ -93,7 +101,7 @@
     }
 
     restoreConsole() {
-      Object.keys(this.originalConsole).forEach(method => {
+      this.HOOKED_METHODS.forEach(method => {
         console[method] = this.originalConsole[method];
       });
     }

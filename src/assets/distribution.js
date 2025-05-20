@@ -12031,26 +12031,25 @@ app.clock_message=💎
         
 `.trim());
 
+/*
 LswConstants.global.define("/kernel/settings/goals/factory/fisico-3-veces.js", `
 
-return LswGoals.ensureActionHasMinimumTimesToday("actividad física", 3, {
-  id: "actividad física",
-  urgencia: 0,
-  completado: "Actividad física 3 veces al día completada",
-  fallido: "Hay que hacer 3 veces de actividad física al día",
-});
+return LswGoals.minTimesToday("actividad física", 3);
 
 `.trim());
 
 LswConstants.global.define("/kernel/settings/goals/factory/fisico-4h.js", `
 
-  
-return LswGoals.ensureActionHasMinimumDurationToday("actividad física", "4h", {
-  id: "actividad física",
-  urgencia: 0,
-  completado: "Actividad física 4 horas mínimo veces al día completada",
-  fallido: "Hay que hacer 4 horas mínimo de actividad física al día",
-});
+return LswGoals.minDurationToday("actividad física", "4h");
+
+`.trim());
+//*/
+
+LswConstants.global.define("/kernel/settings/goals.env", `
+
+actividad física | > 3 | !1
+actividad física | > 4h | !2
+programar | > 6h | !3
 
 `.trim());
 
@@ -20611,6 +20610,14 @@ return Store;
     }
     return Object.assign(out, overridings);
   };
+
+  LswUtils.dehydrateFunction = function(f) {
+    return f.toString();
+  };
+
+  LswUtils.hydrateFunction = function(fSource) {
+    return new Function(fSource);
+  };
   // @code.end: LswUtils
 
   return LswUtils;
@@ -21366,8 +21373,31 @@ return Store;
 
     async scan_directory(...args) {
       this.trace("scan_directory", [...args]);
-      const filesAsMap = await this.read_directory(...args);
-      return Object.keys(filesAsMap);
+      try {
+        const filesAsMap = await this.read_directory(...args);
+        return Object.keys(filesAsMap);
+      } catch (error) {
+        console.log(error);
+        return {};
+      }
+    }
+
+    async read_file_or_return(filepath, defaultValue = undefined) {
+      this.trace("read_file_or_return", [filepath, contents]);
+      try {
+        return await this.read_file(filepath);
+      } catch (error) {
+        return defaultValue;
+      }
+    }
+
+    async scan_directory_or_return(filepath, defaultValue = undefined) {
+      this.trace("scan_directory_or_return", [filepath, contents]);
+      try {
+        return await this.scan_directory(filepath);
+      } catch (error) {
+        return defaultValue;
+      }
     }
 
     async ensureFile(filepath, contents) {
@@ -21472,6 +21502,35 @@ return Store;
         console.log("[!] Error evaluating file", error);
         return output;
       });
+    }
+
+    
+    
+    
+    evaluateAsDotenvListFileOrReturn(filepath) {
+      this.trace("evaluateAsDotenvListFileOrReturn", [filepath]);
+      return this.evaluateAsDotenvListFile(filepath).catch(error => {
+        console.log("[!] Error evaluating file (as .env list):", error);
+        return output;
+      });
+    }
+
+    async evaluateAsDotenvListFile(filepath) {
+      this.trace("evaluateAsDotenvListFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      return this.evaluateAsDotenvListText(fileContents);
+    }
+
+    evaluateAsDotenvListText(fileContents) {
+      this.trace("evaluateAsDotenvListText", [fileContents]);
+      const result = fileContents.split(/\n/).filter(line => line.trim() !== "").reduce((output, line) => {
+        const cleanLine = line.trim();
+        if(cleanLine !== "") {
+          output.push(cleanLine);
+        }
+        return output;
+      }, []);
+      return result;
     }
 
     evaluateAsDotenvText(fileContents) {
@@ -30804,184 +30863,226 @@ Vue.component("LswClockwatcher", {
 
   // @code.start: LswGoals class | @section: Lsw Goals API » LswGoals class
 
-  const GoalFactory = class {
+  const LocalUtilities = class {
 
-    static validate(input) {
-      Vue.prototype.$trace("Lsw.GoalFactory.getTodayActions");
-    }
-
-  }
+  };
 
   const LswGoals = class {
 
-    static GoalFactory = GoalFactory;
-
-    static async loadGoals() {
-      Vue.prototype.$trace("LswGoals.loadGoals");
-      const output = [];
-      const errors = [];
-      const factoryIds = await Vue.prototype.$lsw.fs.scan_directory("/kernel/settings/goals/factory");
-      for (let indexFactory = 0; indexFactory < factoryIds.length; indexFactory++) {
-        try {
-          const factoryFilename = factoryIds[indexFactory];
-          const factoryDefinition = await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile(`/kernel/settings/goals/factory/${factoryFilename}`);
-          GoalFactory.validate(factoryDefinition);
-          output.push(factoryDefinition);
-        } catch (error) {
-          errors.push(error);
-        }
-      }
-      if (errors.length) {
-        throw errors;
-      }
-      return output;
-    }
-
-    static async getTodayActions() {
-      Vue.prototype.$trace("LswGoals.getTodayActions");
-      const errores = LswErrorHandler.createGroup();
-      const allAcciones = await Vue.prototype.$lsw.database.selectMany("Accion");
-      const todayAcciones = [];
-      const todayDate = new Date();
-      Iterando_acciones:
-      for (let indexAccion = 0; indexAccion < allAcciones.length; indexAccion++) {
-        const accion = allAcciones[indexAccion];
-        if (!accion.tiene_inicio) {
-          continue Iterando_acciones;
-        }
-        try {
-          const accionDate = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
-          const sameDate = LswTimer.utils.areSameDayDates(todayDate, accionDate);
-          if (sameDate) {
-            todayAcciones.push(accion);
-          }
-        } catch (error) {
-          errores.push(error);
-        }
-      }
-      errores.selfThrowIfNeeded();
-      return todayAcciones;
-    }
-
-    static async filterActionsByConcept(actions, conceptId) {
-      Vue.prototype.$trace("LswGoals.filterActionsByConcept");
-      const matchedActions = [];
-      for (let indexAction = 0; indexAction < actions.length; indexAction++) {
-        const action = actions[indexAction];
-        const isMatch = action.en_concepto === conceptId;
-        if (isMatch) {
-          matchedActions.push(action);
-        }
-      }
-      return matchedActions;
-    }
-
-    static async filterActionsByState(actions, stateId) {
-      Vue.prototype.$trace("LswGoals.filterActionsByState");
-      const matchedActions = [];
-      for (let indexAction = 0; indexAction < actions.length; indexAction++) {
-        const action = actions[indexAction];
-        const isMatch = action.tiene_estado === stateId;
-        if (isMatch) {
-          matchedActions.push(action);
-        }
-      }
-      return matchedActions;
-    }
-
-    static async ensureActionHasLimitedTimesToday(actionId, times, minOrMax = "min", options) {
-      Vue.prototype.$trace("LswGoals.ensureActionHasLimitedTimesToday");
+    static async getGoalsReport() {
+      Vue.prototype.$trace("lsw-goals-viewer.methods.getGoalsReport");
       try {
-        const mensajeExplicativo = `${actionId} ${minOrMax === 'min' ? 'mínimo' : 'máximo'} ${times} veces hoy`;
-        const {
-          completado: completedMessage = `Sí está: ${mensajeExplicativo}`,
-          fallido: notYetMessage = `Aún no está: ${mensajeExplicativo}`,
-        } = options;
-        const salida = input => Object.assign({
-          id: mensajeExplicativo,
-          urgencia: options.urgencia || 0,
-        }, input);
-        const todayActions = await LswGoals.getTodayActions();
-        const matchedActions = await LswGoals.filterActionsByConcept(todayActions, actionId);
-        const completedActions = await LswGoals.filterActionsByState(matchedActions, "completada");
-        const isValid = (minOrMax === "min") ? completedActions.length < times : completedActions.length > times;
-        if (isValid) {
-          return salida({
-            completadas: completedActions.length,
-            mensaje: notYetMessage,
-            porcentaje: Math.round((completedActions.length / times) * 100),
+        const parsedLines = await Vue.prototype.$lsw.fs.evaluateAsDotenvListFileOrReturn("/kernel/settings/goals.env", []);
+        // 1. Get original goals:
+        const originalGoals = parsedLines.map(line => {
+          const [concept, condition = "> 0", urgency = "0"] = line.split(/\|/g).map(item => {
+            return item.trim();
           });
-        } else {
-          return salida({
-            mensaje: completedMessage,
-            porcentaje: Math.round((completedActions.length / times) * 100),
-          });
+          return {
+            originalLine: line,
+            originalConcept: concept,
+            originalCondition: condition,
+            originalUrgency: urgency,
+          };
+        });
+        // 2. Get today's completed actions:
+        const todayCompletedActions = await this.getTodayActions(false, "completada");
+        // 3. Expand goals:
+        for (let indexGoal = 0; indexGoal < originalGoals.length; indexGoal++) {
+          const originalGoal = originalGoals[indexGoal];
+          const {
+            originalConcept: concept,
+            originalCondition: condition,
+            originalUrgency: urgency
+          } = originalGoal;
+          const formattedConcept = this.formatConcept(concept);
+          const formattedCondition = this.formatCondition(condition, formattedConcept);
+          const formattedUrgency = this.formatUrgency(urgency);
+          originalGoals[indexGoal].concept = formattedConcept;
+          Object.assign(originalGoals[indexGoal], formattedCondition(todayCompletedActions));
+          originalGoals[indexGoal].urgency = formattedUrgency;
         }
+        const sortedGoals = [].concat(originalGoals).sort((g1, g2) => {
+          const u1 = g1.urgency || 0;
+          const u2 = g2.urgency || 0;
+          const c1 = g1.filledAsint || 0;
+          const c2 = g2.filledAsint || 0;
+          const g1over = c1 > 100;
+          const g2over = c2 > 100;
+          if(g2over) return -1;
+          if(g1over) return 1;
+          if(u1 > u2) return -1;
+          if(u1 < u2) return 1;
+          if(c1 < c2) return -1;
+          if(c1 > c2) return 1;
+          return 0;
+        });
+        return {
+          goals: sortedGoals,
+          actions: todayCompletedActions
+        };
       } catch (error) {
         console.error(error);
+        return error;
       }
     }
 
-    static ensureActionHasMinimumTimesToday(actionId, minimumTimes, options) {
-      return this.ensureActionHasLimitedTimesToday(actionId, minimumTimes, "min", options);
+    static formatConcept(txt) {
+      return txt;
     }
-
-    static ensureActionHasMaximumTimesToday(actionId, maximumTimes, options) {
-      return this.ensureActionHasLimitedTimesToday(actionId, maximumTimes, "max", options);
-    }
-
-    static async ensureActionHasLimitedDurationToday(actionId, durationDatestring, minOrMax = "min", options = {}) {
-      Vue.prototype.$trace("LswGoals.ensureActionHasLimitedDurationToday");
-      try {
-        const mensajeExplicativo = `${actionId} ${minOrMax === 'min' ? 'mínimo' : 'máximo'} ${durationDatestring} hoy`;
-        const minimumDurationMs = LswTimer.utils.fromDurationstringToMilliseconds(durationDatestring);
-        const {
-          completado: completedMessage = `Sí está: ${mensajeExplicativo}`,
-          fallido: notYetMessage = `Aún no está: ${mensajeExplicativo}`,
-        } = options;
-        const salida = input => Object.assign({
-          id: mensajeExplicativo,
-          urgencia: options.urgencia || 0,
-        }, input);
-        const todayActions = await LswGoals.getTodayActions();
-        const matchedActions = await LswGoals.filterActionsByConcept(todayActions, actionId);
-        const completedActions = await LswGoals.filterActionsByState(matchedActions, "completada");
-        let currentDurationMs = 0;
-        for (let indexActions = 0; indexActions < completedActions.length; indexActions++) {
-          const action = completedActions[indexActions];
-          try {
-            const actionDurationMs = LswTimer.utils.fromDurationstringToMilliseconds(action.tiene_duracion);
-            currentDurationMs += actionDurationMs;
-          } catch (error) {
-            // @BADLUCK.
+    static formatCondition(originalTxt, concept) {
+      const isMin = originalTxt.startsWith(">");
+      const op = originalTxt.match(/(\<|\>)(=)?/g);
+      const txt = originalTxt.replace(/(\<|\>)(=)?/g, "")
+      const isTimes = this.isConditionByTimes(txt);
+      const isDuration = this.isConditionByDuration(txt);
+      if ((!isTimes) && (!isDuration)) {
+        throw new Error(`Condition «${txt}» must be a number or a durationstring on «LswGoals.formatCondition»`);
+      }
+      const referenceValue = isTimes ? parseInt(txt) : LswTimer.utils.fromDurationstringToMilliseconds(txt);
+      return completedActions => {
+        const conclusion = {};
+        conclusion.type = isTimes ? "by times" : isDuration ? "by duration" : undefined;
+        conclusion.expectedAs = isMin ? "minimum" : "maximum";
+        conclusion.expectedAsAbbr = isMin ? "min" : "max";
+        const matchedActions = [];
+        Collect_matched_actions:
+        for (let index = 0; index < completedActions.length; index++) {
+          const acc = completedActions[index];
+          const sameConcept = acc.en_concepto === concept;
+          const isCompleted = acc.tiene_estado === "completada"; // Redundante, pero bueno.
+          if (sameConcept && isCompleted) {
+            matchedActions.push(acc);
           }
         }
-        const currentTotal = LswTimer.utils.fromMillisecondsToDurationstring(currentDurationMs);
-        const isValid = (minOrMax === "min") ? (currentDurationMs < minimumDurationMs) : (currentDurationMs > minimumDurationMs);
-        if (isValid) {
-          return salida({
-            completadas: currentTotal,
-            mensaje: notYetMessage,
-            porcentaje: Math.round((currentDurationMs / minimumDurationMs) * 100),
-          });
-        } else {
-          return salida({
-            completadas: currentTotal,
-            mensaje: completedMessage,
-            porcentaje: Math.round((currentDurationMs / minimumDurationMs) * 100),
-          });
+        Expand_data: {
+          conclusion.currentTimes = matchedActions.length;
+          conclusion.currentDurationInms = matchedActions.reduce((total, acc) => {
+            try {
+              total += LswTimer.utils.fromDurationstringToMilliseconds(acc.tiene_duracion || "0min");
+            } catch (error) {
+              console.log(error);
+            }
+            return total;
+          }, 0);
+          conclusion.currentDuration = LswTimer.utils.fromMillisecondsToDurationstring(conclusion.currentDurationInms) || "0min";
         }
+        Apply_proper_filters: {
+          if (isTimes) {
+            const expectedTimes = referenceValue;
+            conclusion.expectedTimes = expectedTimes;
+            const evaluableSource = `${conclusion.currentTimes} ${op} ${expectedTimes}`;
+            console.log("[*] Evaluating JavaScript for condition: ", evaluableSource);
+            conclusion.filledAsint = Math.round(100 * (conclusion.currentTimes / conclusion.expectedTimes));
+            conclusion.filled = conclusion.filledAsint + "%";
+            conclusion.missingAsint = 100 - conclusion.filledAsint;
+            conclusion.missing = conclusion.missingAsint + "%";
+            conclusion.solved = window.eval(evaluableSource);
+          } else if (isDuration) {
+            const expectedDuration = referenceValue;
+            conclusion.expectedDurationInms = expectedDuration;
+            conclusion.expectedDuration = LswTimer.utils.fromMillisecondsToDurationstring(expectedDuration);
+            const evaluableSource = `${conclusion.currentDurationInms} ${op} ${expectedDuration}`;
+            console.log("[*] Evaluating JavaScript for condition: ", evaluableSource);
+            conclusion.filledAsint = Math.round(100 * (conclusion.currentDurationInms / conclusion.expectedDurationInms));
+            conclusion.filled = conclusion.filledAsint + "%";
+            conclusion.missingAsint = 100 - conclusion.filledAsint;
+            conclusion.missing = conclusion.missingAsint + "%";
+            conclusion.solved = window.eval(evaluableSource);
+          }
+        }
+        this.expandColor(conclusion);
+        return conclusion;
+      };
+    }
+
+    static COLOR = {
+      SUSPENSO: "red",
+      INSUFICIENTE: "pink",
+      SUFICIENTE: "blue",
+      NOTABLE: "orange",
+      EXCELENTE: "yellow",
+      SOBRESALIENTE: "lime",
+    };
+
+    static REVERSE_COLOR = {
+      "red": "SUSPENSO",
+      "pink": "INSUFICIENTE",
+      "blue": "SUFICIENTE",
+      "orange": "NOTABLE",
+      "yellow": "EXCELENTE",
+      "lime": "SOBRESALIENTE",
+    };
+
+    static expandColor(_) {
+      const percentage = _.filledAsint;
+      const asMin = _.expectedAs === "minimum" ? true : false;
+      const assignedColor = (() => {
+        if (percentage < 20) {
+          return asMin ? this.COLOR.SUSPENSO : this.COLOR.SOBRESALIENTE;
+        }
+        else if (percentage < 40) {
+          return asMin ? this.COLOR.INSUFICIENTE : this.COLOR.EXCELENTE;
+        }
+        else if (percentage < 60) {
+          return asMin ? this.COLOR.SUFICIENTE : this.COLOR.NOTABLE;
+        }
+        else if (percentage < 80) {
+          return asMin ? this.COLOR.NOTABLE : this.COLOR.SUFICIENTE;
+        }
+        else if (percentage < 100) {
+          return asMin ? this.COLOR.EXCELENTE : this.COLOR.INSUFICIENTE;
+        }
+        else {
+          return asMin ? this.COLOR.SOBRESALIENTE : this.COLOR.SUSPENSO;
+        }
+      })();
+      Object.assign(_, {
+        color: assignedColor,
+        colorMeaning: this.REVERSE_COLOR[assignedColor],
+      });
+    }
+
+    static formatUrgency(txt) {
+      return parseFloat(txt.replace(/\!/g, "").trim());
+    }
+
+    static isConditionByTimes(txtVal) {
+      return txtVal.trim().match(/^[0-9]+(\.[0-9]+)?$/g);
+    }
+
+    static isConditionByDuration(txtVal) {
+      try {
+        return LswTimer.utils.fromDurationstringToMilliseconds(txtVal);
+        return true;
       } catch (error) {
-        console.error(error);
+        return false;
       }
     }
 
-    static ensureActionHasMinimumDurationToday(actionId, durationDatestring, options = {}) {
-      return this.ensureActionHasLimitedDurationToday(actionId, durationDatestring, "min", options);
-    }
-
-    static ensureActionHasMaximumDurationToday(actionId, durationDatestring, options = {}) {
-      return this.ensureActionHasLimitedDurationToday(actionId, durationDatestring, "max", options);
+    static getTodayActions(concept = false, state = false) {
+      Vue.prototype.$trace("lsw-goals-viewer.methods.getTodayActions");
+      const dateToday = new Date();
+      return Vue.prototype.$lsw.database.selectMany("Accion", acc => {
+        const dateInicio = LswTimer.utils.fromDatestringToDate(acc.tiene_inicio);
+        const isSameDay = LswTimer.utils.areSameDayDates(dateInicio, dateToday);
+        if (!isSameDay) {
+          return false;
+        }
+        if (concept) {
+          const isSameConcept = acc.en_concepto === concept;
+          if (!isSameConcept) {
+            return false;
+          }
+        }
+        if (state) {
+          const isSameState = acc.tiene_estado === state;
+          if (!isSameState) {
+            return false;
+          }
+        }
+        return true;
+      });
     }
 
   };
@@ -30994,41 +31095,80 @@ Vue.component("LswClockwatcher", {
 // @code.start: LswGoalsViewer API | @$section: Vue.js (v2) Components » LswGoalsViewer component
 Vue.component("LswGoalsViewer", {
   template: `<div class="lsw_goals_viewer">
-    <template v-if="isGoalsLoaded && goalsData && goalsData.length">
-        <div class="lsw_goals_panel margin_bottom_1">
-            <h4 class="">
-                <div class="flex_row centered">
-                    <div class="flex_100">🧭 - 🏁</div>
-                    <div class="flex_1 pad_right_1">
+    <div class="flex_row centered pad_bottom_1">
+        <div class="flex_100">
+            <div class="flex_row centered">
+                <div class="flex_1"></div>
+                <template v-if="isLoaded">
+                    <div class="nowrap flex_1 pad_left_1">
                         <button class="supermini"
-                            v-on:click="emitClose">
-                            ❌
-                        </button>
+                            disabled="disabled"> 🟢{{ summary.resolved }} </button>
                     </div>
-                    <div class="flex_1">
+                    <div class="nowrap flex_1 pad_left_1">
                         <button class="supermini"
-                            v-on:click="openGoalsDirectory">
-                            📂 ↗️
-                        </button>
+                            disabled="disabled"> 🔴{{ summary.failed }} </button>
                     </div>
-                </div>
-            </h4>
-            <div v-if="isGoalsLoaded">
-                <lsw-bars-graph
-                    :sample='goalsData.map(it => expandGoal(it)).sort((...args) => sortGoals(...args))'
-                    :keys="[
-                        'tiene el',
-                        // 'falta el'
-                    ]"
-                    :negative-keys="['falta el']"
-                    prop-id="id"
-                />
+                    <div class="nowrap flex_1 pad_left_1">
+                        <button class="supermini"
+                            disabled="disabled"> 🏁{{ summary.total }} </button>
+                    </div>
+                    <div class="nowrap flex_100"></div>
+                </template>
             </div>
         </div>
-    </template>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="saveMoment">📸</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="loadGoals">🛜</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="openGoalsFile">📃↗️</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="onClose">❌</button>
+        </div>
+    </div>
+    <div class="goals_list"
+        v-if="isLoaded">
+        <template v-for="goal, goalIndex in report.goals">
+            <div v-bind:key="'goal-' + goalIndex"
+                v-if="goal.filledAsint < 100"
+                class="goal_item">
+                <div class="bar_holder">
+                    <div class="bar_text">
+                        <template v-if="goal.type === 'by duration'">
+                            <b>{{ goal.concept }}:</b> +{{ goal.filled }}
+                            <span v-if="goal.missingAsint > 0"> / -{{ goal.missing }}</span>
+                            <b>| {{ goal.expectedAsAbbr }}:</b>{{ goal.expectedDuration }}
+                            <b>| curr:</b>{{ goal.currentDuration }}
+                        </template>
+                        <template v-else-if="goal.type === 'by times'">
+                            <b>{{ goal.concept }}:</b> +{{ goal.filled }} / -{{ goal.missing }}
+                            <b>| {{ goal.expectedAsAbbr }}:</b>{{ goal.expectedTimes }}
+                            <b>| curr:</b>{{ goal.currentDuration }}
+                        </template>
+                    </div>
+                    <div class="bar_filler"
+                        :style="{ width: goal.filledAsint < 100 ? goal.filled : (100 + '%'), backgroundColor: goal.color }">
+
+                    </div>
+                </div>
+                <div class="bar_separation"></div>
+            </div>
+        </template>
+    </div>
 </div>`,
   props: {
     onClose: {
+      type: [Function, Boolean],
+      default: false,
+    },
+    onRefresh: {
       type: [Function, Boolean],
       default: false,
     }
@@ -31036,52 +31176,53 @@ Vue.component("LswGoalsViewer", {
   data() {
     this.$trace("lsw-goals-viewer.data");
     return {
-      isGoalsLoaded: false,
-      goalsData: false
+      isLoaded: false,
+      report: [],
+      summary: false,
     };
   },
   methods: {
     async loadGoals() {
       this.$trace("lsw-goals-viewer.methods.loadGoals");
-      this.goalsData = await LswGoals.loadGoals();
-      this.isGoalsLoaded = true;
-    },
-    emitClose() {
-      this.$trace("lsw-goals-viewer.methods.emitClose");
-      if(typeof this.onClose === "function") {
-        this.onClose(this);
+      this.isLoaded = false;
+      this.report = await LswGoals.getGoalsReport();
+      let resolved = 0;
+      let failed = 0;
+
+      for(let index=0; index<this.report.goals.length; index++) {
+        const goal = this.report.goals[index];
+        console.log(goal);
+        if(goal.solved) {
+          resolved++;
+        } else {
+          failed++;
+        }
       }
+      this.summary = {
+        total: this.report.goals.length,
+        resolved,
+        failed,
+      };
+      this.isLoaded = true;
     },
-    openGoalsDirectory() {
-      this.$trace("lsw-goals-viewer.methods.openGoalsDirectory");
-      this.$lsw.dialogs.open({
-        title: "Directorio de objetivos",
+    openGoalsFile() {
+      this.$trace("lsw-goals-viewer.methods.openGoalsFile");
+      this.$dialogs.open({
+        title: "Editar objetivos",
         template: `
-          <lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/goals" />
+          <div>
+            <lsw-filesystem-explorer opened-by="/kernel/settings/goals.env" />
+          </div>
         `
       });
     },
-    expandGoal(goal) {
-      return Object.assign({}, goal, {
-          "tiene el": goal.porcentaje,
-          "falta el": 100-goal.porcentaje
+    saveMoment() {
+      this.$trace("lsw-goals-viewer.methods.saveMoment");
+      this.$lsw.toasts.send({
+        title: "Momento guardado!",
+        text: "La estadística del día fue almacenada en memoria"
       });
-    },
-    sortGoals(g1, g2) {
-      const u1 = g1.urgencia || 0;
-      const u2 = g2.urgencia || 0;
-      const c1 = g1["tiene el"] || 0;
-      const c2 = g2["tiene el"] || 0;
-      const g1over = c1 > 100;
-      const g2over = c2 > 100;
-      if(g2over) return -1;
-      if(g1over) return 1;
-      if(u1 > u2) return -1;
-      if(u1 < u2) return 1;
-      if(c1 < c2) return -1;
-      if(c1 > c2) return 1;
-      return 0;
-    },
+    }
   },
   watch: {},
   mounted() {
@@ -31659,8 +31800,12 @@ Vue.component("LswAgendaAccionesViewer", {
   name: "LswAgendaAccionesViewer",
   template: `<div class="lsw_agenda_acciones_viewer">
 
-    <template v-if="(!isLoading && isShowingGoals && sorterStrategy === 'despues')">
-        <lsw-goals-viewer ref="goalsViewer" :on-close="() => {isShowingGoals = false;}" />
+    <template class="" v-if="sorterStrategy === 'despues'">
+        <template class="" v-if="!isLoading">
+            <template class="" v-if="isShowingGoals">
+                <lsw-goals-viewer ref="goalsViewer" :on-close="() => {isShowingGoals = false;}" />
+            </template>
+        </template>
     </template>
 
     <div class="tasks_viewer">
@@ -31935,7 +32080,9 @@ Vue.component("LswAgendaAccionesViewer", {
         } else if (this.sorterStrategy === "despues") {
           this.selectedDateTasks = selectedDateTasks;
           const momentoActual = new Date();
-          momentoActual.setHours(0);
+          Mostramos_las_tareas_de_la_hora_actual_en_adelante: {
+            momentoActual.setMinutes(0);
+          }
           this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
             const dateInicio = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
             try {
@@ -35493,9 +35640,9 @@ Vue.component("LswBarsGraphBar", {
 // @code.start: LswBarsGraph API | @$section: Vue.js (v2) Components » LswBarsGraph component
 Vue.component("LswBarsGraph", {
   template: `<div class="lsw_bars_graph">
-    <h4 class="" v-if="typeof currentPropertyView !== 'undefined'">
+    <div class="titulo_de_item" v-if="typeof currentPropertyView !== 'undefined'">
         {{ "Según «" + currentSample.numerables[currentPropertyView] + "»:" }}
-    </h4>
+    </div>
     <template v-if="typeof currentPropertyView === 'undefined'">
         <div class=""
             v-for="row, rowIndex in currentSample.output"
@@ -35552,7 +35699,7 @@ Vue.component("LswBarsGraph", {
     propOptions: {
       type: String,
       default: () => "$options",
-    }
+    },
   },
   data() {
     this.$trace("lsw-bars-graph.data");
@@ -35563,10 +35710,17 @@ Vue.component("LswBarsGraph", {
     };
   },
   methods: {
-    selectPropertyView(propId) {
+    selectPropertyView(propIndex) {
       this.$trace("lsw-bars-graph.methods.selectPropertyView");
-      const isSame = this.currentPropertyView === propId;
-      this.currentPropertyView = isSame ? undefined : propId;
+      const isSame = this.currentPropertyView === propIndex;
+      this.currentPropertyView = isSame ? undefined : propIndex;
+    },
+    selectPropertyViewByName(propId) {
+      this.$trace("lsw-bars-graph.methods.selectPropertyView");
+      const propIndex = this.keys.indexOf(propId);
+      if(propIndex === -1) return;
+      const isSame = this.currentPropertyView === propIndex;
+      this.currentPropertyView = isSame ? undefined : propIndex;
     },
     getColor(propId, value) {
       this.$trace("lsw-bars-graph.methods.getColor");
@@ -35835,7 +35989,7 @@ Vue.component("LswConfigurationsPage", {
             </div>
             <div class="flex_row centered margin_top_1">
                 <div class="flex_1">
-                    <button class="supermini margin_right_1" v-on:click="toggleCurrentBackup">Ver copia actual</button>
+                    <button class="supermini margin_right_1" v-on:click="showCurrentBackup">Ver copia actual</button>
                 </div>
                 <div class="flex_100 explanation_text">mostrará en un diálogo el JSON de la copia de seguridad actual.</div>
             </div>
@@ -35844,9 +35998,6 @@ Vue.component("LswConfigurationsPage", {
                     <button class="supermini danger_button margin_right_1" v-on:click="deleteCurrentBackup">Eliminar copia actual</button>
                 </div>
                 <div class="flex_100 explanation_text">eliminará la copia de seguridad actual.</div>
-            </div>
-            <div v-if="isShowingCurrentBackup">
-                <pre class="codeblock">{{ currentBackup }}</pre>
             </div>
         </div>
         <hr />
@@ -35933,21 +36084,74 @@ Vue.component("LswConfigurationsPage", {
     this.$trace("lsw-configurations-page.data", arguments);
     return {
       selectedSection: "preferencias", // puede ser: datos, preferencias
-      isShowingCurrentBackup: false,
       currentBackup: false,
     };
   },
   methods: {
-    async toggleCurrentBackup() {
+    async showCurrentBackup() {
       this.$trace("lsw-configurations-page.methods.toggleCurrentBackup");
-      const newState = !this.isShowingCurrentBackup;
-      if(newState === true) {
-        this.currentBackup = await this.$lsw.backuper.getLastBackup();
-      }
-      this.isShowingCurrentBackup = newState;
+      const currentBackup = await this.$lsw.backuper.getLastBackup();
+      this.$lsw.dialogs.open({
+        title: "Ver copia de seguridad actual",
+        template: `
+          <div class="pad_1">
+            <div class="flex_row pad_bottom_1">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="copySource">📃 Copiar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="downloadSource">📥 Descargar</button>
+              </div>
+            </div>
+            <pre class="codeblock">{{ source }}</pre>
+          </div>
+        `,
+        factory: {
+          data: {
+            source: JSON.stringify(currentBackup, null, 2),
+          },
+          methods: {
+            copySource() {
+              this.$trace("lsw-configurations-page.methods.copySource");
+              this.$window.navigator.clipboard.writeText(this.source);
+              this.$lsw.toasts.send({
+                title: "Texto copiado",
+                text: "El texto fue copiado al portapapeles."
+              });
+            },
+            downloadSource() {
+              this.$trace("lsw-configurations-page.methods.downloadSource");
+              LswUtils.downloadFile("lsw-backup.json", this.source);
+            },
+          }
+        }
+      });
     },
-    deleteCurrentBackup() {
+    async deleteCurrentBackup() {
       this.$trace("lsw-configurations-page.methods.deleteCurrentBackup");
+      const confirmation = await this.$lsw.dialogs.open({
+        title: "Eliminar copia de seguridad actual",
+        template: `
+          <div class="pad_top_1 pad_left_1">
+            <div>¿Seguro que quieres eliminar la copia de seguridad actual?</div>
+            <hr />
+            <div class="flex_row centered text_align_right">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini danger_button" v-on:click="accept">Eliminar igual</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {},
+      });
+      if(confirmation !== true) {
+        return;
+      }
       return this.$lsw.backuper.deleteLastBackup();
     },
     selectSection(seccion) {
@@ -36130,14 +36334,13 @@ Vue.component("LswConfigurationsPage", {
     async loadBackup() {
       this.$trace("lsw-configurations-page.methods.loadBackup");
       // @TODO: esta función no está terminada.
-      this.currentBackup = await this.$lsw.backuper.getLastBackup();
       const respuesta = await this.$lsw.dialogs.open({
         title: "Importar copia de seguridad",
         template: `
-          <div>
-            <div class="pad_2">¿Seguro que quieres importar la actual copia de seguridad?</div>
+          <div class="pad_1">
+            <div class="">¿Seguro que quieres importar la actual copia de seguridad?</div>
             <hr />
-            <div class="pad_1 text_align_right">
+            <div class="text_align_right">
               <button class="supermini danger_button" v-on:click="() => accept(true)">Sí, importar</button>
               <button class="supermini" v-on:click="close">Cancelar</button>
             </div>
@@ -36330,10 +36533,12 @@ rel correr
         await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
         await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", LswConstants.global.pick("multiplicador.js"));
         await this.$lsw.fs.ensureDirectory("/kernel/settings/table/storage");
-        await this.$lsw.fs.delete_directory("/kernel/settings/goals");
+        /*
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-3-veces.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-3-veces.js"));
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-4h.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-4h.js"));
-        await this.$lsw.fs.ensureFile("/kernel/settings/goals/list/focus.env", LswConstants.global.pick("/kernel/settings/goals/list/focus.env"));
+        //*/
+        await this.$lsw.fs.ensureFile("/kernel/settings/goals.env", LswConstants.global.pick("/kernel/settings/goals.env"));
+        
         await this.$lsw.fs.ensureDirectory("/kernel/components");
         await this.$lsw.fs.ensureFile("/kernel/boot.js", LswConstants.global.pick("boot.js"));
       },
@@ -49686,7 +49891,15 @@ LswLifecycle.hooks.register("app:application_deployed", "startJobs:org.allnulled
         id: "rutiner-basico",
         title: "¿Recuerdas el Rutiner?",
         template: `
-          <div>
+          <div class="position_relative">
+            <div class="position_absolute" style="top: 8px; right: 8px;">
+              <div class="flex_row">
+                <div class="flex_100 centered"></div>
+                <div class="flex_1 pad_left_1">
+                  <button class="supermini" v-on:click="editRutinas">📃↗️</button>
+                </div>
+              </div>
+            </div>
             <div class="pad_1">
               <div class="" v-if="rutinerText">
                 <div class="rutiner_box pad_2" v-html="rutinerText"></div>
@@ -49708,6 +49921,14 @@ LswLifecycle.hooks.register("app:application_deployed", "startJobs:org.allnulled
               async loadRutinas() {
                 const markdownText = await this.$lsw.fs.read_file("/kernel/settings/rutiner.md");
                 this.rutinerText = marked.parse(markdownText);
+              },
+              editRutinas() {
+                this.$lsw.dialogs.open({
+                  title: "Editar rutiner.md",
+                  template: `
+                    <lsw-filesystem-explorer opened-by="/kernel/settings/rutiner.md" :absolute-layout="true" />
+                  `
+                });
               }
             },
             mounted() {

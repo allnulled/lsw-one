@@ -1,7 +1,11 @@
 <div class="lsw_agenda_acciones_viewer">
 
-    <template v-if="(!isLoading && isShowingGoals && sorterStrategy === 'despues')">
-        <lsw-goals-viewer ref="goalsViewer" :on-close="() => {isShowingGoals = false;}" />
+    <template class="" v-if="sorterStrategy === 'despues'">
+        <template class="" v-if="!isLoading">
+            <template class="" v-if="isShowingGoals">
+                <lsw-goals-viewer ref="goalsViewer" :on-close="() => {isShowingGoals = false;}" />
+            </template>
+        </template>
     </template>
 
     <div class="tasks_viewer">

@@ -524,6 +524,14 @@
     }
     return Object.assign(out, overridings);
   };
+
+  LswUtils.dehydrateFunction = function(f) {
+    return f.toString();
+  };
+
+  LswUtils.hydrateFunction = function(fSource) {
+    return new Function(fSource);
+  };
   // @code.end: LswUtils
 
   return LswUtils;

@@ -9,21 +9,74 @@ Vue.component("LswConfigurationsPage", {
     this.$trace("lsw-configurations-page.data", arguments);
     return {
       selectedSection: "preferencias", // puede ser: datos, preferencias
-      isShowingCurrentBackup: false,
       currentBackup: false,
     };
   },
   methods: {
-    async toggleCurrentBackup() {
+    async showCurrentBackup() {
       this.$trace("lsw-configurations-page.methods.toggleCurrentBackup");
-      const newState = !this.isShowingCurrentBackup;
-      if(newState === true) {
-        this.currentBackup = await this.$lsw.backuper.getLastBackup();
-      }
-      this.isShowingCurrentBackup = newState;
+      const currentBackup = await this.$lsw.backuper.getLastBackup();
+      this.$lsw.dialogs.open({
+        title: "Ver copia de seguridad actual",
+        template: `
+          <div class="pad_1">
+            <div class="flex_row pad_bottom_1">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="copySource">📃 Copiar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="downloadSource">📥 Descargar</button>
+              </div>
+            </div>
+            <pre class="codeblock">{{ source }}</pre>
+          </div>
+        `,
+        factory: {
+          data: {
+            source: JSON.stringify(currentBackup, null, 2),
+          },
+          methods: {
+            copySource() {
+              this.$trace("lsw-configurations-page.methods.copySource");
+              this.$window.navigator.clipboard.writeText(this.source);
+              this.$lsw.toasts.send({
+                title: "Texto copiado",
+                text: "El texto fue copiado al portapapeles."
+              });
+            },
+            downloadSource() {
+              this.$trace("lsw-configurations-page.methods.downloadSource");
+              LswUtils.downloadFile("lsw-backup.json", this.source);
+            },
+          }
+        }
+      });
     },
-    deleteCurrentBackup() {
+    async deleteCurrentBackup() {
       this.$trace("lsw-configurations-page.methods.deleteCurrentBackup");
+      const confirmation = await this.$lsw.dialogs.open({
+        title: "Eliminar copia de seguridad actual",
+        template: `
+          <div class="pad_top_1 pad_left_1">
+            <div>¿Seguro que quieres eliminar la copia de seguridad actual?</div>
+            <hr />
+            <div class="flex_row centered text_align_right">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini danger_button" v-on:click="accept">Eliminar igual</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {},
+      });
+      if(confirmation !== true) {
+        return;
+      }
       return this.$lsw.backuper.deleteLastBackup();
     },
     selectSection(seccion) {
@@ -206,14 +259,13 @@ Vue.component("LswConfigurationsPage", {
     async loadBackup() {
       this.$trace("lsw-configurations-page.methods.loadBackup");
       // @TODO: esta función no está terminada.
-      this.currentBackup = await this.$lsw.backuper.getLastBackup();
       const respuesta = await this.$lsw.dialogs.open({
         title: "Importar copia de seguridad",
         template: `
-          <div>
-            <div class="pad_2">¿Seguro que quieres importar la actual copia de seguridad?</div>
+          <div class="pad_1">
+            <div class="">¿Seguro que quieres importar la actual copia de seguridad?</div>
             <hr />
-            <div class="pad_1 text_align_right">
+            <div class="text_align_right">
               <button class="supermini danger_button" v-on:click="() => accept(true)">Sí, importar</button>
               <button class="supermini" v-on:click="close">Cancelar</button>
             </div>

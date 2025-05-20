@@ -161,7 +161,9 @@ Vue.component("LswAgendaAccionesViewer", {
         } else if (this.sorterStrategy === "despues") {
           this.selectedDateTasks = selectedDateTasks;
           const momentoActual = new Date();
-          momentoActual.setHours(0);
+          Mostramos_las_tareas_de_la_hora_actual_en_adelante: {
+            momentoActual.setMinutes(0);
+          }
           this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
             const dateInicio = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
             try {

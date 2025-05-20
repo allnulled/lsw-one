@@ -62,7 +62,7 @@
             </div>
             <div class="flex_row centered margin_top_1">
                 <div class="flex_1">
-                    <button class="supermini margin_right_1" v-on:click="toggleCurrentBackup">Ver copia actual</button>
+                    <button class="supermini margin_right_1" v-on:click="showCurrentBackup">Ver copia actual</button>
                 </div>
                 <div class="flex_100 explanation_text">mostrará en un diálogo el JSON de la copia de seguridad actual.</div>
             </div>
@@ -71,9 +71,6 @@
                     <button class="supermini danger_button margin_right_1" v-on:click="deleteCurrentBackup">Eliminar copia actual</button>
                 </div>
                 <div class="flex_100 explanation_text">eliminará la copia de seguridad actual.</div>
-            </div>
-            <div v-if="isShowingCurrentBackup">
-                <pre class="codeblock">{{ currentBackup }}</pre>
             </div>
         </div>
         <hr />

@@ -21,7 +21,7 @@ Vue.component("LswBarsGraph", {
     propOptions: {
       type: String,
       default: () => "$options",
-    }
+    },
   },
   data() {
     this.$trace("lsw-bars-graph.data");
@@ -32,10 +32,17 @@ Vue.component("LswBarsGraph", {
     };
   },
   methods: {
-    selectPropertyView(propId) {
+    selectPropertyView(propIndex) {
       this.$trace("lsw-bars-graph.methods.selectPropertyView");
-      const isSame = this.currentPropertyView === propId;
-      this.currentPropertyView = isSame ? undefined : propId;
+      const isSame = this.currentPropertyView === propIndex;
+      this.currentPropertyView = isSame ? undefined : propIndex;
+    },
+    selectPropertyViewByName(propId) {
+      this.$trace("lsw-bars-graph.methods.selectPropertyView");
+      const propIndex = this.keys.indexOf(propId);
+      if(propIndex === -1) return;
+      const isSame = this.currentPropertyView === propIndex;
+      this.currentPropertyView = isSame ? undefined : propIndex;
     },
     getColor(propId, value) {
       this.$trace("lsw-bars-graph.methods.getColor");

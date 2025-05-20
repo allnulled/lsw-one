@@ -11,7 +11,15 @@ LswLifecycle.hooks.register("app:application_deployed", "startJobs:org.allnulled
         id: "rutiner-basico",
         title: "¿Recuerdas el Rutiner?",
         template: `
-          <div>
+          <div class="position_relative">
+            <div class="position_absolute" style="top: 8px; right: 8px;">
+              <div class="flex_row">
+                <div class="flex_100 centered"></div>
+                <div class="flex_1 pad_left_1">
+                  <button class="supermini" v-on:click="editRutinas">📃↗️</button>
+                </div>
+              </div>
+            </div>
             <div class="pad_1">
               <div class="" v-if="rutinerText">
                 <div class="rutiner_box pad_2" v-html="rutinerText"></div>
@@ -33,6 +41,14 @@ LswLifecycle.hooks.register("app:application_deployed", "startJobs:org.allnulled
               async loadRutinas() {
                 const markdownText = await this.$lsw.fs.read_file("/kernel/settings/rutiner.md");
                 this.rutinerText = marked.parse(markdownText);
+              },
+              editRutinas() {
+                this.$lsw.dialogs.open({
+                  title: "Editar rutiner.md",
+                  template: `
+                    <lsw-filesystem-explorer opened-by="/kernel/settings/rutiner.md" :absolute-layout="true" />
+                  `
+                });
               }
             },
             mounted() {

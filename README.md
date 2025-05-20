@@ -6,7 +6,8 @@ Complemento personal de software.
 
 - web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android:
-   - última versión: [https://limewire.com/d/Mrfnh#KhXWBctbGg](https://limewire.com/d/Mrfnh#KhXWBctbGg)
+   - última versión: [https://limewire.com/d/TSEvI#7XKwOqq3m5](https://limewire.com/d/TSEvI#7XKwOqq3m5)
+   - versión del 20 de mayo de 2025: [https://limewire.com/d/TSEvI#7XKwOqq3m5](https://limewire.com/d/TSEvI#7XKwOqq3m5)
    - versión del 19 de mayo de 2025: [https://limewire.com/d/Mrfnh#KhXWBctbGg](https://limewire.com/d/Mrfnh#KhXWBctbGg)
 - github: [https://github.com/allnulled/lsw-one](https://github.com/allnulled/lsw-one)
 - documentación: [https://allnulled.github.io/lsw-one/reference](https://allnulled.github.io/lsw-one/reference)
@@ -71,3 +72,12 @@ En el filesystem virtual de la app puedes configurar:
    - Sí, **tripilang** (los *.tri) no está documentado. Pero no es difícil.
 - [/kernel/wiki/libros/*.tri](#):
    - Para los índices de artículos de los libros disponibles desde la enciclopedia.
+
+### Flujos ocultos o no intuitivos
+
+- El botón con `{🎲}`:
+   - al clicar, en silencio se importan los `randomizables` que falten, como `Concepto`.
+- El boton de `Resetear` en *Configuraciones » Base de datos*:
+   - borrará la base de datos si no hay conexiones extra:
+   - pero puede que tengas que refrescar (o salir y entrar de la app) para que se pueda seguir usando la base de datos.
+      - son cosas de *IndexedDB* y yo no puedo hacer nada con esto.

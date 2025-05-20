@@ -15,8 +15,31 @@
 
     async scan_directory(...args) {
       this.trace("scan_directory", [...args]);
-      const filesAsMap = await this.read_directory(...args);
-      return Object.keys(filesAsMap);
+      try {
+        const filesAsMap = await this.read_directory(...args);
+        return Object.keys(filesAsMap);
+      } catch (error) {
+        console.log(error);
+        return {};
+      }
+    }
+
+    async read_file_or_return(filepath, defaultValue = undefined) {
+      this.trace("read_file_or_return", [filepath, contents]);
+      try {
+        return await this.read_file(filepath);
+      } catch (error) {
+        return defaultValue;
+      }
+    }
+
+    async scan_directory_or_return(filepath, defaultValue = undefined) {
+      this.trace("scan_directory_or_return", [filepath, contents]);
+      try {
+        return await this.scan_directory(filepath);
+      } catch (error) {
+        return defaultValue;
+      }
     }
 
     async ensureFile(filepath, contents) {
@@ -121,6 +144,35 @@
         console.log("[!] Error evaluating file", error);
         return output;
       });
+    }
+
+    
+    
+    
+    evaluateAsDotenvListFileOrReturn(filepath) {
+      this.trace("evaluateAsDotenvListFileOrReturn", [filepath]);
+      return this.evaluateAsDotenvListFile(filepath).catch(error => {
+        console.log("[!] Error evaluating file (as .env list):", error);
+        return output;
+      });
+    }
+
+    async evaluateAsDotenvListFile(filepath) {
+      this.trace("evaluateAsDotenvListFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      return this.evaluateAsDotenvListText(fileContents);
+    }
+
+    evaluateAsDotenvListText(fileContents) {
+      this.trace("evaluateAsDotenvListText", [fileContents]);
+      const result = fileContents.split(/\n/).filter(line => line.trim() !== "").reduce((output, line) => {
+        const cleanLine = line.trim();
+        if(cleanLine !== "") {
+          output.push(cleanLine);
+        }
+        return output;
+      }, []);
+      return result;
     }
 
     evaluateAsDotenvText(fileContents) {

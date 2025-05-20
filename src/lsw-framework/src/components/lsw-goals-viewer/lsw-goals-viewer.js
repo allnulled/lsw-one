@@ -5,57 +5,62 @@ Vue.component("LswGoalsViewer", {
     onClose: {
       type: [Function, Boolean],
       default: false,
+    },
+    onRefresh: {
+      type: [Function, Boolean],
+      default: false,
     }
   },
   data() {
     this.$trace("lsw-goals-viewer.data");
     return {
-      isGoalsLoaded: false,
-      goalsData: false
+      isLoaded: false,
+      report: [],
+      summary: false,
     };
   },
   methods: {
     async loadGoals() {
       this.$trace("lsw-goals-viewer.methods.loadGoals");
-      this.goalsData = await LswGoals.loadGoals();
-      this.isGoalsLoaded = true;
-    },
-    emitClose() {
-      this.$trace("lsw-goals-viewer.methods.emitClose");
-      if(typeof this.onClose === "function") {
-        this.onClose(this);
+      this.isLoaded = false;
+      this.report = await LswGoals.getGoalsReport();
+      let resolved = 0;
+      let failed = 0;
+
+      for(let index=0; index<this.report.goals.length; index++) {
+        const goal = this.report.goals[index];
+        console.log(goal);
+        if(goal.solved) {
+          resolved++;
+        } else {
+          failed++;
+        }
       }
+      this.summary = {
+        total: this.report.goals.length,
+        resolved,
+        failed,
+      };
+      this.isLoaded = true;
     },
-    openGoalsDirectory() {
-      this.$trace("lsw-goals-viewer.methods.openGoalsDirectory");
-      this.$lsw.dialogs.open({
-        title: "Directorio de objetivos",
+    openGoalsFile() {
+      this.$trace("lsw-goals-viewer.methods.openGoalsFile");
+      this.$dialogs.open({
+        title: "Editar objetivos",
         template: `
-          <lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/goals" />
+          <div>
+            <lsw-filesystem-explorer opened-by="/kernel/settings/goals.env" />
+          </div>
         `
       });
     },
-    expandGoal(goal) {
-      return Object.assign({}, goal, {
-          "tiene el": goal.porcentaje,
-          "falta el": 100-goal.porcentaje
+    saveMoment() {
+      this.$trace("lsw-goals-viewer.methods.saveMoment");
+      this.$lsw.toasts.send({
+        title: "Momento guardado!",
+        text: "La estadística del día fue almacenada en memoria"
       });
-    },
-    sortGoals(g1, g2) {
-      const u1 = g1.urgencia || 0;
-      const u2 = g2.urgencia || 0;
-      const c1 = g1["tiene el"] || 0;
-      const c2 = g2["tiene el"] || 0;
-      const g1over = c1 > 100;
-      const g2over = c2 > 100;
-      if(g2over) return -1;
-      if(g1over) return 1;
-      if(u1 > u2) return -1;
-      if(u1 < u2) return 1;
-      if(c1 < c2) return -1;
-      if(c1 > c2) return 1;
-      return 0;
-    },
+    }
   },
   watch: {},
   mounted() {

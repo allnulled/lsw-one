@@ -1,5 +1,16 @@
 # Último commit:
 
+# 20-05-2025 02:45am
+
+
+
+# 19-05-2025 10:18am
+
+[x] Mejorar flujo de copia de seguridad
+[x] Reconstruido goals-viewer
+[x] Poner botón para abrir rutiner.md en el diálogo del rutiner.
+
+
 # 19-05-2025 00:36am
 
 [x] Goals viewer

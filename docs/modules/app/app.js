@@ -126,10 +126,12 @@ rel correr
         await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
         await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", LswConstants.global.pick("multiplicador.js"));
         await this.$lsw.fs.ensureDirectory("/kernel/settings/table/storage");
-        await this.$lsw.fs.delete_directory("/kernel/settings/goals");
+        /*
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-3-veces.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-3-veces.js"));
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-4h.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-4h.js"));
-        await this.$lsw.fs.ensureFile("/kernel/settings/goals/list/focus.env", LswConstants.global.pick("/kernel/settings/goals/list/focus.env"));
+        //*/
+        await this.$lsw.fs.ensureFile("/kernel/settings/goals.env", LswConstants.global.pick("/kernel/settings/goals.env"));
+        
         await this.$lsw.fs.ensureDirectory("/kernel/components");
         await this.$lsw.fs.ensureFile("/kernel/boot.js", LswConstants.global.pick("boot.js"));
       },

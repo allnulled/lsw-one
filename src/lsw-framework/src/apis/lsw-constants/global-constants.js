@@ -239,26 +239,25 @@ app.clock_message=💎
         
 `.trim());
 
+/*
 LswConstants.global.define("/kernel/settings/goals/factory/fisico-3-veces.js", `
 
-return LswGoals.ensureActionHasMinimumTimesToday("actividad física", 3, {
-  id: "actividad física",
-  urgencia: 0,
-  completado: "Actividad física 3 veces al día completada",
-  fallido: "Hay que hacer 3 veces de actividad física al día",
-});
+return LswGoals.minTimesToday("actividad física", 3);
 
 `.trim());
 
 LswConstants.global.define("/kernel/settings/goals/factory/fisico-4h.js", `
 
-  
-return LswGoals.ensureActionHasMinimumDurationToday("actividad física", "4h", {
-  id: "actividad física",
-  urgencia: 0,
-  completado: "Actividad física 4 horas mínimo veces al día completada",
-  fallido: "Hay que hacer 4 horas mínimo de actividad física al día",
-});
+return LswGoals.minDurationToday("actividad física", "4h");
+
+`.trim());
+//*/
+
+LswConstants.global.define("/kernel/settings/goals.env", `
+
+actividad física | > 3 | !1
+actividad física | > 4h | !2
+programar | > 6h | !3
 
 `.trim());
 

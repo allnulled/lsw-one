@@ -4,18 +4,18 @@
             <div class="flex_row centered">
                 <div class="flex_1"></div>
                 <template v-if="isLoaded">
-                    <div class="nowrap flex_1 pad_left_1">
-                        <button class="supermini"
+                    <div class="nowrap flex_1">
+                        <button class=""
                             :class="{activated: isFiltering === 'none'}"
                             v-on:click="() => selectFilter('none')"> 🏁{{ summary.total }} </button>
                     </div>
                     <div class="nowrap flex_1 pad_left_1">
-                        <button class="supermini"
+                        <button class=""
                             :class="{activated: isFiltering === 'completed'}"
                             v-on:click="() => selectFilter('completed')"> 🟢{{ summary.resolved }} </button>
                     </div>
                     <div class="nowrap flex_1 pad_left_1">
-                        <button class="supermini"
+                        <button class=""
                             :class="{activated: isFiltering === 'failing'}"
                             v-on:click="() => selectFilter('failing')"> 🔴{{ summary.failed }} </button>
                     </div>
@@ -24,15 +24,15 @@
             </div>
         </div>
         <div class="flex_1 pad_left_1">
-            <button class="supermini"
+            <button class=""
                 v-on:click="loadGoals">🛜</button>
         </div>
         <div class="flex_1 pad_left_1">
-            <button class="supermini"
+            <button class=""
                 v-on:click="openGoalsFile">🏁↗️</button>
         </div>
         <div class="flex_1 pad_left_1">
-            <button class="supermini"
+            <button class=""
                 :class="{activated: isClicking}"
                 v-on:mousedown="() => isClicking = true"
                 v-on:mouseup="() => isClicking = false"

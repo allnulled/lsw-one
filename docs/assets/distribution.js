@@ -31351,12 +31351,6 @@ Vue.component("LswGoalsViewer", {
             <div class="flex_row centered">
                 <div class="flex_1"></div>
                 <template v-if="isLoaded">
-                    <button class="supermini"
-                        :class="{activated: isClicking}"
-                        v-on:mousedown="() => isClicking = true"
-                        v-on:mouseup="() => isClicking = false">
-                        ❓
-                    </button>
                     <div class="nowrap flex_1 pad_left_1">
                         <button class="supermini"
                             :class="{activated: isFiltering === 'none'}"
@@ -31383,6 +31377,16 @@ Vue.component("LswGoalsViewer", {
         <div class="flex_1 pad_left_1">
             <button class="supermini"
                 v-on:click="openGoalsFile">🏁↗️</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                :class="{activated: isClicking}"
+                v-on:mousedown="() => isClicking = true"
+                v-on:mouseup="() => isClicking = false"
+                v-on:touchstart="() => isClicking = true"
+                v-on:touchend="() => isClicking = false">
+                ❓
+            </button>
         </div>
         <!--div class="flex_1 pad_left_1">
             <button class="supermini"
@@ -31469,7 +31473,7 @@ Vue.component("LswGoalsViewer", {
                                     </div>
                                 </template>
                             </div>
-                            <pre class="codeblock">{{ goal }}</pre>
+                            <!--pre class="codeblock">{{ goal }}</pre-->
                         </div>
                     </div>
                 </div>

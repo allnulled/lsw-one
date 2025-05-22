@@ -2,18 +2,18 @@
 
 # 20-05-2025 02:45am
 
-[ ] Panel de binarios
-  [ ] basado en fs
-    [ ] para escribir mejor
-  [ ] que permita categorías
-  [ ] que permita búsqueda rápida
-  [ ] que permita clickar
-[ ] El botón de la cámara
-  [ ] que guarde los resultados con la fecha
-  [ ] en un fichero de la bd
-[ ] panel para explorar fotos anteriores
-[ ] carpeta de TODOs especial
-  [ ] que se visualice directamente en el despues
+[x] Panel de binarios
+  [x] basado en fs
+    [x] para escribir mejor
+  [x] que permita categorías
+  [x] que permita búsqueda rápida
+  [x] que permita clickar
+[x] El botón de la cámara
+  [x] que guarde los resultados con la fecha
+  [x] en un fichero de la bd
+[x] panel para explorar fotos anteriores
+[x] carpeta de TODOs especial
+  [x] que se visualice directamente en el despues
 [x] reincorporado y mejorado console-hooker
 [x] bug de chivato de goals viewer
 [x] mejorado process-viewer

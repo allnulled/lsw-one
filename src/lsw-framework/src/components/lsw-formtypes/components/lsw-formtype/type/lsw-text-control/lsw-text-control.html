@@ -12,8 +12,8 @@
                 <input class="flex_100"
                     type="text"
                     v-model="value"
-                    v-on="settings.input?.events || {}"
-                    v-bind="settings.input?.props || {}"
+                    v-on="getSettingsInputEvents"
+                    v-bind="getSettingsInputProps"
                     v-xform.input="{name: '*',onValidate: settings.input?.onValidate || $noop}"
                     spellcheck="false"
                     ref="textInput" />

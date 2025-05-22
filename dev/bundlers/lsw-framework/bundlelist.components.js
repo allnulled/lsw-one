@@ -158,6 +158,9 @@ module.exports = [
   // GOALS VIEWER:
   `${basepath}/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-api.js`,
   `${basepath}/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer`,
+  `${basepath}/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer`,
+  // BIN DIRECTORY:
+  `${basepath}/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory`,
   // AGENDA:
   `${basepath}/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda`,
   `${basepath}/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add`,

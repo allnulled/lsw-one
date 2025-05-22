@@ -32,7 +32,12 @@
       
     }
     static async abrirNavegacionRapida() {
-      LswDom.querySelectorFirst(".lsw_apps_button > button", "🌍").click();
+      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+    }
+    static async abrirBinarios() {
+      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst(".lista_apps div", "💣 Binarios").click();
     }
     static async abrirBaseDeDatos() {
       LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
@@ -45,7 +50,12 @@
       LswDom.querySelectorFirst("button", "Accion_virtual").click();
     }
     static async abrirTareasPosterioresDeNavegacionRapida() {
-      LswDom.querySelectorFirst(".lsw_apps_viewer_button button", "🕓 Tareas posteriores").click();
+      LswDom.querySelectorFirst(".lista_apps button", "🕓 Tareas posteriores").click();
+    }
+    static async abrirRecords() {
+      this.abrirTareasPosterioresDeNavegacionRapida();
+      await LswDom.waitForMilliseconds(500);
+      LswDom.querySelectorFirst("button", "📷📊").click();
     }
     static async configuraciones() {
       LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();

@@ -469,8 +469,12 @@
       if (checkSettings.to.have.key("input")) {
         const ensureInput = ensureSettings.its("input").type("object");
         ensureInput.to.have.uniquelyKeys(["props", "events"]);
-        ensureInput.its("props").type("object");
-        ensureInput.its("events").type("object");
+        if(checkSettings.its("input").to.have.key("props")) {
+          ensureInput.its("props").type("object");
+        }
+        if(checkSettings.its("input").to.have.key("events")) {
+          ensureInput.its("events").type("object");
+        }
       }
     }
   }

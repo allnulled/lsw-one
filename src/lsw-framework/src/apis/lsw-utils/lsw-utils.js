@@ -532,6 +532,13 @@
   LswUtils.hydrateFunction = function(fSource) {
     return new Function(fSource);
   };
+
+  LswUtils.zeroIfNegative = function(numero) {
+    if(numero < 0) {
+      return 0;
+    }
+    return numero;
+  }
   // @code.end: LswUtils
 
   return LswUtils;

@@ -178,6 +178,14 @@
                     </div>
                 </div>
 
+                <div class="pad_1"
+                    v-if="selectedApplication === 'binarios'"
+                    v-bind:key="'binarios'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-bin-directory directory="/kernel/bin" />
+                    </div>
+                </div>
+
             </div>
         </div>
     </div><!-- End of «Free Desktop Area» -->

@@ -14995,7 +14995,12 @@ intervalo=2025-05-17 - 2025/12/30
       
     }
     static async abrirNavegacionRapida() {
-      LswDom.querySelectorFirst(".lsw_apps_button > button", "🌍").click();
+      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+    }
+    static async abrirBinarios() {
+      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst(".lista_apps div", "💣 Binarios").click();
     }
     static async abrirBaseDeDatos() {
       LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
@@ -15008,7 +15013,12 @@ intervalo=2025-05-17 - 2025/12/30
       LswDom.querySelectorFirst("button", "Accion_virtual").click();
     }
     static async abrirTareasPosterioresDeNavegacionRapida() {
-      LswDom.querySelectorFirst(".lsw_apps_viewer_button button", "🕓 Tareas posteriores").click();
+      LswDom.querySelectorFirst(".lista_apps button", "🕓 Tareas posteriores").click();
+    }
+    static async abrirRecords() {
+      this.abrirTareasPosterioresDeNavegacionRapida();
+      await LswDom.waitForMilliseconds(500);
+      LswDom.querySelectorFirst("button", "📷📊").click();
     }
     static async configuraciones() {
       LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
@@ -19459,6 +19469,9 @@ return Store;
   };
 
   LswTimer.utils.fromMillisecondsToDurationstring = function (ms) {
+    if(ms === 0) {
+      return "0min";
+    }
     const units = {
       y: 1000 * 60 * 60 * 24 * 365,
       mon: 1000 * 60 * 60 * 24 * 30,
@@ -20647,6 +20660,13 @@ return Store;
   LswUtils.hydrateFunction = function(fSource) {
     return new Function(fSource);
   };
+
+  LswUtils.zeroIfNegative = function(numero) {
+    if(numero < 0) {
+      return 0;
+    }
+    return numero;
+  }
   // @code.end: LswUtils
 
   return LswUtils;
@@ -24755,8 +24775,12 @@ Vue.directive("focus", {
       if (checkSettings.to.have.key("input")) {
         const ensureInput = ensureSettings.its("input").type("object");
         ensureInput.to.have.uniquelyKeys(["props", "events"]);
-        ensureInput.its("props").type("object");
-        ensureInput.its("events").type("object");
+        if(checkSettings.its("input").to.have.key("props")) {
+          ensureInput.its("props").type("object");
+        }
+        if(checkSettings.its("input").to.have.key("events")) {
+          ensureInput.its("events").type("object");
+        }
       }
     }
   }
@@ -24811,68 +24835,74 @@ Vue.component("LswHomepage", {
     <div class="lista_apps" style="font-size: 10px;">
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('base de datos')">
-                <div class="flex_100">↗️ Base de datos</div>
-                <div class="flex_1 nowrap">📦</div>
+                <div class="flex_100">📦 Base de datos</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
         </div>
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('sistema de ficheros')">
-                <div class="flex_100">↗️ Sistema de ficheros</div>
-                <div class="flex_1 nowrap">📂</div>
+                <div class="flex_100">📂 Sistema de ficheros</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
         </div>
         <div class="item_app">
-            <div class="nombre_app flex_row centered" v-on:click="abrirApp('configuraciones')">
-                <div class="flex_100">↗️ Configuraciones</div>
-                <div class="flex_1 nowrap">🔧</div>
+            <div class="nombre_app flex_row centered" v-on:click="abrirApp('binarios')">
+                <div class="flex_100">💣 Binarios</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
         </div>
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('calendario')">
-                <div class="flex_100">↗️ Calendario</div>
-                <div class="flex_1 nowrap">📆</div>
+                <div class="flex_100">📆 Calendario</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
             <div class="lista_apps">
                 <div class="item_app">
-                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('despues')">
-                        <div class="flex_100">➡️ Tareas posteriores</div>
-                        <div class="flex_1 nowrap">🕔 ➡️</div>
+                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('antes')">
+                        <div class="flex_100">⬅️ 🕔 Tareas anteriores</div>
+                        <div class="flex_1 nowrap">↗️</div>
                     </div>
                 </div>
                 <div class="item_app">
-                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('antes')">
-                        <div class="flex_100">➡️ Tareas anteriores</div>
-                        <div class="flex_1 nowrap">⬅️ 🕔</div>
+                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('despues')">
+                        <div class="flex_100">🕔 ➡️ Tareas posteriores</div>
+                        <div class="flex_1 nowrap">↗️</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('notas')">
-                <div class="flex_100">↗️ Notas</div>
-                <div class="flex_1 nowrap">💬</div>
+                <div class="flex_100">💬 Notas</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
             <div class="lista_apps">
                 <div class="item_app">
                     <div class="nombre_app flex_row centered" v-on:click="abrirApp('nueva nota')">
-                        <div class="flex_100">➡️ Nueva nota</div>
-                        <div class="flex_1 nowrap">+ 💬</div>
+                        <div class="flex_100">+ 💬 Nueva nota</div>
+                        <div class="flex_1 nowrap">↗️</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('enciclopedia')">
-                <div class="flex_100">↗️ Enciclopedia</div>
-                <div class="flex_1 nowrap">🔬</div>
+                <div class="flex_100">🔬 Enciclopedia</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
             <div class="lista_apps">
                 <div class="item_app">
                     <div class="nombre_app flex_row centered" v-on:click="abrirApp('nuevo articulo')">
-                        <div class="flex_100">➡️ Nuevo artículo</div>
-                        <div class="flex_1 nowrap">+ 🔬</div>
+                        <div class="flex_100">+ 🔬 Nuevo artículo</div>
+                        <div class="flex_1 nowrap">↗️</div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="item_app">
+            <div class="nombre_app flex_row centered" v-on:click="abrirApp('configuraciones')">
+                <div class="flex_100">🔧 Configuraciones</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
         </div>
     </div>
@@ -24945,7 +24975,7 @@ Vue.component("LswSourceable", {
       const that = this;
       const source = this.source || this.$slots.default;
       Vue.component(this.componentId, {
-        template: "<template>" + source + "</template>",
+        template: "<div>" + source + "</div>",
         ...this.composition,
       });
       this.isLoaded = true;
@@ -26398,7 +26428,8 @@ Vue.component("LswTable", {
   },
   computed: {
     hasFiltersApplying() {
-      this.$trace("lsw-table.computed.hasFiltersApplying");
+      // @BUGGY: estos logs causan recursividad en el console-hooker
+      // this.$trace("lsw-table.computed.hasFiltersApplying");
       if (this.extender.length) {
         return true;
       }
@@ -26432,7 +26463,8 @@ Vue.component("LswTable", {
       return false;
     },
     totalOfPages() {
-      this.$trace("lsw-table.computed.totalOfPages");
+      // @BUGGY: estos logs causan recursividad en el console-hooker
+      // this.$trace("lsw-table.computed.totalOfPages");
       return Math.ceil(this.output.length / this.itemsPerPage) || 1;
     },
     currentLastPage() {
@@ -27516,7 +27548,7 @@ Vue.component("LswWindowsMainTab", {
         <div class="dialog_window process_manager_window" v-bind:key="'main_dialog'" :style="{ zIndex: 501 }">
             <div class="dialog_topbar">
                 <div class="dialog_title">
-                    <div>Process manager</div>
+                    <div>Procesos</div>
                 </div>
                 <div class="dialog_topbar_buttons">
                     <button class="mini" v-if="\$consoleHooker?.is_shown === false" style="white-space: nowrap;flex: 1;" v-on:click="() => \$consoleHooker?.show()">💻</button>
@@ -27534,11 +27566,20 @@ Vue.component("LswWindowsMainTab", {
                     <button class="mini main_tab_topbar_button" v-on:click="openConfigurationsPage">🔧</button>
                 </div>
                 <div class="pad_normal" v-if="!Object.keys(\$lsw.dialogs.opened).length">
-                    <span>No processes found right now.</span>
+                    <span>Sin procesos actualmente.</span>
                 </div>
                 <div class="pad_normal" v-else>
                     <div v-for="dialog, dialogIndex, dialogCounter in \$lsw.dialogs.opened" v-bind:key="'dialog-' + dialogIndex">
-                        <a href="javascript:void(0)" v-on:click="() => viewer.selectDialog(dialogIndex)">{{ dialogCounter + 1 }}. {{ dialog.title }} [{{ dialog.id }}]</a>
+                        <div class="flex_row centered pad_bottom_1">
+                            <div class="flex_100">
+                                <button class="supermini width_100 text_align_left" v-on:click="() => viewer.selectDialog(dialogIndex)">
+                                    <a href="javascript:void(0)">{{ dialogCounter + 1 }}. {{ dialog.title }} [{{ dialog.id }}]</a>
+                                </button>
+                            </div>
+                            <div class="flex_1 pad_left_1">
+                                <button class="supermini danger_button" v-on:click="() => closeProcess(dialog)">❌</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -27626,7 +27667,11 @@ Vue.component("LswWindowsMainTab", {
         title: "Configuraciones",
         template: `<div class="pad_2"><lsw-configurations-page /></div>`,
       });
-    }
+    },
+    closeProcess(dialog) {
+      this.$trace("lsw-windows-main-tab.methods.closeProcess", arguments);
+      this.$lsw.dialogs.close(dialog.id);
+    },
   },
   mounted() {
     
@@ -27822,9 +27867,20 @@ Vue.component("LswToasts", {
 
   // @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker API
   class ConsoleHooker {
+
+    static extractProps(obj, props = []) {
+      const out = {};
+      for(let index=0; index<props.length; index++) {
+        const prop = props[index];
+        out[prop] = obj[prop].bind(obj);
+      }
+      return out;
+    }
+
     constructor(outputElementId) {
       this.originalConsole = { ...console }; // Guardar los métodos originales
       this.outputElementId = outputElementId;
+      this.isHooked = false;
       this.hookConsole();
       this.messageCounter = 0;
     }
@@ -27838,6 +27894,9 @@ Vue.component("LswToasts", {
     ];
 
     hookConsole() {
+      if(this.isHooked) {
+        return;
+      }
       this.HOOKED_METHODS.forEach(method => {
         if (typeof console[method] === 'function') {
           console[method] = (...args) => {
@@ -27846,6 +27905,7 @@ Vue.component("LswToasts", {
           };
         }
       });
+      this.isHooked = true;
     }
 
     formatError(error) {
@@ -27910,9 +27970,13 @@ Vue.component("LswToasts", {
     }
 
     restoreConsole() {
+      if(!this.isHooked) {
+        return;
+      }
       this.HOOKED_METHODS.forEach(method => {
         console[method] = this.originalConsole[method];
       });
+      this.isHooked = false;
     }
   }
 
@@ -27924,26 +27988,64 @@ Vue.component("LswToasts", {
 });
 // @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker component
 Vue.component("LswConsoleHooker", {
-  template: `<div class="console-hooker" :class="{hide:!is_shown}">
+  template: `<div class="console-hooker"
+    :class="{hide:!is_shown}">
     <div class="console_viewer">
-        <div class="console_box">
+        <div class="console_box"
+            v-show="!is_minimized"
+            :style="{ maxHeight: !is_amplified ? '120px' : (\$window.innerHeight - 80) + 'px' }">
             <div class="console_box_title">
-                <span style="flex: 100;"></span>
-                <span style="flex: 1;">
-                    <button class="supermini" v-on:click="hide">❌</button>
+                <span class="float_right" style="opacity: 1;">
+                    <div class="flex_row centered">
+                        <div class="flex_1 pad_right_1">
+                            <button class="supermini"
+                                v-on:click="deactivateConsole">❌</button>
+                        </div>
+                        <div class="flex_1 pad_right_1">
+                            <button class="supermini"
+                                v-on:click="cleanConsole">🧹</button>
+                        </div>
+                        <div class="flex_1">
+                            <button
+                                class="supermini"
+                                :class="{activated: is_amplified}"
+                                v-on:click="toggleAmplify">↕️</button>
+                        </div>
                 </span>
             </div>
-            <div class="console_box_output_container">
-                <div class="console_box_output" id="lsw-console-hooker-output"></div>
+            <div class="console_box_output_container" :style="{ minHeight: !is_amplified ? '60px' : (\$window.innerHeight - 80) + 'px' }">
+                <div class="console_box_output"
+                    id="lsw-console-hooker-output"
+                    ref="console_output">⚓️ Consola hookeada preparada ⚓️</div>
             </div>
             <div class="flex_row">
                 <div class="flex_100 pad_right_1">
-                    <input class="supermini width_100" type="text" ref="commandInput" v-on:keypress.enter="executeInput" />
+                    <input class="supermini width_100"
+                        type="text"
+                        ref="commandInput"
+                        v-on:keypress.enter="executeInput" />
                 </div>
                 <div class="flex_1">
-                    <button class="supermini" v-on:click="executeInput">🔦</button>
+                    <button class="supermini"
+                        v-on:click="executeInput">🔦</button>
                 </div>
+                <div class="flex_1 pad_left_1">
+                    <button
+                        class="supermini"
+                        v-on:click="minimize">➖</button>
+                </div>
+                <!--span class="flex_1">
+                    <button v-show="!is_minimized"
+                        class="supermini"
+                        v-on:click="minimize">➖</button>
+                </span-->
             </div>
+        </div>
+        <div v-if="is_minimized"
+            class="float_right"
+            style="margin-right: 3px; margin-bottom: 3px;">
+            <button class="supermini rounded"
+                v-on:click="maximize">💻</button>
         </div>
     </div>
 </div>`,
@@ -27951,6 +28053,8 @@ Vue.component("LswConsoleHooker", {
   data() {
     return {
       is_shown: true,
+      is_minimized: false,
+      is_amplified: false,
       instance: undefined
     }
   },
@@ -27960,6 +28064,19 @@ Vue.component("LswConsoleHooker", {
     },
     hide() {
       this.is_shown = false;
+    },
+    minimize() {
+      this.is_minimized = true;
+    },
+    maximize() {
+      this.is_minimized = false;
+    },
+    cleanConsole() {
+      this.$refs.console_output.textContent = "⚓️ Consola hookeada preparada ⚓️";
+    },
+    toggleAmplify() {
+      this.is_amplified = !this.is_amplified;
+      this.$forceUpdate(true);
     },
     executeInput() {
       const input = this.$refs.commandInput.value;
@@ -27974,25 +28091,19 @@ Vue.component("LswConsoleHooker", {
         });
       }
       this.$refs.commandInput.value = "";
-    }
+    },
+    deactivateConsole() {
+      this.instance.restoreConsole();
+      this.hide();
+    },
+    activateConsole() {
+      this.instance.hookConsole();
+      this.show();
+    },
   },
   mounted() {
     this.instance = new ConsoleHooker("lsw-console-hooker-output");
-    Desactivar_consola: {
-      // this.instance.restoreConsole();
-      // this.hide();
-    }
-    Activar_consola: {
-      // this.instance.hookConsole();
-      this.show();
-    }
-    Hacerlo_condicionalmente: {
-      if(process.env.NODE_ENV !== "production") {
-        
-      } else {
-
-      }
-    }
+    this.activateConsole();
     Exportar_consola: {
       this.$vue.prototype.$consoleHooker = this;
       this.$window.LswConsoleHooker = this;
@@ -30941,7 +31052,7 @@ Vue.component("LswClockwatcher", {
 
   const LswGoals = class {
 
-    static async getGoalsReport() {
+    static async getGoalsReport(someDate = new Date()) {
       Vue.prototype.$trace("lsw-goals-viewer.methods.getGoalsReport");
       try {
         const parsedLines = await Vue.prototype.$lsw.fs.evaluateAsDotenvListFileOrReturn("/kernel/settings/goals.env", []);
@@ -30958,7 +31069,7 @@ Vue.component("LswClockwatcher", {
           };
         });
         // 2. Get today's completed actions:
-        const todayCompletedActions = await this.getTodayActions(false, "completada");
+        const todayCompletedActions = await this.getSomeDayActions(someDate, false, "completada");
         // 3. Expand goals:
         for (let indexGoal = 0; indexGoal < originalGoals.length; indexGoal++) {
           const originalGoal = originalGoals[indexGoal];
@@ -31004,7 +31115,8 @@ Vue.component("LswClockwatcher", {
     }
     static formatCondition(originalTxt, concept) {
       const isMin = originalTxt.startsWith(">");
-      const op = originalTxt.match(/(\<|\>)(=)?/g);
+      const op = originalTxt.trim().match(/(\<|\>)(=)?/g);
+      const opCorrected = op.length === 1 ? op + "=" : op;
       const txt = originalTxt.replace(/(\<|\>)(=)?/g, "")
       const isTimes = this.isConditionByTimes(txt);
       const isDuration = this.isConditionByDuration(txt);
@@ -31043,24 +31155,34 @@ Vue.component("LswClockwatcher", {
           if (isTimes) {
             const expectedTimes = referenceValue;
             conclusion.expectedTimes = expectedTimes;
-            const evaluableSource = `${conclusion.currentTimes} ${op} ${expectedTimes}`;
+            const evaluableSource = `${conclusion.currentTimes} ${opCorrected} ${expectedTimes}`;
             console.log("[*] Evaluating JavaScript for condition: ", evaluableSource);
             conclusion.filledAsint = Math.round(100 * (conclusion.currentTimes / conclusion.expectedTimes));
             conclusion.filled = conclusion.filledAsint + "%";
+            Specific_for_time_cases: {
+              conclusion.missingTimes = conclusion.expectedTimes - conclusion.currentTimes;
+            }
             conclusion.missingAsint = 100 - conclusion.filledAsint;
             conclusion.missing = conclusion.missingAsint + "%";
             conclusion.solved = window.eval(evaluableSource);
+            conclusion.solvable = evaluableSource;
           } else if (isDuration) {
             const expectedDuration = referenceValue;
             conclusion.expectedDurationInms = expectedDuration;
             conclusion.expectedDuration = LswTimer.utils.fromMillisecondsToDurationstring(expectedDuration);
-            const evaluableSource = `${conclusion.currentDurationInms} ${op} ${expectedDuration}`;
+            const evaluableSource = `${conclusion.currentDurationInms} ${opCorrected} ${expectedDuration}`;
             console.log("[*] Evaluating JavaScript for condition: ", evaluableSource);
             conclusion.filledAsint = Math.round(100 * (conclusion.currentDurationInms / conclusion.expectedDurationInms));
             conclusion.filled = conclusion.filledAsint + "%";
+            const missingDurationInms = LswUtils.zeroIfNegative(conclusion.expectedDurationInms - conclusion.currentDurationInms);
+            Specific_for_duration_cases: {
+              conclusion.missingDuration = LswTimer.utils.fromMillisecondsToDurationstring(missingDurationInms);
+              conclusion.missingDurationInms = missingDurationInms;
+            }
             conclusion.missingAsint = 100 - conclusion.filledAsint;
             conclusion.missing = conclusion.missingAsint + "%";
             conclusion.solved = window.eval(evaluableSource);
+            conclusion.solvable = evaluableSource;
           }
         }
         this.expandColor(conclusion);
@@ -31068,23 +31190,54 @@ Vue.component("LswClockwatcher", {
       };
     }
 
-    static COLOR = {
+    static COLOR_GAMA_1 = {
       SUSPENSO: "red",
-      INSUFICIENTE: "pink",
-      SUFICIENTE: "blue",
+      INSUFICIENTE: "#e87489",
+      SUFICIENTE: "#5353bf",
       NOTABLE: "orange",
       EXCELENTE: "yellow",
       SOBRESALIENTE: "lime",
     };
 
-    static REVERSE_COLOR = {
+    static COLOR_GAMA_2 = {
+      SUSPENSO: "#D32F2F",
+      INSUFICIENTE: "#F57C00",
+      SUFICIENTE: "#FBC02D",
+      NOTABLE: "#C0CA33",
+      EXCELENTE: "#7CB342",
+      SOBRESALIENTE: "#388E3C",
+    };
+
+    static COLOR_GAMA_3 = {
+      SUSPENSO: "#c62828",
+      INSUFICIENTE: "#ef6c00",
+      SUFICIENTE: "#f9a825",
+      NOTABLE: "#29b6f6",
+      EXCELENTE: "#66bb6a",
+      SOBRESALIENTE: "#00897b",
+    };
+
+    static COLOR = this.COLOR_GAMA_3;
+
+    static COLOR_MEANING = {
+      [this.COLOR.SUSPENSO]: "SUSPENSO",
+      [this.COLOR.INSUFICIENTE]: "INSUFICIENTE",
+      [this.COLOR.SUFICIENTE]: "SUFICIENTE",
+      [this.COLOR.NOTABLE]: "NOTABLE",
+      [this.COLOR.EXCELENTE]: "EXCELENTE",
+      [this.COLOR.SOBRESALIENTE]: "SOBRESALIENTE",
+    };
+
+    /*
+    static COLOR_MEANING = {
       "red": "SUSPENSO",
-      "pink": "INSUFICIENTE",
-      "blue": "SUFICIENTE",
+      "#e87489": "INSUFICIENTE",
+      "#5353bf": "SUFICIENTE",
       "orange": "NOTABLE",
       "yellow": "EXCELENTE",
       "lime": "SOBRESALIENTE",
     };
+    //*/
 
     static expandColor(_) {
       const percentage = _.filledAsint;
@@ -31111,7 +31264,7 @@ Vue.component("LswClockwatcher", {
       })();
       Object.assign(_, {
         color: assignedColor,
-        colorMeaning: this.REVERSE_COLOR[assignedColor],
+        colorMeaning: this.COLOR_MEANING[assignedColor],
       });
     }
 
@@ -31132,9 +31285,8 @@ Vue.component("LswClockwatcher", {
       }
     }
 
-    static getTodayActions(concept = false, state = false) {
-      Vue.prototype.$trace("lsw-goals-viewer.methods.getTodayActions");
-      const dateToday = new Date();
+    static getSomeDayActions(dateToday = new Date(), concept = false, state = false) {
+      Vue.prototype.$trace("lsw-goals-viewer.methods.getSomeDayActions");
       return Vue.prototype.$lsw.database.selectMany("Accion", acc => {
         const dateInicio = LswTimer.utils.fromDatestringToDate(acc.tiene_inicio);
         const isSameDay = LswTimer.utils.areSameDayDates(dateInicio, dateToday);
@@ -31172,17 +31324,26 @@ Vue.component("LswGoalsViewer", {
             <div class="flex_row centered">
                 <div class="flex_1"></div>
                 <template v-if="isLoaded">
+                    <button class="supermini"
+                        :class="{activated: isClicking}"
+                        v-on:mousedown="() => isClicking = true"
+                        v-on:mouseup="() => isClicking = false">
+                        ❓
+                    </button>
                     <div class="nowrap flex_1 pad_left_1">
                         <button class="supermini"
-                            disabled="disabled"> 🟢{{ summary.resolved }} </button>
+                            :class="{activated: isFiltering === 'none'}"
+                            v-on:click="() => selectFilter('none')"> 🏁{{ summary.total }} </button>
                     </div>
                     <div class="nowrap flex_1 pad_left_1">
                         <button class="supermini"
-                            disabled="disabled"> 🔴{{ summary.failed }} </button>
+                            :class="{activated: isFiltering === 'completed'}"
+                            v-on:click="() => selectFilter('completed')"> 🟢{{ summary.resolved }} </button>
                     </div>
                     <div class="nowrap flex_1 pad_left_1">
                         <button class="supermini"
-                            disabled="disabled"> 🏁{{ summary.total }} </button>
+                            :class="{activated: isFiltering === 'failing'}"
+                            v-on:click="() => selectFilter('failing')"> 🔴{{ summary.failed }} </button>
                     </div>
                     <div class="nowrap flex_100"></div>
                 </template>
@@ -31190,49 +31351,119 @@ Vue.component("LswGoalsViewer", {
         </div>
         <div class="flex_1 pad_left_1">
             <button class="supermini"
-                v-on:click="saveMoment">📸</button>
-        </div>
-        <div class="flex_1 pad_left_1">
-            <button class="supermini"
                 v-on:click="loadGoals">🛜</button>
         </div>
         <div class="flex_1 pad_left_1">
             <button class="supermini"
-                v-on:click="openGoalsFile">📃↗️</button>
+                v-on:click="openGoalsFile">🏁↗️</button>
         </div>
-        <div class="flex_1 pad_left_1">
+        <!--div class="flex_1 pad_left_1">
             <button class="supermini"
                 v-on:click="onClose">❌</button>
-        </div>
+        </div-->
     </div>
     <div class="goals_list"
         v-if="isLoaded">
         <template v-for="goal, goalIndex in report.goals">
             <div v-bind:key="'goal-' + goalIndex"
-                v-if="goal.filledAsint < 100"
+                v-if="passesFilter(goal)"
                 class="goal_item">
-                <div class="bar_holder">
-                    <div class="bar_text">
-                        <template v-if="goal.type === 'by duration'">
-                            <b>{{ goal.concept }}:</b> +{{ goal.filled }}
-                            <span v-if="goal.missingAsint > 0"> / -{{ goal.missing }}</span>
-                            <b>| {{ goal.expectedAsAbbr }}:</b>{{ goal.expectedDuration }}
-                            <b>| curr:</b>{{ goal.currentDuration }}
-                        </template>
-                        <template v-else-if="goal.type === 'by times'">
-                            <b>{{ goal.concept }}:</b> +{{ goal.filled }} / -{{ goal.missing }}
-                            <b>| {{ goal.expectedAsAbbr }}:</b>{{ goal.expectedTimes }}
-                            <b>| curr:</b>{{ goal.currentDuration }}
-                        </template>
+                <div>
+                    <div class="bar_holder"
+                        v-on:click="() => selectGoal(goal)">
+                        <div class="bar_text">
+                            <div class="position_relative"
+                                v-if="isClicking">
+                                <div class="position_absolute"
+                                    style="top: 0px; bottom: auto; left: 0px; opacity: 0.8;">
+                                    <div class="flex_row centered">
+                                        <div class="flex_1"><b><u>{{ goal.originalLine }}</u></b></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_row centered"
+                                v-else>
+                                <div class="flex_1">{{ goal.solved ? symbolForSolved : symbolForPending }}</div>
+                                <template v-if="goal.type === 'by duration'">
+                                    <div class="flex_auto pad_left_1"
+                                        v-if="goal.missingDurationInms"><b>⛔️ </b>{{ goal.missingDuration }} </div>
+                                    <div class="flex_auto pad_left_1"><b>🟢 </b>{{ goal.currentDuration }} </div>
+                                    <div class="flex_auto pad_left_1"><b>{{ getAbbrvWord(goal.expectedAsAbbr) }}</b> {{
+                                        goal.expectedDuration }} </div>
+                                </template>
+                                <template v-if="goal.type === 'by times'">
+                                    <div class="flex_auto pad_left_1"
+                                        v-if="goal.missingTimes"><b>⛔️ </b>{{ goal.missingTimes }}t </div>
+                                    <div class="flex_auto pad_left_1"><b>🟢 </b>{{ goal.currentTimes }}t </div>
+                                    <div class="flex_auto pad_left_1"><b>{{ getAbbrvWord(goal.expectedAsAbbr) }}</b>{{ goal.expectedTimes
+                                        }}t </div>
+                                </template>
+                                <template>
+                                    <div class="flex_auto pad_left_1"><b>⭕️</b> {{ goal.filled }} </div>
+                                    <div class="flex_auto pad_left_1"
+                                        v-if="goal.missingAsint > 0"> ➖ {{ goal.missing }}</div>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="bar_filler"
+                            :style="{ width: goal.filledAsint < 100 ? goal.filled : (100 + '%'), backgroundColor: goal.color }">
+                        </div>
                     </div>
-                    <div class="bar_filler"
-                        :style="{ width: goal.filledAsint < 100 ? goal.filled : (100 + '%'), backgroundColor: goal.color }">
-
+                    <div v-if="selectedGoal === goal">
+                        <div class="pad_1">
+                            <div class="smallest_font goal_status_card margin_bottom_1" style="color:black; min-height: 25px;">
+                                <div class="position_relative">
+                                    <div class="position_absolute"
+                                        style="top: 0px; right: 0px;">
+                                        <button class="supermini"
+                                            v-on:click="() => editTodoOfGoal(goal)">📄↗️</button>
+                                    </div>
+                                </div>
+                                <template v-if="!isLoadingGoals">
+                                    <div class="pad_top_1" v-if="goal.concept in specifiedGoals">
+                                        <lsw-sourceable :source="specifiedGoals[goal.concept]" />
+                                    </div>
+                                    <div class="pad_top_1" v-else>
+                                        🍃 Sin especificaciones 🍃
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="smallest_font goal_status_card">
+                                <template
+                                    v-for="field, fieldIndex in interestingFields">
+                                    <div v-if="fieldIndex in goal"
+                                        class="goal_line"
+                                        v-bind:key="'field_' + fieldIndex"
+                                        style="color: black;">
+                                        <div class="width_100 flex_row centered pad_vertical_1">
+                                            <div class="flex_1 label nowrap font_weight_bold">▪️ {{ field }}:</div>
+                                            <div class="flex_100 value text_align_right">{{ goal[fieldIndex] }}</div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <pre class="codeblock">{{ goal }}</pre>
+                        </div>
                     </div>
                 </div>
                 <div class="bar_separation"></div>
             </div>
         </template>
+    </div>
+    <div class="flex_row centered pad_vertical_1">
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="saveMoment">📸</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="openRecordsDirectory">📷📂</button>
+        </div>
+        <div class="flex_100"></div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="openRecordsViewer">📷📊</button>
+        </div>
     </div>
 </div>`,
   props: {
@@ -31243,27 +31474,105 @@ Vue.component("LswGoalsViewer", {
     onRefresh: {
       type: [Function, Boolean],
       default: false,
+    },
+    dayToAnalize: {
+      type: [Boolean, Date],
+      default: () => new Date(),
     }
   },
   data() {
     this.$trace("lsw-goals-viewer.data");
+    const solverSymbols = ['👍', '✔️', '😃']
+    const penderSymbols = ['🌵', '❌', '🥶'];
+    const randomIndex = LswRandomizer.getRandomIntegerBetween(0, penderSymbols.length-1);
     return {
       isLoaded: false,
+      isLoadingGoals: false,
+      isFiltering: "none",
+      isClicking: false,
+      specifiedGoals: {},
+      interestingFields: {
+        "colorMeaning": "Estado actual",
+        "filled": "Completado",
+        "missing": "Faltante",
+        "solved": "Resuelto",
+        // "originalConcept": "Concepto",
+        // "originalCondition": "Condición",
+        // "originalUrgency": "Urgencia",
+        "type": "Tipo",
+        "expectedAs": "Formato",
+        "expectedDuration": "Duración esperada",
+        // "expectedAsAbbr": "Formato abreviado",
+        "currentDuration": "Duración actual",
+        "missingDuration": "Duración faltante",
+        "expectedTimes": "Veces esperadas",
+        "currentTimes": "Veces actuales",
+        "missingTimes": "Veces faltantes",
+        // "currentDurationInms": "Duración en ms actual",
+        // "expectedDurationInms": "Duración esperada en ms",
+        // "filledAsint": "Llenado como número",
+        // "missingDurationInms": "Duración faltante en ms",
+        // "missingAsint": "Faltante como número",
+        // "solvable": "Resolvible",
+        // "color": "color",
+        // "urgency": "Urgencia"
+        "originalLine": "Origen",
+      },
+      symbolForSolved: solverSymbols[randomIndex],
+      symbolForPending: penderSymbols[randomIndex],
+      selectedGoal: false,
       report: [],
       summary: false,
     };
   },
   methods: {
+    async selectGoal(goal) {
+      this.$trace("lsw-goals-viewer.methods.selectGoal");
+      if(this.selectedGoal === goal) {
+        this.selectedGoal = undefined;
+      } else {
+        this.selectedGoal = goal;
+      }
+      await this.loadGoalSpecification(goal);
+    },
+    selectFilter(id) {
+      this.$trace("lsw-goals-viewer.methods.selectFilter");
+      this.isFiltering = id;
+    },
+    async loadGoalSpecification(goal) {
+      this.$trace("lsw-goals-viewer.methods.loadGoalSpecification");
+      try {
+        this.isLoadingGoals = true;
+        const filepath = "/kernel/goals/todos/" + goal.concept + ".md";
+        const filecontent = await this.$lsw.fs.read_file(filepath);
+        const parsedContent = marked.parse(filecontent);
+        this.specifiedGoals[goal.concept] = `<div class="markdown_texto">${parsedContent}</div>`;
+        return parsedContent;
+      } catch (error) {
+        return false;
+      } finally {
+        this.isLoadingGoals = false;
+      }
+    },
+    passesFilter(goal) {
+      this.$trace("lsw-goals-viewer.methods.passesFilter");
+      if(this.isFiltering === "none") {
+        return true;
+      } else if(this.isFiltering === "completed") {
+        return goal.solved === true;
+      } else {
+        return goal.solved === false;
+      }
+    },
     async loadGoals() {
       this.$trace("lsw-goals-viewer.methods.loadGoals");
       this.isLoaded = false;
-      this.report = await LswGoals.getGoalsReport();
+      this.report = await LswGoals.getGoalsReport(this.dayToAnalize);
       let resolved = 0;
       let failed = 0;
 
       for(let index=0; index<this.report.goals.length; index++) {
         const goal = this.report.goals[index];
-        console.log(goal);
         if(goal.solved) {
           resolved++;
         } else {
@@ -31283,16 +31592,65 @@ Vue.component("LswGoalsViewer", {
         title: "Editar objetivos",
         template: `
           <div>
-            <lsw-filesystem-explorer opened-by="/kernel/settings/goals.env" />
+            <lsw-filesystem-explorer opened-by="/kernel/settings/goals.env" :absolute-layout="true" />
           </div>
         `
       });
     },
-    saveMoment() {
+    openRecordsDirectory() {
       this.$trace("lsw-goals-viewer.methods.saveMoment");
+      this.$dialogs.open({
+        title: "Ver récords anteriores",
+        template: `
+          <div>
+            <lsw-filesystem-explorer opened-by="/kernel/goals/records" :absolute-layout="true" />
+          </div>
+        `
+      });
+    },
+    openRecordsViewer() {
+      this.$trace("lsw-goals-viewer.methods.openRecordsViewer");
+      this.$dialogs.open({
+        title: "Visualizar récords",
+        template: `
+          <div class="pad_1">
+            <lsw-goals-records-viewer />
+          </div>
+        `
+      });
+    },
+    async saveMoment() {
+      this.$trace("lsw-goals-viewer.methods.saveMoment");
+      const dayUid = LswTimer.utils.fromDateToDatestring(new Date(), false, false, true).replace(/\/|\:/g, "-").replace(/ .*$/g, "");
+      const filepath = "/kernel/goals/records/" + dayUid + ".json";
+      const reportSnapshot = Object.assign({
+        date: LswTimer.utils.fromDateToDatestring(this.dayToAnalize || new Date()),
+      }, this.report, {});
+      const filecontents = JSON.stringify(reportSnapshot, null, 2);
+      await this.$lsw.fs.write_file(filepath, filecontents);
       this.$lsw.toasts.send({
-        title: "Momento guardado!",
-        text: "La estadística del día fue almacenada en memoria"
+        title: "Estadísticas del día guardadas",
+        text: `En: ${filepath}`
+      });
+    },
+    getAbbrvWord(id) {
+      return id === "min" ? "🔺" : "🔻";
+      return id === "min" ? "mínimo" : "máximo";
+    },
+    async editTodoOfGoal(goal) {
+      this.$trace("lsw-goals-viewer.methods.editTodoOfGoal");
+      const goalFilepath = `/kernel/goals/todos/${goal.concept}.md`;
+      const exists = await this.$lsw.fs.exists(goalFilepath);
+      if(!exists) {
+        await this.$lsw.fs.write_file(goalFilepath, "");
+      }
+      this.$lsw.dialogs.open({
+        title: "Detallando objetivo",
+        template: `<lsw-filesystem-explorer :opened-by="goalFilepath" :absolute-layout="true" />`,
+        factory: {
+          data: { goal, goalFilepath },
+          methods: { }
+        }
       });
     }
   },
@@ -31306,6 +31664,374 @@ Vue.component("LswGoalsViewer", {
   }
 });
 // @code.end: LswGoalsViewer API
+// @code.start: LswGoalsRecordsViewer API | @$section: Vue.js (v2) Components » LswGoalsRecordsViewer component
+Vue.component("LswGoalsRecordsViewer", {
+  template: `<div class="lsw_goals_records_viewer">
+    <div class=""
+        v-if="isLoaded">
+        <div class="titulo_de_record">
+            <div class="flex_row centered">
+                <div class="flex_100">🏁 Objetivos extraídos:</div>
+                <div class="flex_1 pad_right_1">
+                    <button class="supermini" v-on:click="toggleAllSelectedGoals">☑️</button>
+                </div>
+                <div class="flex_1" v-on:click="toggleGoals">
+                    <button class="supermini" v-if="!isShowingGoals">➕</button>
+                    <button class="supermini" v-else>➖</button>
+                </div>
+            </div>
+        </div>
+        <div class="available_goals_list" v-if="isShowingGoals">
+            <div class="display_inline_block"
+                v-for="goalId, goalIndex in availableGoals"
+                v-bind:key="'goal_id_' + goalId">
+                <button class="supermini button_checkbox">
+                    <label class="">
+                        <input class=""
+                            type="checkbox"
+                            v-model="selectedGoals"
+                            :value="goalId" />
+                        <span class="pad_1">{{ goalId }}</span>
+                    </label>
+                </button>
+            </div>
+        </div>
+        <div class=""
+            v-for="record, recordIndex in records">
+            <div class="titulo_de_record">📸 Tomada en: {{ record.date }}</div>
+            <template v-for="goal, goalIndex in record.goals">
+                <div class="display_inline_block pad_bottom_1"
+                    v-if="(!selectedGoals) || (selectedGoals.length === 0) || (selectedGoals.indexOf(goal.originalConcept) !== -1)"
+                    v-bind:key="'record-' + recordIndex + '-goal-' + goalIndex">
+                    <div class="carta_de_record smallest_font">
+                        <div class="celda_de_concepto_de_record flex_row"
+                            style="justify-content: start;"
+                            :style="{backgroundColor: goal.color, color: goal.foregroundColor || 'black'}">
+                            <div class="flex_100">
+                                <div class="">
+                                    {{ goal.originalConcept }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex_row"
+                            style="justify-content: start; display: none;">
+                            <div class="flex_1">
+                                <div class=""
+                                    >
+                                    {{ goal.colorMeaning }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex_row text_align_left"
+                            style="justify-content: start;">
+                            <div class="flex_100">
+                                <div class="">
+                                    <span v-if="goal.type === 'by duration'">
+                                        🟢 {{ goal.currentDuration }}
+                                    </span>
+                                    <span v-else-if="goal.type === 'by times'">
+                                        🟢 {{ goal.currentTimes }} {{ goal.currentTimes === 1 ? "vez" : "veces" }}
+                                    </span>
+                                    <span> | {{ goal.filled }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex_row text_align_left"
+                            style="justify-content: start;">
+                            <div class="flex_100">
+                                <div class="">
+                                    <span v-if="goal.type === 'by duration'">
+                                        🔴 {{ goal.missingDuration }}
+                                    </span>
+                                    <span v-else-if="goal.type === 'by times'">
+                                        🔴 {{ goal.missingTimes }} {{ goal.missingTimes === 1 ? "vez" : "veces" }}
+                                    </span>
+                                    <span> | {{ goal.missing }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex_row celda_de_regla_de_record"
+                            style="justify-content: start;">
+                            <div class="flex_100">
+                                <div class="">
+                                    {{ goal.expectedAs }}
+                                    <span v-if="goal.type === 'by duration'">
+                                        {{ goal.expectedDuration }}
+                                    </span>
+                                    <span v-else-if="goal.type === 'by times'">
+                                        {{ goal.expectedTimes }} {{ goal.expectedTimes === 1 ? "vez" : "veces" }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--pre class="codeblock">{{ goal }}</pre-->
+                </div>
+            </template>
+        </div>
+    </div>
+</div>`,
+  props: {
+
+  },
+  data() {
+    this.$trace("lsw-goals-records-viewer.data");
+    return {
+      isLoaded: false,
+      isShowingGoals: true,
+      records: false,
+      selectedGoals: [],
+      availableGoals: [],
+    };
+  },
+  methods: {
+    async loadRecords() {
+      this.$trace("lsw-goals-records-viewer.methods.loadRecords");
+      this.isLoaded = false;
+      try {
+        const recordsFiles = await this.$lsw.fs.read_directory("/kernel/goals/records");
+        const recordDays = Object.keys(recordsFiles).map(file => file.replace(/\.json$/g, ""));
+        const allRecords = [];
+        const allGoalConcepts = [];
+        const errors = [];
+        for (let index = 0; index < recordDays.length; index++) {
+          const recordDay = recordDays[index];
+          try {
+            const recordPath = `/kernel/goals/records/${recordDay}.json`;
+            const recordJson = await this.$lsw.fs.read_file(recordPath);
+            const recordData = JSON.parse(recordJson);
+            allRecords.push(recordData);
+            for(let indexGoals=0; indexGoals<recordData.goals.length; indexGoals++) {
+              const goal = recordData.goals[indexGoals];
+              try {
+                const goalId = goal.originalConcept;
+                const goalPos = allGoalConcepts.indexOf(goalId);
+                if(goalPos === -1) {
+                  allGoalConcepts.push(goalId);
+                }
+              } catch (error) {
+                // @BADLUCK
+              }
+            }
+          } catch (error) {
+            console.log(error);
+            error.message = `(${recordDay}) ` + error.message;
+            error.fileOrigin = recordDay;
+            errors.push(error);
+          }
+        }
+        if (errors.length) {
+          console.log(errors);
+          this.$lsw.toasts.send({
+            title: `Hubo ${errors.length} errores cargando los records`,
+            text: "Errores en: " + errors.map(err => err.fileOrigin).join(", "),
+          });
+          return;
+        }
+        this.records = allRecords;
+        this.availableGoals = allGoalConcepts;
+      } catch (error) {
+        console.log(error);
+      }
+      this.isLoaded = true;
+    },
+    toggleGoals() {
+      this.$trace("lsw-goals-records-viewer.methods.toggleGoals");
+      this.isShowingGoals = !this.isShowingGoals;
+    },
+    toggleAllSelectedGoals() {
+      this.$trace("lsw-goals-records-viewer.methods.toggleAllSelectedGoals");
+      if(this.selectedGoals.length) {
+        this.selectedGoals = [];
+      } else {
+        this.selectedGoals = [].concat(this.availableGoals);
+      }
+    }
+  },
+  watch: {},
+  mounted() {
+    this.$trace("lsw-goals-records-viewer.mounted");
+    this.loadRecords();
+  },
+  unmounted() {
+    this.$trace("lsw-goals-records-viewer.unmounted");
+  }
+});
+// @code.end: LswGoalsRecordsViewer API
+// @code.start: LswBinDirectory API | @$section: Vue.js (v2) Components » LswBinDirectory component
+Vue.component("LswBinDirectory", {
+  template: `<div class="lsw_bin_directory">
+    <div class="flex_row centered">
+        <div class="flex_100">
+            <h4>💣 Binarios rápidos:</h4>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="openBinarios">📂↗️</button>
+        </div>
+    </div>
+    <template v-if="!isLoaded">
+        Un momento, se están cargando...
+    </template>
+    <lsw-error-viewer :error="hasError"
+        v-else-if="hasError" />
+    <div class="binaries_list"
+        :class="{is_searching: isAboutSearching}"
+        v-else>
+        <div class="flex_row centered pad_top_1">
+            <div class="flex_100 pad_right_1">
+                <input class="supermini width_100 binaries_searcher_input"
+                    type="text"
+                    v-model="searchText"
+                    v-on:keyup="digestDelayed"
+                    v-on:keypress.enter="digestOutput" />
+            </div>
+            <div class="flex_1">
+                <button class="supermini"
+                    v-on:click="digestOutput">🔎</button>
+            </div>
+        </div>
+        <template v-if="binariesInSelection && binariesInSelection.length">
+            <div class="binarie_item display_inline_block pad_right_1"
+                v-for="binarie, binarieIndex in binariesInSelection"
+                v-bind:key="'binarie_' + binarieIndex">
+                <div class="flex_row centered">
+                    <button class="supermini text_align_left pill_start"
+                        v-on:click="() => executeBin(binarie)">
+                        <div class="flex_row centered">
+                            <div class="flex_100 smallest_font">{{ formatFilepathForUser(binarie.filepath) }}</div>
+                            <div class="flex_1 pad_left_1 smallest_font">{{ binarie.content.length }}B</div>
+                        </div>
+                    </button><button class="supermini smallest_font pill_end"
+                        style="margin-left: -1px;"
+                        v-on:click="() => editBin(binarie)">↗️</button>
+                </div>
+            </div>
+        </template>
+        <template v-else>
+            <div class="pad_top_2">No se encontraron binarios con el patrón de búsqueda actual.</div>
+        </template>
+    </div>
+</div>`,
+  props: {
+    directory: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    this.$trace("lsw-bin-directory.data");
+    return {
+      hasError: false,
+      isLoaded: false,
+      isAboutSearching: false,
+      searchText: "",
+      binaries: [],
+      binariesInSelection: [],
+      delayedTimeout: 0.7 * 1000,
+      delayedTimeoutId: undefined,
+    };
+  },
+  methods: {
+    async loadBinaries() {
+      this.$trace("lsw-bin-directory.methods.loadBinaries");
+      try {
+        this.isLoaded = false;
+        const allBinaries = await this.$lsw.fs.$selectMany(it => {
+          return it.type === "file" && it.filepath.startsWith("/kernel/bin") && it.filepath.endsWith(".js");
+        });
+        this.binaries = allBinaries;
+        await this.digestOutput();
+      } catch (error) {
+        this.$lsw.toasts.send({
+          title: "No pudieron cargarse los binarios",
+          text: 'Hubo un error al cargar los binarios'
+        });
+        console.error(`[!] Could not load bin-directory «${this.directory}» because:`, error);
+        this.hasError = error;
+      } finally {
+        this.isLoaded = true;
+      }
+    },
+    digestOutput() {
+      this.$trace("lsw-bin-directory.methods.digestOutput");
+      return new Promise((resolve, reject) => {
+        let output = [];
+        try {
+          this.isAboutSearching = true;
+          Apply_search: {
+            if (this.searchText.trim() === "") {
+              output = this.binaries;
+              break Apply_search;
+            }
+            const loweredSearchText = this.searchText.toLowerCase();
+            for (let index = 0; index < this.binaries.length; index++) {
+              const binarie = this.binaries[index];
+              const hasMatch = binarie.filepath.toLowerCase().indexOf(loweredSearchText) !== -1;
+              if (hasMatch) {
+                output.push(binarie);
+              }
+            }
+          }
+          return resolve(output);
+        } catch (error) {
+          return reject(error);
+        } finally {
+          Export_results: {
+            this.isAboutSearching = false;
+            this.binariesInSelection = output;
+          }
+        }
+      });
+    },
+    digestDelayed() {
+      this.$trace("lsw-bin-directory.methods.digestDelayed");
+      clearTimeout(this.delayedTimeoutId);
+      this.isAboutSearching = true;
+      this.delayedTimeoutId = setTimeout(this.digestOutput, this.delayedTimeout);
+    },
+    async executeBin(binarie) {
+      this.$trace("lsw-bin-directory.methods.executeBin");
+      const asyncBin = LswUtils.createAsyncFunction(binarie.content);
+      try {
+        const output = await asyncBin.call(this);
+        Aqui_se_hookearia_pero_creo_que_no: {
+          console.log(output);
+        }
+        return output;
+      } catch (error) {
+        this.$lsw.toasts.sendError(error);
+      }
+    },
+    editBin(binarie) {
+      this.$trace("lsw-bin-directory.methods.editBin");
+      this.$lsw.dialogs.open({
+        title: "Editando binario",
+        template: `<lsw-filesystem-explorer :opened-by="binarie.filepath" :absolute-layout="true" />`,
+        factory: { data: { binarie } },
+      });
+    },
+    openBinarios() {
+      this.$trace("lsw-bin-directory.methods.openBinarios");
+      this.$lsw.dialogs.open({
+        title: "Explorando binarios",
+        template: `<lsw-filesystem-explorer opened-by="/kernel/bin" :absolute-layout="true" />`
+      });
+    },
+    formatFilepathForUser(txt) {
+      return txt.replace(this.directory, "").replace(/^\//g, "").replace(/\.js$/g, "");
+    }
+  },
+  mounted() {
+    this.$trace("lsw-bin-directory.mounted");
+    this.loadBinaries();
+  },
+  unmount() {
+    this.$trace("lsw-bin-directory.unmounted");
+    // @OK
+  }
+});
+// @code.end: LswBinDirectory API
 // @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
 Vue.component("LswAgenda", {
   name: "LswAgenda",
@@ -31872,10 +32598,12 @@ Vue.component("LswAgendaAccionesViewer", {
   name: "LswAgendaAccionesViewer",
   template: `<div class="lsw_agenda_acciones_viewer">
 
-    <template class="" v-if="sorterStrategy === 'despues'">
+    <template class="" v-if="true || (sorterStrategy === 'despues')">
         <template class="" v-if="!isLoading">
             <template class="" v-if="isShowingGoals">
-                <lsw-goals-viewer ref="goalsViewer" :on-close="() => {isShowingGoals = false;}" />
+                <lsw-goals-viewer ref="goalsViewer"
+                    :on-close="() => {isShowingGoals = false;}"
+                    :day-to-analize="selectedDate" />
             </template>
         </template>
     </template>
@@ -34381,8 +35109,8 @@ Vue.component("LswTextControl", {
                 <input class="flex_100"
                     type="text"
                     v-model="value"
-                    v-on="settings.input?.events || {}"
-                    v-bind="settings.input?.props || {}"
+                    v-on="getSettingsInputEvents"
+                    v-bind="getSettingsInputProps"
                     v-xform.input="{name: '*',onValidate: settings.input?.onValidate || \$noop}"
                     spellcheck="false"
                     ref="textInput" />
@@ -34404,7 +35132,7 @@ Vue.component("LswTextControl", {
   data() {
     this.$trace("lsw-text-control.data");
     this.validateSettings();
-    const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
+    const value = this.settings?.initialValue || this.settings?.column?.hasDefaultValue || "";
     return {
       uuid: LswRandomizer.getRandomString(5),
       value,
@@ -34427,6 +35155,22 @@ Vue.component("LswTextControl", {
     }
   },
   watch: {},
+  computed: {
+    getSettingsInputEvents() {
+      const base0 = this.settings.input?.events || false;
+      if(typeof base0 === "object") {
+        return base0;
+      }
+      return {};
+    },
+    getSettingsInputProps() {
+      const base0 = this.settings.input?.props || false;
+      if(typeof base0 === "object") {
+        return base0;
+      }
+      return {};
+    }
+  },
   mounted() {
     try {
       this.$trace("lsw-text-control.mounted");
@@ -36520,11 +37264,12 @@ rel correr
     <lsw-toasts />
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
-            <div class="mobile_off_panel_cell" v-on:click="clickPicas">✴️</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
+            <!--div class="mobile_off_panel_cell" v-on:click="clickPicas">✴️</div-->
             <div class="mobile_off_panel_cell" v-on:click="goToCalendario">📅</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToEnciclopedia">🔬</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToBinaries">💣</div>
             <div class="mobile_off_panel_cell" v-on:click="goToHomepage">📟</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToEnciclopedia">🔬</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
         </div>
     </div>
     <lsw-clockwatcher />
@@ -36613,6 +37358,9 @@ rel correr
         this.$trace("App.methods.clickPicas");
         document.querySelector("#the_picas_button").click();
       },
+      goToBinaries() {
+        this.$refs.desktop.selectApplication("binarios");
+      },
       goToHomepage() {
         this.$refs.desktop.selectApplication("homepage");
       },
@@ -36632,11 +37380,15 @@ rel correr
         await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
         await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", LswConstants.global.pick("multiplicador.js"));
         await this.$lsw.fs.ensureDirectory("/kernel/settings/table/storage");
+        await this.$lsw.fs.ensureDirectory("/kernel/goals/records");
+        await this.$lsw.fs.ensureDirectory("/kernel/goals/todos");
+        await this.$lsw.fs.ensureDirectory("/kernel/bin");
         /*
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-3-veces.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-3-veces.js"));
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-4h.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-4h.js"));
         //*/
         await this.$lsw.fs.ensureFile("/kernel/settings/goals.env", LswConstants.global.pick("/kernel/settings/goals.env"));
+        
         
         await this.$lsw.fs.ensureDirectory("/kernel/components");
         await this.$lsw.fs.ensureFile("/kernel/boot.js", LswConstants.global.pick("boot.js"));

@@ -19,7 +19,7 @@
 
   const LswGoals = class {
 
-    static async getGoalsReport() {
+    static async getGoalsReport(someDate = new Date()) {
       Vue.prototype.$trace("lsw-goals-viewer.methods.getGoalsReport");
       try {
         const parsedLines = await Vue.prototype.$lsw.fs.evaluateAsDotenvListFileOrReturn("/kernel/settings/goals.env", []);
@@ -36,7 +36,7 @@
           };
         });
         // 2. Get today's completed actions:
-        const todayCompletedActions = await this.getTodayActions(false, "completada");
+        const todayCompletedActions = await this.getSomeDayActions(someDate, false, "completada");
         // 3. Expand goals:
         for (let indexGoal = 0; indexGoal < originalGoals.length; indexGoal++) {
           const originalGoal = originalGoals[indexGoal];
@@ -82,7 +82,8 @@
     }
     static formatCondition(originalTxt, concept) {
       const isMin = originalTxt.startsWith(">");
-      const op = originalTxt.match(/(\<|\>)(=)?/g);
+      const op = originalTxt.trim().match(/(\<|\>)(=)?/g);
+      const opCorrected = op.length === 1 ? op + "=" : op;
       const txt = originalTxt.replace(/(\<|\>)(=)?/g, "")
       const isTimes = this.isConditionByTimes(txt);
       const isDuration = this.isConditionByDuration(txt);
@@ -121,24 +122,34 @@
           if (isTimes) {
             const expectedTimes = referenceValue;
             conclusion.expectedTimes = expectedTimes;
-            const evaluableSource = `${conclusion.currentTimes} ${op} ${expectedTimes}`;
+            const evaluableSource = `${conclusion.currentTimes} ${opCorrected} ${expectedTimes}`;
             console.log("[*] Evaluating JavaScript for condition: ", evaluableSource);
             conclusion.filledAsint = Math.round(100 * (conclusion.currentTimes / conclusion.expectedTimes));
             conclusion.filled = conclusion.filledAsint + "%";
+            Specific_for_time_cases: {
+              conclusion.missingTimes = conclusion.expectedTimes - conclusion.currentTimes;
+            }
             conclusion.missingAsint = 100 - conclusion.filledAsint;
             conclusion.missing = conclusion.missingAsint + "%";
             conclusion.solved = window.eval(evaluableSource);
+            conclusion.solvable = evaluableSource;
           } else if (isDuration) {
             const expectedDuration = referenceValue;
             conclusion.expectedDurationInms = expectedDuration;
             conclusion.expectedDuration = LswTimer.utils.fromMillisecondsToDurationstring(expectedDuration);
-            const evaluableSource = `${conclusion.currentDurationInms} ${op} ${expectedDuration}`;
+            const evaluableSource = `${conclusion.currentDurationInms} ${opCorrected} ${expectedDuration}`;
             console.log("[*] Evaluating JavaScript for condition: ", evaluableSource);
             conclusion.filledAsint = Math.round(100 * (conclusion.currentDurationInms / conclusion.expectedDurationInms));
             conclusion.filled = conclusion.filledAsint + "%";
+            const missingDurationInms = LswUtils.zeroIfNegative(conclusion.expectedDurationInms - conclusion.currentDurationInms);
+            Specific_for_duration_cases: {
+              conclusion.missingDuration = LswTimer.utils.fromMillisecondsToDurationstring(missingDurationInms);
+              conclusion.missingDurationInms = missingDurationInms;
+            }
             conclusion.missingAsint = 100 - conclusion.filledAsint;
             conclusion.missing = conclusion.missingAsint + "%";
             conclusion.solved = window.eval(evaluableSource);
+            conclusion.solvable = evaluableSource;
           }
         }
         this.expandColor(conclusion);
@@ -146,23 +157,54 @@
       };
     }
 
-    static COLOR = {
+    static COLOR_GAMA_1 = {
       SUSPENSO: "red",
-      INSUFICIENTE: "pink",
-      SUFICIENTE: "blue",
+      INSUFICIENTE: "#e87489",
+      SUFICIENTE: "#5353bf",
       NOTABLE: "orange",
       EXCELENTE: "yellow",
       SOBRESALIENTE: "lime",
     };
 
-    static REVERSE_COLOR = {
+    static COLOR_GAMA_2 = {
+      SUSPENSO: "#D32F2F",
+      INSUFICIENTE: "#F57C00",
+      SUFICIENTE: "#FBC02D",
+      NOTABLE: "#C0CA33",
+      EXCELENTE: "#7CB342",
+      SOBRESALIENTE: "#388E3C",
+    };
+
+    static COLOR_GAMA_3 = {
+      SUSPENSO: "#c62828",
+      INSUFICIENTE: "#ef6c00",
+      SUFICIENTE: "#f9a825",
+      NOTABLE: "#29b6f6",
+      EXCELENTE: "#66bb6a",
+      SOBRESALIENTE: "#00897b",
+    };
+
+    static COLOR = this.COLOR_GAMA_3;
+
+    static COLOR_MEANING = {
+      [this.COLOR.SUSPENSO]: "SUSPENSO",
+      [this.COLOR.INSUFICIENTE]: "INSUFICIENTE",
+      [this.COLOR.SUFICIENTE]: "SUFICIENTE",
+      [this.COLOR.NOTABLE]: "NOTABLE",
+      [this.COLOR.EXCELENTE]: "EXCELENTE",
+      [this.COLOR.SOBRESALIENTE]: "SOBRESALIENTE",
+    };
+
+    /*
+    static COLOR_MEANING = {
       "red": "SUSPENSO",
-      "pink": "INSUFICIENTE",
-      "blue": "SUFICIENTE",
+      "#e87489": "INSUFICIENTE",
+      "#5353bf": "SUFICIENTE",
       "orange": "NOTABLE",
       "yellow": "EXCELENTE",
       "lime": "SOBRESALIENTE",
     };
+    //*/
 
     static expandColor(_) {
       const percentage = _.filledAsint;
@@ -189,7 +231,7 @@
       })();
       Object.assign(_, {
         color: assignedColor,
-        colorMeaning: this.REVERSE_COLOR[assignedColor],
+        colorMeaning: this.COLOR_MEANING[assignedColor],
       });
     }
 
@@ -210,9 +252,8 @@
       }
     }
 
-    static getTodayActions(concept = false, state = false) {
-      Vue.prototype.$trace("lsw-goals-viewer.methods.getTodayActions");
-      const dateToday = new Date();
+    static getSomeDayActions(dateToday = new Date(), concept = false, state = false) {
+      Vue.prototype.$trace("lsw-goals-viewer.methods.getSomeDayActions");
       return Vue.prototype.$lsw.database.selectMany("Accion", acc => {
         const dateInicio = LswTimer.utils.fromDatestringToDate(acc.tiene_inicio);
         const isSameDay = LswTimer.utils.areSameDayDates(dateInicio, dateToday);

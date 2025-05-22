@@ -107,6 +107,9 @@ rel correr
         this.$trace("App.methods.clickPicas");
         document.querySelector("#the_picas_button").click();
       },
+      goToBinaries() {
+        this.$refs.desktop.selectApplication("binarios");
+      },
       goToHomepage() {
         this.$refs.desktop.selectApplication("homepage");
       },
@@ -126,11 +129,15 @@ rel correr
         await this.$lsw.fs.ensureDirectory("/kernel/agenda/proto/relacion");
         await this.$lsw.fs.ensureFile("/kernel/agenda/proto/funcion/multiplicador.js", LswConstants.global.pick("multiplicador.js"));
         await this.$lsw.fs.ensureDirectory("/kernel/settings/table/storage");
+        await this.$lsw.fs.ensureDirectory("/kernel/goals/records");
+        await this.$lsw.fs.ensureDirectory("/kernel/goals/todos");
+        await this.$lsw.fs.ensureDirectory("/kernel/bin");
         /*
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-3-veces.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-3-veces.js"));
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-4h.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-4h.js"));
         //*/
         await this.$lsw.fs.ensureFile("/kernel/settings/goals.env", LswConstants.global.pick("/kernel/settings/goals.env"));
+        
         
         await this.$lsw.fs.ensureDirectory("/kernel/components");
         await this.$lsw.fs.ensureFile("/kernel/boot.js", LswConstants.global.pick("boot.js"));

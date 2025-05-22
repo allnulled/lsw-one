@@ -3,68 +3,74 @@
     <div class="lista_apps" style="font-size: 10px;">
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('base de datos')">
-                <div class="flex_100">↗️ Base de datos</div>
-                <div class="flex_1 nowrap">📦</div>
+                <div class="flex_100">📦 Base de datos</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
         </div>
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('sistema de ficheros')">
-                <div class="flex_100">↗️ Sistema de ficheros</div>
-                <div class="flex_1 nowrap">📂</div>
+                <div class="flex_100">📂 Sistema de ficheros</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
         </div>
         <div class="item_app">
-            <div class="nombre_app flex_row centered" v-on:click="abrirApp('configuraciones')">
-                <div class="flex_100">↗️ Configuraciones</div>
-                <div class="flex_1 nowrap">🔧</div>
+            <div class="nombre_app flex_row centered" v-on:click="abrirApp('binarios')">
+                <div class="flex_100">💣 Binarios</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
         </div>
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('calendario')">
-                <div class="flex_100">↗️ Calendario</div>
-                <div class="flex_1 nowrap">📆</div>
+                <div class="flex_100">📆 Calendario</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
             <div class="lista_apps">
                 <div class="item_app">
-                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('despues')">
-                        <div class="flex_100">➡️ Tareas posteriores</div>
-                        <div class="flex_1 nowrap">🕔 ➡️</div>
+                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('antes')">
+                        <div class="flex_100">⬅️ 🕔 Tareas anteriores</div>
+                        <div class="flex_1 nowrap">↗️</div>
                     </div>
                 </div>
                 <div class="item_app">
-                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('antes')">
-                        <div class="flex_100">➡️ Tareas anteriores</div>
-                        <div class="flex_1 nowrap">⬅️ 🕔</div>
+                    <div class="nombre_app flex_row centered" v-on:click="abrirApp('despues')">
+                        <div class="flex_100">🕔 ➡️ Tareas posteriores</div>
+                        <div class="flex_1 nowrap">↗️</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('notas')">
-                <div class="flex_100">↗️ Notas</div>
-                <div class="flex_1 nowrap">💬</div>
+                <div class="flex_100">💬 Notas</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
             <div class="lista_apps">
                 <div class="item_app">
                     <div class="nombre_app flex_row centered" v-on:click="abrirApp('nueva nota')">
-                        <div class="flex_100">➡️ Nueva nota</div>
-                        <div class="flex_1 nowrap">+ 💬</div>
+                        <div class="flex_100">+ 💬 Nueva nota</div>
+                        <div class="flex_1 nowrap">↗️</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('enciclopedia')">
-                <div class="flex_100">↗️ Enciclopedia</div>
-                <div class="flex_1 nowrap">🔬</div>
+                <div class="flex_100">🔬 Enciclopedia</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
             <div class="lista_apps">
                 <div class="item_app">
                     <div class="nombre_app flex_row centered" v-on:click="abrirApp('nuevo articulo')">
-                        <div class="flex_100">➡️ Nuevo artículo</div>
-                        <div class="flex_1 nowrap">+ 🔬</div>
+                        <div class="flex_100">+ 🔬 Nuevo artículo</div>
+                        <div class="flex_1 nowrap">↗️</div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="item_app">
+            <div class="nombre_app flex_row centered" v-on:click="abrirApp('configuraciones')">
+                <div class="flex_100">🔧 Configuraciones</div>
+                <div class="flex_1 nowrap">↗️</div>
             </div>
         </div>
     </div>

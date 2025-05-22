@@ -4,17 +4,26 @@
             <div class="flex_row centered">
                 <div class="flex_1"></div>
                 <template v-if="isLoaded">
+                    <button class="supermini"
+                        :class="{activated: isClicking}"
+                        v-on:mousedown="() => isClicking = true"
+                        v-on:mouseup="() => isClicking = false">
+                        ❓
+                    </button>
                     <div class="nowrap flex_1 pad_left_1">
                         <button class="supermini"
-                            disabled="disabled"> 🟢{{ summary.resolved }} </button>
+                            :class="{activated: isFiltering === 'none'}"
+                            v-on:click="() => selectFilter('none')"> 🏁{{ summary.total }} </button>
                     </div>
                     <div class="nowrap flex_1 pad_left_1">
                         <button class="supermini"
-                            disabled="disabled"> 🔴{{ summary.failed }} </button>
+                            :class="{activated: isFiltering === 'completed'}"
+                            v-on:click="() => selectFilter('completed')"> 🟢{{ summary.resolved }} </button>
                     </div>
                     <div class="nowrap flex_1 pad_left_1">
                         <button class="supermini"
-                            disabled="disabled"> 🏁{{ summary.total }} </button>
+                            :class="{activated: isFiltering === 'failing'}"
+                            v-on:click="() => selectFilter('failing')"> 🔴{{ summary.failed }} </button>
                     </div>
                     <div class="nowrap flex_100"></div>
                 </template>
@@ -22,48 +31,118 @@
         </div>
         <div class="flex_1 pad_left_1">
             <button class="supermini"
-                v-on:click="saveMoment">📸</button>
-        </div>
-        <div class="flex_1 pad_left_1">
-            <button class="supermini"
                 v-on:click="loadGoals">🛜</button>
         </div>
         <div class="flex_1 pad_left_1">
             <button class="supermini"
-                v-on:click="openGoalsFile">📃↗️</button>
+                v-on:click="openGoalsFile">🏁↗️</button>
         </div>
-        <div class="flex_1 pad_left_1">
+        <!--div class="flex_1 pad_left_1">
             <button class="supermini"
                 v-on:click="onClose">❌</button>
-        </div>
+        </div-->
     </div>
     <div class="goals_list"
         v-if="isLoaded">
         <template v-for="goal, goalIndex in report.goals">
             <div v-bind:key="'goal-' + goalIndex"
-                v-if="goal.filledAsint < 100"
+                v-if="passesFilter(goal)"
                 class="goal_item">
-                <div class="bar_holder">
-                    <div class="bar_text">
-                        <template v-if="goal.type === 'by duration'">
-                            <b>{{ goal.concept }}:</b> +{{ goal.filled }}
-                            <span v-if="goal.missingAsint > 0"> / -{{ goal.missing }}</span>
-                            <b>| {{ goal.expectedAsAbbr }}:</b>{{ goal.expectedDuration }}
-                            <b>| curr:</b>{{ goal.currentDuration }}
-                        </template>
-                        <template v-else-if="goal.type === 'by times'">
-                            <b>{{ goal.concept }}:</b> +{{ goal.filled }} / -{{ goal.missing }}
-                            <b>| {{ goal.expectedAsAbbr }}:</b>{{ goal.expectedTimes }}
-                            <b>| curr:</b>{{ goal.currentDuration }}
-                        </template>
+                <div>
+                    <div class="bar_holder"
+                        v-on:click="() => selectGoal(goal)">
+                        <div class="bar_text">
+                            <div class="position_relative"
+                                v-if="isClicking">
+                                <div class="position_absolute"
+                                    style="top: 0px; bottom: auto; left: 0px; opacity: 0.8;">
+                                    <div class="flex_row centered">
+                                        <div class="flex_1"><b><u>{{ goal.originalLine }}</u></b></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_row centered"
+                                v-else>
+                                <div class="flex_1">{{ goal.solved ? symbolForSolved : symbolForPending }}</div>
+                                <template v-if="goal.type === 'by duration'">
+                                    <div class="flex_auto pad_left_1"
+                                        v-if="goal.missingDurationInms"><b>⛔️ </b>{{ goal.missingDuration }} </div>
+                                    <div class="flex_auto pad_left_1"><b>🟢 </b>{{ goal.currentDuration }} </div>
+                                    <div class="flex_auto pad_left_1"><b>{{ getAbbrvWord(goal.expectedAsAbbr) }}</b> {{
+                                        goal.expectedDuration }} </div>
+                                </template>
+                                <template v-if="goal.type === 'by times'">
+                                    <div class="flex_auto pad_left_1"
+                                        v-if="goal.missingTimes"><b>⛔️ </b>{{ goal.missingTimes }}t </div>
+                                    <div class="flex_auto pad_left_1"><b>🟢 </b>{{ goal.currentTimes }}t </div>
+                                    <div class="flex_auto pad_left_1"><b>{{ getAbbrvWord(goal.expectedAsAbbr) }}</b>{{ goal.expectedTimes
+                                        }}t </div>
+                                </template>
+                                <template>
+                                    <div class="flex_auto pad_left_1"><b>⭕️</b> {{ goal.filled }} </div>
+                                    <div class="flex_auto pad_left_1"
+                                        v-if="goal.missingAsint > 0"> ➖ {{ goal.missing }}</div>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="bar_filler"
+                            :style="{ width: goal.filledAsint < 100 ? goal.filled : (100 + '%'), backgroundColor: goal.color }">
+                        </div>
                     </div>
-                    <div class="bar_filler"
-                        :style="{ width: goal.filledAsint < 100 ? goal.filled : (100 + '%'), backgroundColor: goal.color }">
-
+                    <div v-if="selectedGoal === goal">
+                        <div class="pad_1">
+                            <div class="smallest_font goal_status_card margin_bottom_1" style="color:black; min-height: 25px;">
+                                <div class="position_relative">
+                                    <div class="position_absolute"
+                                        style="top: 0px; right: 0px;">
+                                        <button class="supermini"
+                                            v-on:click="() => editTodoOfGoal(goal)">📄↗️</button>
+                                    </div>
+                                </div>
+                                <template v-if="!isLoadingGoals">
+                                    <div class="pad_top_1" v-if="goal.concept in specifiedGoals">
+                                        <lsw-sourceable :source="specifiedGoals[goal.concept]" />
+                                    </div>
+                                    <div class="pad_top_1" v-else>
+                                        🍃 Sin especificaciones 🍃
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="smallest_font goal_status_card">
+                                <template
+                                    v-for="field, fieldIndex in interestingFields">
+                                    <div v-if="fieldIndex in goal"
+                                        class="goal_line"
+                                        v-bind:key="'field_' + fieldIndex"
+                                        style="color: black;">
+                                        <div class="width_100 flex_row centered pad_vertical_1">
+                                            <div class="flex_1 label nowrap font_weight_bold">▪️ {{ field }}:</div>
+                                            <div class="flex_100 value text_align_right">{{ goal[fieldIndex] }}</div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <pre class="codeblock">{{ goal }}</pre>
+                        </div>
                     </div>
                 </div>
                 <div class="bar_separation"></div>
             </div>
         </template>
+    </div>
+    <div class="flex_row centered pad_vertical_1">
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="saveMoment">📸</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="openRecordsDirectory">📷📂</button>
+        </div>
+        <div class="flex_100"></div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="openRecordsViewer">📷📊</button>
+        </div>
     </div>
 </div>

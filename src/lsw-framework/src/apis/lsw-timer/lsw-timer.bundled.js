@@ -1622,6 +1622,9 @@
   };
 
   LswTimer.utils.fromMillisecondsToDurationstring = function (ms) {
+    if(ms === 0) {
+      return "0min";
+    }
     const units = {
       y: 1000 * 60 * 60 * 24 * 365,
       mon: 1000 * 60 * 60 * 24 * 30,

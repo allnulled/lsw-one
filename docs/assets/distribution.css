@@ -785,6 +785,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .console-hooker .console_box {
     position: relative;
     max-height: 120px;
+    height: 100%;
     font-size: 12px;
     color: black;
     background: #000000db;
@@ -794,10 +795,13 @@ table.lsw_table_itself>thead>tr>th.button_header {
     display: flex;
     flex-direction: column;
 }
+.console-hooker .console_box.amplified {
+    max-height: 100%;
+}
 .console_box_title {
     display: inline-block;
-    width: auto;
-    padding: 4px;
+    width: 100%;
+    padding: 0px;
     background-color: transparent;
     color: white;
     position: absolute;
@@ -816,6 +820,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
     font-size: 10px;
     white-space: pre;
     width: 100%;
+    min-height: 35px;
 }
 
 
@@ -1214,7 +1219,7 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
     font-size: 13px;
 }
 :root {
-  --goals_bar_height: 30px;
+  --goals_bar_height: 20px;
 }
 
 .lsw_goals_viewer {
@@ -1233,18 +1238,20 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
   min-height: 1px;
 }
 .bar_holder {
+  background-color: rgba(255,255,255,0.4);
   position: relative;
   border: 1px solid transparent;
   border-radius: 2pt;
   padding: 1px;
   min-height: 24px;
+  cursor: pointer;
 }
 .bar_text {
   position: absolute;
   top: 0px;
   left: 0px;
-  padding-left: 4px;
-  padding-top: 9px;
+  padding-left: 8px;
+  padding-top: 4px;
   font-size: 10px;
   color: black;
   white-space: nowrap;
@@ -1253,6 +1260,106 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
   height: var(--goals_bar_height);
   border-radius: 2pt;
   box-shadow: 0 0 4px black;
+  min-width: 3px;
+}
+.concepto_box {
+  display: inline-block;
+  width: 100px;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.only_inlineblocks > div {
+  display: inline-block;
+}
+
+.goal_status_card {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 3pt;
+  border: 0px solid white;
+  padding: 4px;
+  padding-top: 0px;
+}
+
+.goal_status_card .goal_line {
+  border-bottom: 1px solid #333;
+}
+.lsw_goals_records_viewer {
+    
+}
+
+.titulo_de_record {
+  background-color: #847fb7e0;
+  color: black;
+  padding: 4px;
+  margin-bottom: 4px;
+  border-radius: 2pt;
+  border: 1px solid #333;
+}
+
+.carta_de_record {
+  display: inline-block;
+  margin-right: 4px;
+  border: 1px solid #222;
+  padding: 1px;
+  text-align: center;
+}
+
+.celda_de_concepto_de_record {
+  background-color: #111;
+  color: white;
+  margin-bottom: 1px;
+  padding: 4px;
+  font-weight: bold;
+}
+.celda_de_regla_de_record {
+  background-color: #111;
+  color: white;
+  margin-top: 1px;
+}
+
+/* Widget de checkbox */
+button.button_checkbox {
+  padding: 0px !important;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  vertical-align: top;
+  cursor: pointer;
+}
+button.button_checkbox > label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
+button.button_checkbox > label > input[type="checkbox"] {
+  flex: 1;
+  min-height: auto;
+  cursor: pointer;
+}
+
+button.button_checkbox > label > span {
+  flex: 100;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.lsw_bin_directory {}
+
+.binaries_list {}
+.binaries_list .binarie_item {
+    margin-top: 2px;
+}
+.binaries_list .binarie_item button {
+    min-height:25px;
+    border: 1px solid rgb(215, 222, 27);
+}
+.binaries_list .binarie_item button:hover {
+    border: 1px solid rgb(215, 222, 27);
+}
+
+.binaries_list.is_searching .binaries_searcher_input {
+    background-color: #dec275;
 }
 .lsw_agenda {}
 
@@ -3127,8 +3234,8 @@ pre.codeblock {
 
 
 .automensaje_block {
-    border: 0px solid #00000075;
-    border-radius: 20pt;
+    border: 1px solid #ffffff;
+    border-radius: 3pt;
     padding: 0px;
     font-weight: bold;
     font-weight: normal;
@@ -3136,7 +3243,7 @@ pre.codeblock {
     text-align: center;
     cursor: pointer;
     min-height: calc(var(--button_height) - 8px);
-    
+    box-shadow: 0 0 2px black;
     color: #fff;
     background-color: rgba(0, 0, 0, 0.37);
     transition: background-color 0.2s linear;

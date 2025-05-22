@@ -3,12 +3,24 @@
   const runner = async output => {
   
     console.log("[*] App lifecycle ended.");
+
+    Console_hooker_default_deactivation: {
+      // @IMPORTANT: Can cause recursivity problems with vue@2
+      // @BUGS in database
+      // @BUGS in calendar
+      if(window.location.href.startsWith("https://")) {
+        Vue.prototype.$consoleHooker.deactivateConsole();
+      } else {
+        // Vue.prototype.$consoleHooker.deactivateConsole();
+      }
+    }
   
     Logger_activation: {
       if(window.location.href.startsWith("https://")) {
         Vue.prototype.$lsw.logger.deactivate();
       } else {
-        Vue.prototype.$lsw.logger.activate();
+        // Vue.prototype.$lsw.logger.activate();
+        Vue.prototype.$lsw.logger.deactivate();
       }
     }
   
@@ -20,6 +32,9 @@
         Inject_development_point: {
           if(window.location.href.startsWith("http://")) {
             // await LswDomIrruptor.abrirBaseDeDatos();
+            // await LswDomIrruptor.abrirBinarios();
+            await LswDomIrruptor.abrirTareasPosterioresDeNavegacionRapida();
+            // await LswDomIrruptor.abrirRecords();
           }
         }
       } catch (error) {

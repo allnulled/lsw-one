@@ -81,7 +81,11 @@ Vue.component("LswWindowsMainTab", {
         title: "Configuraciones",
         template: `<div class="pad_2"><lsw-configurations-page /></div>`,
       });
-    }
+    },
+    closeProcess(dialog) {
+      this.$trace("lsw-windows-main-tab.methods.closeProcess", arguments);
+      this.$lsw.dialogs.close(dialog.id);
+    },
   },
   mounted() {
     

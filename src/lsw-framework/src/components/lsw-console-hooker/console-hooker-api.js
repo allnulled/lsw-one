@@ -13,9 +13,20 @@
 
   // @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker API
   class ConsoleHooker {
+
+    static extractProps(obj, props = []) {
+      const out = {};
+      for(let index=0; index<props.length; index++) {
+        const prop = props[index];
+        out[prop] = obj[prop].bind(obj);
+      }
+      return out;
+    }
+
     constructor(outputElementId) {
       this.originalConsole = { ...console }; // Guardar los métodos originales
       this.outputElementId = outputElementId;
+      this.isHooked = false;
       this.hookConsole();
       this.messageCounter = 0;
     }
@@ -29,6 +40,9 @@
     ];
 
     hookConsole() {
+      if(this.isHooked) {
+        return;
+      }
       this.HOOKED_METHODS.forEach(method => {
         if (typeof console[method] === 'function') {
           console[method] = (...args) => {
@@ -37,6 +51,7 @@
           };
         }
       });
+      this.isHooked = true;
     }
 
     formatError(error) {
@@ -101,9 +116,13 @@
     }
 
     restoreConsole() {
+      if(!this.isHooked) {
+        return;
+      }
       this.HOOKED_METHODS.forEach(method => {
         console[method] = this.originalConsole[method];
       });
+      this.isHooked = false;
     }
   }
 

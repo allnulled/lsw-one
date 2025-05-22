@@ -5,6 +5,8 @@ Vue.component("LswConsoleHooker", {
   data() {
     return {
       is_shown: true,
+      is_minimized: false,
+      is_amplified: false,
       instance: undefined
     }
   },
@@ -14,6 +16,19 @@ Vue.component("LswConsoleHooker", {
     },
     hide() {
       this.is_shown = false;
+    },
+    minimize() {
+      this.is_minimized = true;
+    },
+    maximize() {
+      this.is_minimized = false;
+    },
+    cleanConsole() {
+      this.$refs.console_output.textContent = "⚓️ Consola hookeada preparada ⚓️";
+    },
+    toggleAmplify() {
+      this.is_amplified = !this.is_amplified;
+      this.$forceUpdate(true);
     },
     executeInput() {
       const input = this.$refs.commandInput.value;
@@ -28,25 +43,19 @@ Vue.component("LswConsoleHooker", {
         });
       }
       this.$refs.commandInput.value = "";
-    }
+    },
+    deactivateConsole() {
+      this.instance.restoreConsole();
+      this.hide();
+    },
+    activateConsole() {
+      this.instance.hookConsole();
+      this.show();
+    },
   },
   mounted() {
     this.instance = new ConsoleHooker("lsw-console-hooker-output");
-    Desactivar_consola: {
-      // this.instance.restoreConsole();
-      // this.hide();
-    }
-    Activar_consola: {
-      // this.instance.hookConsole();
-      this.show();
-    }
-    Hacerlo_condicionalmente: {
-      if(process.env.NODE_ENV !== "production") {
-        
-      } else {
-
-      }
-    }
+    this.activateConsole();
     Exportar_consola: {
       this.$vue.prototype.$consoleHooker = this;
       this.$window.LswConsoleHooker = this;

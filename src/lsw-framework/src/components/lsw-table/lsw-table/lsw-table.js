@@ -409,7 +409,8 @@ Vue.component("LswTable", {
   },
   computed: {
     hasFiltersApplying() {
-      this.$trace("lsw-table.computed.hasFiltersApplying");
+      // @BUGGY: estos logs causan recursividad en el console-hooker
+      // this.$trace("lsw-table.computed.hasFiltersApplying");
       if (this.extender.length) {
         return true;
       }
@@ -443,7 +444,8 @@ Vue.component("LswTable", {
       return false;
     },
     totalOfPages() {
-      this.$trace("lsw-table.computed.totalOfPages");
+      // @BUGGY: estos logs causan recursividad en el console-hooker
+      // this.$trace("lsw-table.computed.totalOfPages");
       return Math.ceil(this.output.length / this.itemsPerPage) || 1;
     },
     currentLastPage() {

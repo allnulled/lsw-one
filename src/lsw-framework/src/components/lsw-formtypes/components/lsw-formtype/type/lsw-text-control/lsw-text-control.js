@@ -14,7 +14,7 @@ Vue.component("LswTextControl", {
   data() {
     this.$trace("lsw-text-control.data");
     this.validateSettings();
-    const value = this.settings?.initialValue || this.settings?.column.hasDefaultValue || "";
+    const value = this.settings?.initialValue || this.settings?.column?.hasDefaultValue || "";
     return {
       uuid: LswRandomizer.getRandomString(5),
       value,
@@ -37,6 +37,22 @@ Vue.component("LswTextControl", {
     }
   },
   watch: {},
+  computed: {
+    getSettingsInputEvents() {
+      const base0 = this.settings.input?.events || false;
+      if(typeof base0 === "object") {
+        return base0;
+      }
+      return {};
+    },
+    getSettingsInputProps() {
+      const base0 = this.settings.input?.props || false;
+      if(typeof base0 === "object") {
+        return base0;
+      }
+      return {};
+    }
+  },
   mounted() {
     try {
       this.$trace("lsw-text-control.mounted");

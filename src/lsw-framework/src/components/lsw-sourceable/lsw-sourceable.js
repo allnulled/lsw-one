@@ -29,7 +29,7 @@ Vue.component("LswSourceable", {
       const that = this;
       const source = this.source || this.$slots.default;
       Vue.component(this.componentId, {
-        template: "<template>" + source + "</template>",
+        template: "<div>" + source + "</div>",
         ...this.composition,
       });
       this.isLoaded = true;

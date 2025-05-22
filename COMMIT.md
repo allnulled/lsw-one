@@ -2,6 +2,31 @@
 
 # 20-05-2025 02:45am
 
+[ ] Panel de binarios
+  [ ] basado en fs
+    [ ] para escribir mejor
+  [ ] que permita categorías
+  [ ] que permita búsqueda rápida
+  [ ] que permita clickar
+[ ] El botón de la cámara
+  [ ] que guarde los resultados con la fecha
+  [ ] en un fichero de la bd
+[ ] panel para explorar fotos anteriores
+[ ] carpeta de TODOs especial
+  [ ] que se visualice directamente en el despues
+[x] reincorporado y mejorado console-hooker
+[x] bug de chivato de goals viewer
+[x] mejorado process-viewer
+  [x] mejor botón que links
+  [x] botón para cerrar proceso sin entrar
+[x] mejorado goals viewer
+  [x] numeritos
+  [x] coloritos
+  [x] dibujitos
+  [x] barritas
+  [x] vistas para grupos
+  [x] simbolitos eficientes
+  [x] itera con el día del calendario
 
 
 # 19-05-2025 10:18am

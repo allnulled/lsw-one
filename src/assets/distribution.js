@@ -11876,7 +11876,7 @@ LswConstants.global.define("Boot.tri", `
 Boot [Artículo para el boot] {
   @{
     "autor": "github.com/allnulled",
-    "mensaje": "Dios, métete tu puto universo por tu puto culo de rata malnacida, no?",
+    "mensaje": "...",
     "año": 2025
   }
   Capitulo 1 {}
@@ -12053,12 +12053,9 @@ programar | > 6h | !3
 
 `.trim());
 
-LswConstants.global.define("/kernel/settings/goals/list/focus.env", `
+LswConstants.global.define("/kernel/settings/trackables.env", `
 
-nombre=enfócate
-urgencia=100
-mensaje=ok
-intervalo=2025-05-17 - 2025/12/30
+Sky castle
 
 `.trim());
 (function (factory) {
@@ -15051,6 +15048,11 @@ intervalo=2025-05-17 - 2025/12/30
       LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
       await LswDom.waitForMilliseconds(100);
       LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
+    }
+    static async abrirFicheros() {
+      LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button.main_tab_topbar_button", "📂").click();
     }
     static async abrirWiki() {
       LswDom.querySelectorFirst(".mobile_off_panel_cell", "🔬").click();
@@ -20693,7 +20695,37 @@ return Store;
       return 0;
     }
     return numero;
-  }
+  };
+
+  LswUtils.filterObject = function(obj, filterer) {
+    return Object.keys(obj).reduce((output, key, index) => {
+      const val = obj[key];
+      console.log(key, val, index, output);
+      const result = filterer(key, val, index, output);
+      if(result) {
+        output[key] = val;
+      }
+      return output;
+    }, {});
+  };
+
+  LswUtils.mapObject = function(obj, mapper, deleterValue = undefined) {
+    return Object.keys(obj).reduce((output, key, index) => {
+      const val = obj[key];
+      const result = mapper(key, val, index, output);
+      if(result !== deleterValue) {
+        output[key] = result;
+      }
+      return output;
+    }, {});
+  };
+
+  LswUtils.reduceObject = function(obj, reducer) {
+    return Object.keys(obj).reduce((output, key, index) => {
+      const val = obj[key];
+      return reducer(key, val, index, output);
+    }, {});
+  };
   // @code.end: LswUtils
 
   return LswUtils;
@@ -29122,6 +29154,13 @@ Vue.component("LswFilesystemExplorer", {
               click: () => this.processToDownloadFile(),
             });
           }
+          Button_to_search_replace: {
+            rightButtonsOnFile.push({
+              text: "🔎↔️",
+              classes: "",
+              click: () => this.processToSearchReplace(),
+            });
+          }
         }
         this.$refs.panelRight.setButtons(...rightButtonsOnFile);
       }
@@ -29549,6 +29588,26 @@ Vue.component("LswFilesystemExplorer", {
           </div>
         `,
       });
+    },
+    async processToSearchReplace() {
+      this.$trace("lsw-filesystem.explorer.methods.processToSearchReplace");
+      const value = await this.$lsw.dialogs.open({
+        title: "Buscar y reemplazar",
+        template: `
+          <lsw-search-replacer
+            :input="input"
+            :on-accept="out => accept(out)"
+            :on-cancel="cancel"
+          />
+        `,
+        factory: {
+          data: {
+            input: this.$refs.editor.getContents(),
+          }
+        }
+      });
+      if(typeof value !== "string") return;
+      this.$refs.editor.setContents(value);
     }
   },
   watch: {
@@ -29901,7 +29960,7 @@ Vue.component("LswWikiLibros", {
                         </button>
                     </div>
                 </div>
-                <div class="pad_top_1" v-if="selectedLibros.indexOf(libro) !== -1">
+                <div class="pad_vertical_1" v-if="selectedLibros.indexOf(libro) !== -1">
                     <div class="" v-if="libro in loadedLibros">
                         <lsw-wiki-libro-viewer :arbol="loadedLibros[libro]" :indice-de-arbol="0" :on-click-link="abrirArticulo">
                             <template v-slot:default="{ arbol }">
@@ -32063,6 +32122,442 @@ Vue.component("LswBinDirectory", {
   }
 });
 // @code.end: LswBinDirectory API
+// @code.start: LswEventTracker API | @$section: Vue.js (v2) Components » LswEventTracker component
+Vue.component("LswEventTracker", {
+  template: `<div class="lsw_event_tracker">
+    <h4>
+        <div class="flex_row centered">
+            <div class="flex_100">📹 Trackeables</div>
+            <div class="flex_1 pad_right_1">
+                <button class="supermini"
+                    v-on:click="loadTrackables">🛜</button>
+            </div>
+            <div class="flex_1">
+                <button class="supermini"
+                    v-on:click="editTrackables">📄↗️</button>
+            </div>
+        </div>
+    </h4>
+    <template v-if="!isLoaded">
+        Cargando componente. Por favor, aguarde...
+    </template>
+    <template>
+        <div class="flex_row centered pad_top_1">
+            <div class="flex_100">
+                <input type="text"
+                    class="supermini width_100"
+                    :class="{ is_searching: isSearching }"
+                    v-model="searchText"
+                    v-on:keypress.enter="digestOutput"
+                    placeholder="Búsqueda rápida de trackeable"
+                />
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="insertTrackable">➕</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="digestOutput">🔎</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="clearSearchText">❌</button>
+            </div>
+        </div>
+        <template v-if="Object.keys(trackables).length === 0">
+            <div class="pad_top_1">No se encontraron eventos con ese patrón de búsqueda.</div>
+        </template>
+        <template v-for="trackable, trackableIndex, trackableCounter in trackables">
+            <div v-bind:key="'trackable-' + trackableIndex"
+                class="pad_top_1">
+                <div class="flex_row centered">
+                    <div class="flex_100 shortable_text">
+                        <div class="">{{ trackableIndex }}</div>
+                    </div>
+                    <div class="flex_1 pad_left_1">
+                        <button class="supermini"
+                            v-on:click="() => deleteTrackable(trackableIndex)">➖</button>
+                    </div>
+                    <div class="flex_1 pad_left_1 text_align_center"
+                        style="min-width:20px;">
+                        {{ trackable.length }}
+                    </div>
+                    <div class="flex_1 pad_left_1">
+                        <button class="supermini"
+                            v-on:click="() => addTrackableWithComment(trackableIndex)">💬</button>
+                    </div>
+                    <div class="flex_1 pad_left_1">
+                        <button class="supermini"
+                            v-on:click="() => addTrackable(trackableIndex)">➕</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </template>
+</div>`,
+  props: {
+    
+  },
+  data() {
+    this.$trace("lsw-event-tracker.data");
+    return {
+      isLoaded: false,
+      isSearching: true,
+      allTrackables: [],
+      trackables: false,
+      searchText: "",
+      digestTimeout: 1000,
+      digestTimeoutId: undefined,
+    };
+  },
+  methods: {
+    async loadTrackables() {
+      this.$trace("lsw-event-tracker.methods.loadTrackables");
+      this.isLoaded = false;
+      try {
+        let trackableIds = undefined;
+        Get_trackables: {
+          trackableIds = await this.$lsw.fs.evaluateAsDotenvListFileOrReturn("/kernel/settings/trackables.env", []);
+        }
+        let trackedData = {};
+        Count_trackables: {
+          const accionesTrackeadas = await this.$lsw.database.selectMany("Accion", it => {
+            return trackableIds.indexOf(it.en_concepto) !== -1;
+          });
+          for(let indexTrackables=0; indexTrackables<trackableIds.length; indexTrackables++) {
+            const trackableId = trackableIds[indexTrackables];
+            trackedData[trackableId] = [];
+            for(let indexTrackeadas=0; indexTrackeadas<accionesTrackeadas.length; indexTrackeadas++) {
+              const accion = accionesTrackeadas[indexTrackeadas];
+              if(accion.en_concepto === trackableId) {
+                trackedData[trackableId].push(accion);
+              }
+            }
+          }
+        }
+        this.allTrackables = trackedData;
+        this.digestOutput();
+      } catch (error) {
+        this.$lsw.toasts.sendError(error);
+      }
+    },
+    digestDelayed() {
+      this.$trace("lsw-event-tracker.methods.digestDelayed");
+      clearTimeout(this.digestTimeoutId);
+      setTimeout(() => {
+        this.digestOutput();
+      }, this.digestTimeout);
+    },
+    digestOutput() {
+      this.$trace("lsw-event-tracker.methods.digestOutput");
+      clearTimeout(this.digestTimeoutId);
+      this.isSearching = true;
+      setTimeout(() => {
+        if(this.searchText.trim() === "") {
+          this.trackables = this.allTrackables;
+        } else {
+          this.trackables = LswUtils.filterObject(this.allTrackables, (key, val) => {
+            return key.toLowerCase().indexOf(this.searchText.toLowerCase()) !== -1;
+          });
+        }
+        this.isLoaded = true;
+        this.isSearching = false;
+      }, 0);
+    },
+    editTrackables() {
+      this.$trace("lsw-event-tracker.methods.editTrackables");
+      this.$lsw.dialogs.open({
+        title: "Editar trackeables",
+        template: `
+          <lsw-filesystem-explorer
+            opened-by="/kernel/settings/trackables.env"
+            :absolute-layout="true"
+          />
+        `,
+      });
+    },
+    async deleteTrackable(trackableId) {
+      this.$trace("lsw-event-tracker.methods.deleteTrackable");
+      const eventos = await this.$lsw.database.selectMany("Accion", it => {
+        return (it.tiene_estado === "trackeada") && (it.en_concepto === trackableId);
+      });
+      const eventosOrdenados = eventos.sort((e1, e2) => {
+        return e1.tiene_inicio > e2.tiene_inicio ? -1 : 1;
+      });
+      const evento = eventosOrdenados[0] || false;
+      if(!evento) {
+        return;
+      }
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Eliminar último evento trackeada",
+        template: `
+          <div class="pad_1">
+            <div>¿Seguro que quieres eliminar el evento trackeada?</div>
+            <pre class="codeblock">{{ evento }}</pre>
+            <hr />
+            <div class="flex_row centered">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini danger_button"
+                  v-on:click="() => accept(true)">Eliminar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                  v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: { data: { evento } }
+      });
+      if(respuesta !== true) {
+        console.log(respuesta);
+        return;
+      }
+      await this.$lsw.database.delete("Accion", evento.id);
+      this.$lsw.toasts.send({
+        title: "Evento eliminado correctamente",
+        text: "El último evento asociado fue eliminado",
+      });
+      this.loadTrackables();
+    },
+    async addTrackableWithComment(trackableId) {
+      this.$trace("lsw-event-tracker.methods.addTrackableWithComment");
+      const comentario = await this.$lsw.dialogs.open({
+        title: "Comentario adjunto a evento",
+        template: `
+          <div class="pad_1">
+            <div class="pad_bottom_1">
+              Comentario a adjuntar en el evento:
+            </div>
+            <div class="pad_bottom_1">
+              <textarea class="width_100" v-model="value" spellcheck="false" />
+            </div>
+            <hr />
+            <div class="flex_row centered">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="accept">Añadir trackeo</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `
+      });
+      if(typeof comentario !== "string") return;
+      await this.$lsw.database.insert("Accion", {
+        en_concepto: trackableId,
+        tiene_estado: "trackeada",
+        tiene_inicio: LswTimer.utils.fromDateToDatestring(new Date()),
+        tiene_duracion: "1min",
+        tiene_parametros: "",
+        tiene_resultados: "",
+        tiene_comentarios: comentario,
+      });
+      this.$lsw.toasts.send({
+        title: "Evento añadido correctamente",
+        text: "Con comentario adjunto",
+      });
+      this.loadTrackables();
+    },
+    async addTrackable(trackableId) {
+      this.$trace("lsw-event-tracker.methods.addTrackable");
+      await this.$lsw.database.insert("Accion", {
+        en_concepto: trackableId,
+        tiene_estado: "trackeada",
+        tiene_inicio: LswTimer.utils.fromDateToDatestring(new Date()),
+        tiene_duracion: "1min",
+        tiene_parametros: "",
+        tiene_resultados: "",
+        tiene_comentarios: "",
+      });
+      this.loadTrackables();
+      this.$lsw.toasts.send({
+        title: "Evento añadido correctamente",
+        text: "Sin comentario adjunto",
+      });
+    },
+    async insertTrackable() {
+      this.$trace("lsw-event-tracker.methods.insertTrackable");
+      const trackableId = this.searchText;
+      if(trackableId.trim() === "") {
+        return;
+      }
+      const trackableIds = await this.$lsw.fs.evaluateAsDotenvListFileOrReturn("/kernel/settings/trackables.env", []);
+      const pos = trackableIds.indexOf(trackableId);
+      if(pos !== -1) {
+        this.$lsw.toasts.send({
+          title: "Este trackable ya existe",
+          text: "No se insertó porque ya existe.",
+        });
+      } else {
+        const previousContent = await this.$lsw.fs.read_file("/kernel/settings/trackables.env");
+        const lastContent = previousContent.trim() + "\n" + trackableId;
+        await this.$lsw.fs.write_file("/kernel/settings/trackables.env", lastContent);
+        this.$lsw.toasts.send({
+          title: "Trackable insertado correctamente",
+          text: "",
+        });
+        this.loadTrackables();
+      }
+    },
+    clearSearchText() {
+      this.$trace("lsw-event-tracker.watch.clearSearchText");
+      this.searchText = "";
+      this.digestOutput();
+    }
+  },
+  watch: {
+    searchText() {
+      this.$trace("lsw-event-tracker.watch.searchText");
+      this.digestDelayed();
+    }
+  },
+  mounted() {
+    this.$trace("lsw-event-tracker.mounted");
+    this.loadTrackables();
+  },
+  unmounted() {
+    this.$trace("lsw-event-tracker.unmounted");
+    
+  }
+});
+// @code.end: LswEventTracker API
+// @code.start: LswSearchReplacer API | @$section: Vue.js (v2) Components » LswSearchReplacer component
+Vue.component("LswSearchReplacer", {
+  template: `<div class="lsw_search_replacer">
+    <div class="pad_1">
+        <div class="">
+            <div class="flex_row centered">
+                <div class="flex_1 nowrap">🔎 Buscar: </div>
+                <div class="flex_100 pad_left_1"></div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini activated has_light_bg" v-on:click="toggleRegexpMode">
+                        {{ searchAsRegexp ? "as: RegExp" : "as: Text" }}
+                    </button>
+                </div>
+                <div class="flex_1 pad_left_1">
+                    <!--button class="supermini" v-on:click="illuminateMatches">🔦</button-->
+                </div>
+            </div>
+            <div class="pad_top_1">
+                <textarea class="width_100"
+                    v-model="search"></textarea>
+            </div>
+        </div>
+        <div class="pad_top_1">
+            <div class="flex_row centered">
+                <div class="flex_1 nowrap">↔️ Reemplazar: </div>
+                <div class="flex_100 pad_left_1"></div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini" v-on:click="replaceAllMatches">↔️*</button>
+                </div>
+            </div>
+            <div class="pad_top_1">
+                <textarea class="width_100"
+                    v-model="replace"></textarea>
+            </div>
+        </div>
+        <hr />
+        <div class="pad_top_1">
+            <div class="flex_row centered">
+                <div class="flex_1 nowrap">💎 Salida: </div>
+                <div class="flex_100 pad_left_1"></div>
+                <div class="flex_1 pad_left_1">
+                    <!--button class="supermini">↔️</button-->
+                </div>
+            </div>
+            <div class="pad_top_1">
+                <pre class="codeblock pad_1">{{ currentInput }}</pre>
+            </div>
+        </div>
+        <hr />
+        <div class="flex_row centered">
+            <div class="flex_100"></div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="accept">Aplicar cambios</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="cancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>`,
+  props: {
+    input: {
+      type: String,
+      default: () => false,
+    },
+    onAccept: {
+      type: Function,
+      default: () => {},
+    },
+    onCancel: {
+      type: Function,
+      default: () => {},
+    },
+    onFinally: {
+      type: Function,
+      default: () => {},
+    },
+  },
+  data() {
+    this.$trace("lsw-search-replacer.data");
+    return {
+      currentInput: this.input,
+      currentMatch: false,
+      search: "",
+      searchAsRegexp: false,
+      replace: "",
+    };
+  },
+  methods: {
+    toggleRegexpMode() {
+      this.$trace("lsw-search-replacer.methods.toggleRegexpMode");
+      this.searchAsRegexp = !this.searchAsRegexp;
+    },
+    accept() {
+      this.$trace("lsw-search-replacer.methods.accept");
+      this.onAccept(this.currentInput, this);
+      this.onFinally(this.currentInput, this);
+    },
+    cancel() {
+      this.$trace("lsw-search-replacer.methods.cancel");
+      this.onCancel(this.currentInput, this);
+      this.onFinally(this.currentInput, this);
+    },
+    illuminateMatches() {
+      this.$trace("lsw-search-replacer.methods.illuminateMatches");
+      if(!this.searchAsRegexp) {
+
+      }
+    },
+    replaceAllMatches() {
+      this.$trace("lsw-search-replacer.methods.replaceAllMatches");
+      if(this.searchAsRegexp) {
+        const regexp = new RegExp(this.search, "g");
+        this.currentInput = this.currentInput.replaceAll(regexp, this.replace);
+      } else {
+        this.currentInput = this.currentInput.replaceAll(this.search, this.replace);
+      }
+    },
+  },
+  watch: {},
+  mounted() {
+    this.$trace("lsw-search-replacer.mounted");
+    
+  },
+  unmounted() {
+    this.$trace("lsw-search-replacer.unmounted");
+    
+  }
+});
+// @code.end: LswSearchReplacer API
 // @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
 Vue.component("LswAgenda", {
   name: "LswAgenda",
@@ -32629,9 +33124,12 @@ Vue.component("LswAgendaAccionesViewer", {
   name: "LswAgendaAccionesViewer",
   template: `<div class="lsw_agenda_acciones_viewer">
 
-    <template class="" v-if="true || (sorterStrategy === 'despues')">
-        <template class="" v-if="!isLoading">
-            <template class="" v-if="isShowingGoals">
+    <template class=""
+        v-if="true || (sorterStrategy === 'despues')">
+        <template class=""
+            v-if="!isLoading">
+            <template class=""
+                v-if="isShowingGoals">
                 <lsw-goals-viewer ref="goalsViewer"
                     :on-close="() => {isShowingGoals = false;}"
                     :day-to-analize="selectedDate" />
@@ -32670,81 +33168,116 @@ Vue.component("LswAgendaAccionesViewer", {
             Por favor, aguarde hasta recuperar los datos.
         </div>
         <div v-if="(!isLoading) && selectedDateTasksSorted && selectedDateTasksSorted.length">
-            <div class="hour_task_block"
-                :class="{is_completed: accion.tiene_estado === 'completada', is_failed: accion.tiene_estado === 'fallida', is_pending: accion.tiene_estado === 'pendiente'}"
-                v-for="accion, accionIndex in selectedDateTasksSorted"
-                v-bind:key="'accion_' + accionIndex">
-                <div class="accion_row flex_row centered"
-                    style="padding-top: 2px;">
-                    <div class="flex_1 pad_right_1">
-                        <button class="supermini padded_vertically_1"
-                            :class="{activated: selectedForm === accion.id}"
-                            v-on:click="() => openEditRowDialog(accion)">#️⃣</button>
-                    </div>
-                    <div class="flex_1 celda_de_hora"
-                        v-on:click="() => toggleShowAccion(accion.id)">
-                        <div class="padded_vertically_1">{{
-                            \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
-                        }}
+            <template v-for="accion, accionIndex in selectedDateTasksSorted">
+                <div class="hour_task_block"
+                    v-if="accion.tiene_estado === 'trackeada'">
+                    <div class="accion_row flex_row centered" style="padding-top: 2px;">
+                        <button class="supermini flex_1" v-on:click="() => openEditRowDialog(accion)">
+                            #️⃣
+                        </button>
+                        <div class="flex_1 celda_de_hora margin_left_1"
+                            v-on:click="\$noop">
+                            <div class="padded_vertically_1">
+                            {{
+                                \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                            }}
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <button class="supermini padded_vertically_1"
-                            v-on:click="(e) => toggleAutogeneration(accion)">{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</button>
-                    </div>
-                    <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
-                    <div class="flex_100 celda_de_concepto shortable_text">
-                        <div class=" pad_left_1 pad_right_1 padded_vertically_1"
-                            :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
-                            v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                        <div>
+                            <button class="supermini padded_vertically_1">
+                                🎥
+                            </button>
                         </div>
-                    </div>
-                    <div class="flex_1">
-                        <button class="supermini danger_button padded_vertically_1"
-                            v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
-                    </div>
-                </div>
-                <div class="detalles_de_accion"
-                    v-if="shownAcciones.indexOf(accion.id) !== -1">
-                    <div class="tabla_de_detalles">
-                        <div class="campo"
-                            v-if="accion.en_concepto">
-                            <div class="clave">Concepto: </div>
-                            <div class="valor"><u>{{ accion.en_concepto }}</u></div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_estado">
-                            <div class="clave">Estado: </div>
-                            <div class="valor valor_de_estado">{{ accion.tiene_estado }}</div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_inicio">
-                            <div class="clave">Inicio: </div>
-                            <div class="valor">{{ accion.tiene_inicio }}</div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_duracion">
-                            <div class="clave">Duración: </div>
-                            <div class="valor">{{ accion.tiene_duracion }}</div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_parametros">
-                            <div class="clave">Parámetros: </div>
-                            <div class="valor texto_markdown sin_decorar" v-html="marked.parse(accion.tiene_parametros)"></div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_comentarios">
-                            <div class="clave">Comentarios: </div>
-                            <div class="valor texto_markdown sin_decorar" v-html="(accion.tiene_comentarios)"></div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_resultados">
-                            <div class="clave">Resultados: </div>
-                            <div class="valor texto_markdown sin_decorar" v-html="(accion.tiene_resultados)"></div>
+                        <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
+                        <button class="supermini flex_100 text_align_left pad_0 margin_left_1 nowrap shortable_text" disabled="true" style="min-width: 80px;">
+                            <b>{{ accion.en_concepto }}</b><span v-if="accion.tiene_comentarios">: {{ accion.tiene_comentarios }}</span>
+                        </button>
+                        <div class="flex_1">
+                            <button class="supermini danger_button padded_vertically_1"
+                                v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
                         </div>
                     </div>
                 </div>
-            </div>
+                <div class="hour_task_block"
+                    v-else
+                    :class="{is_completed: accion.tiene_estado === 'completada', is_failed: accion.tiene_estado === 'fallida', is_pending: accion.tiene_estado === 'pendiente'}"
+                    v-bind:key="'accion_' + accionIndex">
+                    <div class="accion_row flex_row centered"
+                        style="padding-top: 2px;">
+                        <div class="flex_1 pad_right_1">
+                            <button class="supermini padded_vertically_1"
+                                :class="{activated: selectedForm === accion.id}"
+                                v-on:click="() => openEditRowDialog(accion)">#️⃣</button>
+                        </div>
+                        <div class="flex_1 celda_de_hora"
+                            v-on:click="() => toggleShowAccion(accion.id)">
+                            <div class="padded_vertically_1">{{
+                                \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                                }}
+                            </div>
+                        </div>
+                        <div>
+                            <button class="supermini padded_vertically_1"
+                                v-on:click="(e) => toggleAutogeneration(accion)">{{ accion.tiene_parametros.startsWith("[*autogenerada]") ?
+                                "🤖" : "✍️" }}</button>
+                        </div>
+                        <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
+                        <div class="flex_100 celda_de_concepto shortable_text">
+                            <div class=" pad_left_1 pad_right_1 padded_vertically_1"
+                                :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
+                                v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                            </div>
+                        </div>
+                        <div class="flex_1">
+                            <button class="supermini danger_button padded_vertically_1"
+                                v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
+                        </div>
+                    </div>
+                    <div class="detalles_de_accion"
+                        v-if="shownAcciones.indexOf(accion.id) !== -1">
+                        <div class="tabla_de_detalles">
+                            <div class="campo"
+                                v-if="accion.en_concepto">
+                                <div class="clave">Concepto: </div>
+                                <div class="valor"><u>{{ accion.en_concepto }}</u></div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_estado">
+                                <div class="clave">Estado: </div>
+                                <div class="valor valor_de_estado">{{ accion.tiene_estado }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_inicio">
+                                <div class="clave">Inicio: </div>
+                                <div class="valor">{{ accion.tiene_inicio }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_duracion">
+                                <div class="clave">Duración: </div>
+                                <div class="valor">{{ accion.tiene_duracion }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_parametros">
+                                <div class="clave">Parámetros: </div>
+                                <div class="valor texto_markdown sin_decorar"
+                                    v-html="marked.parse(accion.tiene_parametros)"></div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_comentarios">
+                                <div class="clave">Comentarios: </div>
+                                <div class="valor texto_markdown sin_decorar"
+                                    v-html="(accion.tiene_comentarios)"></div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_resultados">
+                                <div class="clave">Resultados: </div>
+                                <div class="valor texto_markdown sin_decorar"
+                                    v-html="(accion.tiene_resultados)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
         <div class="no_tasks_message"
             v-else>
@@ -37284,6 +37817,7 @@ rel correr
     template: `<div class="app app_component position_relative">
     <lsw-automensajes-viewer ref="desktop" />
     <div class="home_bottom_panel">
+        <button class="" v-on:click="goToEventTracker">📹</button>
         <button class="" v-on:click="goToAddArticulo">+🔬</button>
         <button class="" v-on:click="goToAddNota">+💬</button>
         <!--button class="" v-on:click="goToCalendario">📅</button>
@@ -37296,8 +37830,8 @@ rel correr
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
             <!--div class="mobile_off_panel_cell" v-on:click="clickPicas">✴️</div-->
-            <div class="mobile_off_panel_cell" v-on:click="goToCalendario">📅</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToBinaries">💣</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToEventTracker">📹</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToFilesystem">📂</div>
             <div class="mobile_off_panel_cell" v-on:click="goToHomepage">📟</div>
             <div class="mobile_off_panel_cell" v-on:click="goToEnciclopedia">🔬</div>
             <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
@@ -37395,6 +37929,12 @@ rel correr
       goToHomepage() {
         this.$refs.desktop.selectApplication("homepage");
       },
+      goToFilesystem() {
+        this.$refs.desktop.selectApplication("sistema de ficheros");
+      },
+      goToEventTracker() {
+        this.$refs.desktop.selectApplication("event-tracker");
+      },
       async initializeFilesystemForLsw() {
         this.$trace("lsw-filesystem-explorer.methods.initializeFilesystemForLsw");
         await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.md", LswConstants.global.pick("rutiner.md"));
@@ -37402,6 +37942,7 @@ rel correr
         await this.$lsw.fs.ensureFile("/kernel/settings/backgrounds.env", LswConstants.global.pick("backgrounds.env"));
         await this.$lsw.fs.ensureFile("/kernel/settings/automessages.env", LswConstants.global.pick("automessages.env"));
         await this.$lsw.fs.ensureFile("/kernel/settings/user.env", LswConstants.global.pick("user.env"));
+        await this.$lsw.fs.ensureFile("/kernel/settings/trackables.env", LswConstants.global.pick("/kernel/settings/trackables.env"));
         await this.$lsw.fs.ensureFile("/kernel/wiki/libros/Boot.tri", LswConstants.global.pick("Boot.tri"));
         await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", LswConstants.global.pick("categorias.tri"));
         await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", LswConstants.global.pick("report/inicio.js"));
@@ -50963,7 +51504,7 @@ Vue.component("LswAutomensajesViewer", {
 Vue.component("LswAppsViewerButton", {
   template: `<div class="lsw_apps_viewer_button">
     <div class="lsw_apps_button">
-        <button class="rounded superbig" v-on:click="openHomepage">📟</button>
+        <button class="rounded superbig" v-on:click="() => selectApplication('calendario')">📆</button>
     </div>
     <!--div class="position_relative">
         <div class="hidden_menu"
@@ -51056,6 +51597,9 @@ Vue.component("LswAppsViewerButton", {
     },
     openHomepage() {
       this.selectApplication("homepage");
+    },
+    openEventTracker() {
+      this.selectApplication("event-tracker");
     }
   },
   watch: {},
@@ -51255,6 +51799,14 @@ Vue.component("LswAppsViewerPanel", {
                     v-bind:key="'binarios'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
                         <lsw-bin-directory directory="/kernel/bin" />
+                    </div>
+                </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'event-tracker'"
+                    v-bind:key="'event-tracker'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-event-tracker />
                     </div>
                 </div>
 
@@ -52304,7 +52856,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
           isIndexed: true,
           hasFormtypeParameters: {
             type: "selector",
-            available: ["pendiente", "completada", "fallida"],
+            available: ["pendiente", "completada", "fallida", "trackeada"],
             selectable: 1, // could be: number or "*" to all options
           },
           hasValidator(v) {
@@ -55610,7 +56162,7 @@ try {
       if(window.location.href.startsWith("https://")) {
         Vue.prototype.$consoleHooker.deactivateConsole();
       } else {
-        // Vue.prototype.$consoleHooker.deactivateConsole();
+        Vue.prototype.$consoleHooker.deactivateConsole();
       }
     }
   
@@ -55632,8 +56184,9 @@ try {
           if(window.location.href.startsWith("http://")) {
             // await LswDomIrruptor.abrirBaseDeDatos();
             // await LswDomIrruptor.abrirBinarios();
-            await LswDomIrruptor.abrirTareasPosterioresDeNavegacionRapida();
+            // await LswDomIrruptor.abrirTareasPosterioresDeNavegacionRapida();
             // await LswDomIrruptor.abrirRecords();
+            await LswDomIrruptor.abrirFicheros();
           }
         }
       } catch (error) {

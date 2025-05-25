@@ -106,6 +106,13 @@ button.has_light_bg:hover {
     background-color: #41416c87;
 }
 
+button.has_light_bg.activated {
+    background-color: #363673c7;
+    box-shadow: 0 0 3px white;
+    border: 1px solid black;
+    color: black;
+}
+
 button>span.button_text {
     font-size: 13px !important;
 }
@@ -870,7 +877,7 @@ pre.codeblock {
 }
 
 .smallest_font {
-    font-size: 9px;
+    font-size: 9px !important;
 }
 
 .min_height_14px {

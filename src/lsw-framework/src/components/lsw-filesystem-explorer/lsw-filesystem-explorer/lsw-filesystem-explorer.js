@@ -380,6 +380,13 @@ Vue.component("LswFilesystemExplorer", {
               click: () => this.processToDownloadFile(),
             });
           }
+          Button_to_search_replace: {
+            rightButtonsOnFile.push({
+              text: "🔎↔️",
+              classes: "",
+              click: () => this.processToSearchReplace(),
+            });
+          }
         }
         this.$refs.panelRight.setButtons(...rightButtonsOnFile);
       }
@@ -807,6 +814,26 @@ Vue.component("LswFilesystemExplorer", {
           </div>
         `,
       });
+    },
+    async processToSearchReplace() {
+      this.$trace("lsw-filesystem.explorer.methods.processToSearchReplace");
+      const value = await this.$lsw.dialogs.open({
+        title: "Buscar y reemplazar",
+        template: `
+          <lsw-search-replacer
+            :input="input"
+            :on-accept="out => accept(out)"
+            :on-cancel="cancel"
+          />
+        `,
+        factory: {
+          data: {
+            input: this.$refs.editor.getContents(),
+          }
+        }
+      });
+      if(typeof value !== "string") return;
+      this.$refs.editor.setContents(value);
     }
   },
   watch: {

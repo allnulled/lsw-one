@@ -1,8 +1,11 @@
 <div class="lsw_agenda_acciones_viewer">
 
-    <template class="" v-if="true || (sorterStrategy === 'despues')">
-        <template class="" v-if="!isLoading">
-            <template class="" v-if="isShowingGoals">
+    <template class=""
+        v-if="true || (sorterStrategy === 'despues')">
+        <template class=""
+            v-if="!isLoading">
+            <template class=""
+                v-if="isShowingGoals">
                 <lsw-goals-viewer ref="goalsViewer"
                     :on-close="() => {isShowingGoals = false;}"
                     :day-to-analize="selectedDate" />
@@ -41,81 +44,116 @@
             Por favor, aguarde hasta recuperar los datos.
         </div>
         <div v-if="(!isLoading) && selectedDateTasksSorted && selectedDateTasksSorted.length">
-            <div class="hour_task_block"
-                :class="{is_completed: accion.tiene_estado === 'completada', is_failed: accion.tiene_estado === 'fallida', is_pending: accion.tiene_estado === 'pendiente'}"
-                v-for="accion, accionIndex in selectedDateTasksSorted"
-                v-bind:key="'accion_' + accionIndex">
-                <div class="accion_row flex_row centered"
-                    style="padding-top: 2px;">
-                    <div class="flex_1 pad_right_1">
-                        <button class="supermini padded_vertically_1"
-                            :class="{activated: selectedForm === accion.id}"
-                            v-on:click="() => openEditRowDialog(accion)">#️⃣</button>
-                    </div>
-                    <div class="flex_1 celda_de_hora"
-                        v-on:click="() => toggleShowAccion(accion.id)">
-                        <div class="padded_vertically_1">{{
-                            $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
-                        }}
+            <template v-for="accion, accionIndex in selectedDateTasksSorted">
+                <div class="hour_task_block"
+                    v-if="accion.tiene_estado === 'trackeada'">
+                    <div class="accion_row flex_row centered" style="padding-top: 2px;">
+                        <button class="supermini flex_1" v-on:click="() => openEditRowDialog(accion)">
+                            #️⃣
+                        </button>
+                        <div class="flex_1 celda_de_hora margin_left_1"
+                            v-on:click="$noop">
+                            <div class="padded_vertically_1">
+                            {{
+                                $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                            }}
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <button class="supermini padded_vertically_1"
-                            v-on:click="(e) => toggleAutogeneration(accion)">{{ accion.tiene_parametros.startsWith("[*autogenerada]") ? "🤖" : "✍️" }}</button>
-                    </div>
-                    <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
-                    <div class="flex_100 celda_de_concepto shortable_text">
-                        <div class=" pad_left_1 pad_right_1 padded_vertically_1"
-                            :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
-                            v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                        <div>
+                            <button class="supermini padded_vertically_1">
+                                🎥
+                            </button>
                         </div>
-                    </div>
-                    <div class="flex_1">
-                        <button class="supermini danger_button padded_vertically_1"
-                            v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
-                    </div>
-                </div>
-                <div class="detalles_de_accion"
-                    v-if="shownAcciones.indexOf(accion.id) !== -1">
-                    <div class="tabla_de_detalles">
-                        <div class="campo"
-                            v-if="accion.en_concepto">
-                            <div class="clave">Concepto: </div>
-                            <div class="valor"><u>{{ accion.en_concepto }}</u></div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_estado">
-                            <div class="clave">Estado: </div>
-                            <div class="valor valor_de_estado">{{ accion.tiene_estado }}</div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_inicio">
-                            <div class="clave">Inicio: </div>
-                            <div class="valor">{{ accion.tiene_inicio }}</div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_duracion">
-                            <div class="clave">Duración: </div>
-                            <div class="valor">{{ accion.tiene_duracion }}</div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_parametros">
-                            <div class="clave">Parámetros: </div>
-                            <div class="valor texto_markdown sin_decorar" v-html="marked.parse(accion.tiene_parametros)"></div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_comentarios">
-                            <div class="clave">Comentarios: </div>
-                            <div class="valor texto_markdown sin_decorar" v-html="(accion.tiene_comentarios)"></div>
-                        </div>
-                        <div class="campo"
-                            v-if="accion.tiene_resultados">
-                            <div class="clave">Resultados: </div>
-                            <div class="valor texto_markdown sin_decorar" v-html="(accion.tiene_resultados)"></div>
+                        <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
+                        <button class="supermini flex_100 text_align_left pad_0 margin_left_1 nowrap shortable_text" disabled="true" style="min-width: 80px;">
+                            <b>{{ accion.en_concepto }}</b><span v-if="accion.tiene_comentarios">: {{ accion.tiene_comentarios }}</span>
+                        </button>
+                        <div class="flex_1">
+                            <button class="supermini danger_button padded_vertically_1"
+                                v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
                         </div>
                     </div>
                 </div>
-            </div>
+                <div class="hour_task_block"
+                    v-else
+                    :class="{is_completed: accion.tiene_estado === 'completada', is_failed: accion.tiene_estado === 'fallida', is_pending: accion.tiene_estado === 'pendiente'}"
+                    v-bind:key="'accion_' + accionIndex">
+                    <div class="accion_row flex_row centered"
+                        style="padding-top: 2px;">
+                        <div class="flex_1 pad_right_1">
+                            <button class="supermini padded_vertically_1"
+                                :class="{activated: selectedForm === accion.id}"
+                                v-on:click="() => openEditRowDialog(accion)">#️⃣</button>
+                        </div>
+                        <div class="flex_1 celda_de_hora"
+                            v-on:click="() => toggleShowAccion(accion.id)">
+                            <div class="padded_vertically_1">{{
+                                $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
+                                }}
+                            </div>
+                        </div>
+                        <div>
+                            <button class="supermini padded_vertically_1"
+                                v-on:click="(e) => toggleAutogeneration(accion)">{{ accion.tiene_parametros.startsWith("[*autogenerada]") ?
+                                "🤖" : "✍️" }}</button>
+                        </div>
+                        <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
+                        <div class="flex_100 celda_de_concepto shortable_text">
+                            <div class=" pad_left_1 pad_right_1 padded_vertically_1"
+                                :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
+                                v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
+                            </div>
+                        </div>
+                        <div class="flex_1">
+                            <button class="supermini danger_button padded_vertically_1"
+                                v-on:click="(e) => openDeleteTaskDialog(accion, e)">❌</button>
+                        </div>
+                    </div>
+                    <div class="detalles_de_accion"
+                        v-if="shownAcciones.indexOf(accion.id) !== -1">
+                        <div class="tabla_de_detalles">
+                            <div class="campo"
+                                v-if="accion.en_concepto">
+                                <div class="clave">Concepto: </div>
+                                <div class="valor"><u>{{ accion.en_concepto }}</u></div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_estado">
+                                <div class="clave">Estado: </div>
+                                <div class="valor valor_de_estado">{{ accion.tiene_estado }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_inicio">
+                                <div class="clave">Inicio: </div>
+                                <div class="valor">{{ accion.tiene_inicio }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_duracion">
+                                <div class="clave">Duración: </div>
+                                <div class="valor">{{ accion.tiene_duracion }}</div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_parametros">
+                                <div class="clave">Parámetros: </div>
+                                <div class="valor texto_markdown sin_decorar"
+                                    v-html="marked.parse(accion.tiene_parametros)"></div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_comentarios">
+                                <div class="clave">Comentarios: </div>
+                                <div class="valor texto_markdown sin_decorar"
+                                    v-html="(accion.tiene_comentarios)"></div>
+                            </div>
+                            <div class="campo"
+                                v-if="accion.tiene_resultados">
+                                <div class="clave">Resultados: </div>
+                                <div class="valor texto_markdown sin_decorar"
+                                    v-html="(accion.tiene_resultados)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
         <div class="no_tasks_message"
             v-else>

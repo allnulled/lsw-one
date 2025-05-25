@@ -62,6 +62,11 @@
       await LswDom.waitForMilliseconds(100);
       LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
     }
+    static async abrirFicheros() {
+      LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button.main_tab_topbar_button", "📂").click();
+    }
     static async abrirWiki() {
       LswDom.querySelectorFirst(".mobile_off_panel_cell", "🔬").click();
     }

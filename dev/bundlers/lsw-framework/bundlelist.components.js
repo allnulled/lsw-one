@@ -161,6 +161,10 @@ module.exports = [
   `${basepath}/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer`,
   // BIN DIRECTORY:
   `${basepath}/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory`,
+  // EVENT TRACKER:
+  `${basepath}/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker`,
+  // SEARCH REPLACER:
+  `${basepath}/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer`,
   // AGENDA:
   `${basepath}/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda`,
   `${basepath}/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add`,

@@ -186,6 +186,14 @@
                     </div>
                 </div>
 
+                <div class="pad_1"
+                    v-if="selectedApplication === 'event-tracker'"
+                    v-bind:key="'event-tracker'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-event-tracker />
+                    </div>
+                </div>
+
             </div>
         </div>
     </div><!-- End of «Free Desktop Area» -->

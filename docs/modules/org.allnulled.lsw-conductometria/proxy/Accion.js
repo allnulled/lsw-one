@@ -46,7 +46,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
           isIndexed: true,
           hasFormtypeParameters: {
             type: "selector",
-            available: ["pendiente", "completada", "fallida"],
+            available: ["pendiente", "completada", "fallida", "trackeada"],
             selectable: 1, // could be: number or "*" to all options
           },
           hasValidator(v) {

@@ -1361,6 +1361,8 @@ button.button_checkbox > label > span {
 .binaries_list.is_searching .binaries_searcher_input {
     background-color: #dec275;
 }
+
+
 .lsw_agenda {}
 
 .calendar_viewer {
@@ -1907,6 +1909,21 @@ bajar(B) 100
 .lsw_agenda_acciones_viewer {
   
 }
+
+.fondo_clarito {
+    background-color: rgba(255,255,255,0.4) !important;
+}
+
+
+.border_circled {
+    border-radius: 50%;
+}
+.width_25px {
+    width: 25px;
+}
+.height_25px {
+    height: 25px;
+}
 .lsw_agenda_breadcrumb {
     padding-left: 0px;
     padding-right: 0px;
@@ -2451,6 +2468,13 @@ button.has_light_bg {
 
 button.has_light_bg:hover {
     background-color: #41416c87;
+}
+
+button.has_light_bg.activated {
+    background-color: #363673c7;
+    box-shadow: 0 0 3px white;
+    border: 1px solid black;
+    color: black;
 }
 
 button>span.button_text {
@@ -3217,7 +3241,7 @@ pre.codeblock {
 }
 
 .smallest_font {
-    font-size: 9px;
+    font-size: 9px !important;
 }
 
 .min_height_14px {

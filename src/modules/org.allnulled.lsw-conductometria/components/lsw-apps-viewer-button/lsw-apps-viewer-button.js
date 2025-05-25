@@ -39,6 +39,9 @@ Vue.component("LswAppsViewerButton", {
     },
     openHomepage() {
       this.selectApplication("homepage");
+    },
+    openEventTracker() {
+      this.selectApplication("event-tracker");
     }
   },
   watch: {},

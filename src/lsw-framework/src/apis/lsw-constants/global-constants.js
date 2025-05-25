@@ -84,7 +84,7 @@ LswConstants.global.define("Boot.tri", `
 Boot [Artículo para el boot] {
   @{
     "autor": "github.com/allnulled",
-    "mensaje": "Dios, métete tu puto universo por tu puto culo de rata malnacida, no?",
+    "mensaje": "...",
     "año": 2025
   }
   Capitulo 1 {}
@@ -261,11 +261,8 @@ programar | > 6h | !3
 
 `.trim());
 
-LswConstants.global.define("/kernel/settings/goals/list/focus.env", `
+LswConstants.global.define("/kernel/settings/trackables.env", `
 
-nombre=enfócate
-urgencia=100
-mensaje=ok
-intervalo=2025-05-17 - 2025/12/30
+Sky castle
 
 `.trim());

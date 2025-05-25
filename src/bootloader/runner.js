@@ -11,7 +11,7 @@
       if(window.location.href.startsWith("https://")) {
         Vue.prototype.$consoleHooker.deactivateConsole();
       } else {
-        // Vue.prototype.$consoleHooker.deactivateConsole();
+        Vue.prototype.$consoleHooker.deactivateConsole();
       }
     }
   
@@ -33,8 +33,9 @@
           if(window.location.href.startsWith("http://")) {
             // await LswDomIrruptor.abrirBaseDeDatos();
             // await LswDomIrruptor.abrirBinarios();
-            await LswDomIrruptor.abrirTareasPosterioresDeNavegacionRapida();
+            // await LswDomIrruptor.abrirTareasPosterioresDeNavegacionRapida();
             // await LswDomIrruptor.abrirRecords();
+            await LswDomIrruptor.abrirFicheros();
           }
         }
       } catch (error) {

@@ -538,7 +538,37 @@
       return 0;
     }
     return numero;
-  }
+  };
+
+  LswUtils.filterObject = function(obj, filterer) {
+    return Object.keys(obj).reduce((output, key, index) => {
+      const val = obj[key];
+      console.log(key, val, index, output);
+      const result = filterer(key, val, index, output);
+      if(result) {
+        output[key] = val;
+      }
+      return output;
+    }, {});
+  };
+
+  LswUtils.mapObject = function(obj, mapper, deleterValue = undefined) {
+    return Object.keys(obj).reduce((output, key, index) => {
+      const val = obj[key];
+      const result = mapper(key, val, index, output);
+      if(result !== deleterValue) {
+        output[key] = result;
+      }
+      return output;
+    }, {});
+  };
+
+  LswUtils.reduceObject = function(obj, reducer) {
+    return Object.keys(obj).reduce((output, key, index) => {
+      const val = obj[key];
+      return reducer(key, val, index, output);
+    }, {});
+  };
   // @code.end: LswUtils
 
   return LswUtils;

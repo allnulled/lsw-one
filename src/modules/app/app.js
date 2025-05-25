@@ -113,6 +113,12 @@ rel correr
       goToHomepage() {
         this.$refs.desktop.selectApplication("homepage");
       },
+      goToFilesystem() {
+        this.$refs.desktop.selectApplication("sistema de ficheros");
+      },
+      goToEventTracker() {
+        this.$refs.desktop.selectApplication("event-tracker");
+      },
       async initializeFilesystemForLsw() {
         this.$trace("lsw-filesystem-explorer.methods.initializeFilesystemForLsw");
         await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.md", LswConstants.global.pick("rutiner.md"));
@@ -120,6 +126,7 @@ rel correr
         await this.$lsw.fs.ensureFile("/kernel/settings/backgrounds.env", LswConstants.global.pick("backgrounds.env"));
         await this.$lsw.fs.ensureFile("/kernel/settings/automessages.env", LswConstants.global.pick("automessages.env"));
         await this.$lsw.fs.ensureFile("/kernel/settings/user.env", LswConstants.global.pick("user.env"));
+        await this.$lsw.fs.ensureFile("/kernel/settings/trackables.env", LswConstants.global.pick("/kernel/settings/trackables.env"));
         await this.$lsw.fs.ensureFile("/kernel/wiki/libros/Boot.tri", LswConstants.global.pick("Boot.tri"));
         await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", LswConstants.global.pick("categorias.tri"));
         await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", LswConstants.global.pick("report/inicio.js"));

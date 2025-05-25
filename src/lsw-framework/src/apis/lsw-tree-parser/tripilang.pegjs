@@ -1,8 +1,12 @@
 {
   // Función auxiliar para convertir cadenas con escapes
-  function unescapeString(str) {
+  const unescapeString = function(str) {
     return JSON.parse(str);
-  }
+  };
+  const printLocation = function(loc) {
+    return `${loc.start.offset}-${loc.end.offset}|${loc.start.line}:${loc.start.column}-${loc.end.line}:${loc.end.column}`;
+  };
+
 }
 
 Tripilang = tree:Tree _* { return tree }

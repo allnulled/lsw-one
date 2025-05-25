@@ -6,7 +6,8 @@ Complemento personal de software.
 
 - web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android: *los links expiran en 1 semana*
-   - última versión: [https://limewire.com/d/78RSi#zH7uOedSQi](https://limewire.com/d/78RSi#zH7uOedSQi)
+   - última versión: [https://limewire.com/d/wwZ9R#XVbUKcXNYT](https://limewire.com/d/wwZ9R#XVbUKcXNYT)
+   - versión del 25 de mayo de 2025: [https://limewire.com/d/wwZ9R#XVbUKcXNYT](https://limewire.com/d/wwZ9R#XVbUKcXNYT)
    - versión del 22 de mayo de 2025: [https://limewire.com/d/78RSi#zH7uOedSQi](https://limewire.com/d/78RSi#zH7uOedSQi)
    - versión del 20 de mayo de 2025: [https://limewire.com/d/kudnT#OM1lPo9zPT](https://limewire.com/d/kudnT#OM1lPo9zPT)
    - versión del 19 de mayo de 2025: [https://limewire.com/d/Mrfnh#KhXWBctbGg](https://limewire.com/d/Mrfnh#KhXWBctbGg)
@@ -52,7 +53,7 @@ En el filesystem virtual de la app puedes configurar:
       - El **tripilang** (los *.tri) tampoco está documentado
 - [/kernel/agenda/report/*.js](#):
    - Para importar reportes de conductometría.
-- [/kernel/components/$1/$1.{html,css,js}](#):
+- [/kernel/components/$componente/$componente.{html,css,js}](#):
    - Para importar componentes vue@2 desde el boot.
 - [/kernel/settings/table/storage/*.json](#):
    - Para la caché de las tablas de la aplicación con identificador de almacén especificado.
@@ -73,6 +74,8 @@ En el filesystem virtual de la app puedes configurar:
    - Sí, **tripilang** (los *.tri) no está documentado. Pero no es difícil.
 - [/kernel/wiki/libros/*.tri](#):
    - Para los índices de artículos de los libros disponibles desde la enciclopedia.
+
+Seguramente hay más.
 
 ### Flujos ocultos o no intuitivos
 

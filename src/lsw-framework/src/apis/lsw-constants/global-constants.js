@@ -273,11 +273,11 @@ LswConstants.global.define("/kernel/goals/goals.week", `
 }
 
 sab {
-  set 22:00 puesta de sol
+  set 22:00 = puesta de sol
 }
 
 dom {
-  set 10:00 tiempo de reflexión semanal
+  set 10:00 = tiempo de reflexión semanal
 }
 
   

@@ -6,7 +6,8 @@ Complemento personal de software.
 
 - web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android: *los links expiran en 1 semana*
-   - última versión: [https://limewire.com/d/wwZ9R#XVbUKcXNYT](https://limewire.com/d/wwZ9R#XVbUKcXNYT)
+   - última versión: [https://limewire.com/d/Jssxd#rz6sW7c7fb](https://limewire.com/d/Jssxd#rz6sW7c7fb)
+   - versión del 07 de junio de 2025: [https://limewire.com/d/Jssxd#rz6sW7c7fb](https://limewire.com/d/Jssxd#rz6sW7c7fb)
    - versión del 25 de mayo de 2025: [https://limewire.com/d/wwZ9R#XVbUKcXNYT](https://limewire.com/d/wwZ9R#XVbUKcXNYT)
    - versión del 22 de mayo de 2025: [https://limewire.com/d/78RSi#zH7uOedSQi](https://limewire.com/d/78RSi#zH7uOedSQi)
    - versión del 20 de mayo de 2025: [https://limewire.com/d/kudnT#OM1lPo9zPT](https://limewire.com/d/kudnT#OM1lPo9zPT)
@@ -79,7 +80,8 @@ En el filesystem virtual de la app puedes configurar:
    - Permite crear escuchas de barras en el widget de `calendario » después`.
    - Permite crear acciones pendientes a los días
       - se crean cuando se visita el día y se encuentra la coincidencia
-
+   - Debe seguir la sintaxis de `weeklang`, lenguaje documentado en:
+      - [./src/lsw-framework/src/apis/lsw-languages/weeklang/README.md](./src/lsw-framework/src/apis/lsw-languages/weeklang/README.md)
 
 Seguramente hay más.
 
@@ -91,3 +93,11 @@ Seguramente hay más.
    - borrará la base de datos si no hay conexiones extra:
    - pero puede que tengas que refrescar (o salir y entrar de la app) para que se pueda seguir usando la base de datos.
       - son cosas de *IndexedDB* y yo no puedo hacer nada con esto.
+
+# Flujo funcional básico
+
+- Se trataría de hacer el script de `weeklang` para que las barras se te vayan poniendo para tus cosas.
+   - en el calendario, este botón: `🏁↗️`
+   - está escondido, porque en principio te pones la rutina semanal y él ya te la va recordando.
+- Y tienes luego para ir añadiendo información, organizándote una base de datos de artículos y libros, de momento.
+- Y tienes el apartado de binarios también, para lanzar scripts rápidamente.

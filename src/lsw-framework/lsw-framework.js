@@ -12038,11 +12038,11 @@ LswConstants.global.define("/kernel/goals/goals.week", `
 }
 
 sab {
-  set 22:00 puesta de sol
+  set 22:00 = puesta de sol
 }
 
 dom {
-  set 10:00 tiempo de reflexión semanal
+  set 10:00 = tiempo de reflexión semanal
 }
 
   
@@ -35121,7 +35121,10 @@ Vue.component("LswClockwatcher", {
               continue Iterating_goals;
             }
             No_haremos_el_insert_aqui: {
-              break No_haremos_el_insert_aqui;
+              const isToday = LswTimer.utils.areSameDayDates(today, someDate);
+              if(!isToday) {
+                break No_haremos_el_insert_aqui;
+              }
               await Vue.prototype.$lsw.database.insert("Accion", {
                 en_concepto: concept,
                 tiene_estado: "pendiente",

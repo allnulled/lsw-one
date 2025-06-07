@@ -104,7 +104,10 @@
               continue Iterating_goals;
             }
             No_haremos_el_insert_aqui: {
-              break No_haremos_el_insert_aqui;
+              const isToday = LswTimer.utils.areSameDayDates(today, someDate);
+              if(!isToday) {
+                break No_haremos_el_insert_aqui;
+              }
               await Vue.prototype.$lsw.database.insert("Accion", {
                 en_concepto: concept,
                 tiene_estado: "pendiente",

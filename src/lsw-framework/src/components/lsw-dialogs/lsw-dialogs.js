@@ -294,6 +294,19 @@
         this.opened[id].minimized = true;
         this._refreshMinimizedLength(this.opened);
       },
+      minimizeAll() {
+        this.$trace("lsw-dialogs.methods.minimizeAll");
+        for(let id in this.opened) {
+          this.opened[id].minimized = true;
+        }
+        Also_main_tab_if_exists: {
+          const windowsViewer = this?.$lsw?.windowsViewer;
+          if(windowsViewer) {
+            windowsViewer.hide();
+          }
+        }
+        this._refreshMinimizedLength(this.opened);
+      },
       maximize(id, ...args) {
         this.$trace("lsw-dialogs.methods.maximize", [id, ...args]);
         if (typeof id !== "string") {

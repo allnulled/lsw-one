@@ -12,7 +12,9 @@
             }">
             <div class="flex_row">
                 <div class="flex_1 pad_right_1">
-                    <button :class="{activated: isShownSelector}"
+                    <button
+                        class="has_light_bg"
+                        :class="{activated: isShownSelector}"
                         v-on:click="toggleSelector">🔎</button>
                 </div>
                 <input class="flex_100"

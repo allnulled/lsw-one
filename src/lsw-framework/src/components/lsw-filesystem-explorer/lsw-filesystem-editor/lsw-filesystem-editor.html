@@ -1,7 +1,22 @@
 <div class="lsw_filesystem_editor">
-    <textarea class="editor" :style="{
-        fontSize: currentFontsize + 'px',
-        fontFamily: currentFontfamily
-    }" v-model="contents" spellcheck="false" 
-    v-on:keydown.ctrl.s.prevent="saveDocument" />
+    <textarea class="editor"
+        :style="{
+            fontSize: currentFontsize + 'px',
+            fontFamily: currentFontfamily
+        }"
+        v-model="contents"
+        spellcheck="false"
+        ref="editorTextarea"
+        v-on:keydown.ctrl.s.prevent="saveDocument"
+        v-on:keydown.ctrl.enter.prevent="executeDocument"
+        v-on:input="synchronizeCusor"
+        v-on:keyup="synchronizeCusor"
+        v-on:click="synchronizeCusor"
+        v-on:select="synchronizeCusor"
+        v-on:focus="synchronizeCusor" />
+    <div class="position_absolute editor_position_box"
+        style="top:auto; left:auto; right: 10px; bottom: 10px;"
+        v-if="cursorPosition">
+        {{ cursorPosition.start.line }}:{{ cursorPosition.start.column }}-{{ cursorPosition.end.line }}:{{ cursorPosition.end.column }}|{{ cursorPosition.start.offset }}-{{ cursorPosition.end.offset }}
+    </div>
 </div>

@@ -84,6 +84,12 @@ Vue.component("LswConfigurationsPage", {
       this.$trace("lsw-configurations-page.methods.selectSection");
       this.selectSection = seccion;
     },
+    async startExportarAJsonFile() {
+      this.$trace("lsw-configurations-page.methods.startExportarAJsonFile");
+      const allData = await LswDatabase.exportDatabase("lsw_default_database");
+      const minuteUid = LswTimer.utils.formatDatestringFromDate(new Date()).replace(/\/|-|:|\.| /g, ".");
+      this.$lsw.utils.downloadFile(`lsw_default_database.${minuteUid}.json`, JSON.stringify(allData, null, 2));
+    },
     async startExportarAJson() {
       this.$trace("lsw-configurations-page.methods.startExportarAJson");
       const allData = await LswDatabase.exportDatabase("lsw_default_database");
@@ -118,6 +124,50 @@ Vue.component("LswConfigurationsPage", {
           }
         }
       })
+    },
+    async startImportarDeJsonFile() {
+      this.$trace("lsw-configurations-page.methods.startImportarDeJsonFile");
+      // @TODO: importar texto de un JSON file con un input type file y tol royo.
+      let data = await LswUtils.askForFileText();
+      try {
+        console.log(data);
+        data = JSON.parse(data);
+      } catch (error) {
+        return this.$lsw.toasts.showError(error);
+      }
+      const confirmacion = await this.$lsw.dialogs.open({
+        title: "Importación de JSON",
+        template: `
+          <div class="pad_1">
+            <div>Estás a punto de importar los siguientes datos a la base de datos:</div>
+            <pre style="max-height: 400px; overflow: scroll; font-size: 10px;">{{ datos }}</pre>
+            <div class="flex_row">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1 pad_top_1">
+                <button class="danger_button supermini" v-on:click="accept">Importar igualmente</button>
+              </div>
+              <div class="flex_1 pad_left_1 pad_top_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            datos: data,
+          }
+        }
+      });
+      if(confirmacion <= 0) {
+        return false;
+      }
+      // @OK:
+      return;
+      await LswDatabase.importToDatabase("lsw_default_database", data);
+      return this.$lsw.toasts.send({
+        title: "👍 Importación completada",
+        text: `La importación fue un éxito.`
+      });
     },
     async startImportarDeJson() {
       this.$trace("lsw-configurations-page.methods.startImportarDeJson");

@@ -71,52 +71,73 @@ rel correr
           console.log(error);
         }
       },
+      minimizeDialogs() {
+        this.$trace("App.methods.minimizeDialogs");
+        this.$lsw.dialogs.minimizeAll();
+      },
       goToAddNota() {
         this.$trace("App.methods.goToAddNota");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("nueva nota");
       },
       goToAddArticulo() {
         this.$trace("App.methods.goToAddArticulo");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("nuevo articulo");
       },
       goToAddRecordatorio() {
         this.$trace("App.methods.goToAddRecordatorio");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("nuevo recordatorio");
       },
       goToAddAccion() {
         this.$trace("App.methods.goToAddAccion");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("nueva accion");
       },
       goToCalendario() {
         this.$trace("App.methods.goToCalendario");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("calendario");
       },
       goToDesktop() {
         this.$trace("App.methods.goToDesktop");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("none");
       },
       goToNotas() {
         this.$trace("App.methods.goToNotas");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("notas");
       },
       goToEnciclopedia() {
         this.$trace("App.methods.goToEnciclopedia");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("enciclopedia");
       },
       clickPicas() {
         this.$trace("App.methods.clickPicas");
+        this.minimizeDialogs();
         document.querySelector("#the_picas_button").click();
       },
       goToBinaries() {
+        this.$trace("App.methods.goToBinaries");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("binarios");
       },
       goToHomepage() {
+        this.$trace("App.methods.goToHomepage");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("homepage");
       },
       goToFilesystem() {
+        this.$trace("App.methods.goToFilesystem");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("sistema de ficheros");
       },
       goToEventTracker() {
+        this.$trace("App.methods.goToEventTracker");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("event-tracker");
       },
       async initializeFilesystemForLsw() {
@@ -139,11 +160,12 @@ rel correr
         await this.$lsw.fs.ensureDirectory("/kernel/goals/records");
         await this.$lsw.fs.ensureDirectory("/kernel/goals/todos");
         await this.$lsw.fs.ensureDirectory("/kernel/bin");
+        await this.$lsw.fs.ensureFile("/kernel/apps/example/load.js", LswConstants.global.pick("/kernel/apps/example/load.js"));
         /*
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-3-veces.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-3-veces.js"));
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-4h.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-4h.js"));
         //*/
-        await this.$lsw.fs.ensureFile("/kernel/settings/goals.env", LswConstants.global.pick("/kernel/settings/goals.env"));
+        await this.$lsw.fs.ensureFile("/kernel/goals/goals.week", LswConstants.global.pick("/kernel/goals/goals.week"));
         
         
         await this.$lsw.fs.ensureDirectory("/kernel/components");

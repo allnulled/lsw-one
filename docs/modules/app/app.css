@@ -48,7 +48,7 @@ button:hover {
     /*background-color: rgb(6, 6, 29);*/
     background-color: rgba(178, 178, 178, 0.50);
     border: 1px solid rgb(227, 227, 227);
-    box-shadow: 0 0 2px black;
+    /*box-shadow: 0 0 2px black;*/
 }
 
 button.activated {
@@ -96,10 +96,9 @@ button.iconized_button {
 }
 
 button.has_light_bg {
-    background-color: #22222687;
+    background-color: #65656587;
     color: white;
     border: 1px solid #3c3c3e;
-    box-shadow: 0 0 3px black;
 }
 
 button.has_light_bg:hover {
@@ -342,7 +341,7 @@ table.tabla_de_conductometria .minibutton {
 }
 
 .mobile_off_panel_cell:hover {
-    background-color: #181830D8;
+    background-color: rgba(178, 178, 178, 0.50);
 }
 
 pre.codeblock {
@@ -463,6 +462,7 @@ pre.codeblock {
     border: 3px double rgb(170, 133, 133);
     border-radius: 3pt;
     box-shadow: 0 0 4px black;
+    overflow: scroll;
 }
 
 .texto_markdown.sin_decorar {
@@ -865,6 +865,10 @@ pre.codeblock {
 .font_white {
     color: white;
     text-shadow: 0 0 1px black;
+}
+
+.unselectable_text {
+    user-select: none;
 }
 
 .margin_bottom_1px {

@@ -16,7 +16,9 @@
             }">
             <div class="flex_row">
                 <div class="pad_right_1">
-                    <button v-on:click="toggleDetails">⌛️</button>
+                    <button
+                    class="has_light_bg"
+                    :class="{activated:isShowingDetails}" v-on:click="toggleDetails">⌛️</button>
                 </div>
                 <input class="flex_100"
                     type="text"

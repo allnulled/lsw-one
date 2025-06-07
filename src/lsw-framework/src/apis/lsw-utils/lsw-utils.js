@@ -212,6 +212,9 @@
         return;
       }
       if (typeof value === "object") {
+        if(value === null) {
+          return null;
+        }
         if (value.$el) {
           return `[VueComponent:${value?.$options?.name}]`;
         }
@@ -569,6 +572,37 @@
       return reducer(key, val, index, output);
     }, {});
   };
+
+  LswUtils.askForFileText = async function() {
+    return new Promise((resolve, reject) => {
+      const inputHtml = document.createElement("input");
+      inputHtml.type = "file";
+      inputHtml.style.display = "none";
+      inputHtml.onchange = function() {
+        const file = event.target.files[0];
+        if(file) {
+          resolve(file);
+        } else {
+          reject(new Error("No file selected finally"));
+        }
+        document.body.removeChild(inputHtml);
+      };
+      document.body.appendChild(inputHtml);
+      inputHtml.click();
+    }).then(file => {
+      return new Promise((resolve, reject) => {
+        const lector = new FileReader();
+        lector.onload = () => {
+          resolve(lector.result);
+        };
+        lector.readAsText(file);
+      });
+    });
+  };
+
+  LswUtils.padStart = function(txt, ...args) {
+    return ("" + txt).padStart(...args);
+  }
   // @code.end: LswUtils
 
   return LswUtils;

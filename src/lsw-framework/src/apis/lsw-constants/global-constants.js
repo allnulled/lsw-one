@@ -261,8 +261,49 @@ programar | > 6h | !3
 
 `.trim());
 
+LswConstants.global.define("/kernel/goals/goals.week", `
+
+*-*:
+
+* {
+  req actividad física >3h !10
+  req actividad intelectual >3h !10
+  req aprender algo > 1h !10
+  req crear algo > 2h !10
+}
+
+sab {
+  set 22:00 puesta de sol
+}
+
+dom {
+  set 10:00 tiempo de reflexión semanal
+}
+
+  
+  `.trim());
+
 LswConstants.global.define("/kernel/settings/trackables.env", `
 
 Sky castle
 
+`.trim());
+
+LswConstants.global.define("/kernel/editor/validators/js.js", `
+
+  await LswLazyLoads.loadBeautifier();
+
+  return ;
+    
+  `.trim());
+
+LswConstants.global.define("/kernel/apps/example/load.js", `
+
+return {
+  label: "🏅 Example of app",
+  event: () => {
+    lsw.toasts.debug({ message: "hi from custom app!" });
+  }
+};
+  
 `.trim());

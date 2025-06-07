@@ -12026,10 +12026,51 @@ programar | > 6h | !3
 
 `.trim());
 
+LswConstants.global.define("/kernel/goals/goals.week", `
+
+*-*:
+
+* {
+  req actividad física >3h !10
+  req actividad intelectual >3h !10
+  req aprender algo > 1h !10
+  req crear algo > 2h !10
+}
+
+sab {
+  set 22:00 puesta de sol
+}
+
+dom {
+  set 10:00 tiempo de reflexión semanal
+}
+
+  
+  `.trim());
+
 LswConstants.global.define("/kernel/settings/trackables.env", `
 
 Sky castle
 
+`.trim());
+
+LswConstants.global.define("/kernel/editor/validators/js.js", `
+
+  await LswLazyLoads.loadBeautifier();
+
+  return ;
+    
+  `.trim());
+
+LswConstants.global.define("/kernel/apps/example/load.js", `
+
+return {
+  label: "🏅 Example of app",
+  event: () => {
+    lsw.toasts.debug({ message: "hi from custom app!" });
+  }
+};
+  
 `.trim());
 (function (factory) {
   const mod = factory();
@@ -12074,7 +12115,7 @@ Sky castle
         confirmer: options.confirmer || Vue.prototype.$noop,
         confirmation: true,
         once: false,
-        _onceDone: false,
+        onceDone: false,
       }, options);
       if (this.$loads[url].alias) {
         this.$alias[this.$loads[url].alias] = url;
@@ -12105,7 +12146,7 @@ Sky castle
       const _confirmer = options.confirmer || Vue.prototype.$noop;
       const _confirmation = options.confirmation || Vue.prototype.$noop;
       const _once = options.once || false;
-      const _onceDone = options._onceDone || false;
+      const _onceDone = options.onceDone || false;
       const currentGetterValue = (() => {
         try {
           return _getter();
@@ -12133,7 +12174,7 @@ Sky castle
           }
         }
       }
-      this.$loads[url]._onceDone = true;
+      this.$loads[url].onceDone = true;
       return this.constructor.UnsolvedLazyLoadModule.create(url);
     }
 
@@ -14900,6 +14941,17 @@ Sky castle
       return matched.length ? matched[0] : null;
     }
 
+    static findVue(selector, matchingText = false) {
+      const all = document.querySelectorAll(selector);
+      const matched = Array.from(all).filter(element => {
+        if(!matchingText) {
+          return true;
+        }
+        return element.textContent.trim().toLowerCase() === matchingText.toLowerCase();
+      });
+      return matched.length ? matched[0].__vue__ : null;
+    }
+
     static waitForMilliseconds(ms) {
       return new Promise((resolve, reject) => {
         setTimeout(resolve, ms);
@@ -14980,8 +15032,14 @@ Sky castle
     static async verNotas() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "💬").click();
     }
+    static async abrirHomepage() {
+      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📟").click();
+    }
     static async calendario() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
+    }
+    static async abrirCalendario() {
+      LswDom.querySelectorFirst(".main_topbar_button", "📆").click();
     }
     static async reportesDeCalendario() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
@@ -14992,17 +15050,17 @@ Sky castle
       
     }
     static async abrirNavegacionRapida() {
-      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
     }
     static async abrirBinarios() {
-      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
       await LswDom.waitForMilliseconds(100);
       LswDom.querySelectorFirst(".lista_apps div", "💣 Binarios").click();
     }
     static async abrirBaseDeDatos() {
-      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
       await LswDom.waitForMilliseconds(100);
-      LswDom.querySelectorFirst("div", "↗️ Base de datos").click();
+      LswDom.querySelectorFirst("div", "📦 Base de datos").click();
     }
     static async abrirAccionesVirtuales() {
       await this.abrirBaseDeDatos();
@@ -15045,6 +15103,20 @@ Sky castle
       Abrir_libros: {
         await LswDom.waitForMilliseconds(100);
         LswDom.querySelectorFirst(".lsw_wiki button.supermini", "📚").click();
+      }
+    }
+    static async abrirWeekPlanner() {
+      await this.abrirCalendario();
+      Abrir_planificador: {
+        await LswDom.waitForMilliseconds(1000);
+        LswDom.querySelectorFirst("button", "7️⃣").click();
+      }
+    }
+    static async abrirAcciones() {
+      await this.abrirBaseDeDatos();
+      Abrir_planificador: {
+        await LswDom.waitForMilliseconds(1000);
+        LswDom.querySelectorFirst("button", "7️⃣").click();
       }
     }
 
@@ -16624,7 +16696,7 @@ Sky castle
             try {
               isAccepted = filterFn(cursor.value);
             } catch (error) {
-              console.error("Error arised from filter callback on «browsie.selectMany»");
+              console.error(`Silent error arised from filter callback on «browsie.selectMany» against store «${store}»`, error);
             }
             if (isAccepted) { // Aplica la función de filtro
               results.push(cursor.value);
@@ -17242,6 +17314,3434 @@ Sky castle
   // @code.end: LswDatabase class
 
   return LswDatabase;
+
+});
+/*
+ * Generated by PEG.js 0.10.0.
+ *
+ * http://pegjs.org/
+ */
+(function(root) {
+  "use strict";
+
+  function peg$subclass(child, parent) {
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor();
+  }
+
+  function peg$SyntaxError(message, expected, found, location) {
+    this.message  = message;
+    this.expected = expected;
+    this.found    = found;
+    this.location = location;
+    this.name     = "SyntaxError";
+
+    if (typeof Error.captureStackTrace === "function") {
+      Error.captureStackTrace(this, peg$SyntaxError);
+    }
+  }
+
+  peg$subclass(peg$SyntaxError, Error);
+
+  peg$SyntaxError.buildMessage = function(expected, found) {
+    var DESCRIBE_EXPECTATION_FNS = {
+          literal: function(expectation) {
+            return "\"" + literalEscape(expectation.text) + "\"";
+          },
+
+          "class": function(expectation) {
+            var escapedParts = "",
+                i;
+
+            for (i = 0; i < expectation.parts.length; i++) {
+              escapedParts += expectation.parts[i] instanceof Array
+                ? classEscape(expectation.parts[i][0]) + "-" + classEscape(expectation.parts[i][1])
+                : classEscape(expectation.parts[i]);
+            }
+
+            return "[" + (expectation.inverted ? "^" : "") + escapedParts + "]";
+          },
+
+          any: function(expectation) {
+            return "any character";
+          },
+
+          end: function(expectation) {
+            return "end of input";
+          },
+
+          other: function(expectation) {
+            return expectation.description;
+          }
+        };
+
+    function hex(ch) {
+      return ch.charCodeAt(0).toString(16).toUpperCase();
+    }
+
+    function literalEscape(s) {
+      return s
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g,  '\\"')
+        .replace(/\0/g, '\\0')
+        .replace(/\t/g, '\\t')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/[\x00-\x0F]/g,          function(ch) { return '\\x0' + hex(ch); })
+        .replace(/[\x10-\x1F\x7F-\x9F]/g, function(ch) { return '\\x'  + hex(ch); });
+    }
+
+    function classEscape(s) {
+      return s
+        .replace(/\\/g, '\\\\')
+        .replace(/\]/g, '\\]')
+        .replace(/\^/g, '\\^')
+        .replace(/-/g,  '\\-')
+        .replace(/\0/g, '\\0')
+        .replace(/\t/g, '\\t')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/[\x00-\x0F]/g,          function(ch) { return '\\x0' + hex(ch); })
+        .replace(/[\x10-\x1F\x7F-\x9F]/g, function(ch) { return '\\x'  + hex(ch); });
+    }
+
+    function describeExpectation(expectation) {
+      return DESCRIBE_EXPECTATION_FNS[expectation.type](expectation);
+    }
+
+    function describeExpected(expected) {
+      var descriptions = new Array(expected.length),
+          i, j;
+
+      for (i = 0; i < expected.length; i++) {
+        descriptions[i] = describeExpectation(expected[i]);
+      }
+
+      descriptions.sort();
+
+      if (descriptions.length > 0) {
+        for (i = 1, j = 1; i < descriptions.length; i++) {
+          if (descriptions[i - 1] !== descriptions[i]) {
+            descriptions[j] = descriptions[i];
+            j++;
+          }
+        }
+        descriptions.length = j;
+      }
+
+      switch (descriptions.length) {
+        case 1:
+          return descriptions[0];
+
+        case 2:
+          return descriptions[0] + " or " + descriptions[1];
+
+        default:
+          return descriptions.slice(0, -1).join(", ")
+            + ", or "
+            + descriptions[descriptions.length - 1];
+      }
+    }
+
+    function describeFound(found) {
+      return found ? "\"" + literalEscape(found) + "\"" : "end of input";
+    }
+
+    return "Expected " + describeExpected(expected) + " but " + describeFound(found) + " found.";
+  };
+
+  function peg$parse(input, options) {
+    options = options !== void 0 ? options : {};
+
+    var peg$FAILED = {},
+
+        peg$startRuleFunctions = { Start: peg$parseStart },
+        peg$startRuleFunction  = peg$parseStart,
+
+        peg$c0 = function(sentence) { return sentence; },
+        peg$c1 = function(value, appends) { return { $type:"value", value, appends } },
+        peg$c2 = "#",
+        peg$c3 = peg$literalExpectation("#", false),
+        peg$c4 = function() { return { $type: "injected parameter", value: text() } },
+        peg$c5 = "?",
+        peg$c6 = peg$literalExpectation("?", false),
+        peg$c7 = function(token1, table, filters, token2) { return { $action: "select", table, filters } },
+        peg$c8 = "+",
+        peg$c9 = peg$literalExpectation("+", false),
+        peg$c10 = function(token1, table, token2, data) { return { $action: "insert", data } },
+        peg$c11 = "=",
+        peg$c12 = peg$literalExpectation("=", false),
+        peg$c13 = function(token1, table, filters, token3, value) { return { $action: "update", table, filters, value } },
+        peg$c14 = "-",
+        peg$c15 = peg$literalExpectation("-", false),
+        peg$c16 = function(token1, table, token2, filters) { return { $action: "delete", table, filters } },
+        peg$c17 = ":",
+        peg$c18 = peg$literalExpectation(":", false),
+        peg$c19 = function(token1, filter) { return filter },
+        peg$c20 = function(src, ops) { return { $type: "logical and/or operator", src, ops } },
+        peg$c21 = function(op, dst) { return { op, dst } },
+        peg$c22 = "!",
+        peg$c23 = peg$literalExpectation("!", false),
+        peg$c24 = function(negated, rule) { return negated ? { $type: "negation", negated, rule } : rule },
+        peg$c25 = "(",
+        peg$c26 = peg$literalExpectation("(", false),
+        peg$c27 = ")",
+        peg$c28 = peg$literalExpectation(")", false),
+        peg$c29 = function(rule) { return { $type: "agroupation", rule } },
+        peg$c30 = "and",
+        peg$c31 = peg$literalExpectation("and", false),
+        peg$c32 = "&",
+        peg$c33 = peg$literalExpectation("&", false),
+        peg$c34 = "or",
+        peg$c35 = peg$literalExpectation("or", false),
+        peg$c36 = "|",
+        peg$c37 = peg$literalExpectation("|", false),
+        peg$c38 = function(column, operation) { return [column, ...operation] },
+        peg$c39 = function(op, ob) { return [op, ob] },
+        peg$c40 = "is null",
+        peg$c41 = peg$literalExpectation("is null", false),
+        peg$c42 = "is not null",
+        peg$c43 = peg$literalExpectation("is not null", false),
+        peg$c44 = function() { return [text()]},
+        peg$c45 = "<",
+        peg$c46 = peg$literalExpectation("<", false),
+        peg$c47 = "<=",
+        peg$c48 = peg$literalExpectation("<=", false),
+        peg$c49 = ">",
+        peg$c50 = peg$literalExpectation(">", false),
+        peg$c51 = ">=",
+        peg$c52 = peg$literalExpectation(">=", false),
+        peg$c53 = "!=",
+        peg$c54 = peg$literalExpectation("!=", false),
+        peg$c55 = "is in",
+        peg$c56 = peg$literalExpectation("is in", false),
+        peg$c57 = "is not in",
+        peg$c58 = peg$literalExpectation("is not in", false),
+        peg$c59 = function(token1, name, token2, parameters, token3) { return { $type: "filter appendment", name, parameters } },
+        peg$c60 = ">>",
+        peg$c61 = peg$literalExpectation(">>", false),
+        peg$c62 = function(token1, name) { return { $type: "export appendment", name } },
+        peg$c63 = ">>>",
+        peg$c64 = peg$literalExpectation(">>>", false),
+        peg$c65 = function(token1, name) { return { $type: "return appendment", name } },
+        peg$c66 = "*",
+        peg$c67 = peg$literalExpectation("*", false),
+        peg$c68 = function(token1, name) { return { $type: "multiply appendment", name } },
+        peg$c69 = function(first, others) { return [first].concat(others) },
+        peg$c70 = ",",
+        peg$c71 = peg$literalExpectation(",", false),
+        peg$c72 = function(token1, param) { return param },
+        peg$c73 = /^[0-9]/,
+        peg$c74 = peg$classExpectation([["0", "9"]], false, false),
+        peg$c75 = function() { return parseInt(text()) },
+        peg$c76 = "{{",
+        peg$c77 = peg$literalExpectation("{{", false),
+        peg$c78 = "}}",
+        peg$c79 = peg$literalExpectation("}}", false),
+        peg$c80 = function(code) { return { $type: "js", code } },
+        peg$c81 = peg$anyExpectation(),
+        peg$c82 = function() { return text() },
+        peg$c83 = function(tp, vl) { return tp ? { ...tp, $value: vl } : vl; },
+        peg$c84 = /^[A-Za-z$_]/,
+        peg$c85 = peg$classExpectation([["A", "Z"], ["a", "z"], "$", "_"], false, false),
+        peg$c86 = /^[A-Za-z0-9$_]/,
+        peg$c87 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], "$", "_"], false, false),
+        peg$c88 = ".",
+        peg$c89 = peg$literalExpectation(".", false),
+        peg$c90 = function(noun) { return noun },
+        peg$c91 = "[",
+        peg$c92 = peg$literalExpectation("[", false),
+        peg$c93 = "]",
+        peg$c94 = peg$literalExpectation("]", false),
+        peg$c95 = function(first, others) { return { $type: "js-path", path: [first].concat(others || []) } },
+        peg$c96 = "@",
+        peg$c97 = peg$literalExpectation("@", false),
+        peg$c98 = function(jspath) {
+              return {
+                $protocol: jspath,
+              };
+            },
+        peg$c99 = "//",
+        peg$c100 = peg$literalExpectation("//", false),
+        peg$c101 = "/",
+        peg$c102 = peg$literalExpectation("/", false),
+        peg$c103 = function(protocol, host, path, query, fragment) {
+              return {
+                $protocol: protocol,
+                $host: host,
+                $path: path || "/",
+                $query: query || null,
+                $fragment: fragment || null
+              };
+            },
+        peg$c104 = /^[A-Za-z]/,
+        peg$c105 = peg$classExpectation([["A", "Z"], ["a", "z"]], false, false),
+        peg$c106 = /^[A-Za-z0-9+\-.]/,
+        peg$c107 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], "+", "-", "."], false, false),
+        peg$c108 = function(protocol) {
+              return text().slice(0, -1); // Remueve el ":" del final
+            },
+        peg$c109 = /^[A-Za-z0-9\-._~%]/,
+        peg$c110 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], "-", ".", "_", "~", "%"], false, false),
+        peg$c111 = function(host) {
+              return host.join("");
+            },
+        peg$c112 = /^[A-Za-z0-9\-._~%!$&'()*+,;=:@\/]/,
+        peg$c113 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], "-", ".", "_", "~", "%", "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "=", ":", "@", "/"], false, false),
+        peg$c114 = function(path) {
+              return text().substr(1);
+            },
+        peg$c115 = function(params) {
+              return params;
+            },
+        peg$c116 = function(head, tail) {
+              return [head, ...tail.map(item => item[1])];
+            },
+        peg$c117 = function(key, value) {
+              return { key: key.join(""), value: value.join("") };
+            },
+        peg$c118 = function(id) {
+              return id.join("");
+            },
+        peg$c119 = "{",
+        peg$c120 = peg$literalExpectation("{", false),
+        peg$c121 = "}",
+        peg$c122 = peg$literalExpectation("}", false),
+        peg$c123 = function(members) {
+              return members !== null ? members : {};
+            },
+        peg$c124 = function(head, tail) {
+              const result = { [head.key]: head.value };
+              tail.forEach((item) => {
+                const subitem = item[3];
+                const { key, value } = subitem;
+                result[key] = value;
+              });
+              return result;
+            },
+        peg$c125 = function(key, value) {
+              return { key, value };
+            },
+        peg$c126 = function(elements) {
+              return elements !== null ? elements : [];
+            },
+        peg$c127 = function(head, tail) {
+              return [head, ...tail.map(e => e[3])];
+            },
+        peg$c128 = "\"",
+        peg$c129 = peg$literalExpectation("\"", false),
+        peg$c130 = function(chars) {
+              return chars;
+            },
+        peg$c131 = "\\\"",
+        peg$c132 = peg$literalExpectation("\\\"", false),
+        peg$c133 = function(chars) { return text(); },
+        peg$c134 = /^[eE]/,
+        peg$c135 = peg$classExpectation(["e", "E"], false, false),
+        peg$c136 = /^[\-+]/,
+        peg$c137 = peg$classExpectation(["-", "+"], false, false),
+        peg$c138 = function(value) {
+              return parseFloat(value);
+            },
+        peg$c139 = "true",
+        peg$c140 = peg$literalExpectation("true", false),
+        peg$c141 = function() { return true; },
+        peg$c142 = "false",
+        peg$c143 = peg$literalExpectation("false", false),
+        peg$c144 = function() { return false; },
+        peg$c145 = "null",
+        peg$c146 = peg$literalExpectation("null", false),
+        peg$c147 = function() { return null; },
+        peg$c148 = peg$otherExpectation("whitespace"),
+        peg$c149 = /^[ \t\n\r]/,
+        peg$c150 = peg$classExpectation([" ", "\t", "\n", "\r"], false, false),
+
+        peg$currPos          = 0,
+        peg$savedPos         = 0,
+        peg$posDetailsCache  = [{ line: 1, column: 1 }],
+        peg$maxFailPos       = 0,
+        peg$maxFailExpected  = [],
+        peg$silentFails      = 0,
+
+        peg$result;
+
+    if ("startRule" in options) {
+      if (!(options.startRule in peg$startRuleFunctions)) {
+        throw new Error("Can't start parsing from rule \"" + options.startRule + "\".");
+      }
+
+      peg$startRuleFunction = peg$startRuleFunctions[options.startRule];
+    }
+
+    function text() {
+      return input.substring(peg$savedPos, peg$currPos);
+    }
+
+    function location() {
+      return peg$computeLocation(peg$savedPos, peg$currPos);
+    }
+
+    function expected(description, location) {
+      location = location !== void 0 ? location : peg$computeLocation(peg$savedPos, peg$currPos)
+
+      throw peg$buildStructuredError(
+        [peg$otherExpectation(description)],
+        input.substring(peg$savedPos, peg$currPos),
+        location
+      );
+    }
+
+    function error(message, location) {
+      location = location !== void 0 ? location : peg$computeLocation(peg$savedPos, peg$currPos)
+
+      throw peg$buildSimpleError(message, location);
+    }
+
+    function peg$literalExpectation(text, ignoreCase) {
+      return { type: "literal", text: text, ignoreCase: ignoreCase };
+    }
+
+    function peg$classExpectation(parts, inverted, ignoreCase) {
+      return { type: "class", parts: parts, inverted: inverted, ignoreCase: ignoreCase };
+    }
+
+    function peg$anyExpectation() {
+      return { type: "any" };
+    }
+
+    function peg$endExpectation() {
+      return { type: "end" };
+    }
+
+    function peg$otherExpectation(description) {
+      return { type: "other", description: description };
+    }
+
+    function peg$computePosDetails(pos) {
+      var details = peg$posDetailsCache[pos], p;
+
+      if (details) {
+        return details;
+      } else {
+        p = pos - 1;
+        while (!peg$posDetailsCache[p]) {
+          p--;
+        }
+
+        details = peg$posDetailsCache[p];
+        details = {
+          line:   details.line,
+          column: details.column
+        };
+
+        while (p < pos) {
+          if (input.charCodeAt(p) === 10) {
+            details.line++;
+            details.column = 1;
+          } else {
+            details.column++;
+          }
+
+          p++;
+        }
+
+        peg$posDetailsCache[pos] = details;
+        return details;
+      }
+    }
+
+    function peg$computeLocation(startPos, endPos) {
+      var startPosDetails = peg$computePosDetails(startPos),
+          endPosDetails   = peg$computePosDetails(endPos);
+
+      return {
+        start: {
+          offset: startPos,
+          line:   startPosDetails.line,
+          column: startPosDetails.column
+        },
+        end: {
+          offset: endPos,
+          line:   endPosDetails.line,
+          column: endPosDetails.column
+        }
+      };
+    }
+
+    function peg$fail(expected) {
+      if (peg$currPos < peg$maxFailPos) { return; }
+
+      if (peg$currPos > peg$maxFailPos) {
+        peg$maxFailPos = peg$currPos;
+        peg$maxFailExpected = [];
+      }
+
+      peg$maxFailExpected.push(expected);
+    }
+
+    function peg$buildSimpleError(message, location) {
+      return new peg$SyntaxError(message, null, null, location);
+    }
+
+    function peg$buildStructuredError(expected, found, location) {
+      return new peg$SyntaxError(
+        peg$SyntaxError.buildMessage(expected, found),
+        expected,
+        found,
+        location
+      );
+    }
+
+    function peg$parseStart() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parseValue_appended();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c0(s1);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseValue_appended() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseJson_value();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parseValue_appendment();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseValue_appendment();
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c1(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseValue_appendment() {
+      var s0;
+
+      s0 = peg$parseSubsentence_return();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseSubsentence_export();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parseSubsentence_filter();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parseSubsentence_multiply();
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseInjected_parameter() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 35) {
+        s1 = peg$c2;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c3); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseJs_noun();
+        if (s2 === peg$FAILED) {
+          s2 = peg$parseInteger();
+        }
+        if (s2 === peg$FAILED) {
+          s2 = null;
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c4();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseSelect_group() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseJs_noun();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseWhere_filters_precolons();
+          if (s3 === peg$FAILED) {
+            s3 = null;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$currPos;
+            s5 = peg$parse_();
+            if (s5 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 63) {
+                s6 = peg$c5;
+                peg$currPos++;
+              } else {
+                s6 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c6); }
+              }
+              if (s6 !== peg$FAILED) {
+                s5 = [s5, s6];
+                s4 = s5;
+              } else {
+                peg$currPos = s4;
+                s4 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s4;
+              s4 = peg$FAILED;
+            }
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c7(s1, s2, s3, s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseInsert_group() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseJs_noun();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$currPos;
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 43) {
+              s5 = peg$c8;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c9); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parse_();
+              if (s6 !== peg$FAILED) {
+                s4 = [s4, s5, s6];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseValue_appended();
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c10(s1, s2, s3, s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseUpdate_group() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseJs_noun();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseWhere_filters_precolons();
+          if (s3 === peg$FAILED) {
+            s3 = null;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$currPos;
+            s5 = peg$parse_();
+            if (s5 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 61) {
+                s6 = peg$c11;
+                peg$currPos++;
+              } else {
+                s6 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c12); }
+              }
+              if (s6 !== peg$FAILED) {
+                s7 = peg$parse_();
+                if (s7 !== peg$FAILED) {
+                  s5 = [s5, s6, s7];
+                  s4 = s5;
+                } else {
+                  peg$currPos = s4;
+                  s4 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s4;
+                s4 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s4;
+              s4 = peg$FAILED;
+            }
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseValue_appended();
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c13(s1, s2, s3, s4, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseDelete_group() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseJs_noun();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$currPos;
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 45) {
+              s5 = peg$c14;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c15); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parse_();
+              if (s6 !== peg$FAILED) {
+                s4 = [s4, s5, s6];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseWhere_filters();
+            if (s4 === peg$FAILED) {
+              s4 = null;
+            }
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c16(s1, s2, s3, s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseWhere_filters_precolons() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      s2 = peg$parse_();
+      if (s2 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 58) {
+          s3 = peg$c17;
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c18); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseWhere_filters();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c19(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseWhere_filters() {
+      var s0;
+
+      s0 = peg$parseInteger();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseString();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parseWhere_rule_4();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parseJs_block();
+            if (s0 === peg$FAILED) {
+              s0 = peg$parseInjected_parameter();
+            }
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseWhere_rule_4() {
+      var s0;
+
+      s0 = peg$parseWhere_rule_3();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseWhere_rule_2();
+      }
+
+      return s0;
+    }
+
+    function peg$parseWhere_rule_3() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseWhere_rule_2();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parse_();
+          if (s3 !== peg$FAILED) {
+            s4 = [];
+            s5 = peg$parseWhere_rule_3_continuation();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhere_rule_3_continuation();
+            }
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c20(s2, s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseWhere_rule_3_continuation() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseToken_and_or_operator();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parse_();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseWhere_rule_2();
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c21(s2, s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseWhere_rule_2() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 33) {
+          s2 = peg$c22;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c23); }
+        }
+        if (s2 === peg$FAILED) {
+          s2 = null;
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parse_();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseWhere_rule_1();
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c24(s2, s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseWhere_rule_1() {
+      var s0;
+
+      s0 = peg$parseWhere_rule_0();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseWhere_rule_pure();
+      }
+
+      return s0;
+    }
+
+    function peg$parseWhere_rule_0() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 40) {
+          s2 = peg$c25;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c26); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parse_();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseWhere_rule_4();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parse_();
+              if (s5 !== peg$FAILED) {
+                if (input.charCodeAt(peg$currPos) === 41) {
+                  s6 = peg$c27;
+                  peg$currPos++;
+                } else {
+                  s6 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c28); }
+                }
+                if (s6 !== peg$FAILED) {
+                  peg$savedPos = s0;
+                  s1 = peg$c29(s4);
+                  s0 = s1;
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseToken_and_or_operator() {
+      var s0;
+
+      s0 = peg$parseToken_and_operator();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseToken_or_operator();
+      }
+
+      return s0;
+    }
+
+    function peg$parseToken_and_operator() {
+      var s0;
+
+      if (input.substr(peg$currPos, 3) === peg$c30) {
+        s0 = peg$c30;
+        peg$currPos += 3;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c31); }
+      }
+      if (s0 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 38) {
+          s0 = peg$c32;
+          peg$currPos++;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c33); }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseToken_or_operator() {
+      var s0;
+
+      if (input.substr(peg$currPos, 2) === peg$c34) {
+        s0 = peg$c34;
+        peg$currPos += 2;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c35); }
+      }
+      if (s0 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 124) {
+          s0 = peg$c36;
+          peg$currPos++;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c37); }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseWhere_rule_pure() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseJs_noun();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parse_();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseColumn_operation();
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c38(s2, s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseColumn_operation() {
+      var s0;
+
+      s0 = peg$parseColumn_operator_1();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseColumn_operation_2();
+      }
+
+      return s0;
+    }
+
+    function peg$parseColumn_operation_2() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseColumn_operator_2();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseJson_value();
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c39(s1, s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseColumn_operator_1() {
+      var s0, s1;
+
+      if (input.substr(peg$currPos, 7) === peg$c40) {
+        s0 = peg$c40;
+        peg$currPos += 7;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c41); }
+      }
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        if (input.substr(peg$currPos, 11) === peg$c42) {
+          s1 = peg$c42;
+          peg$currPos += 11;
+        } else {
+          s1 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c43); }
+        }
+        if (s1 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c44();
+        }
+        s0 = s1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseColumn_operator_2() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 60) {
+        s0 = peg$c45;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c46); }
+      }
+      if (s0 === peg$FAILED) {
+        if (input.substr(peg$currPos, 2) === peg$c47) {
+          s0 = peg$c47;
+          peg$currPos += 2;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c48); }
+        }
+        if (s0 === peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 62) {
+            s0 = peg$c49;
+            peg$currPos++;
+          } else {
+            s0 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c50); }
+          }
+          if (s0 === peg$FAILED) {
+            if (input.substr(peg$currPos, 2) === peg$c51) {
+              s0 = peg$c51;
+              peg$currPos += 2;
+            } else {
+              s0 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c52); }
+            }
+            if (s0 === peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 61) {
+                s0 = peg$c11;
+                peg$currPos++;
+              } else {
+                s0 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c12); }
+              }
+              if (s0 === peg$FAILED) {
+                if (input.substr(peg$currPos, 2) === peg$c53) {
+                  s0 = peg$c53;
+                  peg$currPos += 2;
+                } else {
+                  s0 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c54); }
+                }
+                if (s0 === peg$FAILED) {
+                  if (input.substr(peg$currPos, 5) === peg$c55) {
+                    s0 = peg$c55;
+                    peg$currPos += 5;
+                  } else {
+                    s0 = peg$FAILED;
+                    if (peg$silentFails === 0) { peg$fail(peg$c56); }
+                  }
+                  if (s0 === peg$FAILED) {
+                    if (input.substr(peg$currPos, 9) === peg$c57) {
+                      s0 = peg$c57;
+                      peg$currPos += 9;
+                    } else {
+                      s0 = peg$FAILED;
+                      if (peg$silentFails === 0) { peg$fail(peg$c58); }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseSubsentence_filter() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      s2 = peg$parse_();
+      if (s2 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 62) {
+          s3 = peg$c49;
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c50); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseJs_path();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$currPos;
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 40) {
+              s5 = peg$c25;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c26); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parse_();
+              if (s6 !== peg$FAILED) {
+                s4 = [s4, s5, s6];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseList_of_function_parameters();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$currPos;
+              s6 = peg$parse_();
+              if (s6 !== peg$FAILED) {
+                if (input.charCodeAt(peg$currPos) === 41) {
+                  s7 = peg$c27;
+                  peg$currPos++;
+                } else {
+                  s7 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c28); }
+                }
+                if (s7 !== peg$FAILED) {
+                  s6 = [s6, s7];
+                  s5 = s6;
+                } else {
+                  peg$currPos = s5;
+                  s5 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s5;
+                s5 = peg$FAILED;
+              }
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c59(s1, s2, s3, s4, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseSubsentence_export() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      s2 = peg$parse_();
+      if (s2 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 2) === peg$c60) {
+          s3 = peg$c60;
+          peg$currPos += 2;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c61); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseFunction_parameter();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c62(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseSubsentence_return() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      s2 = peg$parse_();
+      if (s2 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c63) {
+          s3 = peg$c63;
+          peg$currPos += 3;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c64); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseFunction_parameter();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c65(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseSubsentence_multiply() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      s2 = peg$parse_();
+      if (s2 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 42) {
+          s3 = peg$c66;
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c67); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseFunction_parameter();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c68(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseList_of_function_parameters() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseFunction_parameter();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parseFunction_parameter_precoma();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseFunction_parameter_precoma();
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c69(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseFunction_parameter() {
+      var s0;
+
+      s0 = peg$parseValue_appended();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseJs_path();
+      }
+
+      return s0;
+    }
+
+    function peg$parseFunction_parameter_precoma() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      s2 = peg$parse_();
+      if (s2 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 44) {
+          s3 = peg$c70;
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c71); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseFunction_parameter();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c72(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseInteger() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      if (peg$c73.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c74); }
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          if (peg$c73.test(input.charAt(peg$currPos))) {
+            s2 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c74); }
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c75();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseJs_block() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 2) === peg$c76) {
+        s1 = peg$c76;
+        peg$currPos += 2;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c77); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseJs_block_content();
+        if (s2 !== peg$FAILED) {
+          if (input.substr(peg$currPos, 2) === peg$c78) {
+            s3 = peg$c78;
+            peg$currPos += 2;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c79); }
+          }
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c80(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseJs_block_content() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      if (input.substr(peg$currPos, 2) === peg$c78) {
+        s4 = peg$c78;
+        peg$currPos += 2;
+      } else {
+        s4 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c79); }
+      }
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c81); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      while (s2 !== peg$FAILED) {
+        s1.push(s2);
+        s2 = peg$currPos;
+        s3 = peg$currPos;
+        peg$silentFails++;
+        if (input.substr(peg$currPos, 2) === peg$c78) {
+          s4 = peg$c78;
+          peg$currPos += 2;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c79); }
+        }
+        peg$silentFails--;
+        if (s4 === peg$FAILED) {
+          s3 = void 0;
+        } else {
+          peg$currPos = s3;
+          s3 = peg$FAILED;
+        }
+        if (s3 !== peg$FAILED) {
+          if (input.length > peg$currPos) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c81); }
+          }
+          if (s4 !== peg$FAILED) {
+            s3 = [s3, s4];
+            s2 = s3;
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c82();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseJson_value() {
+      var s0;
+
+      s0 = peg$parseJson_value_pure();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseJs_block();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parseUpdate_group();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parseSelect_group();
+            if (s0 === peg$FAILED) {
+              s0 = peg$parseInsert_group();
+              if (s0 === peg$FAILED) {
+                s0 = peg$parseDelete_group();
+                if (s0 === peg$FAILED) {
+                  s0 = peg$parseInjected_parameter();
+                }
+              }
+            }
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseJson_value_pure() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseType_def();
+      if (s1 === peg$FAILED) {
+        s1 = null;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseValue_untyped();
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c83(s1, s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseType_def() {
+      var s0;
+
+      s0 = peg$parseType_def_by_request();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseType_def_by_js_property();
+      }
+
+      return s0;
+    }
+
+    function peg$parseJs_noun() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (peg$c84.test(input.charAt(peg$currPos))) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c85); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        if (peg$c86.test(input.charAt(peg$currPos))) {
+          s3 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c87); }
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          if (peg$c86.test(input.charAt(peg$currPos))) {
+            s3 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c87); }
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c82();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseJs_noun_predotted() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 46) {
+        s1 = peg$c88;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c89); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseJs_noun();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c90(s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseJs_noun_accessed() {
+      var s0;
+
+      s0 = peg$parseJs_noun_predotted();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseJs_noun_accessed_by_squarebrackets();
+      }
+
+      return s0;
+    }
+
+    function peg$parseJs_noun_accessed_by_squarebrackets() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 91) {
+        s1 = peg$c91;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c92); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseString();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 93) {
+            s3 = peg$c93;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c94); }
+          }
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c90(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseJs_path() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseJs_noun();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parseJs_noun_accessed();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseJs_noun_accessed();
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c95(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseType_def_by_js_property() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 64) {
+        s1 = peg$c96;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c97); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseJs_path();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c98(s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseType_def_by_request() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 64) {
+        s1 = peg$c96;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c97); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseType_protocol();
+        if (s2 !== peg$FAILED) {
+          if (input.substr(peg$currPos, 2) === peg$c99) {
+            s3 = peg$c99;
+            peg$currPos += 2;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c100); }
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 47) {
+              s4 = peg$c101;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c102); }
+            }
+            if (s4 === peg$FAILED) {
+              s4 = null;
+            }
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseHost();
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parsePath();
+                if (s6 === peg$FAILED) {
+                  s6 = null;
+                }
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parseQuery_string();
+                  if (s7 === peg$FAILED) {
+                    s7 = null;
+                  }
+                  if (s7 !== peg$FAILED) {
+                    s8 = peg$parseFragment();
+                    if (s8 === peg$FAILED) {
+                      s8 = null;
+                    }
+                    if (s8 !== peg$FAILED) {
+                      peg$savedPos = s0;
+                      s1 = peg$c103(s2, s5, s6, s7, s8);
+                      s0 = s1;
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$FAILED;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseType_protocol() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      if (peg$c104.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c105); }
+      }
+      if (s2 !== peg$FAILED) {
+        s3 = [];
+        if (peg$c106.test(input.charAt(peg$currPos))) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c107); }
+        }
+        while (s4 !== peg$FAILED) {
+          s3.push(s4);
+          if (peg$c106.test(input.charAt(peg$currPos))) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c107); }
+          }
+        }
+        if (s3 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 58) {
+            s4 = peg$c17;
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c18); }
+          }
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c108(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseHost() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      if (peg$c109.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c110); }
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          if (peg$c109.test(input.charAt(peg$currPos))) {
+            s2 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c110); }
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c111(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsePath() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 47) {
+        s2 = peg$c101;
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c102); }
+      }
+      if (s2 !== peg$FAILED) {
+        s3 = [];
+        if (peg$c112.test(input.charAt(peg$currPos))) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c113); }
+        }
+        while (s4 !== peg$FAILED) {
+          s3.push(s4);
+          if (peg$c112.test(input.charAt(peg$currPos))) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c113); }
+          }
+        }
+        if (s3 !== peg$FAILED) {
+          s2 = [s2, s3];
+          s1 = s2;
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c114(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseQuery_string() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 63) {
+        s1 = peg$c5;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c6); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseQuery_param_list();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c115(s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseQuery_param_list() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseQuery_param();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        if (input.charCodeAt(peg$currPos) === 38) {
+          s4 = peg$c32;
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c33); }
+        }
+        if (s4 !== peg$FAILED) {
+          s5 = peg$parseQuery_param();
+          if (s5 !== peg$FAILED) {
+            s4 = [s4, s5];
+            s3 = s4;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$FAILED;
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$currPos;
+          if (input.charCodeAt(peg$currPos) === 38) {
+            s4 = peg$c32;
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c33); }
+          }
+          if (s4 !== peg$FAILED) {
+            s5 = peg$parseQuery_param();
+            if (s5 !== peg$FAILED) {
+              s4 = [s4, s5];
+              s3 = s4;
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c116(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseQuery_param() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      if (peg$c109.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c110); }
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          if (peg$c109.test(input.charAt(peg$currPos))) {
+            s2 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c110); }
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 61) {
+          s2 = peg$c11;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c12); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = [];
+          if (peg$c109.test(input.charAt(peg$currPos))) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c110); }
+          }
+          if (s4 !== peg$FAILED) {
+            while (s4 !== peg$FAILED) {
+              s3.push(s4);
+              if (peg$c109.test(input.charAt(peg$currPos))) {
+                s4 = input.charAt(peg$currPos);
+                peg$currPos++;
+              } else {
+                s4 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c110); }
+              }
+            }
+          } else {
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c117(s1, s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseFragment() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 35) {
+        s1 = peg$c2;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c3); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        if (peg$c112.test(input.charAt(peg$currPos))) {
+          s3 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c113); }
+        }
+        if (s3 !== peg$FAILED) {
+          while (s3 !== peg$FAILED) {
+            s2.push(s3);
+            if (peg$c112.test(input.charAt(peg$currPos))) {
+              s3 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s3 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c113); }
+            }
+          }
+        } else {
+          s2 = peg$FAILED;
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c118(s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseValue_untyped() {
+      var s0;
+
+      s0 = peg$parseObject();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseArray();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parseString();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parseNumber();
+            if (s0 === peg$FAILED) {
+              s0 = peg$parseBoolean();
+              if (s0 === peg$FAILED) {
+                s0 = peg$parseNull();
+              }
+            }
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseObject() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 123) {
+        s1 = peg$c119;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c120); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMemberList();
+          if (s3 === peg$FAILED) {
+            s3 = null;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parse_();
+            if (s4 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 125) {
+                s5 = peg$c121;
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c122); }
+              }
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c123(s3);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseMemberList() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMember();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        s4 = peg$parse_();
+        if (s4 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s5 = peg$c70;
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c71); }
+          }
+          if (s5 !== peg$FAILED) {
+            s6 = peg$parse_();
+            if (s6 !== peg$FAILED) {
+              s7 = peg$parseMember();
+              if (s7 !== peg$FAILED) {
+                s4 = [s4, s5, s6, s7];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$FAILED;
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$currPos;
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 44) {
+              s5 = peg$c70;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c71); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parse_();
+              if (s6 !== peg$FAILED) {
+                s7 = peg$parseMember();
+                if (s7 !== peg$FAILED) {
+                  s4 = [s4, s5, s6, s7];
+                  s3 = s4;
+                } else {
+                  peg$currPos = s3;
+                  s3 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c124(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseMember_key() {
+      var s0;
+
+      s0 = peg$parseString();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseJs_noun();
+      }
+
+      return s0;
+    }
+
+    function peg$parseMember() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMember_key();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 58) {
+            s3 = peg$c17;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c18); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parse_();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseValue_appended();
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c125(s1, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseArray() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 91) {
+        s1 = peg$c91;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c92); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseElementList();
+          if (s3 === peg$FAILED) {
+            s3 = null;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parse_();
+            if (s4 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 93) {
+                s5 = peg$c93;
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c94); }
+              }
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c126(s3);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseElementList() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$parseValue_appended();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        s4 = peg$parse_();
+        if (s4 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s5 = peg$c70;
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c71); }
+          }
+          if (s5 !== peg$FAILED) {
+            s6 = peg$parse_();
+            if (s6 !== peg$FAILED) {
+              s7 = peg$parseValue_appended();
+              if (s7 !== peg$FAILED) {
+                s4 = [s4, s5, s6, s7];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$FAILED;
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$currPos;
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 44) {
+              s5 = peg$c70;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c71); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parse_();
+              if (s6 !== peg$FAILED) {
+                s7 = peg$parseValue_appended();
+                if (s7 !== peg$FAILED) {
+                  s4 = [s4, s5, s6, s7];
+                  s3 = s4;
+                } else {
+                  peg$currPos = s3;
+                  s3 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c127(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseString() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 34) {
+        s1 = peg$c128;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c129); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseDoubleQuotedString();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 34) {
+            s3 = peg$c128;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c129); }
+          }
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c130(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseDoubleQuotedString() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      if (input.substr(peg$currPos, 2) === peg$c131) {
+        s2 = peg$c131;
+        peg$currPos += 2;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c132); }
+      }
+      if (s2 === peg$FAILED) {
+        s2 = peg$currPos;
+        s3 = peg$currPos;
+        peg$silentFails++;
+        if (input.charCodeAt(peg$currPos) === 34) {
+          s4 = peg$c128;
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c129); }
+        }
+        peg$silentFails--;
+        if (s4 === peg$FAILED) {
+          s3 = void 0;
+        } else {
+          peg$currPos = s3;
+          s3 = peg$FAILED;
+        }
+        if (s3 !== peg$FAILED) {
+          if (input.length > peg$currPos) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c81); }
+          }
+          if (s4 !== peg$FAILED) {
+            s3 = [s3, s4];
+            s2 = s3;
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      }
+      while (s2 !== peg$FAILED) {
+        s1.push(s2);
+        if (input.substr(peg$currPos, 2) === peg$c131) {
+          s2 = peg$c131;
+          peg$currPos += 2;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c132); }
+        }
+        if (s2 === peg$FAILED) {
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          if (input.charCodeAt(peg$currPos) === 34) {
+            s4 = peg$c128;
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c129); }
+          }
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c81); }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c133(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseNumber() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      s2 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 45) {
+        s3 = peg$c14;
+        peg$currPos++;
+      } else {
+        s3 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c15); }
+      }
+      if (s3 === peg$FAILED) {
+        s3 = null;
+      }
+      if (s3 !== peg$FAILED) {
+        s4 = [];
+        if (peg$c73.test(input.charAt(peg$currPos))) {
+          s5 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s5 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c74); }
+        }
+        if (s5 !== peg$FAILED) {
+          while (s5 !== peg$FAILED) {
+            s4.push(s5);
+            if (peg$c73.test(input.charAt(peg$currPos))) {
+              s5 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c74); }
+            }
+          }
+        } else {
+          s4 = peg$FAILED;
+        }
+        if (s4 !== peg$FAILED) {
+          s5 = peg$currPos;
+          if (input.charCodeAt(peg$currPos) === 46) {
+            s6 = peg$c88;
+            peg$currPos++;
+          } else {
+            s6 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c89); }
+          }
+          if (s6 !== peg$FAILED) {
+            s7 = [];
+            if (peg$c73.test(input.charAt(peg$currPos))) {
+              s8 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s8 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c74); }
+            }
+            if (s8 !== peg$FAILED) {
+              while (s8 !== peg$FAILED) {
+                s7.push(s8);
+                if (peg$c73.test(input.charAt(peg$currPos))) {
+                  s8 = input.charAt(peg$currPos);
+                  peg$currPos++;
+                } else {
+                  s8 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c74); }
+                }
+              }
+            } else {
+              s7 = peg$FAILED;
+            }
+            if (s7 !== peg$FAILED) {
+              s6 = [s6, s7];
+              s5 = s6;
+            } else {
+              peg$currPos = s5;
+              s5 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s5;
+            s5 = peg$FAILED;
+          }
+          if (s5 === peg$FAILED) {
+            s5 = null;
+          }
+          if (s5 !== peg$FAILED) {
+            s6 = peg$currPos;
+            if (peg$c134.test(input.charAt(peg$currPos))) {
+              s7 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s7 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c135); }
+            }
+            if (s7 !== peg$FAILED) {
+              if (peg$c136.test(input.charAt(peg$currPos))) {
+                s8 = input.charAt(peg$currPos);
+                peg$currPos++;
+              } else {
+                s8 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c137); }
+              }
+              if (s8 === peg$FAILED) {
+                s8 = null;
+              }
+              if (s8 !== peg$FAILED) {
+                s9 = [];
+                if (peg$c73.test(input.charAt(peg$currPos))) {
+                  s10 = input.charAt(peg$currPos);
+                  peg$currPos++;
+                } else {
+                  s10 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c74); }
+                }
+                if (s10 !== peg$FAILED) {
+                  while (s10 !== peg$FAILED) {
+                    s9.push(s10);
+                    if (peg$c73.test(input.charAt(peg$currPos))) {
+                      s10 = input.charAt(peg$currPos);
+                      peg$currPos++;
+                    } else {
+                      s10 = peg$FAILED;
+                      if (peg$silentFails === 0) { peg$fail(peg$c74); }
+                    }
+                  }
+                } else {
+                  s9 = peg$FAILED;
+                }
+                if (s9 !== peg$FAILED) {
+                  s7 = [s7, s8, s9];
+                  s6 = s7;
+                } else {
+                  peg$currPos = s6;
+                  s6 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s6;
+                s6 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s6;
+              s6 = peg$FAILED;
+            }
+            if (s6 === peg$FAILED) {
+              s6 = null;
+            }
+            if (s6 !== peg$FAILED) {
+              s3 = [s3, s4, s5, s6];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        s1 = input.substring(s1, peg$currPos);
+      } else {
+        s1 = s2;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c138(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseBoolean() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 4) === peg$c139) {
+        s1 = peg$c139;
+        peg$currPos += 4;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c140); }
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c141();
+      }
+      s0 = s1;
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        if (input.substr(peg$currPos, 5) === peg$c142) {
+          s1 = peg$c142;
+          peg$currPos += 5;
+        } else {
+          s1 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c143); }
+        }
+        if (s1 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c144();
+        }
+        s0 = s1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseNull() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 4) === peg$c145) {
+        s1 = peg$c145;
+        peg$currPos += 4;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c146); }
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c147();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parse_() {
+      var s0, s1;
+
+      peg$silentFails++;
+      s0 = [];
+      if (peg$c149.test(input.charAt(peg$currPos))) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c150); }
+      }
+      while (s1 !== peg$FAILED) {
+        s0.push(s1);
+        if (peg$c149.test(input.charAt(peg$currPos))) {
+          s1 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s1 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c150); }
+        }
+      }
+      peg$silentFails--;
+      if (s0 === peg$FAILED) {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c148); }
+      }
+
+      return s0;
+    }
+
+
+      // Función auxiliar para convertir cadenas con escapes
+      function unescapeString(str) {
+        return JSON.parse(str);
+      }
+
+
+    peg$result = peg$startRuleFunction();
+
+    if (peg$result !== peg$FAILED && peg$currPos === input.length) {
+      return peg$result;
+    } else {
+      if (peg$result !== peg$FAILED && peg$currPos < input.length) {
+        peg$fail(peg$endExpectation());
+      }
+
+      throw peg$buildStructuredError(
+        peg$maxFailExpected,
+        peg$maxFailPos < input.length ? input.charAt(peg$maxFailPos) : null,
+        peg$maxFailPos < input.length
+          ? peg$computeLocation(peg$maxFailPos, peg$maxFailPos + 1)
+          : peg$computeLocation(peg$maxFailPos, peg$maxFailPos)
+      );
+    }
+  }
+
+  root.BrowsieScript = {
+    SyntaxError: peg$SyntaxError,
+    parse:       peg$parse
+  };
+})(typeof window !== 'undefined' ? window : global);
+
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswDatabaseQueryLanguage'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswDatabaseQueryLanguage'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+
+  const LswDatabaseQueryLanguage = class {
+
+    static parser = BrowsieScript;
+
+    static toJavaScript(browsieScriptCode) {
+      try {
+        const ast = this.parser.parse(browsieScriptCode);
+        console.log(ast);
+        let js = "";
+        js += "";
+        js = ast;
+        console.log(js);
+        return js;
+      } catch (error) {
+        console.log("[!] Error on «LswDatabaseQueryLanguage.toJavaScript» when parsing input");
+        console.log(error);
+        throw error;
+      }
+    }
+
+  }
+  
+  return LswDatabaseQueryLanguage;
 
 });
 (function (factory) {
@@ -20342,6 +23842,9 @@ return Store;
         return;
       }
       if (typeof value === "object") {
+        if(value === null) {
+          return null;
+        }
         if (value.$el) {
           return `[VueComponent:${value?.$options?.name}]`;
         }
@@ -20699,6 +24202,37 @@ return Store;
       return reducer(key, val, index, output);
     }, {});
   };
+
+  LswUtils.askForFileText = async function() {
+    return new Promise((resolve, reject) => {
+      const inputHtml = document.createElement("input");
+      inputHtml.type = "file";
+      inputHtml.style.display = "none";
+      inputHtml.onchange = function() {
+        const file = event.target.files[0];
+        if(file) {
+          resolve(file);
+        } else {
+          reject(new Error("No file selected finally"));
+        }
+        document.body.removeChild(inputHtml);
+      };
+      document.body.appendChild(inputHtml);
+      inputHtml.click();
+    }).then(file => {
+      return new Promise((resolve, reject) => {
+        const lector = new FileReader();
+        lector.onload = () => {
+          resolve(lector.result);
+        };
+        lector.readAsText(file);
+      });
+    });
+  };
+
+  LswUtils.padStart = function(txt, ...args) {
+    return ("" + txt).padStart(...args);
+  }
   // @code.end: LswUtils
 
   return LswUtils;
@@ -21653,6 +25187,24 @@ return Store;
         return result;
       } catch (error) {
         console.log("[!] Error evaluating file (as .tri):", error);
+        return output;
+      }
+    }
+
+    async evaluateAsWeekFile() {
+      this.trace("evaluateAsWeekFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      return WeekLang.parse(fileContents);
+    }
+
+    async evaluateAsWeekFileOrReturn(filepath, output = {}) {
+      this.trace("evaluateAsWeekFileOrReturn", [filepath]);
+      try {
+        const fileContents = await this.read_file(filepath);
+        const result = WeekLang.parse(fileContents);
+        return result;
+      } catch (error) {
+        console.log("[!] Error evaluating file (as .week):", error);
         return output;
       }
     }
@@ -24822,49 +28374,76 @@ Vue.directive("focus", {
 });
 // @code.end: LswXForm API
 const homepage_apps_events = {
-  "base de datos": function() {
-    
+  "base de datos": function () {
+
   },
-  "calendario": function() {
-    
+  "calendario": function () {
+
   },
-  "sistema de ficheros": function() {
-    
+  "sistema de ficheros": function () {
+
   },
-  "configuraciones": function() {
-    
+  "configuraciones": function () {
+
   },
-  "calendario": function() {
-    
+  "calendario": function () {
+
   },
-  "tareas posteriores": function() {
-    
+  "tareas posteriores": function () {
+
   },
-  "tareas anteriores": function() {
-    
+  "tareas anteriores": function () {
+
   },
-  "conductometria": function() {
-    
+  "conductometria": function () {
+
   },
-  "notas": function() {
-    
+  "notas": function () {
+
   },
-  "nueva nota": function() {
-    
+  "nueva nota": function () {
+
   },
-  "enciclopedia": function() {
-    
+  "enciclopedia": function () {
+
   },
-  "nuevo articulo": function() {
-    
+  "nuevo articulo": function () {
+
   },
 };
 
 // @code.start: LswHomepage API | @$section: Vue.js (v2) Components » LswHomepage component
 Vue.component("LswHomepage", {
   template: `<div class="lsw_homepage">
-    <h4 class="pad_bottom_1">📟 Apps disponibles 📟</h4>
-    <div class="lista_apps" style="font-size: 10px;">
+    <h4 class="">
+        <div class="flex_row centered">
+            <div class="flex_100">📟 Apps instaladas 📟</div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="openAppsDirectory">↗️📂</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="loadOwnApps">🛜</button>
+            </div>
+        </div>
+    </h4>
+    <div class="pad_vertical_1 flex_row">
+        <div class="flex_100">
+            <input class="width_100 supermini"
+                type="text"
+                placeholder="Busca aquí"
+                v-on:keypress.enter="filterApps"
+                v-model="filterSearchText" />
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini" v-on:click="filterApps">🔎</button>
+        </div>
+    </div>
+    <div class="supermini pad_vertical_1" v-if="lastAppliedFilter">
+        Filtrando por «{{ lastAppliedFilter }}».
+    </div>
+    <!--div class="lista_apps" style="font-size: 10px;">
         <div class="item_app">
             <div class="nombre_app flex_row centered" v-on:click="abrirApp('base de datos')">
                 <div class="flex_100">📦 Base de datos</div>
@@ -24937,6 +28516,15 @@ Vue.component("LswHomepage", {
                 <div class="flex_1 nowrap">↗️</div>
             </div>
         </div>
+    </div-->
+
+    <div class="lista_apps">
+        <div class="item_app" v-for="app, appIndex in filteredApps" v-bind:key="'app_' + appIndex">
+            <div class="nombre_app flex_row centered" v-on:click="app.event">
+                <div class="flex_100">{{ app.label }}</div>
+                <div class="flex_1 nowrap">↗️</div>
+            </div>
+        </div>
     </div>
 </div>`,
   props: {
@@ -24947,9 +28535,122 @@ Vue.component("LswHomepage", {
   },
   data() {
     this.$trace("lsw-homepage.data");
-    return {};
+    return {
+      isLoaded: false,
+      ownApps: {},
+      lastAppliedFilter: false,
+      filterSearchText: "",
+      filteredApps: {},
+      systemApps: [{
+        label: "📦 Base de datos",
+        event: () => this.abrirApp("base de datos"),
+      }, {
+        label: "📂 Sistema de ficheros",
+        event: () => this.abrirApp("sistema de ficheros"),
+      }, {
+        label: "💣 Binarios",
+        event: () => this.abrirApp("binarios"),
+      }, {
+        label: "📆 Calendario",
+        event: () => this.abrirApp("calendario"),
+      }, {
+        label: "⬅️🕔 Tareas anteriores",
+        event: () => this.abrirApp("antes"),
+      }, {
+        label: "🕔➡️ Tareas posteriores",
+        event: () => this.abrirApp("despues"),
+      }, {
+        label: "💬 Notas",
+        event: () => this.abrirApp("notas"),
+      }, {
+        label: "💬➕ Nueva nota",
+        event: () => this.abrirApp("nueva nota"),
+      }, {
+        label: "🔬 Enciclopedia",
+        event: () => this.abrirApp("enciclopedia"),
+      }, {
+        label: "🔬➕ Nuevo artículo",
+        event: () => this.abrirApp("nuevo articulo"),
+      }, {
+        label: "🔧 Configuraciones",
+        event: () => this.abrirApp("configuraciones"),
+      }]
+    };
   },
   methods: {
+    registerApp(appName, appData, force = false, silence = false) {
+      this.$trace("lsw-homepage.methods.registerApp");
+      try {
+        if ((appName in this.ownApps) && !force) {
+          throw new Error(`App «${appName}» is already registered`);
+        }
+        Validate_app_data: {
+          const $ensureAppData = $ensure({ [appName]: appData }, 1).type("object");
+          $ensureAppData.to.have.keys([
+            "label", 
+            "event",
+          ]);
+        }
+        this.ownApps[appName] = appData;
+      } catch (error) {
+        if (!silence) {
+          this.$lsw.toasts.showError(error);
+        }
+      }
+    },
+    filterApps() {
+      this.$trace("lsw-homepage.methods.filterApps");
+      const s = this.filterSearchText.toLowerCase();
+      if (s.trim() === "") {
+        this.lastAppliedFilter = false;
+        return this.filteredApps = Object.assign({}, this.ownApps);
+      }
+      this.filteredApps = {};
+      for (let appName in this.ownApps) {
+        const appData = this.ownApps[appName];
+        const pos = JSON.stringify([appName, appData]).toLowerCase().indexOf(s);
+        if (pos !== -1) {
+          this.filteredApps[appName] = appData;
+        }
+      }
+      this.lastAppliedFilter = s;
+      this.isLoaded = true;
+    },
+    async loadOwnApps() {
+      this.$trace("lsw-homepage.methods.loadOwnApps");
+      this.ownApps = {};
+      System_apps: {
+        for (let indexApp = 0; indexApp < this.systemApps.length; indexApp++) {
+          const app = this.systemApps[indexApp];
+          try {
+            this.registerApp(app.label, app);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+      Custom_apps: {
+        const appsFilesMap = await this.$lsw.fs.read_directory("/kernel/apps");
+        const appsFiles = Object.keys(appsFilesMap);
+        for (let indexApp = 0; indexApp < appsFiles.length; indexApp++) {
+          const appName = appsFiles[indexApp];
+          try {
+            const appData = await lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/apps/" + appName + "/load.js", false);
+            this.registerApp(appName, appData);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+      this.filterApps();
+    },
+    openAppsDirectory() {
+      this.$trace("lsw-homepage.methods.openAppsDirectory");
+      this.$lsw.dialogs.open({
+        title: "Directorio de apps",
+        template: `<lsw-filesystem-explorer opened-by="/kernel/apps" />`,
+      });
+    },
     async abrirApp(appId) {
       this.$trace("lsw-homepage.methods.abrirApp");
       this.$lsw.toasts.send({
@@ -24961,11 +28662,11 @@ Vue.component("LswHomepage", {
   watch: {},
   mounted() {
     this.$trace("lsw-homepage.mounted");
-    
+    this.loadOwnApps();
   },
   unmounted() {
     this.$trace("lsw-homepage.unmounted");
-    
+
   }
 });
 // @code.end: LswHomepage API
@@ -25096,7 +28797,56 @@ Vue.component("LswCalendario", {
 
       <hr class="dashed" />
 
-      <div class="duration_control_details_panel">
+      <div class="pad_bottom_1 text_align_center">
+        <div class="flex_row centered">
+          <div class="flex_1">Selección: </div>
+          <div class="flex_100 text_align_right" v-if="fecha_seleccionada">
+            {{ LswTimer.utils.fromDateToHour(fecha_seleccionada) }}
+          </div>
+        </div>
+      </div>
+
+      <div class="pad_bottom_1">
+        <div class="flex_row centered">
+          <div class="flex_1">
+            <button class="supermini" v-on:click="() => setHora(0)">⏪</button>
+          </div>
+          <div class="flex_1 pad_horizontal_1">
+            <button class="supermini" v-on:click="() => increaseHora(-1)">➖</button>
+          </div>
+          <div class="flex_100">
+            {{ LswUtils.padStart(hora_actual, 2, '0') }}
+          </div>
+          <div class="flex_1 pad_horizontal_1">
+            <button class="supermini" v-on:click="() => increaseHora(1)">➕</button>
+          </div>
+          <div class="flex_1">
+            <button class="supermini" v-on:click="() => setHora(23)">⏩</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="">
+        <div class="flex_row centered">
+          <div class="flex_1">
+            <button class="supermini" v-on:click="() => setMinuto(0)">⏪</button>
+          </div>
+          <div class="flex_1 pad_horizontal_1">
+            <button class="supermini" v-on:click="() => increaseMinuto(-1)">➖</button>
+          </div>
+          <div class="flex_100">
+            {{ LswUtils.padStart(minuto_actual, 2, '0') }}
+          </div>
+          <div class="flex_1 pad_horizontal_1">
+            <button class="supermini" v-on:click="() => increaseMinuto(1)">➕</button>
+          </div>
+          <div class="flex_1">
+            <button class="supermini" v-on:click="() => setMinuto(59)">⏩</button>
+          </div>
+        </div>
+      </div>
+
+      <!--div class="duration_control_details_panel">
         <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(0)">00:00:00</div>
         <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(1)">01:00:00</div>
         <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(2)">02:00:00</div>
@@ -25161,7 +28911,7 @@ Vue.component("LswCalendario", {
         <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-5)">-05min</div>
         <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-10)">-10min</div>
         <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-30)">-30min</div>
-      </div>
+      </div-->
 
     </div>
     <!--table class="width_100 no_borders_table"
@@ -25291,6 +29041,8 @@ Vue.component("LswCalendario", {
         celdas_del_mes_actual: undefined,
         marcadores_del_mes: {},
         hoy: hoy,
+        hora_actual: hoy.getHours(),
+        minuto_actual: hoy.getMinutes(),
         dia_actual: hoy.getDate(),
         mes_actual: hoy.getMonth(),
         anio_actual: hoy.getFullYear(),
@@ -25652,15 +29404,28 @@ Vue.component("LswCalendario", {
       this.fecha_seleccionada.setSeconds(0);
       this.fecha_seleccionada = new Date(this.fecha_seleccionada);
     },
-    aniadir_minutos_directamente(minutos_aniadidos) {
-      this.$trace("lsw-calendario.methods.aniadir_minutos_directamente");
+    increaseHora(horas_aniadidos) {
+      this.$trace("lsw-calendario.methods.increaseHora");
+      const horas_actuales = this.fecha_seleccionada.getHours();
+      this.fecha_seleccionada.setHours(horas_actuales + horas_aniadidos);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
+    increaseMinuto(minutos_aniadidos) {
+      this.$trace("lsw-calendario.methods.increaseMinuto");
       const minutos_actuales = this.fecha_seleccionada.getMinutes();
       this.fecha_seleccionada.setMinutes(minutos_actuales + minutos_aniadidos);
       this.fecha_seleccionada.setSeconds(0);
       this.fecha_seleccionada = new Date(this.fecha_seleccionada);
     },
-    establecer_minutos_directamente(minutos) {
-      this.$trace("lsw-calendario.methods.establecer_minutos_directamente");
+    setHora(horas) {
+      this.$trace("lsw-calendario.methods.setHora");
+      this.fecha_seleccionada.setHours(horas);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
+    setMinuto(minutos) {
+      this.$trace("lsw-calendario.methods.setMinuto");
       this.fecha_seleccionada.setMinutes(minutos);
       this.fecha_seleccionada.setSeconds(0);
       this.fecha_seleccionada = new Date(this.fecha_seleccionada);
@@ -25669,6 +29434,8 @@ Vue.component("LswCalendario", {
   watch: {
     fecha_seleccionada(nuevo_valor) {
       this.$trace("lsw-calendario.watch.fecha_seleccionada");
+      this.hora_actual = nuevo_valor.getHours();
+      this.minuto_actual = nuevo_valor.getMinutes();
       this.actualizar_calendario(nuevo_valor);
     },
   },
@@ -27511,6 +31278,19 @@ Vue.component("LswDataPrinterReport", {
         this.opened[id].minimized = true;
         this._refreshMinimizedLength(this.opened);
       },
+      minimizeAll() {
+        this.$trace("lsw-dialogs.methods.minimizeAll");
+        for(let id in this.opened) {
+          this.opened[id].minimized = true;
+        }
+        Also_main_tab_if_exists: {
+          const windowsViewer = this?.$lsw?.windowsViewer;
+          if(windowsViewer) {
+            windowsViewer.hide();
+          }
+        }
+        this._refreshMinimizedLength(this.opened);
+      },
       maximize(id, ...args) {
         this.$trace("lsw-dialogs.methods.maximize", [id, ...args]);
         if (typeof id !== "string") {
@@ -27706,7 +31486,7 @@ Vue.component("LswWindowsMainTab", {
     },
   },
   mounted() {
-    
+    this.$lsw.windowsMainTab = this;
   }
 });
 // @code.end: LswWindowsMainTab API
@@ -27745,6 +31525,7 @@ Vue.component("LswWindowsViewer", {
   mounted() {
     this.$window.LswWindows = this;
     this.$lsw.windows = this;
+    this.$lsw.windowsViewer = this;
   }
 });
 // @code.end: LswWindowsViewer API
@@ -27819,22 +31600,32 @@ Vue.component("LswToasts", {
     getRandomString(len = 10) {
       const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
       let out = "";
-      while(out.length < len) {
+      while (out.length < len) {
         out += alphabet[Math.floor(Math.random() * alphabet.length)];
       }
       return out;
     },
     showError(error, args = {}, propagate = false, log = true) {
       this.$trace("lsw-toasts.methods.showError");
-      const output = this.send({
-        title: "Un error ocurrió",
-        text: error.name + ": " + error.message,
-        ...args,
-      });
-      if(log) {
+      let parameters = {};
+      const isSyntaxError = typeof error.location === "object";
+      if (isSyntaxError) {
+        parameters = {
+          title: `Error sintáctico en ${error.location.start.line}:${error.location.start.column} (${error.found})`,
+          text: error.expected,
+        }
+      } else {
+        parameters = {
+          title: "Un error ocurrió",
+          text: error.name + ": " + error.message,
+          ...args,
+        }
+      }
+      const output = this.send(parameters);
+      if (log) {
         console.log(error);
       }
-      if(propagate) {
+      if (propagate) {
         throw error;
       }
       return output;
@@ -27850,16 +31641,16 @@ Vue.component("LswToasts", {
         foreground: "#000",
         started_at: new Date()
       }, toastsInput);
-      if(typeof toastData.timeout !== "number") {
+      if (typeof toastData.timeout !== "number") {
         throw new Error("Required parameter «timeout» to be a number or empty on «LswToasts.methods.send»");
       }
-      if(isNaN(toastData.timeout)) {
+      if (isNaN(toastData.timeout)) {
         throw new Error("Required parameter «timeout» to be a (non-NaN) number or empty on «LswToasts.methods.send»");
       }
-      if(["top", "bottom", "center"].indexOf(toastData.orientation) === -1) {
+      if (["top", "bottom", "center"].indexOf(toastData.orientation) === -1) {
         throw new Error("Required parameter «orientation» to be a string (top, center, bottom) or empty on «LswToasts.methods.send»");
       }
-      if(toastData.id in this.sent) {
+      if (toastData.id in this.sent) {
         throw new Error("Required parameter «id» to not be repeated on «LswToasts.methods.send»");
       }
       this.sent = Object.assign({}, this.sent, {
@@ -27872,15 +31663,24 @@ Vue.component("LswToasts", {
     close(id) {
       delete this.sent[id];
       this.$forceUpdate(true);
+    },
+    debug(anyzing) {
+      this.send({
+        title: typeof anyzing,
+        text: LswUtils.stringify(anyzing),
+      });
     }
   },
   watch: {},
   mounted() {
     this.$toasts = this;
     this.$window.LswToasts = this;
-    if(this.$lsw) {
+    if (this.$lsw) {
       this.$lsw.toasts = this;
     }
+    this.$window.dd = (...args) => {
+      return this.debug(...args);
+    };
   }
 });
 // @code.end: LswToasts API
@@ -28771,6 +32571,7 @@ Vue.component("LswFilesystemExplorer", {
       current_node_subnodes: [],
       current_node_is_file: false,
       current_node_is_directory: false,
+      syntaxValidators: {},
       STANDARIZED_REFRESH_DELAY: 100
     };
   },
@@ -29016,12 +32817,10 @@ Vue.component("LswFilesystemExplorer", {
       const AsyncFunction = (async function () { }).constructor;
       const asyncFunction = new AsyncFunction(editorContents);
       try {
-        await asyncFunction.call(this);
+        const result = await asyncFunction.call(this);
+        this.$lsw.toasts.debug(result);
       } catch (error) {
-        this.$lsw.toasts.send({
-          title: "Error arised when executing file",
-          text: `File ${this.current_node} produced following error: ${error.name}: ${error.message}`
-        });
+        this.$lsw.toasts.showError(error);
       }
     },
     async processToLoadFile() {
@@ -29035,10 +32834,18 @@ Vue.component("LswFilesystemExplorer", {
     },
     async processToSaveFile() {
       this.$trace("lsw-filesystem-explorer.methods.processToSaveFile");
-      if (this.$refs.editor) {
+      try {
+        if (!this.$refs.editor) {
+          throw new Error("No hay editor ahora mismo");
+        }
         const editorContents = this.$refs.editor.getContents();
-        console.log(this.current_node, editorContents);
         await this.$lsw.fs.write_file(this.current_node, editorContents);
+        this.$lsw.toasts.send({
+          title: "Fichero guardado",
+          text: "Hablamos de: " + this.current_node
+        });
+      } catch (error) {
+        this.$lsw.toasts.showError(error);
       }
     },
     _setButtonsForFile() {
@@ -29134,6 +32941,15 @@ Vue.component("LswFilesystemExplorer", {
               click: () => this.processToSearchReplace(),
             });
           }
+          Button_to_validate_code: {
+            if(this.hasSyntaxValidator(this.current_node)) {
+              rightButtonsOnFile.push({
+                text: "✅",
+                classes: "",
+                click: () => this.processToValidateCode(),
+              });
+            }
+          }
         }
         this.$refs.panelRight.setButtons(...rightButtonsOnFile);
       }
@@ -29177,7 +32993,7 @@ Vue.component("LswFilesystemExplorer", {
                 classes: "",
                 click: () => this.processToViewHtml(),
               });
-            } else if(this.current_node.endsWith(".md")) {
+            } else if (this.current_node.endsWith(".md")) {
               bottomButtonsOnFile.push({
                 text: "📻",
                 classes: "",
@@ -29405,7 +33221,7 @@ Vue.component("LswFilesystemExplorer", {
           }
         }
       });
-      if(typeof fileoutput !== "string") {
+      if (typeof fileoutput !== "string") {
         return;
       }
       const filepath = this.$lsw.fs.resolve_path(this.current_node_basedir, fileoutput);
@@ -29457,7 +33273,7 @@ Vue.component("LswFilesystemExplorer", {
           }
         }
       });
-      if(typeof parserOptions !== "object") return;
+      if (typeof parserOptions !== "object") return;
       const fileoutput = parserOptions.output;
       const parserFormat = parserOptions.format;
       const parserExporter = parserOptions.exportVar;
@@ -29533,7 +33349,7 @@ Vue.component("LswFilesystemExplorer", {
           </div>`,
         factory: { data: { value: filename } },
       });
-      if(typeof confirmation !== "string") return;
+      if (typeof confirmation !== "string") return;
       const filecontents = this.current_node_contents;
       LswUtils.downloadFile(filename, filecontents);
     },
@@ -29579,9 +33395,54 @@ Vue.component("LswFilesystemExplorer", {
           }
         }
       });
-      if(typeof value !== "string") return;
+      if (typeof value !== "string") return;
       this.$refs.editor.setContents(value);
-    }
+    },
+    processToValidateCode() {
+      this.$trace("lsw-filesystem.explorer.methods.processToValidateCode");
+      const currentContents = this.$refs.editor.getContents();
+      const syntaxExtensions = Object.keys(this.syntaxValidators).map(id => "." + id);
+      let associatedSyntax = undefined;
+      Iterating_syntaxes:
+      for (let index = 0; index < syntaxExtensions.length; index++) {
+        const syntaxExtension = syntaxExtensions[index];
+        const isSyntaxCompliant = this.current_node.endsWith(syntaxExtension);
+        if (isSyntaxCompliant) {
+          associatedSyntax = syntaxExtension;
+          break Iterating_syntaxes;
+        }
+      }
+      if (!associatedSyntax) {
+        return -1;
+      }
+      const associatedValidator = this.syntaxValidators[associatedSyntax];
+      if (!associatedValidator) {
+        return -2;
+      }
+      try {
+        const isValid = associatedValidator(currentContents);
+        this.$lsw.toasts.debug(isValid);
+      } catch (error) {
+        this.$lsw.toasts.showError(error);
+      }
+    },
+    async loadSyntaxValidators() {
+      this.$trace("lsw-filesystem-explorer.methods.loadSyntaxValidators");
+      const validatorsAsMap = await this.$lsw.fs.read_directory("/kernel/editor/validators");
+      const ids = Object.keys(validatorsAsMap).map(f => f.replace(/\.js/g, ""));
+      const allValidators = {};
+      for(let index=0; index<ids.length; index++) {
+        const id = ids[index];
+        const validator = await this.$lsw.fs.evaluateAsJavaScriptFileOrReturn(`/kernel/editor/validators/${id}.js`, () => true);
+        allValidators[id] = validator;
+      }
+      this.syntaxValidators = allValidators;
+      
+    },
+    hasSyntaxValidator(file) {
+      const currentExtension = file.replace(/^([^.]*\.)+/g, "");
+      return Object.keys(this.syntaxValidators || {}).indexOf(currentExtension) !== -1;
+    },
   },
   watch: {
     current_node(newValue) {
@@ -29589,9 +33450,13 @@ Vue.component("LswFilesystemExplorer", {
       this._updateNodeSubdata(newValue);
     }
   },
+  computed: {
+    
+  },
   async mounted() {
     try {
       this.$trace("lsw-filesystem-explorer.mounted");
+      await this.loadSyntaxValidators();
       this.$lsw.fsExplorer = this;
       // await this.initializeFilesystemForLsw();
       await this.open(this.openedBy ?? "/");
@@ -29653,11 +33518,26 @@ Vue.component("LswFilesystemButtonsPanel", {
 Vue.component("LswFilesystemEditor", {
   name: "LswFilesystemEditor",
   template: `<div class="lsw_filesystem_editor">
-    <textarea class="editor" :style="{
-        fontSize: currentFontsize + 'px',
-        fontFamily: currentFontfamily
-    }" v-model="contents" spellcheck="false" 
-    v-on:keydown.ctrl.s.prevent="saveDocument" />
+    <textarea class="editor"
+        :style="{
+            fontSize: currentFontsize + 'px',
+            fontFamily: currentFontfamily
+        }"
+        v-model="contents"
+        spellcheck="false"
+        ref="editorTextarea"
+        v-on:keydown.ctrl.s.prevent="saveDocument"
+        v-on:keydown.ctrl.enter.prevent="executeDocument"
+        v-on:input="synchronizeCusor"
+        v-on:keyup="synchronizeCusor"
+        v-on:click="synchronizeCusor"
+        v-on:select="synchronizeCusor"
+        v-on:focus="synchronizeCusor" />
+    <div class="position_absolute editor_position_box"
+        style="top:auto; left:auto; right: 10px; bottom: 10px;"
+        v-if="cursorPosition">
+        {{ cursorPosition.start.line }}:{{ cursorPosition.start.column }}-{{ cursorPosition.end.line }}:{{ cursorPosition.end.column }}|{{ cursorPosition.start.offset }}-{{ cursorPosition.end.offset }}
+    </div>
 </div>`,
   props: {
     explorer: {
@@ -29672,6 +33552,7 @@ Vue.component("LswFilesystemEditor", {
   data() {
     return {
       contents: this.filecontents,
+      cursorPosition: false,
       currentFontsize: 12,
       currentFontfamily: "Arial"
     };
@@ -29709,6 +33590,50 @@ Vue.component("LswFilesystemEditor", {
         title: "Documento guardado",
         text: "El documento se guardó correctamente"
       });
+    },
+    async executeDocument() {
+      this.$trace("lsw-filesystem-editor.methods.executeDocument");
+      if(this.explorer.current_node.endsWith(".js")) {
+        Ejecutar_javascript_asincronamente: {
+          this.explorer.processToExecuteFile();
+        }
+      }
+    },
+    synchronizeCusor() {
+      this.$trace("lsw-filesystem-editor.methods.synchronizeCusor");
+      const editorHtml = this.$refs.editorTextarea;
+      const offsetStart = editorHtml.selectionStart
+      const offsetEnd = editorHtml.selectionEnd;
+      let lineStart = undefined;
+      let lineEnd = undefined;
+      let columnStart = undefined;
+      let columnEnd = undefined;
+      Col_start: {
+        const beforeCursor = editorHtml.value.slice(0, offsetStart);
+        const lines = beforeCursor.split("\n");
+        lineStart = lines.length - 1;
+        columnStart = lines[lines.length - 1].length;
+      }
+      Col_end: {
+        const beforeCursor = editorHtml.value.slice(0, offsetEnd);
+        const lines = beforeCursor.split("\n");
+        lineEnd = lines.length - 1;
+        columnEnd = lines[lines.length - 1].length;
+      }
+      const cursor = {
+        start: {
+          offset: offsetStart,
+          line: lineStart,
+          column: columnStart,
+        },
+        end: {
+          offset: offsetEnd,
+          line: lineEnd,
+          column: columnEnd,
+        }
+      };
+      this.cursorPosition = cursor;
+      return cursor;
     }
   },
   mounted() {
@@ -31113,65 +35038,185 @@ Vue.component("LswClockwatcher", {
 
     static async getGoalsReport(someDate = new Date()) {
       Vue.prototype.$trace("lsw-goals-viewer.methods.getGoalsReport");
-      try {
-        const parsedLines = await Vue.prototype.$lsw.fs.evaluateAsDotenvListFileOrReturn("/kernel/settings/goals.env", []);
+      let originalGoals = undefined;
+      // @HISTORICAL:
+      Previous_goals_setter: {
+        break Previous_goals_setter;
+        const parsedLinesPromise = Vue.prototype.$lsw.fs.evaluateAsDotenvListFileOrReturn("/kernel/settings/goals.env", []);
+        const parsedLines = await parsedLinesPromise;
         // 1. Get original goals:
-        const originalGoals = parsedLines.map(line => {
+        const previousOriginalGoals = parsedLines.map(line => {
           const [concept, condition = "> 0", urgency = "0"] = line.split(/\|/g).map(item => {
             return item.trim();
           });
-          return {
-            originalLine: line,
-            originalConcept: concept,
-            originalCondition: condition,
-            originalUrgency: urgency,
-          };
+          return { line, concept, condition, urgency };
         });
-        // 2. Get today's completed actions:
-        const todayCompletedActions = await this.getSomeDayActions(someDate, false, "completada");
-        // 3. Expand goals:
-        for (let indexGoal = 0; indexGoal < originalGoals.length; indexGoal++) {
+        originalGoals = previousOriginalGoals;
+      }
+      // @CURRENT:
+      Current_goals_setter: {
+        originalGoals = await Vue.prototype.$lsw.fs.evaluateAsWeekFileOrReturn("/kernel/goals/goals.week", []);
+      }
+      // 2. Get today's completed actions:
+      const todayCompletedActions = await this.getSomeDayActions(someDate, false, "completada");
+      const formattedGoals = [];
+      const insertedGoals = [];
+      // 3. Expand goals:
+      Iterating_goals:
+      for (let indexGoal = 0; indexGoal < originalGoals.length; indexGoal++) {
+        try {
           const originalGoal = originalGoals[indexGoal];
           const {
-            originalConcept: concept,
-            originalCondition: condition,
-            originalUrgency: urgency
+            type: goalType,
+            concept,
+            condition,
+            urgency,
+            from: goalBegin,
+            to: goalEnd
           } = originalGoal;
-          const formattedConcept = this.formatConcept(concept);
-          const formattedCondition = this.formatCondition(condition, formattedConcept);
-          const formattedUrgency = this.formatUrgency(urgency);
-          originalGoals[indexGoal].concept = formattedConcept;
-          Object.assign(originalGoals[indexGoal], formattedCondition(todayCompletedActions));
-          originalGoals[indexGoal].urgency = formattedUrgency;
+          const isRequire = goalType === "REQ";
+          const isSet = goalType === "SET";
+          const datestring = LswTimer.utils.fromDateToDatestring(someDate);
+          // Filtros de fecha:
+          if (goalBegin !== "*") {
+            if (datestring < goalBegin) {
+              continue Iterating_goals;
+            }
+          }
+          if (goalEnd !== "*") {
+            if (datestring > goalEnd) {
+              continue Iterating_goals;
+            }
+          }
+          // Aplica cambios en cada caso:
+          if (isSet) {
+            // Solo si es en un rango de 20 días antes o después:
+            const today = new Date();
+            const maxBefore = new Date(today);
+            maxBefore.setDate(maxBefore.getDate() - 1);
+            const maxLater = new Date(today);
+            maxLater.setDate(maxLater.getDate() + 1);
+            const isInRange = (someDate > maxBefore) && (someDate < maxLater);
+            if(!isInRange) {
+              continue Iterating_goals;
+            }
+            console.log(originalGoal);
+            const duration = originalGoal.duration || "1h";
+            const hour = originalGoal.hour || "00";
+            const minute = originalGoal.minute || "00";
+            const weekday = originalGoal.weekday;
+            const isAnyWeekday = weekday === "*";
+            const currentWeekday = this.fromDateToWeekday(someDate);
+            if(!isAnyWeekday && (currentWeekday !== weekday)) {
+              continue Iterating_goals;
+            }
+            const currDatestring = LswTimer.utils.fromDateToDatestring(someDate, true);
+            const fullDatestring = `${currDatestring} ${hour}:${minute}`;
+            const matchedAcciones = await Vue.prototype.$lsw.database.select("Accion", acc => {
+              const sameConcept = acc.en_concepto === concept;
+              const sameMinute = acc.tiene_inicio.startsWith(fullDatestring);
+              return sameConcept && sameMinute;
+            });
+            if(matchedAcciones.length === 1) {
+              continue Iterating_goals;
+            }
+            No_haremos_el_insert_aqui: {
+              break No_haremos_el_insert_aqui;
+              await Vue.prototype.$lsw.database.insert("Accion", {
+                en_concepto: concept,
+                tiene_estado: "pendiente",
+                tiene_inicio: fullDatestring,
+                tiene_duracion: duration,
+                tiene_parametros: "[*goal]",
+                tiene_resultados: "",
+                tiene_comentarios: "",
+              });
+              insertedGoals.push(`${concept}@${fullDatestring}`);
+            }
+            continue Iterating_goals;
+          } else if (isRequire) {
+            const formattedGoal = {};
+            const formattedConcept = this.formatConcept(concept);
+            const formattedCondition = this.formatCondition(condition, formattedConcept);
+            const formattedUrgency = this.formatUrgency(urgency);
+            formattedGoal.concept = formattedConcept;
+            Object.assign(formattedGoal, formattedCondition(todayCompletedActions));
+            formattedGoal.urgency = formattedUrgency;
+            formattedGoals.push(formattedGoal);
+          }
+        } catch (error) {
+          console.log(error);
         }
-        const sortedGoals = [].concat(originalGoals).sort((g1, g2) => {
+      }
+      const sortedGoals = [].concat(formattedGoals).sort((g1, g2) => {
+        try {
           const u1 = g1.urgency || 0;
           const u2 = g2.urgency || 0;
           const c1 = g1.filledAsint || 0;
           const c2 = g2.filledAsint || 0;
           const g1over = c1 > 100;
           const g2over = c2 > 100;
-          if(g2over) return -1;
-          if(g1over) return 1;
-          if(u1 > u2) return -1;
-          if(u1 < u2) return 1;
-          if(c1 < c2) return -1;
-          if(c1 > c2) return 1;
+          if (g2over) return -1;
+          if (g1over) return 1;
+          if (u1 > u2) return -1;
+          if (u1 < u2) return 1;
+          if (c1 < c2) return -1;
+          if (c1 > c2) return 1;
           return 0;
-        });
-        return {
-          goals: sortedGoals,
-          actions: todayCompletedActions
-        };
-      } catch (error) {
-        console.error(error);
-        return error;
+        } catch (error) {
+          console.log(error);
+        }
+      });
+      if(insertedGoals.length) {
+        Vue.prototype.$lsw.toasts.debug(insertedGoals);
       }
+      return {
+        goals: sortedGoals,
+        actions: todayCompletedActions
+      };
+    }
+
+    static fromDateToWeekday(date) {
+      const weekdayNum = date.getDay();
+      if(weekdayNum === 0) {
+        return "dom";
+      } else if(weekdayNum === 1) {
+        return "lun";
+      } else if(weekdayNum === 2) {
+        return "mar";
+      } else if(weekdayNum === 3) {
+        return "mie";
+      } else if(weekdayNum === 4) {
+        return "jue";
+      } else if(weekdayNum === 5) {
+        return "vie";
+      } else if(weekdayNum === 6) {
+        return "sab";
+      }
+    }
+
+    static $appliesRange(rangeStart, rangeEnd, date) {
+      Vue.prototype.$trace("lsw-goals-viewer.methods.$appliesRange");
+      if (rangeStart === "*") {
+        if (rangeEnd === "*") {
+          return true;
+        } else {
+          return rangeEnd >= date;
+        }
+      } else if (rangeStart <= date) {
+        if (rangeEnd === "*") {
+          return true;
+        } else {
+          return rangeEnd >= date;
+        }
+      }
+      return true;
     }
 
     static formatConcept(txt) {
       return txt;
     }
+
     static formatCondition(originalTxt, concept) {
       const isMin = originalTxt.startsWith(">");
       const op = originalTxt.trim().match(/(\<|\>)(=)?/g);
@@ -31270,10 +35315,10 @@ Vue.component("LswClockwatcher", {
     static COLOR_GAMA_3 = {
       SUSPENSO: "#c62828",
       INSUFICIENTE: "#ef6c00",
-      SUFICIENTE: "#f9a825",
+      SUFICIENTE: "#ffe300",
       NOTABLE: "#29b6f6",
-      EXCELENTE: "#66bb6a",
-      SOBRESALIENTE: "#00897b",
+      EXCELENTE: "#00897b",
+      SOBRESALIENTE: "#66bb6a",
     };
 
     static COLOR = this.COLOR_GAMA_3;
@@ -31302,23 +35347,19 @@ Vue.component("LswClockwatcher", {
       const percentage = _.filledAsint;
       const asMin = _.expectedAs === "minimum" ? true : false;
       const assignedColor = (() => {
-        if (percentage < 20) {
+        if (percentage <= 0) {
           return asMin ? this.COLOR.SUSPENSO : this.COLOR.SOBRESALIENTE;
-        }
-        else if (percentage < 40) {
+        } else if (percentage < 20) {
           return asMin ? this.COLOR.INSUFICIENTE : this.COLOR.EXCELENTE;
-        }
-        else if (percentage < 60) {
+        } else if (percentage < 40) {
           return asMin ? this.COLOR.SUFICIENTE : this.COLOR.NOTABLE;
-        }
-        else if (percentage < 80) {
+        } else if (percentage < 60) {
           return asMin ? this.COLOR.NOTABLE : this.COLOR.SUFICIENTE;
-        }
-        else if (percentage < 100) {
+        } else if (percentage < 80) {
           return asMin ? this.COLOR.EXCELENTE : this.COLOR.INSUFICIENTE;
-        }
-        else {
+        } else if (percentage > 80) {
           return asMin ? this.COLOR.SOBRESALIENTE : this.COLOR.SUSPENSO;
+        } else {
         }
       })();
       Object.assign(_, {
@@ -31381,7 +35422,6 @@ Vue.component("LswGoalsViewer", {
     <div class="flex_row centered pad_bottom_1">
         <div class="flex_100">
             <div class="flex_row centered">
-                <div class="flex_1"></div>
                 <template v-if="isLoaded">
                     <div class="nowrap flex_1">
                         <button class=""
@@ -31411,7 +35451,7 @@ Vue.component("LswGoalsViewer", {
                 v-on:click="openGoalsFile">🏁↗️</button>
         </div>
         <div class="flex_1 pad_left_1">
-            <button class=""
+            <button class="unselectable_text"
                 :class="{activated: isClicking}"
                 v-on:mousedown="() => isClicking = true"
                 v-on:mouseup="() => isClicking = false"
@@ -31436,11 +35476,12 @@ Vue.component("LswGoalsViewer", {
                         v-on:click="() => selectGoal(goal)">
                         <div class="bar_text">
                             <div class="position_relative"
-                                v-if="isClicking">
+                                v-if="!isClicking">
                                 <div class="position_absolute"
-                                    style="top: 0px; bottom: auto; left: 0px; opacity: 0.8;">
+                                    style="top: 0px; bottom: auto; left: 0px; opacity: 1;">
                                     <div class="flex_row centered">
-                                        <div class="flex_1"><b><u>{{ goal.originalLine }}</u></b></div>
+                                        <div class="flex_1 pad_right_1">{{ goal.solved ? symbolForSolved : symbolForPending }}</div>
+                                        <div class="flex_1">{{ goal.concept }} ⛔️{{ getAbbrvWord(goal.expectedAsAbbr) }} {{ goal.expectedDuration || goal.expectedTimes }} 🟢 {{ goal.currentDuration || goal.currentTimes }} 🟰 {{ goal.filled }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -31469,7 +35510,7 @@ Vue.component("LswGoalsViewer", {
                             </div>
                         </div>
                         <div class="bar_filler"
-                            :style="{ width: goal.filledAsint < 100 ? goal.filled : (100 + '%'), backgroundColor: goal.color }">
+                            :style="{ width: goal.expectedAs === 'maximum' ? goal.missingAsint < 100 ? goal.missing : (100 + '%') : goal.filledAsint < 100 ? goal.filled : (100 + '%'), backgroundColor: goal.color }">
                         </div>
                     </div>
                     <div v-if="selectedGoal === goal">
@@ -31521,6 +35562,10 @@ Vue.component("LswGoalsViewer", {
         <div class="flex_1 pad_left_1">
             <button class="supermini"
                 v-on:click="openRecordsDirectory">📷📂</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="importGoalsToDay">🏁→📆</button>
         </div>
         <div class="flex_100"></div>
         <div class="flex_1 pad_left_1">
@@ -31655,7 +35700,7 @@ Vue.component("LswGoalsViewer", {
         title: "Editar objetivos",
         template: `
           <div>
-            <lsw-filesystem-explorer opened-by="/kernel/settings/goals.env" :absolute-layout="true" />
+            <lsw-filesystem-explorer opened-by="/kernel/goals/goals.week" :absolute-layout="true" />
           </div>
         `
       });
@@ -31678,6 +35723,17 @@ Vue.component("LswGoalsViewer", {
         template: `
           <div class="pad_1">
             <lsw-goals-records-viewer />
+          </div>
+        `
+      });
+    },
+    openWeekPlanner() {
+      this.$trace("lsw-goals-viewer.methods.openWeekPlanner");
+      this.$dialogs.open({
+        title: "Planificador de semana",
+        template: `
+          <div class="pad_1">
+            <lsw-week-planner />
           </div>
         `
       });
@@ -31715,6 +35771,149 @@ Vue.component("LswGoalsViewer", {
           methods: { }
         }
       });
+    },
+    async importGoalsToDay() {
+      this.$trace("lsw-goals-viewer.methods.importGoalsToDay");
+      const originalGoals = await Vue.prototype.$lsw.fs.evaluateAsWeekFileOrReturn("/kernel/goals/goals.week", []);
+      const dayString = LswTimer.utils.fromDateToDatestring(this.dayToAnalize, true);
+      const weekdayString = LswGoals.fromDateToWeekday(this.dayToAnalize);
+      const goalsMatched = originalGoals.filter(goal => {
+        if(goal.type !== "SET") {
+          return false;
+        }
+        Filtro_de_goal_segun_dia: {
+          const {
+            from: goalBegin,
+            to: goalEnd,
+            type: goalType,
+            concept: goalConcept,
+            duration: goalDuration,
+            hour: goalHour,
+            minute: goalMinute,
+            weekday: goalWeekday,
+          } = goal;
+          // No excede el «desde fecha».
+          if(goalBegin !== "*") {
+            if(dayString < goalBegin) {
+              return false;
+            }
+          }
+          // No excede el «hasta fecha»
+          if(goalEnd !== "*") {
+            if(dayString > goalEnd) {
+              return false;
+            }
+          }
+          // Coincide con el «dia de la semana»
+          if(goalWeekday !== "*") {
+            if(weekdayString !== goalWeekday) {
+              return false;
+            }
+          }
+        }
+        return true;
+      });
+      const goalsMissing = [];
+      const accionesDia = await this.$lsw.database.select("Accion", acc => acc.tiene_inicio.startsWith(dayString));
+      Iterating_objetivos:
+      for(let indexGoal=0; indexGoal<goalsMatched.length; indexGoal++) {
+        const goalMatched = goalsMatched[indexGoal];
+        const {
+          from: goalBegin,
+          to: goalEnd,
+          type: goalType,
+          concept: goalConcept,
+          duration: goalDuration,
+          hour: goalHour,
+          minute: goalMinute,
+          weekday: goalWeekday,
+        } = goalMatched;
+        const presuntoInicio = dayString + " " + goalMatched.hour + ":" + goalMatched.minute;
+        let missingAccion = {
+          ast: goalMatched,
+          acc: {
+            en_concepto: goalConcept,
+            tiene_estado: "pendiente",
+            tiene_inicio: presuntoInicio,
+            tiene_duracion: goalDuration || "1h",
+            tiene_parametros: "[*semanal]",
+            tiene_descripcion: "",
+            tiene_comentarios: "",
+          }
+        };
+        Iterating_acciones:
+        for(let indexAcc=0; indexAcc<accionesDia.length; indexAcc++) {
+          const accionDia = accionesDia[indexAcc];
+          const matchesParameter = accionDia.tiene_parametros.indexOf("[*semanal]") !== -1;
+          const matchesTime = accionDia.tiene_inicio.startsWith(presuntoInicio);
+          const matchesConcept = accionDia.tiene_inicio.startsWith(presuntoInicio);
+          if(matchesParameter && matchesTime && matchesConcept) {
+            missingAccion = false;
+            break Iterating_acciones;
+          };
+        }
+        if(missingAccion) {
+          goalsMissing.push(missingAccion);
+        }
+      }
+      if(!goalsMissing.length) {
+        return this.$lsw.dialogs.open({
+          title: "No hay objetivos por importar",
+          template: `
+            <div class="pad_1">
+              <div>No hay objetivos por importar actualmente.</div>
+            </div>
+          `
+        });
+      }
+      const confirmation = await this.$lsw.dialogs.open({
+        title: "Importar objetivos a día",
+        template: `
+          <div class="pad_1">
+            <div>¿Seguro que quieres importar los objetivos al día seleccionado?</div>
+            <div class="pad_vertical_2">Se añadirán las siguientes {{ goalsToImport.length }} acciones:</div>
+            <ul class="margin_vertical_0">
+              <li v-for="goal, goalIndex in goalsToImport" v-bind:key="'goal_' + goalIndex">
+                <div>{{ currentWeekday }}, {{ currentDay }} ➞ {{ goal.ast.hour }}:{{ goal.ast.minute }}@{{ goal.acc.en_concepto }}</div>
+              </li>
+            </ul>
+            <hr />
+            <div class="flex_row centered">
+              <div class="flex_100"></div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="() => accept(true)">Aceptar</button>
+              </div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            currentWeekday: LswGoals.fromDateToWeekday(this.dayToAnalize),
+            currentDay: dayString,
+            goalsToImport: goalsMissing
+          }
+        }
+      });
+      if(confirmation !== true) {
+        return;
+      }
+      await this.$lsw.database.insertMany("Accion", goalsMissing.map(goalMetadata => goalMetadata.acc));
+      this.$lsw.toasts.send({
+        title: `Se insertaron ${goalsMissing.length} acciones`,
+        text: `Los objetivos generaron ${goalsMissing.length} acciones para el día seleccionado`
+      });
+      this.updateCalendario();
+    },
+    updateCalendario() {
+      this.$trace("lsw-goals-viewer.methods.updateCalendario");
+      try {
+        LswDom.findVue(".lsw_agenda").reloadDateTasks();
+      } catch (error) {
+        // @BADLUCK
+      }
     }
   },
   watch: {},
@@ -31927,6 +36126,10 @@ Vue.component("LswBinDirectory", {
     <div class="flex_row centered">
         <div class="flex_100">
             <h4>💣 Binarios rápidos:</h4>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="loadBinaries">🛜</button>
         </div>
         <div class="flex_1 pad_left_1">
             <button class="supermini"
@@ -32653,6 +36856,16 @@ Vue.component("LswAgenda", {
                 v-on:click="() => selectContext('conductometria')"
                 :class="{activated: selectedContext === 'conductometria'}">📊</button>
         </div>
+        <template v-if="typeof \$window.cordova !== 'undefined'">
+            <div class="flex_1">
+                <button class="width_100 nowrap"
+                    v-on:click="synchronizeAlarms">🔔</button>
+            </div>
+            <div class="flex_1">
+                <button class="width_100 nowrap"
+                    v-on:click="unsynchronizeAlarms">🔕</button>
+            </div>
+        </template>
         <div class="flex_100"></div>
         <div class="flex_1">
             <button class="width_100 nowrap"
@@ -32811,7 +37024,7 @@ Vue.component("LswAgenda", {
     },
     selectAction(accionId, contextId = false) {
       this.$trace("lsw-agenda.methods.selectAction");
-      if(contextId) {
+      if (contextId) {
         this.selectContext(contextId);
       }
       this.selectedAction = accionId;
@@ -32845,9 +37058,14 @@ Vue.component("LswAgenda", {
         this.hiddenDateHours.splice(pos, 1);
       }
     },
-    async loadDateTasks(newDate, calendario, isOnMounted = false) {
+    reloadDateTasks() {
+      this.$trace("lsw-agenda.methods.reloadDateTasks");
+      return this.loadDateTasks(this.selectedDate);
+    },
+    async loadDateTasks(dateInput, calendario, isOnMounted = false) {
       this.$trace("lsw-agenda.methods.loadDateTasks");
       // this.isLoading = true;
+      const newDate = dateInput || new Date();
       console.log("[*] Loading date tasks of: " + LswTimer.utils.fromDateToDatestring(newDate));
       try {
         this.selectedDate = newDate;
@@ -32887,9 +37105,9 @@ Vue.component("LswAgenda", {
             return -1;
           }
         });
-        if(isOnMounted) {
+        if (isOnMounted) {
           const noTasksFound = (!this.selectedDateTasks) || (!this.selectedDateTasks.length);
-          if(noTasksFound) {
+          if (noTasksFound) {
             this.isCalendarioSelected = true;
           }
         }
@@ -32993,8 +37211,69 @@ Vue.component("LswAgenda", {
     },
     async refreshTasks() {
       this.$trace("lsw-agenda.methods.refreshTasks");
-      if(this.$refs.agenda_acciones_viewer) {
+      if (this.$refs.agenda_acciones_viewer) {
         this.$refs.agenda_acciones_viewer.changeDate(new Date(this.selectedDate));
+      }
+    },
+    async synchronizeAlarms() {
+      this.$trace("lsw-agenda.methods.synchronizeAlarms");
+      Cordova_injection: {
+        if (typeof this.$window.cordova !== "undefined") {
+          const dateToday = new Date();
+          const allAlarms = await this.$lsw.database.selectMany("Accion", accion => {
+            const dateAccion = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
+            return LswTimer.utils.areSameDayDates(dateToday, dateAccion);
+          });
+          const soundFile = LswRandomizer.getRandomItem([
+            "file://assets/sounds/alarm.busca.wav",
+            "file://assets/sounds/alarm.clock-light.wav",
+            "file://assets/sounds/alarm.facility-breach.wav",
+            "file://assets/sounds/alarm.heavy.wav",
+            "file://assets/sounds/alarm.submarine.wav",
+          ])
+          try {
+            for (let index = 0; index < allAlarms.length; index++) {
+              const accion = allAlarms[index];
+              const id = index + 1;
+              this.$window.cordova.plugins.notification.local.cancel(id);
+              this.$window.cordova.plugins.notification.local.schedule({
+                id,
+                title: "¡Requiéresete!",
+                text: `¡Vamos con «${accion.en_concepto}»!`,
+                trigger: {
+                  at: LswTimer.utils.fromDatestringToDate(accion.tiene_inicio)
+                },
+                vibrate: [1000, 1000, 1000, 1000],
+                wakeUp: true,
+                lockscreen: true,
+                sound: soundFile
+              });
+            }
+            this.$lsw.toasts.send({
+              title: "Alarmas sincronizadas",
+              text: `Unas ${allAlarms.length} alarmas fueron sincronizadas con el dispositivo`
+            });
+          } catch (error) {
+            this.$lsw.toasts.showError(error);
+          }
+        }
+      }
+    },
+    unsynchronizeAlarms() {
+      this.$trace("lsw-agenda.methods.unsynchronizeAlarms");
+      Cordova_injection: {
+        if (typeof this.$window.cordova !== "undefined") {
+          try {
+            this.$window.cordova.plugins.notification.local.cancelAll(() => {
+              this.$lsw.toasts.send({
+                title: "Alarmas desincronizadas",
+                text: "Las alarmas se eliminaron del dispositivo"
+              });
+            })
+          } catch (error) {
+            this.$lsw.toasts.showError(error);
+          }
+        }
       }
     },
   },
@@ -33114,25 +37393,25 @@ Vue.component("LswAgendaAccionesViewer", {
         <div class="selected_day_title"
             v-if="selectedDate">
             <div class="flex_row centered">
-                <div class="flex_1 margin_right_1">
-                    <button class="supermini padded_vertically_1"
-                        v-on:click="openNewRowDialog"
-                        :class="{activated: selectedForm === 'new'}">➕</button>
-                </div>
                 <div class="flex_100">{{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                 <div class="flex_1 nowrap">
-                    <button class="supermini padded_vertically_1"
+                    <button class="padded_vertically_1"
                         v-on:click="openRandomizerFile">{🎲}</button>
-                    <button class="supermini padded_vertically_1"
+                    <button class="padded_vertically_1"
                         v-on:click="randomizeDay">+🎲</button>
-                    <button class="supermini padded_vertically_1"
+                    <button class="padded_vertically_1"
                         v-on:click="cleanRandomizedDays">🔥🎲</button>
-                    <button class="supermini padded_vertically_1"
+                    <button class="padded_vertically_1"
                         v-on:click="showAllHours"
                         style="display: none;">🔓*</button>
-                    <button class="supermini padded_vertically_1"
+                    <button class="padded_vertically_1"
                         v-on:click="hideAllHours"
                         style="display: none;">🔒*</button>
+                </div>
+                <div class="flex_1 margin_left_1">
+                    <button class="padded_vertically_1"
+                        v-on:click="openNewRowDialog"
+                        :class="{activated: selectedForm === 'new'}">➕</button>
                 </div>
             </div>
         </div>
@@ -33145,25 +37424,25 @@ Vue.component("LswAgendaAccionesViewer", {
                 <div class="hour_task_block"
                     v-if="accion.tiene_estado === 'trackeada'">
                     <div class="accion_row flex_row centered" style="padding-top: 2px;">
-                        <button class="supermini flex_1" v-on:click="() => openEditRowDialog(accion)">
-                            #️⃣
-                        </button>
-                        <div class="flex_1 celda_de_hora margin_left_1"
+                        <div class="flex_1 celda_de_hora"
                             v-on:click="\$noop">
-                            <div class="padded_vertically_1">
+                            <div class="padded_vertically_1 pad_left_1">
                             {{
                                 \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
                             }}
                             </div>
                         </div>
-                        <div>
+                        <div class="">
                             <button class="supermini padded_vertically_1">
                                 🎥
                             </button>
                         </div>
                         <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
-                        <button class="supermini flex_100 text_align_left pad_0 margin_left_1 nowrap shortable_text" disabled="true" style="min-width: 80px;">
+                        <button class="supermini flex_100 text_align_left pad_0 margin_right_1 nowrap shortable_text" disabled="true" style="min-width: 80px;">
                             <b>{{ accion.en_concepto }}</b><span v-if="accion.tiene_comentarios">: {{ accion.tiene_comentarios }}</span>
+                        </button>
+                        <button class="supermini flex_1" v-on:click="() => openEditRowDialog(accion)">
+                            ↗️
                         </button>
                         <div class="flex_1">
                             <button class="supermini danger_button padded_vertically_1"
@@ -33177,14 +37456,9 @@ Vue.component("LswAgendaAccionesViewer", {
                     v-bind:key="'accion_' + accionIndex">
                     <div class="accion_row flex_row centered"
                         style="padding-top: 2px;">
-                        <div class="flex_1 pad_right_1">
-                            <button class="supermini padded_vertically_1"
-                                :class="{activated: selectedForm === accion.id}"
-                                v-on:click="() => openEditRowDialog(accion)">#️⃣</button>
-                        </div>
                         <div class="flex_1 celda_de_hora"
                             v-on:click="() => toggleShowAccion(accion.id)">
-                            <div class="padded_vertically_1">{{
+                            <div class="padded_vertically_1 pad_left_1">{{
                                 \$lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
                                 }}
                             </div>
@@ -33192,7 +37466,7 @@ Vue.component("LswAgendaAccionesViewer", {
                         <div>
                             <button class="supermini padded_vertically_1"
                                 v-on:click="(e) => toggleAutogeneration(accion)">{{ accion.tiene_parametros.startsWith("[*autogenerada]") ?
-                                "🤖" : "✍️" }}</button>
+                                "🤖" : accion.tiene_parametros.startsWith("[*semanal]") ? "🏁" : "✍️" }}</button>
                         </div>
                         <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
                         <div class="flex_100 celda_de_concepto shortable_text">
@@ -33200,6 +37474,11 @@ Vue.component("LswAgendaAccionesViewer", {
                                 :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
                                 v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
                             </div>
+                        </div>
+                        <div class="flex_1">
+                            <button class="supermini padded_vertically_1"
+                                :class="{activated: selectedForm === accion.id}"
+                                v-on:click="() => openEditRowDialog(accion)">↗️</button>
                         </div>
                         <div class="flex_1">
                             <button class="supermini danger_button padded_vertically_1"
@@ -35801,7 +40080,10 @@ Vue.component("LswDateControl", {
             <div class="">
                 <div class="flex_row">
                     <div class="flex_1 pad_right_1">
-                        <button v-on:click="toggleCalendar" :class="{activated: isShowingCalendar}">📆</button>
+                        <button
+                            class="has_light_bg"
+                            v-on:click="toggleCalendar"
+                            :class="{activated: isShowingCalendar}">📆</button>
                     </div>
                     <div class="flex_100">
                         <input class="width_100" type="text" v-model="value" :placeholder="respectivePlaceholder" v-xform.input="{name:'*'}"/>
@@ -35911,7 +40193,9 @@ Vue.component("LswDurationControl", {
             }">
             <div class="flex_row">
                 <div class="pad_right_1">
-                    <button v-on:click="toggleDetails">⌛️</button>
+                    <button
+                    class="has_light_bg"
+                    :class="{activated:isShowingDetails}" v-on:click="toggleDetails">⌛️</button>
                 </div>
                 <input class="flex_100"
                     type="text"
@@ -36224,7 +40508,9 @@ Vue.component("LswRefObjectControl", {
             }">
             <div class="flex_row">
                 <div class="flex_1 pad_right_1">
-                    <button :class="{activated: isShownSelector}"
+                    <button
+                        class="has_light_bg"
+                        :class="{activated: isShownSelector}"
                         v-on:click="toggleSelector">🔎</button>
                 </div>
                 <input class="flex_100"
@@ -36334,7 +40620,9 @@ Vue.component("LswRefListControl", {
             }">
             <div class="flex_row">
                 <div class="flex_1 pad_right_1">
-                    <button :class="{activated: isShownSelector}"
+                    <button
+                        class="has_light_bg"
+                        :class="{activated: isShownSelector}"
                         v-on:click="toggleSelector">🔎</button>
                 </div>
                 <input class="flex_100"
@@ -37296,13 +41584,13 @@ Vue.component("LswConfigurationsPage", {
                 <div class="flex_1">
                     <button class="supermini margin_right_1" v-on:click="startCodeReference">Ir a referencia del código</button>
                 </div>
-                <div class="flex_100 explanation_text">te lleva a la documentación oficial del código de \`allnulled@lsw-one\`.</div>
+                <div class="flex_100 explanation_text">te lleva a la documentación oficial del código de <a href="https://github.com/allnulled/lsw-one">allnulled@lsw-one</a>.</div>
             </div>
             <div class="flex_row centered margin_top_1">
                 <div class="flex_1">
                     <button class="supermini margin_right_1" v-on:click="startGithubHomepage">Ir a repositorio del código</button>
                 </div>
-                <div class="flex_100 explanation_text">te lleva a la página oficial del proyecto de \`allnulled@lsw-one\`.</div>
+                <div class="flex_100 explanation_text">te lleva a la página oficial del proyecto de <a href="https://github.com/allnulled/lsw-one">allnulled@lsw-one</a>.</div>
             </div>
         </div>
         <hr />
@@ -37320,9 +41608,21 @@ Vue.component("LswConfigurationsPage", {
             </div>
             <div class="flex_row centered margin_top_1">
                 <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startExportarAJsonFile">Exportar a fichero</button>
+                </div>
+                <div class="flex_100 explanation_text">descarga una copia del estado actual en un fichero JSON.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
                     <button class="supermini margin_right_1" v-on:click="startImportarDeJson">Importar de JSON</button>
                 </div>
                 <div class="flex_100 explanation_text">permite pasar un JSON para insertar masivamente en el estado actual.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startImportarDeJsonFile">Importar de fichero</button>
+                </div>
+                <div class="flex_100 explanation_text">permite importar un JSON para <u style="color:rgb(63, 12, 12); text-shadow: 0 0 1px white;">insertar masivamente</u> en el estado actual.</div>
             </div>
         </div>
         <hr />
@@ -37525,6 +41825,12 @@ Vue.component("LswConfigurationsPage", {
       this.$trace("lsw-configurations-page.methods.selectSection");
       this.selectSection = seccion;
     },
+    async startExportarAJsonFile() {
+      this.$trace("lsw-configurations-page.methods.startExportarAJsonFile");
+      const allData = await LswDatabase.exportDatabase("lsw_default_database");
+      const minuteUid = LswTimer.utils.formatDatestringFromDate(new Date()).replace(/\/|-|:|\.| /g, ".");
+      this.$lsw.utils.downloadFile(`lsw_default_database.${minuteUid}.json`, JSON.stringify(allData, null, 2));
+    },
     async startExportarAJson() {
       this.$trace("lsw-configurations-page.methods.startExportarAJson");
       const allData = await LswDatabase.exportDatabase("lsw_default_database");
@@ -37559,6 +41865,50 @@ Vue.component("LswConfigurationsPage", {
           }
         }
       })
+    },
+    async startImportarDeJsonFile() {
+      this.$trace("lsw-configurations-page.methods.startImportarDeJsonFile");
+      // @TODO: importar texto de un JSON file con un input type file y tol royo.
+      let data = await LswUtils.askForFileText();
+      try {
+        console.log(data);
+        data = JSON.parse(data);
+      } catch (error) {
+        return this.$lsw.toasts.showError(error);
+      }
+      const confirmacion = await this.$lsw.dialogs.open({
+        title: "Importación de JSON",
+        template: `
+          <div class="pad_1">
+            <div>Estás a punto de importar los siguientes datos a la base de datos:</div>
+            <pre style="max-height: 400px; overflow: scroll; font-size: 10px;">{{ datos }}</pre>
+            <div class="flex_row">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1 pad_top_1">
+                <button class="danger_button supermini" v-on:click="accept">Importar igualmente</button>
+              </div>
+              <div class="flex_1 pad_left_1 pad_top_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            datos: data,
+          }
+        }
+      });
+      if(confirmacion <= 0) {
+        return false;
+      }
+      // @OK:
+      return;
+      await LswDatabase.importToDatabase("lsw_default_database", data);
+      return this.$lsw.toasts.send({
+        title: "👍 Importación completada",
+        text: `La importación fue un éxito.`
+      });
     },
     async startImportarDeJson() {
       this.$trace("lsw-configurations-page.methods.startImportarDeJson");
@@ -37761,6 +42111,6883 @@ Vue.component("LswConfigurationsPage", {
   },
 });
 // @code.end: LswConfigurationsPage API
+// @code.start: LswAutomensajesViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAutomensajesViewer API » LswAutomensajesViewer component
+Vue.component("LswAutomensajesViewer", {
+  template: `<div class="lsw_automensajes_viewer">
+    <div class="app_main_topbar">
+        <div class="flex_row centered">
+            <div class="flex_1 pad_right_1 pad_left_1" v-if="isMounted">
+                <lsw-apps-viewer-button :viewer="\$refs.appPanel" />
+            </div>
+            <div class="flex_100 automensaje_block position_relative" :style="{ fontSize: selectedFontsize + 'px' }" v-on:click="refreshAutomessaging">
+                <div class="position_absolute_fixed flex_row centered">
+                    <div class="flex_1" v-if="selectedAutomensaje">
+                        {{ selectedAutomensaje }}
+                    </div>
+                    <div class="flex_1" v-else>
+                        Eslóganes para ti aquí.
+                    </div>
+                </div>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="main_topbar_button rounded superbig" id="the_picas_button" v-on:click="procedureForPicas">{{ simboloActual }}</button>
+            </div>
+        </div>
+    </div>
+    <div class="app_main_panel pad_1">
+        <lsw-apps-viewer-panel ref="appPanel" />
+    </div>
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-automensajes-viewer.data");
+    return {
+      isMounted: false,
+      automensajes: [],
+      selectedAutomensaje: undefined,
+      selectedFontsize: 12,
+      automessagingId: undefined,
+      automessagingSeconds: 0,
+      simboloActual: "🕓", // "✴️", // "♠️",
+      // simboloActual: LswRandomizer.getRandomItem("🌅🌄🌠🎇🎆🌇🌆🏙🌃🌌🌉🌁".split("")),
+      
+      // simboloActual: LswRandomizer.getRandomItem("🐶🐱🐵🐗🐴🐌🐜🌋🏭🏢🏬🏣🚀🛸🚁🎲🎯🎳✴️🗽🗼🛟🎱🐞🌝🌛🌜🌚🌕🌖🌗🌘🌑🌒🌓🌔🌙🌎🌍🌏🪐💫⭐️🌟✨⚡️☄️💥🔥🌪🌈🐉🐲🐦‍🔥🌵🎄🌲🌳🌴🪹🪺🪵🌱🌿🍀🍁🍄🍄‍🟫🌾💐🌷🪷🌹🥀🌺🎪🤹🤹‍♂️🤹‍♀️🎭🎨🎼🎹🥁🪘🪇🎷🎺🪗🎸🪕🎻🪈♟🎰🧩🚗🚕🚙🎬🎤🎧💧💦🫧☔️☂️🌊🍏🍎🍐🍊🍋🍋‍🟩🍌🍉🍇🍓🫐🍈🍒🍑🥭🍍🥥🥝🍅🍆🥑🥦🫛".split("")),
+    };
+  },
+  methods: {
+    procedureForPicas() {
+      this.$trace("LswAutomensajesViewer.methods.procedureForPicas", []);
+      this.selectApplication("despues");
+    },
+    async loadAutomensajes() {
+      this.$trace("LswAutomensajesViewer.methods.loadAutomensajes", []);
+      const automensajes = await this.$lsw.fs.evaluateAsDotenvFileOrReturn("/kernel/settings/automessages.env", {});
+      this.automensajes = Object.keys(automensajes);
+    },
+    async sendAutomessage() {
+      this.$trace("LswAutomensajesViewer.methods.sendAutomessage", []);
+      const availableAutomensajes = this.automensajes.filter(a => {
+        if(typeof this.selectedAutomensaje !== "string") return true;
+        return a !== this.selectedAutomensaje;
+      });
+      const nextAutomensaje = LswRandomizer.getRandomItem(availableAutomensajes);
+      const nextFontsize = this.calculateFontsize(nextAutomensaje);
+      this.selectedFontsize = nextFontsize;
+      this.selectedAutomensaje = nextAutomensaje;
+    },
+    calculateFontsize(text) {
+      this.$trace("LswAutomensajesViewer.methods.calculateFontsize", []);
+      const textLength = text.length;
+      if(textLength < 10) {
+        return 18;
+      } else if(textLength < 20) {
+        return 16;
+      } else if(textLength < 30) {
+        return 14;
+      } else {
+        return 12;
+      }
+    },
+    async startAutomessaging() {
+      this.$trace("LswAutomensajesViewer.methods.startAutomessaging", []);
+      await this.loadAutomensajes();
+      await this.sendAutomessage();
+      await this.continueAutomessaging();
+    },
+    async continueAutomessaging() {
+      this.$trace("LswAutomensajesViewer.methods.continueAutomessaging", []);
+      clearTimeout(this.automessagingId);
+      this.automessagingSeconds = LswRandomizer.getRandomIntegerBetween(60,120);
+      this.automessagingId = setTimeout(() => this.sendAutomessage(), this.automessagingSeconds * 1000);
+    },
+    stopAutomessaging() {
+      this.$trace("LswAutomensajesViewer.methods.stopAutomessaging");
+      clearTimeout(this.automessagingId);
+    },
+    async refreshAutomessaging() {
+      this.$trace("LswAutomensajesViewer.methods.refreshAutomessaging", []);
+      this.stopAutomessaging();
+      this.startAutomessaging();
+      this.$window.changeBackgroundImage();
+    },
+    goToDesktop() {
+      this.$trace("LswAutomensajesViewer.methods.goToDesktop", []);
+      this.$lsw.windows.hide();
+      this.$refs.appPanel.selectApplication("none");
+    },
+    selectApplication(application) {
+      this.$trace("LswAutomensajesViewer.methods.selectApplication", []);
+      this.$refs.appPanel.selectApplication(application);
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-automensajes-viewer.mounted");
+      this.$window.$automensajesUi = this;
+      // this.startAutomessaging();
+      this.isMounted = true;
+      this.refreshAutomessaging();
+    } catch(error) {
+      console.log(error);
+    }
+  },
+  unmount() {
+    this.$trace("lsw-automensajes-viewer.unmount");
+    this.stopAutomessaging();
+  }
+});
+// @code.end: LswAutomensajesViewer API
+// @code.start: LswAppsViewerButton API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAppsViewerButton API » LswAppsViewerButton component
+Vue.component("LswAppsViewerButton", {
+  template: `<div class="lsw_apps_viewer_button">
+    <div class="lsw_apps_button">
+        <button class="main_topbar_button rounded superbig" v-on:click="() => selectApplication('calendario')">📆</button>
+    </div>
+    <!--div class="position_relative">
+        <div class="hidden_menu"
+            v-if="isOpened">
+            <div class="hidden_menu_fixed_layer" v-on:click="close"></div>
+            <div class="hidden_menu_box">
+                <div class="hidden_menu_items">
+                    <div class="title">
+                        <div class="flex_100 pad_left_1 pad_right_1">
+                            Aplicaciones instaladas
+                        </div>
+                        <div class="flex_1">
+                            <button class="supermini"
+                                v-on:click="close">❌</button>
+                        </div>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => selectApplication('despues')">🕓 Tareas posteriores</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => selectApplication('calendario')">📆 Calendario</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => selectApplication('enciclopedia')">🔬 Enciclopedia</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => selectApplication('notas')">💬 Notas</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => selectApplication('base de datos')">📦 Base de datos</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => selectApplication('sistema de ficheros')">📂 Sistema de ficheros</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => selectApplication('antes')">🕗 Tareas anteriores</button>
+                    </div>
+                    <div class="button_cell">
+                        <button class="mini"
+                            v-on:click="() => selectApplication('configuraciones')">🔧 Configuraciones</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div-->
+
+</div>`,
+  props: {
+    viewer: {
+      type: Object,
+      required: true,
+    }
+  },
+  data() {
+    this.$trace("lsw-apps-viewer-button.data");
+    return {
+      isOpened: false,
+    };
+  },
+  methods: {
+    toggleOpen() {
+      this.$trace("lsw-apps-viewer-button.methods.toggleOpen");
+      this.isOpened = !this.isOpened;
+    },
+    open() {
+      this.$trace("lsw-apps-viewer-button.methods.open");
+      this.isOpened = true;
+    },
+    close() {
+      this.$trace("lsw-apps-viewer-button.methods.close");
+      this.isOpened = false;
+    },
+    selectApplication(application) {
+      this.$trace("lsw-apps-viewer-button.methods.selectApplication");
+      console.log(this.viewer);
+      const isSame = this.viewer.selectedApplication === application;
+      if(!isSame) {
+        this.viewer.selectApplication(application);
+      } else {
+        // @NOTHING.
+      }
+      this.close();
+    },
+    openHomepage() {
+      this.selectApplication("homepage");
+    },
+    openEventTracker() {
+      this.selectApplication("event-tracker");
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-apps-viewer-button.mounted");
+    } catch (error) {
+      console.log(error);
+    }
+  },
+});
+// @code.end: LswAppsViewerButton API
+// @code.start: LswAppsViewerPanel API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAppsViewer API » LswAppsViewerPanel component
+Vue.component("LswAppsViewerPanel", {
+  template: `<div class="lsw_apps_viewer_panel">
+    <div class="desktop_free_area">
+        <div class=""
+            v-if="selectedApplication !== 'none'">
+            <div class="desktop_free_available_area">
+                <div class="pad_1"
+                    v-if="selectedApplication === 'antes'"
+                    v-bind:key="'app_acciones_anteriores'">
+                    <h4 class="pad_bottom_1">
+                        <div class="flex_row centered">
+                            <div class="flex_100">⬅️ 🕓 Antes de las {{ horaActual }}:</div>
+                            <div class="flex_1">
+                                <button class="supermini"
+                                    v-on:click="() => selectApplication('calendario')">📅</button>
+                            </div>
+                            <div class="flex_1 pad_left_1">
+                                <button class="supermini"
+                                    v-on:click="() => selectApplication('despues')">🕓➡️</button>
+                            </div>
+                        </div>
+                    </h4>
+                    <lsw-agenda-acciones-viewer :initial-date="new Date()"
+                        sorter-strategy="antes" />
+                    <div v-else
+                        class="pad_top_0 pad_bottom_0">No hay acciones anteriores.</div>
+                </div>
+                <div class="pad_1"
+                    v-if="selectedApplication === 'despues'"
+                    v-bind:key="'app_acciones_posteriores'">
+                    <h4 class="pad_bottom_1">
+                        <div class="flex_row centered">
+                            <div class="flex_100">🕓 ➡️ Después de las {{ horaActual }}:</div>
+                            <div class="flex_1">
+                                <button class="supermini"
+                                    v-on:click="() => selectApplication('calendario')">📅</button>
+                            </div>
+                            <div class="flex_1 pad_left_1">
+                                <button class="supermini"
+                                    v-on:click="() => selectApplication('antes')">⬅️🕓</button>
+                            </div>
+                        </div>
+                    </h4>
+                    <lsw-agenda-acciones-viewer :initial-date="new Date()"
+                        sorter-strategy="despues" />
+                </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'calendario'"
+                    v-bind:key="'app_calendario'">
+                    <div class="pad_top_0 pad_bottom_0">
+                        <h4 class="margin_bottom_1">
+                            <div class="flex_row centered">
+                                <div class="flex_100">📅 Calendario:</div>
+                                <div class="flex_1">
+                                    <button class="supermini"
+                                        v-on:click="() => selectApplication('antes')">⬅️🕓</button>
+                                </div>
+                                <div class="flex_1 pad_left_1">
+                                    <button class="supermini"
+                                        v-on:click="() => selectApplication('despues')">🕓➡️</button>
+                                </div>
+                            </div>
+                        </h4>
+                        <lsw-agenda />
+                    </div>
+                </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'notas'"
+                    v-bind:key="'app_nueva_nota'">
+                    <div class="pad_top_0 pad_bottom_0">
+                        <lsw-spontaneous-table-nota />
+                    </div>
+                </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'enciclopedia'"
+                    v-bind:key="'enciclopedia'">
+                    <div class="pad_top_0 pad_bottom_0">
+                        <lsw-wiki />
+                    </div>
+                </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'base de datos'"
+                    v-bind:key="'base de datos'">
+                    <div class="pad_top_0 pad_bottom_0">
+                        <lsw-database-explorer />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'sistema de ficheros'"
+                    v-bind:key="'sistema de ficheros'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-filesystem-explorer :absolute-layout="false" />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'automensajes'"
+                    v-bind:key="'automensajes'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-spontaneous-table-automensajes />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'recordatorios'"
+                    v-bind:key="'recordatorios'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-spontaneous-table-recordatorios />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'listas'"
+                    v-bind:key="'listas'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-spontaneous-table-lista />
+
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'nuevo recordatorio'"
+                    v-bind:key="'nuevo recordatorio'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-spontaneous-form-recordatorio />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'nueva lista'"
+                    v-bind:key="'nueva lista'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-spontaneous-form-lista />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'nueva nota'"
+                    v-bind:key="'nueva nota'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-spontaneous-form-nota :on-submitted="() => selectApplication('notas')" />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'nuevo articulo'"
+                    v-bind:key="'nuevo articulo'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-spontaneous-form-articulo />
+                    </div>
+                </div>
+
+                <div class="pad_0"
+                    v-if="selectedApplication === 'nueva accion'"
+                    v-bind:key="'nuevo accion'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-spontaneous-form-accion />
+                    </div>
+                </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'configuraciones'"
+                    v-bind:key="'configuraciones'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-configurations-page />
+                    </div>
+                </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'homepage'"
+                    v-bind:key="'homepage'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-homepage :apps-viewer="this" />
+                    </div>
+                </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'binarios'"
+                    v-bind:key="'binarios'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-bin-directory directory="/kernel/bin" />
+                    </div>
+                </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'event-tracker'"
+                    v-bind:key="'event-tracker'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-event-tracker />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- End of «Free Desktop Area» -->
+</div>`,
+  props: {
+
+  },
+  data() {
+    this.$trace("lsw-apps-viewer-panel.data");
+    return {
+      isOpened: false,
+      selectedApplication: 'despues', // 'antes', 'despues'
+      accionesAntes: false,
+      accionesDespues: false,
+      horaActual: LswTimer.utils.fromDateToHour(new Date()),
+    };
+  },
+  methods: {
+    selectApplication(section) {
+      this.$trace("lsw-apps-viewer-panel.methods.selectApplication");
+      this.$lsw.dialogs.minimizeAll();
+      this.selectedApplication = section;
+      Cargas_segun_aplicacion: {
+        if (["antes", "despues"].indexOf(section) !== -1) {
+          this.loadAcciones();
+        } else {
+          this.$forceUpdate(true);
+        }
+      }
+    },
+    getSimboloEstadoAccion(estado) {
+      return (estado === "completada") ? "💚" :
+        (estado === "pendiente") ? "❓" :
+          (estado === "fallida") ? "🔥" : "";
+    },
+    async loadAcciones() {
+      this.$trace("lsw-apps-viewer-panel.methods.loadAcciones");
+      const output = await this.$lsw.database.selectMany("Accion");
+      const estaHora = (() => {
+        const d = new Date();
+        d.setMinutes(0);
+        return d;
+      })();
+      const accionesAntes = [];
+      const accionesDespues = [];
+      output.forEach(accion => {
+        try {
+          const dateAccion = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
+          const areSameDay = LswTimer.utils.areSameDayDates(dateAccion, estaHora);
+          if (!areSameDay) return;
+          if (dateAccion >= estaHora) {
+            accionesDespues.push(accion);
+          } else {
+            accionesAntes.push(accion);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+      this.accionesAntes = accionesAntes.sort(this.getSorterOfAccionesAntes());
+      this.accionesDespues = accionesDespues.sort(this.getSorterOfAccionesDespues());
+      this.$forceUpdate(true);
+    },
+    getSorterOfAccionesAntes() {
+      this.$trace("lsw-apps-viewer-panel.methods.getSorterOfAccionesAntes");
+      return function (accion1, accion2) {
+        let inicio1, inicio2;
+        try {
+          inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
+        } catch (error) {
+          return 1;
+        }
+        try {
+          inicio2 = LswTimer.utils.fromDatestringToDate(accion2.tiene_inicio);
+        } catch (error) {
+          return -1;
+        }
+        const firstIsLower = inicio1 < inicio2;
+        return firstIsLower ? 1 : -1;
+      };
+    },
+    getSorterOfAccionesDespues() {
+      this.$trace("lsw-apps-viewer-panel.methods.getSorterOfAccionesDespues");
+      return function (accion1, accion2) {
+        let inicio1, inicio2;
+        try {
+          inicio1 = LswTimer.utils.fromDatestringToDate(accion1.tiene_inicio);
+        } catch (error) {
+          return 1;
+        }
+        try {
+          inicio2 = LswTimer.utils.fromDatestringToDate(accion2.tiene_inicio);
+        } catch (error) {
+          return -1;
+        }
+        const firstIsLower = inicio1 <= inicio2;
+        return firstIsLower ? -1 : 1;
+      };
+    },
+    async alternarEstado(accion) {
+      this.$trace("lsw-apps-viewer-panel.methods.alternarEstado");
+      const nextEstado = accion.tiene_estado === "pendiente" ? "completada" :
+        accion.tiene_estado === "completada" ? "fallida" : "pendiente";
+      await this.$lsw.database.update("Accion", accion.id, {
+        ...accion,
+        tiene_estado: nextEstado
+      });
+      await this.loadAcciones();
+    },
+    async reloadPanel() {
+      this.$trace("lsw-apps-viewer-panel.methods.reloadPanel");
+      await this.loadAcciones();
+    },
+    async openNotaUploader() {
+      this.$trace("lsw-apps-viewer-panel.methods.openNotaUploader", arguments);
+      const response = await LswUtils.openAddNoteDialog();
+      if (typeof response !== "object") {
+        return;
+      }
+      await this.$lsw.database.insert("Nota", response);
+    },
+    openWikiExplorer() {
+      this.$trace("lsw-windows-main-tab.methods.openWikiExplorer", arguments);
+      this.$dialogs.open({
+        id: "wiki-explorer-" + LswRandomizer.getRandomString(5),
+        title: "Wiki explorer",
+        template: `<div class="pad_2"><lsw-wiki /></div>`,
+      });
+    },
+    async openArticuloUploader() {
+      this.$trace("lsw-windows-main-tab.methods.openArticuloUploader", arguments);
+      const response = await LswUtils.openAddArticuloDialog();
+      if (typeof response !== "object") {
+        return;
+      }
+      await this.$lsw.database.insert("Articulo", response);
+    },
+    updateHoraActual() {
+      this.$trace("lsw-windows-main-tab.methods.updateHoraActual", arguments);
+      this.horaActual = LswTimer.utils.fromDateToHour(new Date());
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-apps-viewer-panel.mounted");
+      await this.loadAcciones();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+});
+// @code.end: LswAppsViewerPanel API
+/*
+ * Generated by PEG.js 0.10.0.
+ *
+ * http://pegjs.org/
+ */
+(function(root) {
+  "use strict";
+
+  function peg$subclass(child, parent) {
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor();
+  }
+
+  function peg$SyntaxError(message, expected, found, location) {
+    this.message  = message;
+    this.expected = expected;
+    this.found    = found;
+    this.location = location;
+    this.name     = "SyntaxError";
+
+    if (typeof Error.captureStackTrace === "function") {
+      Error.captureStackTrace(this, peg$SyntaxError);
+    }
+  }
+
+  peg$subclass(peg$SyntaxError, Error);
+
+  peg$SyntaxError.buildMessage = function(expected, found) {
+    var DESCRIBE_EXPECTATION_FNS = {
+          literal: function(expectation) {
+            return "\"" + literalEscape(expectation.text) + "\"";
+          },
+
+          "class": function(expectation) {
+            var escapedParts = "",
+                i;
+
+            for (i = 0; i < expectation.parts.length; i++) {
+              escapedParts += expectation.parts[i] instanceof Array
+                ? classEscape(expectation.parts[i][0]) + "-" + classEscape(expectation.parts[i][1])
+                : classEscape(expectation.parts[i]);
+            }
+
+            return "[" + (expectation.inverted ? "^" : "") + escapedParts + "]";
+          },
+
+          any: function(expectation) {
+            return "any character";
+          },
+
+          end: function(expectation) {
+            return "end of input";
+          },
+
+          other: function(expectation) {
+            return expectation.description;
+          }
+        };
+
+    function hex(ch) {
+      return ch.charCodeAt(0).toString(16).toUpperCase();
+    }
+
+    function literalEscape(s) {
+      return s
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g,  '\\"')
+        .replace(/\0/g, '\\0')
+        .replace(/\t/g, '\\t')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/[\x00-\x0F]/g,          function(ch) { return '\\x0' + hex(ch); })
+        .replace(/[\x10-\x1F\x7F-\x9F]/g, function(ch) { return '\\x'  + hex(ch); });
+    }
+
+    function classEscape(s) {
+      return s
+        .replace(/\\/g, '\\\\')
+        .replace(/\]/g, '\\]')
+        .replace(/\^/g, '\\^')
+        .replace(/-/g,  '\\-')
+        .replace(/\0/g, '\\0')
+        .replace(/\t/g, '\\t')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/[\x00-\x0F]/g,          function(ch) { return '\\x0' + hex(ch); })
+        .replace(/[\x10-\x1F\x7F-\x9F]/g, function(ch) { return '\\x'  + hex(ch); });
+    }
+
+    function describeExpectation(expectation) {
+      return DESCRIBE_EXPECTATION_FNS[expectation.type](expectation);
+    }
+
+    function describeExpected(expected) {
+      var descriptions = new Array(expected.length),
+          i, j;
+
+      for (i = 0; i < expected.length; i++) {
+        descriptions[i] = describeExpectation(expected[i]);
+      }
+
+      descriptions.sort();
+
+      if (descriptions.length > 0) {
+        for (i = 1, j = 1; i < descriptions.length; i++) {
+          if (descriptions[i - 1] !== descriptions[i]) {
+            descriptions[j] = descriptions[i];
+            j++;
+          }
+        }
+        descriptions.length = j;
+      }
+
+      switch (descriptions.length) {
+        case 1:
+          return descriptions[0];
+
+        case 2:
+          return descriptions[0] + " or " + descriptions[1];
+
+        default:
+          return descriptions.slice(0, -1).join(", ")
+            + ", or "
+            + descriptions[descriptions.length - 1];
+      }
+    }
+
+    function describeFound(found) {
+      return found ? "\"" + literalEscape(found) + "\"" : "end of input";
+    }
+
+    return "Expected " + describeExpected(expected) + " but " + describeFound(found) + " found.";
+  };
+
+  function peg$parse(input, options) {
+    options = options !== void 0 ? options : {};
+
+    var peg$FAILED = {},
+
+        peg$startRuleFunctions = { start: peg$parsestart },
+        peg$startRuleFunction  = peg$parsestart,
+
+        peg$c0 = function(statements) { return deundefinify(statements); },
+        peg$c1 = function(st) { return Object.assign({}, st, { $len: text().length, $loc: reduceLoc(location()) })},
+        peg$c2 = "inc",
+        peg$c3 = peg$literalExpectation("inc", false),
+        peg$c4 = function(path) { return { type: "inc", path }; },
+        peg$c5 = "def",
+        peg$c6 = peg$literalExpectation("def", false),
+        peg$c7 = function(names) { return { type: "def", names }; },
+        peg$c8 = "fun",
+        peg$c9 = peg$literalExpectation("fun", false),
+        peg$c10 = function(header, code) {
+              return { type: "fun", ...header, code };
+          },
+        peg$c11 = function(name) { return { name, params: undefined } },
+        peg$c12 = ":",
+        peg$c13 = peg$literalExpectation(":", false),
+        peg$c14 = function(name, params) {
+            return { name, params }
+          },
+        peg$c15 = "{",
+        peg$c16 = peg$literalExpectation("{", false),
+        peg$c17 = "}",
+        peg$c18 = peg$literalExpectation("}", false),
+        peg$c19 = function() { return "" },
+        peg$c20 = function(code) { return code; },
+        peg$c21 = "rel",
+        peg$c22 = peg$literalExpectation("rel", false),
+        peg$c23 = function(name, rest) {
+              return { type: "rel", name, ...(separateEffectsTriggers(rest)) };
+          },
+        peg$c24 = function(arg) {
+            return arg;
+          },
+        peg$c25 = ">",
+        peg$c26 = peg$literalExpectation(">", false),
+        peg$c27 = "*",
+        peg$c28 = peg$literalExpectation("*", false),
+        peg$c29 = function(concept, value, args) { return { type: "effect", prototipo: "multiplicador", consecuencia: concept, ratio: value, argumentos: args || undefined }; },
+        peg$c30 = function(args) { return args },
+        peg$c31 = ">>",
+        peg$c32 = peg$literalExpectation(">>", false),
+        peg$c33 = function(expr) { return expr; },
+        peg$c34 = function(name, concepts, args) { return { type: "trigger by prototype", prototipo: name, conceptos: concepts || undefined, argumentos: args || undefined }; },
+        peg$c35 = function(first, rest) { return [first].concat(rest || [])},
+        peg$c36 = ",",
+        peg$c37 = peg$literalExpectation(",", false),
+        peg$c38 = function(concept) { return concept },
+        peg$c39 = "<",
+        peg$c40 = peg$literalExpectation("<", false),
+        peg$c41 = function() { return { type: "trigger by code", codigo: text().trim() } },
+        peg$c42 = function(first, rest) {
+              return [first].concat(rest.map(r => r[1]));
+          },
+        peg$c43 = peg$anyExpectation(),
+        peg$c44 = function() { return text().trim() },
+        peg$c45 = /^[0-9]/,
+        peg$c46 = peg$classExpectation([["0", "9"]], false, false),
+        peg$c47 = ".",
+        peg$c48 = peg$literalExpectation(".", false),
+        peg$c49 = function() { return text(); },
+        peg$c50 = peg$otherExpectation("Codeblock"),
+        peg$c51 = function() {},
+        peg$c52 = function() { return text() },
+        peg$c53 = " ",
+        peg$c54 = peg$literalExpectation(" ", false),
+        peg$c55 = "\t",
+        peg$c56 = peg$literalExpectation("\t", false),
+        peg$c57 = "\r\n",
+        peg$c58 = peg$literalExpectation("\r\n", false),
+        peg$c59 = "\r",
+        peg$c60 = peg$literalExpectation("\r", false),
+        peg$c61 = "\n",
+        peg$c62 = peg$literalExpectation("\n", false),
+
+        peg$currPos          = 0,
+        peg$savedPos         = 0,
+        peg$posDetailsCache  = [{ line: 1, column: 1 }],
+        peg$maxFailPos       = 0,
+        peg$maxFailExpected  = [],
+        peg$silentFails      = 0,
+
+        peg$result;
+
+    if ("startRule" in options) {
+      if (!(options.startRule in peg$startRuleFunctions)) {
+        throw new Error("Can't start parsing from rule \"" + options.startRule + "\".");
+      }
+
+      peg$startRuleFunction = peg$startRuleFunctions[options.startRule];
+    }
+
+    function text() {
+      return input.substring(peg$savedPos, peg$currPos);
+    }
+
+    function location() {
+      return peg$computeLocation(peg$savedPos, peg$currPos);
+    }
+
+    function expected(description, location) {
+      location = location !== void 0 ? location : peg$computeLocation(peg$savedPos, peg$currPos)
+
+      throw peg$buildStructuredError(
+        [peg$otherExpectation(description)],
+        input.substring(peg$savedPos, peg$currPos),
+        location
+      );
+    }
+
+    function error(message, location) {
+      location = location !== void 0 ? location : peg$computeLocation(peg$savedPos, peg$currPos)
+
+      throw peg$buildSimpleError(message, location);
+    }
+
+    function peg$literalExpectation(text, ignoreCase) {
+      return { type: "literal", text: text, ignoreCase: ignoreCase };
+    }
+
+    function peg$classExpectation(parts, inverted, ignoreCase) {
+      return { type: "class", parts: parts, inverted: inverted, ignoreCase: ignoreCase };
+    }
+
+    function peg$anyExpectation() {
+      return { type: "any" };
+    }
+
+    function peg$endExpectation() {
+      return { type: "end" };
+    }
+
+    function peg$otherExpectation(description) {
+      return { type: "other", description: description };
+    }
+
+    function peg$computePosDetails(pos) {
+      var details = peg$posDetailsCache[pos], p;
+
+      if (details) {
+        return details;
+      } else {
+        p = pos - 1;
+        while (!peg$posDetailsCache[p]) {
+          p--;
+        }
+
+        details = peg$posDetailsCache[p];
+        details = {
+          line:   details.line,
+          column: details.column
+        };
+
+        while (p < pos) {
+          if (input.charCodeAt(p) === 10) {
+            details.line++;
+            details.column = 1;
+          } else {
+            details.column++;
+          }
+
+          p++;
+        }
+
+        peg$posDetailsCache[pos] = details;
+        return details;
+      }
+    }
+
+    function peg$computeLocation(startPos, endPos) {
+      var startPosDetails = peg$computePosDetails(startPos),
+          endPosDetails   = peg$computePosDetails(endPos);
+
+      return {
+        start: {
+          offset: startPos,
+          line:   startPosDetails.line,
+          column: startPosDetails.column
+        },
+        end: {
+          offset: endPos,
+          line:   endPosDetails.line,
+          column: endPosDetails.column
+        }
+      };
+    }
+
+    function peg$fail(expected) {
+      if (peg$currPos < peg$maxFailPos) { return; }
+
+      if (peg$currPos > peg$maxFailPos) {
+        peg$maxFailPos = peg$currPos;
+        peg$maxFailExpected = [];
+      }
+
+      peg$maxFailExpected.push(expected);
+    }
+
+    function peg$buildSimpleError(message, location) {
+      return new peg$SyntaxError(message, null, null, location);
+    }
+
+    function peg$buildStructuredError(expected, found, location) {
+      return new peg$SyntaxError(
+        peg$SyntaxError.buildMessage(expected, found),
+        expected,
+        found,
+        location
+      );
+    }
+
+    function peg$parsestart() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parsestatement();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parsestatement();
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMAYSPACES();
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c0(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsestatement() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseincStatement();
+      if (s1 === peg$FAILED) {
+        s1 = peg$parsedefStatement();
+        if (s1 === peg$FAILED) {
+          s1 = peg$parsefunStatement();
+          if (s1 === peg$FAILED) {
+            s1 = peg$parserelStatement();
+          }
+        }
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c1(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseincStatement() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c2) {
+          s2 = peg$c2;
+          peg$currPos += 3;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c3); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMINSPACE();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseUNTIL_NEWLINE();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parse___();
+              if (s5 === peg$FAILED) {
+                s5 = peg$parseEOF();
+              }
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c4(s4);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsedefStatement() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c5) {
+          s2 = peg$c5;
+          peg$currPos += 3;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c6); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMINSPACE();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseidentifierList();
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c7(s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunStatement() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c8) {
+          s2 = peg$c8;
+          peg$currPos += 3;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c9); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMINSPACE();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsefunHeader();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseMAYSPACES();
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parsefunContent();
+                if (s6 !== peg$FAILED) {
+                  peg$savedPos = s0;
+                  s1 = peg$c10(s4, s6);
+                  s0 = s1;
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunHeader() {
+      var s0;
+
+      s0 = peg$parsefunHeaderWithParameters();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsefunHeaderWithoutParameters();
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunHeaderWithoutParameters() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseidentifier();
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c11(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsefunHeaderWithParameters() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseidentifier();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseMAYSPACES();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 58) {
+            s3 = peg$c12;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c13); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseMAYSPACES();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseidentifierList();
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c14(s1, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunContent() {
+      var s0;
+
+      s0 = peg$parsefunContentEmpty();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsefunContentFilled();
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunContentEmpty() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 123) {
+        s1 = peg$c15;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c16); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseMAYSPACES();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 125) {
+            s3 = peg$c17;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c18); }
+          }
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c19();
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsefunContentFilled() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 123) {
+        s1 = peg$c15;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c16); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsecodeBlock();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parse___();
+          if (s3 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 125) {
+              s4 = peg$c17;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c18); }
+            }
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c20(s2);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parserelStatement() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c21) {
+          s2 = peg$c21;
+          peg$currPos += 3;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c22); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMINSPACE();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseidentifier();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseMAYSPACES();
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parserelArguments();
+                if (s6 !== peg$FAILED) {
+                  peg$savedPos = s0;
+                  s1 = peg$c23(s4, s6);
+                  s0 = s1;
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parserelArguments() {
+      var s0, s1;
+
+      s0 = [];
+      s1 = peg$parserelArgument();
+      if (s1 !== peg$FAILED) {
+        while (s1 !== peg$FAILED) {
+          s0.push(s1);
+          s1 = peg$parserelArgument();
+        }
+      } else {
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parserelArgument() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parserelEffect();
+        if (s2 === peg$FAILED) {
+          s2 = peg$parserelTrigger();
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c24(s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parserelEffect() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 62) {
+          s2 = peg$c25;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c26); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMAYSPACES();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseidentifier();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseMAYSPACES();
+              if (s5 !== peg$FAILED) {
+                if (input.charCodeAt(peg$currPos) === 42) {
+                  s6 = peg$c27;
+                  peg$currPos++;
+                } else {
+                  s6 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c28); }
+                }
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parseMAYSPACES();
+                  if (s7 !== peg$FAILED) {
+                    s8 = peg$parsenumber();
+                    if (s8 !== peg$FAILED) {
+                      s9 = peg$parseextraArguments();
+                      if (s9 === peg$FAILED) {
+                        s9 = null;
+                      }
+                      if (s9 !== peg$FAILED) {
+                        peg$savedPos = s0;
+                        s1 = peg$c29(s4, s8, s9);
+                        s0 = s1;
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$FAILED;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$FAILED;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseextraArguments() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parseSTARTING_COMMA();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseUNTIL_NEWLINE();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c30(s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parserelTrigger() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 2) === peg$c31) {
+          s2 = peg$c31;
+          peg$currPos += 2;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c32); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMAYSPACES();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsetriggerExpr();
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c33(s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsetriggerExpr() {
+      var s0;
+
+      s0 = peg$parsetriggerExprByCall();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsetriggerExprByCode();
+      }
+
+      return s0;
+    }
+
+    function peg$parsetriggerExprByCall() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8;
+
+      s0 = peg$currPos;
+      s1 = peg$parseidentifier();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseMAYSPACES();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 58) {
+            s3 = peg$c12;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c13); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseMAYSPACES();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseList_of_concepts();
+              if (s5 === peg$FAILED) {
+                s5 = null;
+              }
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parseSTARTING_COMMA();
+                if (s6 === peg$FAILED) {
+                  s6 = null;
+                }
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parseUNTIL_NEWLINE();
+                  if (s7 !== peg$FAILED) {
+                    s8 = peg$parse___();
+                    if (s8 === peg$FAILED) {
+                      s8 = peg$parseEOF();
+                    }
+                    if (s8 !== peg$FAILED) {
+                      peg$savedPos = s0;
+                      s1 = peg$c34(s1, s5, s7);
+                      s0 = s1;
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$FAILED;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseList_of_concepts() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parseIsolated_concept();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseMore_isolated_concepts();
+        if (s2 === peg$FAILED) {
+          s2 = null;
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c35(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseMore_isolated_concepts() {
+      var s0, s1;
+
+      s0 = [];
+      s1 = peg$parseAnother_isolated_concept();
+      if (s1 !== peg$FAILED) {
+        while (s1 !== peg$FAILED) {
+          s0.push(s1);
+          s1 = peg$parseAnother_isolated_concept();
+        }
+      } else {
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseAnother_isolated_concept() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 44) {
+          s2 = peg$c36;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c37); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseIsolated_concept();
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c38(s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseIsolated_concept() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 60) {
+          s2 = peg$c39;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c40); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseidentifier();
+          if (s3 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 62) {
+              s4 = peg$c25;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c26); }
+            }
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c38(s3);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsetriggerExprByCode() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parseUNTIL_NEWLINE();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse___();
+        if (s2 === peg$FAILED) {
+          s2 = peg$parseEOF();
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c41();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseidentifierList() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseidentifier();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        s4 = peg$parseSTARTING_COMMA();
+        if (s4 !== peg$FAILED) {
+          s5 = peg$parseidentifier();
+          if (s5 !== peg$FAILED) {
+            s4 = [s4, s5];
+            s3 = s4;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$FAILED;
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$currPos;
+          s4 = peg$parseSTARTING_COMMA();
+          if (s4 !== peg$FAILED) {
+            s5 = peg$parseidentifier();
+            if (s5 !== peg$FAILED) {
+              s4 = [s4, s5];
+              s3 = s4;
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c42(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseidentifier() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      s4 = peg$parse___();
+      if (s4 === peg$FAILED) {
+        s4 = peg$parseFORBIDDEN_TOKENS_FOR_IDENTIFIERS();
+      }
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c43); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$parse___();
+          if (s4 === peg$FAILED) {
+            s4 = peg$parseFORBIDDEN_TOKENS_FOR_IDENTIFIERS();
+          }
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c43); }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c44();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsenumber() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = [];
+      if (peg$c45.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c46); }
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          if (peg$c45.test(input.charAt(peg$currPos))) {
+            s2 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c46); }
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$currPos;
+        if (input.charCodeAt(peg$currPos) === 46) {
+          s3 = peg$c47;
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c48); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = [];
+          if (peg$c45.test(input.charAt(peg$currPos))) {
+            s5 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c46); }
+          }
+          if (s5 !== peg$FAILED) {
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              if (peg$c45.test(input.charAt(peg$currPos))) {
+                s5 = input.charAt(peg$currPos);
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c46); }
+              }
+            }
+          } else {
+            s4 = peg$FAILED;
+          }
+          if (s4 !== peg$FAILED) {
+            s3 = [s3, s4];
+            s2 = s3;
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+        if (s2 === peg$FAILED) {
+          s2 = null;
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c49();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsecodeBlock() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      peg$silentFails++;
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      s4 = peg$currPos;
+      s5 = peg$parse___();
+      if (s5 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 125) {
+          s6 = peg$c17;
+          peg$currPos++;
+        } else {
+          s6 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c18); }
+        }
+        if (s6 !== peg$FAILED) {
+          s5 = [s5, s6];
+          s4 = s5;
+        } else {
+          peg$currPos = s4;
+          s4 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s4;
+        s4 = peg$FAILED;
+      }
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        s4 = peg$parse___();
+        if (s4 === peg$FAILED) {
+          if (input.length > peg$currPos) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c43); }
+          }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$currPos;
+          s5 = peg$parse___();
+          if (s5 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 125) {
+              s6 = peg$c17;
+              peg$currPos++;
+            } else {
+              s6 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c18); }
+            }
+            if (s6 !== peg$FAILED) {
+              s5 = [s5, s6];
+              s4 = s5;
+            } else {
+              peg$currPos = s4;
+              s4 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s4;
+            s4 = peg$FAILED;
+          }
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parse___();
+            if (s4 === peg$FAILED) {
+              if (input.length > peg$currPos) {
+                s4 = input.charAt(peg$currPos);
+                peg$currPos++;
+              } else {
+                s4 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c43); }
+              }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c44();
+      }
+      s0 = s1;
+      peg$silentFails--;
+      if (s0 === peg$FAILED) {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c50); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseSTARTING_COMMA() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMAYSPACES();
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 44) {
+          s2 = peg$c36;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c37); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMAYSPACES();
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c51();
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseFORBIDDEN_TOKENS_FOR_IDENTIFIERS() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 44) {
+        s0 = peg$c36;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c37); }
+      }
+      if (s0 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 42) {
+          s0 = peg$c27;
+          peg$currPos++;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c28); }
+        }
+        if (s0 === peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 58) {
+            s0 = peg$c12;
+            peg$currPos++;
+          } else {
+            s0 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c13); }
+          }
+          if (s0 === peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 123) {
+              s0 = peg$c15;
+              peg$currPos++;
+            } else {
+              s0 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c16); }
+            }
+            if (s0 === peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 62) {
+                s0 = peg$c25;
+                peg$currPos++;
+              } else {
+                s0 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c26); }
+              }
+            }
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseUNTIL_NEWLINE() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      s4 = peg$parse___();
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c43); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$parse___();
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c43); }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c52();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseMAYSPACES() {
+      var s0, s1;
+
+      s0 = [];
+      s1 = peg$parse_();
+      while (s1 !== peg$FAILED) {
+        s0.push(s1);
+        s1 = peg$parse_();
+      }
+
+      return s0;
+    }
+
+    function peg$parseMAYSPACE() {
+      var s0;
+
+      s0 = peg$parse_();
+      if (s0 === peg$FAILED) {
+        s0 = null;
+      }
+
+      return s0;
+    }
+
+    function peg$parseMINSPACE() {
+      var s0, s1;
+
+      s0 = [];
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        while (s1 !== peg$FAILED) {
+          s0.push(s1);
+          s1 = peg$parse_();
+        }
+      } else {
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseEOF() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      peg$silentFails++;
+      if (input.length > peg$currPos) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c43); }
+      }
+      peg$silentFails--;
+      if (s1 === peg$FAILED) {
+        s0 = void 0;
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parse_() {
+      var s0;
+
+      s0 = peg$parse__();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parse___();
+      }
+
+      return s0;
+    }
+
+    function peg$parse__() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 32) {
+        s0 = peg$c53;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+      }
+      if (s0 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 9) {
+          s0 = peg$c55;
+          peg$currPos++;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c56); }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parse___() {
+      var s0;
+
+      if (input.substr(peg$currPos, 2) === peg$c57) {
+        s0 = peg$c57;
+        peg$currPos += 2;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c58); }
+      }
+      if (s0 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 13) {
+          s0 = peg$c59;
+          peg$currPos++;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c60); }
+        }
+        if (s0 === peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 10) {
+            s0 = peg$c61;
+            peg$currPos++;
+          } else {
+            s0 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c62); }
+          }
+        }
+      }
+
+      return s0;
+    }
+
+
+      const reduceLoc = function(loc) {
+        return `${loc.start.offset}-${loc.end.offset}|${loc.start.line}:${loc.start.column}-${loc.end.line}:${loc.end.column}`;
+      };
+      const deundefinify = function(data) {
+        return data;
+        return JSON.parse(JSON.stringify(data));
+      };
+      const separateEffectsTriggers = function(all) {
+        const effects = [];
+        const triggers = [];
+        for(let index=0; index<all.length; index++) {
+          const item = all[index];
+          if(item.type.startsWith("effect")) {
+            effects.push(item);
+          } else if(item.type.startsWith("trigger")) {
+            triggers.push(item);
+          }
+        }
+        return { effects, triggers };
+      };
+
+
+    peg$result = peg$startRuleFunction();
+
+    if (peg$result !== peg$FAILED && peg$currPos === input.length) {
+      return peg$result;
+    } else {
+      if (peg$result !== peg$FAILED && peg$currPos < input.length) {
+        peg$fail(peg$endExpectation());
+      }
+
+      throw peg$buildStructuredError(
+        peg$maxFailExpected,
+        peg$maxFailPos < input.length ? input.charAt(peg$maxFailPos) : null,
+        peg$maxFailPos < input.length
+          ? peg$computeLocation(peg$maxFailPos, peg$maxFailPos + 1)
+          : peg$computeLocation(peg$maxFailPos, peg$maxFailPos)
+      );
+    }
+  }
+
+  root.ProtolangParser = {
+    SyntaxError: peg$SyntaxError,
+    parse:       peg$parse
+  };
+})(globalThis);
+// @code.start: LswProtolangEditor API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswProtolangEditor API » LswProtolangEditor component
+Vue.component("LswProtolangEditor", {
+  template: `<div class="lsw_protolang_editor">
+    <div class="pad_1">
+        <div class="flex_row">
+            <div class="flex_100"></div>
+            <div class="flex_1 pad_right_1">
+                <button class="danger_button" v-on:click="validateCode">✅</button>
+            </div>
+            <div class="flex_1">
+                <button class="danger_button" v-on:click="evaluateCode">⚡️</button>
+            </div>
+        </div>
+        <div class="pad_top_1">
+            <textarea class="nowrap" v-model="contents" :placeholder="placeholder" style="height: 380px;" spellcheck="false" />
+        </div>
+        <template v-if="error">
+            <lsw-error-viewer :error="error" :on-clear-error="() => error = false" />
+        </template>
+        <pre v-if="result" style="font-size:10px;">{{ result }}</pre>
+    </div>
+</div>`,
+  props: {
+    initialContents: {
+      type: String,
+      default: () => ""
+    }
+  },
+  data() {
+    this.$trace("lsw-protolang-editor.data");
+    return {
+      error: false,
+      result: false,
+      contents: this.initialContents,
+      placeholder: `rel correr
+  > cardio * 1
+  > musculación * 0.3
+  >> propagador de correr * []`
+    };
+  },
+  methods: {
+    setError(error) {
+      this.$trace("lsw-protolang-editor.methods.setError");
+      this.error = error;
+    },
+    setResult(result) {
+      this.$trace("lsw-protolang-editor.methods.setResult");
+      this.result = result;
+    },
+    async validateCode() {
+      this.$trace("lsw-protolang-editor.methods.validateCode");
+      try {
+        const value = this.contents;
+        const js = await Protolang.codify(value);
+        console.log(js);
+        this.setError(false);
+        this.setResult(js);
+      } catch (error) {
+        this.setError(error);
+      }
+    },
+    async evaluateCode() {
+      this.$trace("lsw-protolang-editor.methods.evaluateCode");
+      try {
+        const value = this.contents;
+        const js = await Protolang.codify(value);
+        console.log(js);
+        this.setError(false);
+      } catch (error) {
+        this.setError(error);
+      }
+    },
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-protolang-editor.mounted");
+      this.$window.protolangEditor = this;
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswProtolangEditor API
+// @code.start: LswSpontaneousFormAccion API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormAccion API » LswSpontaneousFormAccion component
+Vue.component("LswSpontaneousFormAccion", {
+  template: `<div class="lsw_spontaneos_form_accion">
+    Form of accion
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-form-accion.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-form-accion.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousFormAccion API
+// @code.start: LswSpontaneousFormArticulo API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormArticulo API » LswSpontaneousFormAccion component
+Vue.component("LswSpontaneousFormArticulo", {
+  template: `<div class="lsw_spontaneos_form_nota pad_1">
+    <h4 class="margin_bottom_1px">🔬 Añadir artículo:</h4>
+    <div class="flex_row">
+        <div class="flex_100">
+            <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
+            <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de artículo" v-model="tiene_titulo" />
+            <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de artículo." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido"></textarea>
+            <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias"></textarea>
+            <textarea class="width_100 margin_bottom_0 margin_top_1" placeholder="tag 1; tag 2; tag 3;" v-model="tiene_tags"></textarea>
+            <div class="flex_row centered">
+                <div class="flex_1">
+                    Garantía: 
+                </div>
+                <div class="flex_100">
+                    <select class="width_100 margin_bottom_1 margin_top_1" v-model="tiene_garantia">
+                        <option v-for="valor, clave in opcionesGarantia" value="valor">{{ clave }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="mini" style="height: 100%; min-width: 30px;" v-on:click="addArticulo">➕</button>
+        </div>
+    </div>
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-form-articulo.data");
+    return {
+      ...this.getInitialContents(),
+      opcionesGarantia: {
+        "ns/nc": "ns/nc",
+        "muy inestable": "muy inestable",
+        "inestable": "inestable",
+        "estable": "estable",
+        "muy estable": "muy estable",
+        "popular": "popular",
+      }
+    };
+  },
+  methods: {
+    getInitialContents() {
+      return Object.assign({}, {
+        tiene_titulo: "",
+        tiene_contenido: "",
+        tiene_categorias: "",
+        tiene_garantia: "ns/ns",
+        tiene_fecha: LswTimer.utils.fromDateToDatestring(new Date()),
+        tiene_tags: "",
+      });
+    },
+    async addArticulo() {
+      this.$trace("lsw-spontaneous-form-articulo.methods.addArticulo");
+      try {
+      await this.$lsw.database.insert("Articulo", {
+        tiene_titulo: this.tiene_titulo,
+        tiene_contenido: this.tiene_contenido,
+        tiene_categorias: this.tiene_categorias,
+        tiene_garantia: this.tiene_garantia,
+        tiene_fecha: this.tiene_fecha,
+        tiene_tags: this.tiene_tags,
+      });
+      this.$lsw.toasts.send({
+        title: "Artículo insertado",
+        message: "El artículo fue insertado con éxito."
+      });
+      Object.assign(this, this.getInitialContents());
+    } catch (error) {
+      console.log(error);
+      this.$lsw.toasts.send({
+        title: "Error al insertar artículo",
+        message: "Hubo errores al insertar el artículo: " + error.message
+      });
+    }
+    }
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-form-articulo.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousFormArticulo API
+// @code.start: LswSpontaneousFormLista API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormLista API » LswSpontaneousFormAccion component
+Vue.component("LswSpontaneousFormLista", {
+  template: `<div class="lsw_spontaneos_form_lista">
+    Form of lista
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-form-lista.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-form-lista.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousFormLista API
+// @code.start: LswSpontaneousFormNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormNota API » LswSpontaneousFormAccion component
+Vue.component("LswSpontaneousFormNota", {
+  template: `<div class="lsw_spontaneos_form_nota pad_1">
+    <h4 class="margin_bottom_1px">📒 Añadir nota:</h4>
+    <div class="flex_row">
+        <div class="flex_100">
+            <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
+            <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de nota" v-model="tiene_titulo" />
+            <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de nota." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido"></textarea>
+            <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias"></textarea>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="mini" style="height: 100%; min-width: 30px;" v-on:click="addNota">🟢</button>
+        </div>
+    </div>
+</div>`,
+  props: {
+    onSubmitted: {
+      type: Function,
+      default: () => {}
+    }
+  },
+  data() {
+    this.$trace("lsw-spontaneous-form-nota.data");
+    return this.getInitialData({
+
+    });
+  },
+  methods: {
+    getInitialData(extendedWith = {}) {
+      return Object.assign({
+        tiene_titulo: "",
+        tiene_contenido: "",
+        tiene_fecha: LswTimer.utils.fromDateToDatestring(new Date()),
+        tiene_categorias: "",
+      }, extendedWith);
+    },
+    async addNota() {
+      this.$trace("lsw-spontaneous-form-nota.methods.addNota");
+      const nota = {
+        tiene_titulo: this.tiene_titulo,
+        tiene_contenido: this.tiene_contenido,
+        tiene_fecha: this.tiene_fecha,
+        tiene_categorias: this.tiene_categorias,
+      };
+      if(nota.tiene_titulo.trim() === "") {
+        const superaLimite = nota.tiene_contenido.length > 30;
+        nota.tiene_titulo = nota.tiene_contenido.substr(0,30) + (superaLimite ? "..." : "");
+      }
+      const notaId = await this.$lsw.database.insert("Nota", nota);
+      Object.assign(this, this.getInitialData());
+      this.$forceUpdate(true);
+      this.focusContenidos();
+      if(this.onSubmitted) {
+        this.onSubmitted(notaId, nota, this);
+      }
+    },
+    focusContenidos() {
+      this.$trace("lsw-spontaneous-form-nota.methods.addNota");
+      // this.$refs.tiene_contenido.focus();
+    }
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-form-nota.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousFormNota API
+// @code.start: LswSpontaneousFormRecordatorio API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormRecordatorio API » LswSpontaneousFormAccion component
+Vue.component("LswSpontaneousFormRecordatorio", {
+  template: `<div class="lsw_spontaneos_form_recordatorio">
+    Form of recordatorio
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-form-recordatorio.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-form-recordatorio.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousFormRecordatorio API
+// @code.start: LswSpontaneousTableAccion API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableAccion API » LswSpontaneousTableAccion component
+Vue.component("LswSpontaneousTableAccion", {
+  template: `<div class="lsw_spontaneos_table_accion">
+    Table of accion
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-table-accion.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-table-accion.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousTableAccion API
+// @code.start: LswSpontaneousTableArticulo API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableArticulo API » LswSpontaneousTableArticulo component
+Vue.component("LswSpontaneousTableArticulo", {
+  template: `<div class="lsw_spontaneos_table_articulo">
+    Table of articulo
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-table-articulo.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-table-articulo.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousTableArticulo API
+// @code.start: LswSpontaneousTableLista API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableLista API » LswSpontaneousTableLista component
+Vue.component("LswSpontaneousTableLista", {
+  template: `<div class="lsw_spontaneos_table_lista">
+    Table of lista
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-table-lista.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-table-lista.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousTableLista API
+// @code.start: LswSpontaneousTableNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableNota API » LswSpontaneousTableNota component
+Vue.component("LswSpontaneousTableNota", {
+  template: `<div class="lsw_spontaneos_table_nota">
+    <div class="flex_row centered">
+        <div class="flex_100">
+            <h4>📒 Últimas notas:</h4>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="goToAddNota">➕</button>
+        </div>
+    </div>
+    <div class="pad_top_1">
+        <div class="flex_row centered">
+            <div class="flex_1">
+                <button class="supermini"
+                    v-on:click="goToFirstPage">⏪</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="goToPreviousPage">⬅️</button>
+            </div>
+            <div class="flex_100 text_align_center">
+                <span>
+                    {{ currentPage+1 }}/{{ totalPages }}
+                </span>
+                <button class="supermini"
+                    v-on:click="loadNotes">🛜</button>
+            </div>
+            <div class="flex_1">
+                <button class="supermini"
+                    v-on:click="goToNextPage">➡️</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="goToLastPage">⏩</button>
+            </div>
+        </div>
+        <div v-if="currentNotas && currentNotas.length"
+            class="pad_bottom_0">
+            <div class="pad_top_1"
+                v-for="nota, notaIndex in currentNotas"
+                v-bind:key="'nota-' + notaIndex">
+                <button class="supermini nota_button width_100 text_align_left"
+                    v-on:click="toggleNota(nota.id)"
+                    :class="{activated: selectedNotas.indexOf(nota.id) !== -1}">
+                    <div class="flex_row">
+                        <div class="flex_1 smallest_font">#{{ nota.id }}</div>
+                        <div class="flex_100 shortable_text nota_title_text pad_left_1 pad_right_1"
+                            style="font-size: 11px;">{{ nota.tiene_titulo }}</div>
+                        <div class="flex_1"
+                            v-if="nota.tiene_estado">
+                            <div class="celda_de_estado_de_nota smallest_font"
+                                :class="'estado_' + nota.tiene_estado">{{
+                                nota.tiene_estado.substr(0,3).toUpperCase() }}
+                            </div>
+                        </div>
+                        <div class="flex_1 pad_left_1 pad_right_1 smallest_font">| {{ nota.tiene_fecha }} |</div>
+                        <div class="flex_1 smallest_font text_align_right"
+                            style="min-width: 20px;">{{ nota.tiene_contenido?.length }}B</div>
+                    </div>
+                </button>
+                <div class="pad_top_1"
+                    v-if="selectedNotas.indexOf(nota.id) !== -1">
+                    <div class="position_relative">
+                        <div class="texto_markdown"
+                            v-html="\$window.marked.parse(nota.tiene_contenido)"
+                            style="font-size: 11px;"></div>
+                        <div class="position_absolute top_0 right_0 pad_right_1 pad_top_1">
+                            <div class="flex_row centered">
+                                <button class="supermini margin_right_1"
+                                    v-on:click="() => sendNotaToArticulos(nota)"> 🔬➡️ </button>
+                                <button class="supermini margin_right_1"
+                                    v-on:click="() => goToDeleteNota(nota)">❌</button>
+                                <button class="supermini"
+                                    v-on:click="() => goToEditNota(nota.id)">✏️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex_row centered pad_top_1">
+                <div class="flex_1">
+                    <button class="supermini"
+                        v-on:click="goToFirstPage">⏪</button>
+                </div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini"
+                        v-on:click="goToPreviousPage">⬅️</button>
+                </div>
+                <div class="flex_100 text_align_center">
+                    <span>
+                        {{ currentPage+1 }}/{{ totalPages }}
+                    </span>
+                    <button class="supermini"
+                        v-on:click="loadNotes">🛜</button>
+
+                </div>
+                <div class="flex_1">
+                    <button class="supermini"
+                        v-on:click="goToNextPage">➡️</button>
+                </div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini"
+                        v-on:click="goToLastPage">⏩</button>
+                </div>
+            </div>
+        </div>
+        <div class="pad_top_1"
+            v-else-if="currentNotas === false">
+            <div>Cargando notas. Un momento, por favor...</div>
+        </div>
+        <div class="pad_top_1"
+            v-else>
+            <div>No se encontraron notas.</div>
+        </div>
+    </div>
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-table-nota.data");
+    return {
+      allNotas: false,
+      currentNotas: false,
+      currentPage: 0,
+      totalPages: 0,
+      currentItemsPerPage: 100,
+      selectedNotas: [],
+    };
+  },
+  methods: {
+    toggleNota(notaId) {
+      this.$trace("lsw-spontaneous-table-nota.methods.toggleNota");
+      const pos = this.selectedNotas.indexOf(notaId);
+      if (pos === -1) {
+        this.selectedNotas.push(notaId);
+      } else {
+        this.selectedNotas.splice(pos, 1);
+      }
+    },
+    goToNextPage() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToNextPage");
+      if ((this.currentPage + 1) < this.totalPages) {
+        this.currentPage++;
+        this.synchronizePagination();
+      }
+    },
+    goToFirstPage() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToFirstPage");
+      this.currentPage = 0;
+      this.synchronizePagination();
+    },
+    goToLastPage() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToLastPage");
+      this.currentPage = (this.totalPages - 1);
+      this.synchronizePagination();
+    },
+    goToPreviousPage() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToPreviousPage");
+      if (this.currentPage > 0) {
+        this.currentPage--;
+        this.synchronizePagination();
+      }
+    },
+    async loadNotes() {
+      this.$trace("lsw-spontaneous-table-nota.methods.loadNotes");
+      const allNotas = await this.$lsw.database.selectMany("Nota");
+      const sortedNotas = allNotas.sort((n1, n2) => {
+        Ordena_por_urgencia: {
+          const estado1 = n1.tiene_estado;
+          const estado2 = n2.tiene_estado;
+          const urgencia1 = estado1 === "urgente" ? 100 : 1;
+          const urgencia2 = estado2 === "urgente" ? 100 : 1;
+          if (urgencia1 > urgencia2) {
+            return -1;
+          } else if (urgencia1 < urgencia2) {
+            return 1;
+          }
+        }
+        Ordena_por_fecha: {
+          const fecha1 = LswTimer.utils.fromDatestringToDate(n1.tiene_fecha);
+          const fecha2 = LswTimer.utils.fromDatestringToDate(n2.tiene_fecha);
+          if (fecha1 > fecha2) {
+            return -1;
+          } else if (fecha1 < fecha2) {
+            return 1;
+          } else {
+            return -1;
+          }
+        }
+      });
+      this.allNotas = sortedNotas;
+      this.synchronizePagination();
+    },
+    synchronizePagination() {
+      this.$trace("lsw-spontaneous-table-nota.methods.synchronizePagination");
+      this.totalPages = (() => {
+        const totalFullPages = Math.floor(this.allNotas.length / this.currentItemsPerPage);
+        const totalResidualPages = this.allNotas.length % this.currentItemsPerPage ? 1 : 0;
+        return totalFullPages + totalResidualPages;
+      })();
+      this.currentNotas = (() => {
+        const paginatedNotas = [];
+        const minIndex = this.currentPage * this.currentItemsPerPage;
+        const maxIndex = (this.currentPage + 1) * this.currentItemsPerPage;
+        for (let index = 0; index < this.allNotas.length; index++) {
+          const nota = this.allNotas[index];
+          const validByMin = index >= minIndex;
+          const validByMax = index < maxIndex;
+          const isValid = validByMin && validByMax;
+          if (isValid) {
+            paginatedNotas.push(nota);
+          }
+        }
+        return paginatedNotas;
+      })();
+    },
+    async goToDeleteNota(row) {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToDeleteNota");
+      const confirmed = await this.$lsw.dialogs.open({
+        id: `eliminar-registro-Nota-#${row.id}-${LswRandomizer.getRandomString(5)}`,
+        title: "Eliminar registro",
+        template: `
+          <div>
+            <div class="pad_2 font_weight_bold">ATENCIÓN: </div>
+            <div class="pad_2">¿Seguro que quieres eliminar el registro <b>{{ tableId }}</b> cuyo <b>id</b>#<b>{{ rowId }}</b>?</div>
+            <div class="pad_2">
+              <pre class="pad_2 codeblock">{{ JSON.stringify(rowValue, null, 2) }}</pre>
+            </div>
+            <hr class="margin_0" />
+            <div class="pad_2 text_align_right">
+              <button class="supermini danger_button" v-on:click="() => accept(true)">Eliminar</button>
+              <button class="supermini " v-on:click="() => accept(false)">Cancelar</button>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            tableId: "Nota",
+            rowValue: row,
+            rowId: row.id
+          }
+        }
+      });
+      if (!confirmed) return false;
+      await this.$lsw.database.delete("Nota", row.id);
+      this.$lsw.toasts.send({
+        title: `Registro eliminado`,
+        text: `El registro #${this.notaId} de «Nota» fue eliminado correctamente.`
+      });
+      this.loadNotes();
+    },
+    async goToEditNota(notaId) {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToEditNota");
+      await this.$lsw.dialogs.open({
+        title: "Actualizar nota",
+        template: `
+          <div>
+            <lsw-schema-based-form
+              :on-submit="(value) => submitCallback(value)"
+              :on-delete-row="deleteCallback"
+              :model="{
+                  connection: $lsw.database,
+                  databaseId: 'lsw_default_database',
+                  tableId: 'Nota',
+                  rowId: notaId,
+              }"
+            />
+          </div>
+        `,
+        factory: {
+          methods: {
+            async submitCallback(value) {
+              console.log("Submiting form: ", value);
+              await this.$lsw.database.update("Nota", notaId, value);
+              this.$lsw.toasts.send({
+                title: `Nueva actualización`,
+                text: `El registro #${this.notaId} de «Nota» fue actualizado correctamente.`
+              });
+              this.close();
+            },
+            async deleteCallback() {
+              // EL DELETE YA LO HACE DENTRO, POR ALGUNA RAZÓN, NO ME ACABES DE PREGUNTAR.
+              this.close();
+            }
+          },
+          data: {
+            notaId,
+          }
+        }
+      });
+    },
+    goToAddNota() {
+      this.$trace("lsw-spontaneous-table-nota.methods.goToEditNota");
+      const that = this;
+      this.$lsw.dialogs.open({
+        title: "Añadir nota",
+        template: `<lsw-spontaneous-form-nota :on-submitted="closeAndRefresh" />`,
+        factory: {
+          methods: {
+            closeAndRefresh() {
+              this.close();
+              that.loadNotes();
+            }
+          }
+        }
+      });
+    },
+    async sendNotaToArticulos(nota) {
+      this.$trace("lsw-spontaneous-table-nota.methods.sendNotaToArticulos");
+      const respuesta = await this.$lsw.dialogs.open({
+        title: "Pasar nota a artículo",
+        template: `
+          <div class="pad_1">
+            <div>Vas a pasar la siguiente nota a artículo: </div>
+            <div class="pad_2">
+              <pre class="codeblock">{{ nota }}</pre>
+            </div>
+            <div>¿Estás seguro?</div>
+            <hr/>
+            <div class="flex_row centered text_align_right">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_right_1">
+                <button class="supermini danger_button" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: { data: { nota } },
+      });
+      if(respuesta === -1) return;
+      const articuloNew = Object.assign({
+        tiene_titulo: '',
+        tiene_fecha: '',
+        tiene_categorias: '',
+        tiene_contenido: '',
+        tiene_garantia: '',
+        tiene_tags: '',
+      }, nota);
+      delete articuloNew.id;
+      await this.$lsw.database.insert("Articulo", articuloNew);
+      await this.$lsw.database.delete("Nota", nota.id);
+      this.$lsw.toasts.send({
+        title: "Nota a artículo bien",
+        text: "La nota ha sido pasada a artículo correctamente",
+      });
+      this.loadNotes();
+    }
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-table-nota.mounted");
+      this.loadNotes();
+      this.$window.sptt_notas = this;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousTableNota API
+// @code.start: LswSpontaneousTableRecordatorio API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableRecordatorio API » LswSpontaneousTableRecordatorio component
+Vue.component("LswSpontaneousTableRecordatorio", {
+  template: `<div class="lsw_spontaneos_table_recordatorio">
+    Table of recordatorio
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-spontaneous-table-recordatorio.data");
+    return {};
+  },
+  methods: {},
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-spontaneous-table-recordatorio.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSpontaneousTableRecordatorio API
+// @code.start: LswFastDateControl API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswFastDateControl API » LswFastDateControl component
+Vue.component("LswFastDatetimeControl", {
+  template: `<div class="lsw_fast_datetime_control">
+    <div class="flex_row">
+        <div class="flex_1">
+            <button :class="{activated: isEditable}" v-on:click="toggleEditable">📅</button>
+        </div>
+        <div class="flex_100 pad_left_1">
+            <input class="width_100" type="text" v-model="value" />
+        </div>
+    </div>
+    <div class="" v-if="isEditable">
+        <lsw-calendario
+            :modo="mode"
+            :valor-inicial="value"
+            :al-cambiar-valor="setValue"
+        />
+    </div>
+</div>`,
+  props: {
+    mode: {
+      type: String,
+      default: () => "datetime", // can also be: "date"
+    },
+    initialValue: {
+      type: [Date, String],
+      default: null,
+    },
+    onChangeDate: {
+      type: Function,
+      default: () => {}
+    }
+  },
+  data() {
+    this.$trace("lsw-fast-datetime-control.data");
+    return {
+      value: this.adaptDate(this.initialValue || new Date()),
+      isEditable: false,
+    };
+  },
+  methods: {
+    adaptDate(dateInput) {
+      this.$trace("lsw-fast-date-control.methods.adaptDate");
+      if(dateInput instanceof Date) {
+        return LswTimer.utils.fromDateToDatestring(dateInput, this.mode === "date");
+      }
+      return dateInput;
+    },
+    getValue() {
+      this.$trace("lsw-fast-date-control.methods.getValue");
+      return this.value;
+    },
+    toggleEditable() {
+      this.$trace("lsw-fast-datetime-control.methods.toggleEditable");
+      this.isEditable = !this.isEditable;
+    },
+    showEditable() {
+      this.$trace("lsw-fast-datetime-control.methods.showEditable");
+      this.isEditable = true;
+    },
+    hideEditable() {
+      this.$trace("lsw-fast-datetime-control.methods.hideEditable");
+      this.isEditable = false;
+    },
+    setValue(v) {
+      this.$trace("lsw-fast-datetime-control.methods.propagateValue");
+      this.value = this.adaptDate(v);
+      this.onChangeDate(this.value, this);
+      this.hideEditable();
+    }
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-fast-datetime-control.mounted");
+      // 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswFastDateControl API
+/*
+ * Generated by PEG.js 0.10.0.
+ *
+ * http://pegjs.org/
+ */
+(function(root) {
+  "use strict";
+
+  function peg$subclass(child, parent) {
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor();
+  }
+
+  function peg$SyntaxError(message, expected, found, location) {
+    this.message  = message;
+    this.expected = expected;
+    this.found    = found;
+    this.location = location;
+    this.name     = "SyntaxError";
+
+    if (typeof Error.captureStackTrace === "function") {
+      Error.captureStackTrace(this, peg$SyntaxError);
+    }
+  }
+
+  peg$subclass(peg$SyntaxError, Error);
+
+  peg$SyntaxError.buildMessage = function(expected, found) {
+    var DESCRIBE_EXPECTATION_FNS = {
+          literal: function(expectation) {
+            return "\"" + literalEscape(expectation.text) + "\"";
+          },
+
+          "class": function(expectation) {
+            var escapedParts = "",
+                i;
+
+            for (i = 0; i < expectation.parts.length; i++) {
+              escapedParts += expectation.parts[i] instanceof Array
+                ? classEscape(expectation.parts[i][0]) + "-" + classEscape(expectation.parts[i][1])
+                : classEscape(expectation.parts[i]);
+            }
+
+            return "[" + (expectation.inverted ? "^" : "") + escapedParts + "]";
+          },
+
+          any: function(expectation) {
+            return "any character";
+          },
+
+          end: function(expectation) {
+            return "end of input";
+          },
+
+          other: function(expectation) {
+            return expectation.description;
+          }
+        };
+
+    function hex(ch) {
+      return ch.charCodeAt(0).toString(16).toUpperCase();
+    }
+
+    function literalEscape(s) {
+      return s
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g,  '\\"')
+        .replace(/\0/g, '\\0')
+        .replace(/\t/g, '\\t')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/[\x00-\x0F]/g,          function(ch) { return '\\x0' + hex(ch); })
+        .replace(/[\x10-\x1F\x7F-\x9F]/g, function(ch) { return '\\x'  + hex(ch); });
+    }
+
+    function classEscape(s) {
+      return s
+        .replace(/\\/g, '\\\\')
+        .replace(/\]/g, '\\]')
+        .replace(/\^/g, '\\^')
+        .replace(/-/g,  '\\-')
+        .replace(/\0/g, '\\0')
+        .replace(/\t/g, '\\t')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/[\x00-\x0F]/g,          function(ch) { return '\\x0' + hex(ch); })
+        .replace(/[\x10-\x1F\x7F-\x9F]/g, function(ch) { return '\\x'  + hex(ch); });
+    }
+
+    function describeExpectation(expectation) {
+      return DESCRIBE_EXPECTATION_FNS[expectation.type](expectation);
+    }
+
+    function describeExpected(expected) {
+      var descriptions = new Array(expected.length),
+          i, j;
+
+      for (i = 0; i < expected.length; i++) {
+        descriptions[i] = describeExpectation(expected[i]);
+      }
+
+      descriptions.sort();
+
+      if (descriptions.length > 0) {
+        for (i = 1, j = 1; i < descriptions.length; i++) {
+          if (descriptions[i - 1] !== descriptions[i]) {
+            descriptions[j] = descriptions[i];
+            j++;
+          }
+        }
+        descriptions.length = j;
+      }
+
+      switch (descriptions.length) {
+        case 1:
+          return descriptions[0];
+
+        case 2:
+          return descriptions[0] + " or " + descriptions[1];
+
+        default:
+          return descriptions.slice(0, -1).join(", ")
+            + ", or "
+            + descriptions[descriptions.length - 1];
+      }
+    }
+
+    function describeFound(found) {
+      return found ? "\"" + literalEscape(found) + "\"" : "end of input";
+    }
+
+    return "Expected " + describeExpected(expected) + " but " + describeFound(found) + " found.";
+  };
+
+  function peg$parse(input, options) {
+    options = options !== void 0 ? options : {};
+
+    var peg$FAILED = {},
+
+        peg$startRuleFunctions = { WeekLang: peg$parseWeekLang },
+        peg$startRuleFunction  = peg$parseWeekLang,
+
+        peg$c0 = function(ast) { return flatScript(ast) },
+        peg$c1 = function(range, rules) { return flatSentence({ range: range || { from: "*", to: "*" }, rules }) },
+        peg$c2 = "-",
+        peg$c3 = peg$literalExpectation("-", false),
+        peg$c4 = ":",
+        peg$c5 = peg$literalExpectation(":", false),
+        peg$c6 = function(token0, dateSrc, token1, dateDst, token2) { return { from: dateSrc, to: dateDst } },
+        peg$c7 = "*",
+        peg$c8 = peg$literalExpectation("*", false),
+        peg$c9 = "/",
+        peg$c10 = peg$literalExpectation("/", false),
+        peg$c11 = function() { return text() },
+        peg$c12 = /^[0-9]/,
+        peg$c13 = peg$classExpectation([["0", "9"]], false, false),
+        peg$c14 = function(rules) { return rules.flat() },
+        peg$c15 = "{",
+        peg$c16 = peg$literalExpectation("{", false),
+        peg$c17 = "}",
+        peg$c18 = peg$literalExpectation("}", false),
+        peg$c19 = function(token1, frequency, token2, rules, token3) { return flatRules(frequency, rules) },
+        peg$c20 = "lun",
+        peg$c21 = peg$literalExpectation("lun", false),
+        peg$c22 = "mar",
+        peg$c23 = peg$literalExpectation("mar", false),
+        peg$c24 = "mie",
+        peg$c25 = peg$literalExpectation("mie", false),
+        peg$c26 = "jue",
+        peg$c27 = peg$literalExpectation("jue", false),
+        peg$c28 = "vie",
+        peg$c29 = peg$literalExpectation("vie", false),
+        peg$c30 = "sab",
+        peg$c31 = peg$literalExpectation("sab", false),
+        peg$c32 = "dom",
+        peg$c33 = peg$literalExpectation("dom", false),
+        peg$c34 = function(frequency) { return frequency },
+        peg$c35 = "set",
+        peg$c36 = peg$literalExpectation("set", false),
+        peg$c37 = "=",
+        peg$c38 = peg$literalExpectation("=", false),
+        peg$c39 = function(token1, moment, duration, token2, concept) { return { type: "SET", concept, duration, ...moment } },
+        peg$c40 = function(token1, duration) { return duration },
+        peg$c41 = function(token1, hour, minute) { return { hour, minute: minute ? minute[1] : "00" } },
+        peg$c42 = "req",
+        peg$c43 = peg$literalExpectation("req", false),
+        peg$c44 = function(token1, tokens) { return tokens },
+        peg$c45 = function(concept, limit, urgency) { return { type: "REQ", concept, ...limit, urgency: urgency || 0 } },
+        peg$c46 = ">",
+        peg$c47 = peg$literalExpectation(">", false),
+        peg$c48 = "<",
+        peg$c49 = peg$literalExpectation("<", false),
+        peg$c50 = function(limit, value) { return { limit, value: value.trim().trim(), condition: text().trim() } },
+        peg$c51 = "!",
+        peg$c52 = peg$literalExpectation("!", false),
+        peg$c53 = function(op, value) { return value.trim() },
+        peg$c54 = function() { return text().trim() },
+        peg$c55 = "|",
+        peg$c56 = peg$literalExpectation("|", false),
+        peg$c57 = function() { return text().substr(1).trim() },
+        peg$c58 = peg$anyExpectation(),
+        peg$c59 = "*/",
+        peg$c60 = peg$literalExpectation("*/", false),
+        peg$c61 = " ",
+        peg$c62 = peg$literalExpectation(" ", false),
+        peg$c63 = "\t",
+        peg$c64 = peg$literalExpectation("\t", false),
+        peg$c65 = "\r\n",
+        peg$c66 = peg$literalExpectation("\r\n", false),
+        peg$c67 = "\r",
+        peg$c68 = peg$literalExpectation("\r", false),
+        peg$c69 = "\n",
+        peg$c70 = peg$literalExpectation("\n", false),
+        peg$c71 = "//",
+        peg$c72 = peg$literalExpectation("//", false),
+        peg$c73 = "/*",
+        peg$c74 = peg$literalExpectation("/*", false),
+
+        peg$currPos          = 0,
+        peg$savedPos         = 0,
+        peg$posDetailsCache  = [{ line: 1, column: 1 }],
+        peg$maxFailPos       = 0,
+        peg$maxFailExpected  = [],
+        peg$silentFails      = 0,
+
+        peg$result;
+
+    if ("startRule" in options) {
+      if (!(options.startRule in peg$startRuleFunctions)) {
+        throw new Error("Can't start parsing from rule \"" + options.startRule + "\".");
+      }
+
+      peg$startRuleFunction = peg$startRuleFunctions[options.startRule];
+    }
+
+    function text() {
+      return input.substring(peg$savedPos, peg$currPos);
+    }
+
+    function location() {
+      return peg$computeLocation(peg$savedPos, peg$currPos);
+    }
+
+    function expected(description, location) {
+      location = location !== void 0 ? location : peg$computeLocation(peg$savedPos, peg$currPos)
+
+      throw peg$buildStructuredError(
+        [peg$otherExpectation(description)],
+        input.substring(peg$savedPos, peg$currPos),
+        location
+      );
+    }
+
+    function error(message, location) {
+      location = location !== void 0 ? location : peg$computeLocation(peg$savedPos, peg$currPos)
+
+      throw peg$buildSimpleError(message, location);
+    }
+
+    function peg$literalExpectation(text, ignoreCase) {
+      return { type: "literal", text: text, ignoreCase: ignoreCase };
+    }
+
+    function peg$classExpectation(parts, inverted, ignoreCase) {
+      return { type: "class", parts: parts, inverted: inverted, ignoreCase: ignoreCase };
+    }
+
+    function peg$anyExpectation() {
+      return { type: "any" };
+    }
+
+    function peg$endExpectation() {
+      return { type: "end" };
+    }
+
+    function peg$otherExpectation(description) {
+      return { type: "other", description: description };
+    }
+
+    function peg$computePosDetails(pos) {
+      var details = peg$posDetailsCache[pos], p;
+
+      if (details) {
+        return details;
+      } else {
+        p = pos - 1;
+        while (!peg$posDetailsCache[p]) {
+          p--;
+        }
+
+        details = peg$posDetailsCache[p];
+        details = {
+          line:   details.line,
+          column: details.column
+        };
+
+        while (p < pos) {
+          if (input.charCodeAt(p) === 10) {
+            details.line++;
+            details.column = 1;
+          } else {
+            details.column++;
+          }
+
+          p++;
+        }
+
+        peg$posDetailsCache[pos] = details;
+        return details;
+      }
+    }
+
+    function peg$computeLocation(startPos, endPos) {
+      var startPosDetails = peg$computePosDetails(startPos),
+          endPosDetails   = peg$computePosDetails(endPos);
+
+      return {
+        start: {
+          offset: startPos,
+          line:   startPosDetails.line,
+          column: startPosDetails.column
+        },
+        end: {
+          offset: endPos,
+          line:   endPosDetails.line,
+          column: endPosDetails.column
+        }
+      };
+    }
+
+    function peg$fail(expected) {
+      if (peg$currPos < peg$maxFailPos) { return; }
+
+      if (peg$currPos > peg$maxFailPos) {
+        peg$maxFailPos = peg$currPos;
+        peg$maxFailExpected = [];
+      }
+
+      peg$maxFailExpected.push(expected);
+    }
+
+    function peg$buildSimpleError(message, location) {
+      return new peg$SyntaxError(message, null, null, location);
+    }
+
+    function peg$buildStructuredError(expected, found, location) {
+      return new peg$SyntaxError(
+        peg$SyntaxError.buildMessage(expected, found),
+        expected,
+        found,
+        location
+      );
+    }
+
+    function peg$parseWeekLang() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseanyspace();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parseSentence();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseSentence();
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseanyspace();
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c0(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseSentence() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parseDate_header();
+      if (s1 === peg$FAILED) {
+        s1 = null;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseRules_block();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c1(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseDate_header() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$parse_();
+      while (s2 !== peg$FAILED) {
+        s1.push(s2);
+        s2 = peg$parse_();
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseFull_date_till_day_or_asterisk();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$currPos;
+          s4 = peg$parseanyspace();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 45) {
+              s5 = peg$c2;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c3); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parseanyspace();
+              if (s6 !== peg$FAILED) {
+                s4 = [s4, s5, s6];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseFull_date_till_day_or_asterisk();
+            if (s4 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 58) {
+                s5 = peg$c4;
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c5); }
+              }
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c6(s1, s2, s3, s4, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseFull_date_till_day_or_asterisk() {
+      var s0;
+
+      s0 = peg$parseFull_date_till_day();
+      if (s0 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 42) {
+          s0 = peg$c7;
+          peg$currPos++;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c8); }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseFull_date_till_day() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseYear();
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 47) {
+          s2 = peg$c9;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c10); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMonth();
+          if (s3 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 47) {
+              s4 = peg$c9;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c10); }
+            }
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseDay();
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c11();
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseYear() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      if (peg$c12.test(input.charAt(peg$currPos))) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c13); }
+      }
+      if (s1 !== peg$FAILED) {
+        if (peg$c12.test(input.charAt(peg$currPos))) {
+          s2 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c13); }
+        }
+        if (s2 !== peg$FAILED) {
+          if (peg$c12.test(input.charAt(peg$currPos))) {
+            s3 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c13); }
+          }
+          if (s3 !== peg$FAILED) {
+            if (peg$c12.test(input.charAt(peg$currPos))) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c13); }
+            }
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c11();
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseMonth() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (peg$c12.test(input.charAt(peg$currPos))) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c13); }
+      }
+      if (s1 !== peg$FAILED) {
+        if (peg$c12.test(input.charAt(peg$currPos))) {
+          s2 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c13); }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c11();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseDay() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (peg$c12.test(input.charAt(peg$currPos))) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c13); }
+      }
+      if (s1 !== peg$FAILED) {
+        if (peg$c12.test(input.charAt(peg$currPos))) {
+          s2 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c13); }
+        }
+        if (s2 === peg$FAILED) {
+          s2 = null;
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c11();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseRules_block() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$parseFull_rule();
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$parseFull_rule();
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c14(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseFull_rule() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8;
+
+      s0 = peg$currPos;
+      s1 = peg$parseanyspace();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseFrequency_v1();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$currPos;
+          s4 = peg$parseanyspace();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 123) {
+              s5 = peg$c15;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c16); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parseanyspace();
+              if (s6 !== peg$FAILED) {
+                s4 = [s4, s5, s6];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = [];
+            s5 = peg$parseInner_sentence();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseInner_sentence();
+            }
+            if (s4 !== peg$FAILED) {
+              s5 = peg$currPos;
+              s6 = peg$parseanyspace();
+              if (s6 !== peg$FAILED) {
+                if (input.charCodeAt(peg$currPos) === 125) {
+                  s7 = peg$c17;
+                  peg$currPos++;
+                } else {
+                  s7 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c18); }
+                }
+                if (s7 !== peg$FAILED) {
+                  s8 = peg$parseanyspace();
+                  if (s8 !== peg$FAILED) {
+                    s6 = [s6, s7, s8];
+                    s5 = s6;
+                  } else {
+                    peg$currPos = s5;
+                    s5 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s5;
+                  s5 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s5;
+                s5 = peg$FAILED;
+              }
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c19(s1, s2, s3, s4, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseFrequency_v1() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 42) {
+        s1 = peg$c7;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c8); }
+      }
+      if (s1 === peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c20) {
+          s1 = peg$c20;
+          peg$currPos += 3;
+        } else {
+          s1 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c21); }
+        }
+        if (s1 === peg$FAILED) {
+          if (input.substr(peg$currPos, 3) === peg$c22) {
+            s1 = peg$c22;
+            peg$currPos += 3;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c23); }
+          }
+          if (s1 === peg$FAILED) {
+            if (input.substr(peg$currPos, 3) === peg$c24) {
+              s1 = peg$c24;
+              peg$currPos += 3;
+            } else {
+              s1 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c25); }
+            }
+            if (s1 === peg$FAILED) {
+              if (input.substr(peg$currPos, 3) === peg$c26) {
+                s1 = peg$c26;
+                peg$currPos += 3;
+              } else {
+                s1 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c27); }
+              }
+              if (s1 === peg$FAILED) {
+                if (input.substr(peg$currPos, 3) === peg$c28) {
+                  s1 = peg$c28;
+                  peg$currPos += 3;
+                } else {
+                  s1 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c29); }
+                }
+                if (s1 === peg$FAILED) {
+                  if (input.substr(peg$currPos, 3) === peg$c30) {
+                    s1 = peg$c30;
+                    peg$currPos += 3;
+                  } else {
+                    s1 = peg$FAILED;
+                    if (peg$silentFails === 0) { peg$fail(peg$c31); }
+                  }
+                  if (s1 === peg$FAILED) {
+                    if (input.substr(peg$currPos, 3) === peg$c32) {
+                      s1 = peg$c32;
+                      peg$currPos += 3;
+                    } else {
+                      s1 = peg$FAILED;
+                      if (peg$silentFails === 0) { peg$fail(peg$c33); }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c34(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseInner_sentence() {
+      var s0;
+
+      s0 = peg$parseSentence_req();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseSentence_set();
+      }
+
+      return s0;
+    }
+
+    function peg$parseSentence_set() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      s2 = peg$parseanyspace();
+      if (s2 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c35) {
+          s3 = peg$c35;
+          peg$currPos += 3;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c36); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parsespace();
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseFull_hour();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseDuration_del_set();
+          if (s3 === peg$FAILED) {
+            s3 = null;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$currPos;
+            s5 = peg$parseanyspace();
+            if (s5 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 61) {
+                s6 = peg$c37;
+                peg$currPos++;
+              } else {
+                s6 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c38); }
+              }
+              if (s6 !== peg$FAILED) {
+                s7 = peg$parseanyspace();
+                if (s7 !== peg$FAILED) {
+                  s5 = [s5, s6, s7];
+                  s4 = s5;
+                } else {
+                  peg$currPos = s4;
+                  s4 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s4;
+                s4 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s4;
+              s4 = peg$FAILED;
+            }
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseToken_para_el_set();
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c39(s1, s2, s3, s4, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseDuration_del_set() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      s2 = peg$parseanyspace();
+      if (s2 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 42) {
+          s3 = peg$c7;
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c8); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parseanyspace();
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseToken_para_el_duration_del_set();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c40(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseFull_hour() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseanyspace();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseHour();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$currPos;
+          if (input.charCodeAt(peg$currPos) === 58) {
+            s4 = peg$c4;
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c5); }
+          }
+          if (s4 !== peg$FAILED) {
+            s5 = peg$parseMinute();
+            if (s5 !== peg$FAILED) {
+              s4 = [s4, s5];
+              s3 = s4;
+            } else {
+              peg$currPos = s3;
+              s3 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 === peg$FAILED) {
+            s3 = null;
+          }
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c41(s1, s2, s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseHour() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (peg$c12.test(input.charAt(peg$currPos))) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c13); }
+      }
+      if (s1 !== peg$FAILED) {
+        if (peg$c12.test(input.charAt(peg$currPos))) {
+          s2 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c13); }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c11();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseMinute() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (peg$c12.test(input.charAt(peg$currPos))) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c13); }
+      }
+      if (s1 !== peg$FAILED) {
+        if (peg$c12.test(input.charAt(peg$currPos))) {
+          s2 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c13); }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c11();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseSentence_req() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      s2 = peg$parseanyspace();
+      if (s2 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 3) === peg$c42) {
+          s3 = peg$c42;
+          peg$currPos += 3;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c43); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parsespace();
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseLine_of_tokens();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c44(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseLine_of_tokens() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseToken_para_el_req();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseLimite_para_el_req();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseUrgencia_para_el_req();
+          if (s3 === peg$FAILED) {
+            s3 = null;
+          }
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c45(s1, s2, s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseLimite_para_el_req() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 62) {
+        s1 = peg$c46;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c47); }
+      }
+      if (s1 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 60) {
+          s1 = peg$c48;
+          peg$currPos++;
+        } else {
+          s1 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c49); }
+        }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseToken_para_el_req();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c50(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseUrgencia_para_el_req() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 33) {
+        s1 = peg$c51;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c52); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseToken_para_el_req();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c53(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseLine_of_tokens_first() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseToken_para_el_req();
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c54();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseLine_of_tokens_next() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 124) {
+        s1 = peg$c55;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c56); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseToken_para_el_req();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c57();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseToken_para_el_req() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      if (input.charCodeAt(peg$currPos) === 62) {
+        s4 = peg$c46;
+        peg$currPos++;
+      } else {
+        s4 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c47); }
+      }
+      if (s4 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 60) {
+          s4 = peg$c48;
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c49); }
+        }
+        if (s4 === peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 33) {
+            s4 = peg$c51;
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c52); }
+          }
+          if (s4 === peg$FAILED) {
+            s4 = peg$parse___();
+          }
+        }
+      }
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c58); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      while (s2 !== peg$FAILED) {
+        s1.push(s2);
+        s2 = peg$currPos;
+        s3 = peg$currPos;
+        peg$silentFails++;
+        if (input.charCodeAt(peg$currPos) === 62) {
+          s4 = peg$c46;
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c47); }
+        }
+        if (s4 === peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 60) {
+            s4 = peg$c48;
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c49); }
+          }
+          if (s4 === peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 33) {
+              s4 = peg$c51;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c52); }
+            }
+            if (s4 === peg$FAILED) {
+              s4 = peg$parse___();
+            }
+          }
+        }
+        peg$silentFails--;
+        if (s4 === peg$FAILED) {
+          s3 = void 0;
+        } else {
+          peg$currPos = s3;
+          s3 = peg$FAILED;
+        }
+        if (s3 !== peg$FAILED) {
+          if (input.length > peg$currPos) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c58); }
+          }
+          if (s4 !== peg$FAILED) {
+            s3 = [s3, s4];
+            s2 = s3;
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c54();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseToken_para_el_set() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      s4 = peg$parse___();
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c58); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$parse___();
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c58); }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c54();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseToken_para_el_duration_del_set() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      s4 = peg$parse___();
+      if (s4 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 61) {
+          s4 = peg$c37;
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c38); }
+        }
+      }
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c58); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$parse___();
+          if (s4 === peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 61) {
+              s4 = peg$c37;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c38); }
+            }
+          }
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c58); }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c54();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseToken_para_el_comentario() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      s4 = peg$parse___();
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c58); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$parse___();
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c58); }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c54();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseToken_para_el_comentario_multilinea() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      s4 = peg$parse___();
+      if (s4 === peg$FAILED) {
+        if (input.substr(peg$currPos, 2) === peg$c59) {
+          s4 = peg$c59;
+          peg$currPos += 2;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c60); }
+        }
+      }
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = void 0;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$FAILED;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c58); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$parse___();
+          if (s4 === peg$FAILED) {
+            if (input.substr(peg$currPos, 2) === peg$c59) {
+              s4 = peg$c59;
+              peg$currPos += 2;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c60); }
+            }
+          }
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = void 0;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$FAILED;
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c58); }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c54();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseanyspace() {
+      var s0, s1;
+
+      s0 = [];
+      s1 = peg$parse_();
+      while (s1 !== peg$FAILED) {
+        s0.push(s1);
+        s1 = peg$parse_();
+      }
+
+      return s0;
+    }
+
+    function peg$parsespace() {
+      var s0, s1;
+
+      s0 = [];
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        while (s1 !== peg$FAILED) {
+          s0.push(s1);
+          s1 = peg$parse_();
+        }
+      } else {
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseEOS() {
+      var s0;
+
+      s0 = peg$parse___();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseEOF();
+      }
+
+      return s0;
+    }
+
+    function peg$parseEOF() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      peg$silentFails++;
+      if (input.length > peg$currPos) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c58); }
+      }
+      peg$silentFails--;
+      if (s1 === peg$FAILED) {
+        s0 = void 0;
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parse_() {
+      var s0;
+
+      s0 = peg$parse__();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parse___();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parseComment();
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parse__() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 32) {
+        s0 = peg$c61;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c62); }
+      }
+      if (s0 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 9) {
+          s0 = peg$c63;
+          peg$currPos++;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c64); }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parse___() {
+      var s0;
+
+      if (input.substr(peg$currPos, 2) === peg$c65) {
+        s0 = peg$c65;
+        peg$currPos += 2;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c66); }
+      }
+      if (s0 === peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 13) {
+          s0 = peg$c67;
+          peg$currPos++;
+        } else {
+          s0 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c68); }
+        }
+        if (s0 === peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 10) {
+            s0 = peg$c69;
+            peg$currPos++;
+          } else {
+            s0 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c70); }
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseComment() {
+      var s0;
+
+      s0 = peg$parseComment_oneline();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseComment_multiline();
+      }
+
+      return s0;
+    }
+
+    function peg$parseComment_oneline() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 2) === peg$c71) {
+        s1 = peg$c71;
+        peg$currPos += 2;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c72); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseToken_para_el_comentario();
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c11();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseComment_multiline() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 2) === peg$c73) {
+        s1 = peg$c73;
+        peg$currPos += 2;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c74); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseToken_para_el_comentario_multilinea();
+        if (s2 !== peg$FAILED) {
+          if (input.substr(peg$currPos, 2) === peg$c59) {
+            s3 = peg$c59;
+            peg$currPos += 2;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c60); }
+          }
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c11();
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+
+        const flatRules = (fecha, reglas) => {
+            let out = [];
+            for(let index=0; index<reglas.length; index++) {
+              const regla = reglas[index];
+              out.push({
+                weekday: fecha,
+                ...regla,
+              });
+            }
+            return out;
+        };
+        const flatSentence = (sentence) => {
+            const output = [];
+            for(let indexRule=0; indexRule<sentence.rules.length; indexRule++) {
+              const rule = sentence.rules[indexRule];
+              output.push({
+                ...sentence.range,
+                ...rule,
+              });
+            }
+            return output;
+        };
+        const flatScript = function(ast) {
+            return ast.flat();
+        }
+
+
+    peg$result = peg$startRuleFunction();
+
+    if (peg$result !== peg$FAILED && peg$currPos === input.length) {
+      return peg$result;
+    } else {
+      if (peg$result !== peg$FAILED && peg$currPos < input.length) {
+        peg$fail(peg$endExpectation());
+      }
+
+      throw peg$buildStructuredError(
+        peg$maxFailExpected,
+        peg$maxFailPos < input.length ? input.charAt(peg$maxFailPos) : null,
+        peg$maxFailPos < input.length
+          ? peg$computeLocation(peg$maxFailPos, peg$maxFailPos + 1)
+          : peg$computeLocation(peg$maxFailPos, peg$maxFailPos)
+      );
+    }
+  }
+
+  root.WeekLang = {
+    SyntaxError: peg$SyntaxError,
+    parse:       peg$parse
+  };
+})(globalThis);
+
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswWeekLang'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswWeekLang'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+  
+  return {
+    parser: WeekLang,
+  }
+
+});
+// @code.start: LswWeekPlanner API | @$section: Vue.js (v2) Components » Lsw Week Planner API » LswWeekPlanner component
+Vue.component("LswWeekPlanner", {
+  template: `<div class="lsw_week_planner">
+    <lsw-filesystem-explorer opened-by="/kernel/goals/goals.week" :absolute-layout="true" />
+</div>`,
+  props: {},
+  data() {
+    return {
+      scriptContent: "",
+      scriptOutput: "",
+    };
+  },
+  methods: {
+    parsear() {
+      try {
+        const ast = WeekLang.parse(this.scriptContent);
+        this.scriptOutput = JSON.stringify(ast, null, 2);
+      } catch (error) {
+        this.scriptOutput = JSON.stringify({
+          error: true,
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        }, null, 2);
+      }
+    }
+  },
+  watch: {},
+  mounted() {
+    
+  }
+});
+// @code.end: LswWeekPlanner API
+$proxifier.define("org.allnulled.lsw-conductometria.Accion", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Accion@SchemaEntity";
+    }
+    static getName() {
+      return "Accion";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        en_concepto: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "En concepto de:",
+          hasDescription: "Nombre del concepto al que se atribuye la impresión",
+          hasPlaceholder: "Ej: Correr",
+          hasExtraAttributes: {},
+        },
+        tiene_estado: {
+          isType: "text",
+          isFormType: "options",
+          isIndexed: true,
+          hasFormtypeParameters: {
+            type: "selector",
+            available: ["pendiente", "completada", "fallida", "trackeada"],
+            selectable: 1, // could be: number or "*" to all options
+          },
+          hasValidator(v) {
+            if(v === "fallida") {
+              throw new Error("No losers, por favor");
+            }
+          },
+          hasDefaultValue: "pendiente",
+          hasFormatter: false,
+          hasLabel: "Tiene estado:",
+          hasDescription: "Estado en el que se encuentra la acción. Puede ser «pendiente», «completada» o «fallida»",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_inicio: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasLabel: "Tiene inicio:",
+          hasDescription: "Momento en que empieza la acción",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_duracion: {
+          isType: "text",
+          isFormType: "duration",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasDefaultValue: "1h",
+          hasValidator(v) {
+            LswTimer.utils.isDurationOrThrow(v);
+          },
+          hasFormatter(v) {
+            return LswTimer.parser.parse(v)[0];
+          },
+          hasLabel: "Tiene duración:",
+          hasDescription: "Cantidad de tiempo que dura la acción",
+          hasPlaceholder: "Ej: 1h 20min",
+          hasExtraAttributes: {},
+        },
+        tiene_parametros: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene parámetros:",
+          hasDescription: "",
+          hasPlaceholder: "Ej: leche, trigo, arroz",
+          hasExtraAttributes: {},
+        },
+        tiene_resultados: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene resultados:",
+          hasDescription: "Resultados notorios asociados a esta acción",
+          hasPlaceholder: "Ej:\n- Cogí fuerzas hasta el almuerzo\n- Disfruté de un buen desayuno",
+          hasExtraAttributes: {},
+        },
+        tiene_comentarios: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene comentarios:",
+          hasDescription: "Comentarios asociados a esta acción",
+          hasPlaceholder: "Esta acción me tomó varios intentos porque...",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Accion@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "acción"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Accion_virtual", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Accion_virtual@SchemaEntity";
+    }
+    static getName() {
+      return "Accion_virtual";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        en_concepto: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "En concepto de:",
+          hasDescription: "Nombre del concepto al que se atribuye la impresión",
+          hasPlaceholder: "Ej: Correr",
+          hasExtraAttributes: {},
+        },
+        tiene_estado: {
+          isType: "text",
+          isFormType: "options",
+          isIndexed: true,
+          hasFormtypeParameters: {
+            type: "selector",
+            available: ["pendiente", "completada", "fallida"],
+            selectable: 1, // could be: number or "*" to all options
+          },
+          hasValidator(v) {
+            if(v === "fallida") {
+              throw new Error("No losers, por favor");
+            }
+          },
+          hasDefaultValue: "pendiente",
+          hasFormatter: false,
+          hasLabel: "Tiene estado:",
+          hasDescription: "Estado en el que se encuentra la acción virtual. Puede ser «pendiente», «completada» o «fallida»",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_inicio: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasLabel: "Tiene inicio:",
+          hasDescription: "Momento en que empieza la acción virtual",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_duracion: {
+          isType: "text",
+          isFormType: "duration",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasDefaultValue: "1h",
+          hasValidator(v) {
+            LswTimer.utils.isDurationOrThrow(v);
+          },
+          hasFormatter(v) {
+            return LswTimer.parser.parse(v)[0];
+          },
+          hasLabel: "Tiene duración:",
+          hasDescription: "Cantidad de tiempo que dura la acción virtual",
+          hasPlaceholder: "Ej: 1h 20min",
+          hasExtraAttributes: {},
+        },
+        tiene_parametros: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene parámetros:",
+          hasDescription: "",
+          hasPlaceholder: "Ej: leche, trigo, arroz",
+          hasExtraAttributes: {},
+        },
+        tiene_resultados: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene resultados:",
+          hasDescription: "Resultados notorios asociados a esta acción virtual",
+          hasPlaceholder: "Ej:\n- Cogí fuerzas hasta el almuerzo\n- Disfruté de un buen desayuno",
+          hasExtraAttributes: {},
+        },
+        tiene_comentarios: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene comentarios:",
+          hasDescription: "Comentarios asociados a esta acción virtual",
+          hasPlaceholder: "Esta acción virtual me tomó varios intentos porque...",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Accion_virtual@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "acción virtual"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Concepto", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Concepto@SchemaEntity";
+    }
+    static getName() {
+      return "Concepto";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_nombre: {
+          refersTo: false,
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          isUnique: true,
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Nombre único del concepto:",
+          hasDescription: "Nombre del concepto en sí",
+          hasPlaceholder: "Ej: Desayunar",
+          hasExtraAttributes: {}
+        },
+        tiene_comentarios: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene comentarios:",
+          hasDescription: "Comentarios asociados a este concepto",
+          hasPlaceholder: "Ej: este concepto puede ser ambiguo porque...",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getExternalProperties() {
+      return {
+        tiene_limitadores: {
+          isType: "ref-list",
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Limitador@SchemaEntity",
+            table: "Limitador",
+            property: "id",
+          },
+          hasLabel: "Tiene limitadores",
+          hasDescription: "Limitadores asociados a este concepto",
+          hasPlaceholder: ""
+        }
+      };
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Concepto@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "concepto"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Categoria_de_concepto", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Categoria_de_concepto@SchemaEntity";
+    }
+    static getName() {
+      return "Categoria_de_concepto";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_nombre: {
+          refersTo: false,
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          isUnique: true,
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Nombre de la categoría de concepto:",
+          hasDescription: "Una categoría es una agrupación de conceptos desde una perspectiva de área o campo de conocimiento.",
+          hasPlaceholder: "Ej: Programación",
+          hasExtraAttributes: {}
+        },
+        tiene_descripcion: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene descripción:",
+          hasDescription: "Descripción de la categoría de conceptos con más detalle.",
+          hasPlaceholder: "La programación es el campo de...",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Categoria_de_concepto@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "concepto"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Propagador_prototipo", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Propagador_prototipo@SchemaEntity";
+    }
+    static getName() {
+      return "Propagador_prototipo";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_nombre: {
+          refersTo: false,
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          isUnique: true,
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Nombre único del propagador prototipo:",
+          hasDescription: "Nombre del propagador prototipo en sí",
+          hasPlaceholder: "Ej: al desayunar",
+          hasExtraAttributes: {}
+        },
+        tiene_funcion: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene función:",
+          hasDescription: "Código JavaScript asociado al propagador prototipo",
+          hasPlaceholder: "console.log('Hello from propagador', arguments)",
+          hasExtraAttributes: {},
+        },
+        tiene_parametros: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene parámetros:",
+          hasDescription: "Array de strings en JSON para los parámetros de la función (raw injection)",
+          hasPlaceholder: "argument0, argument1, argument2",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Propagador_prototipo@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "propagador prototipo"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Propagador_de_concepto", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Propagador_de_concepto@SchemaEntity";
+    }
+    static getName() {
+      return "Propagador_de_concepto";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_propagador_prototipo: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Propagador_prototipo@SchemaEntity",
+            table: "Propagador_prototipo",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Propagador prototipo:",
+          hasDescription: "Nombre del propagador prototipo que tiene la función propagativa correspondiente a esta propagación de concepto concreta",
+          hasPlaceholder: "Ej: al desayunar",
+          hasExtraAttributes: {},
+        },
+        tiene_concepto_disparador: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene concepto disparador:",
+          hasDescription: "Nombre del concepto disparador en esta relación propagativa",
+          hasPlaceholder: "Ej: Desayunar",
+          hasExtraAttributes: {},
+        },
+        tiene_concepto_destino: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene concepto destino:",
+          hasDescription: "Nombre del concepto destino en esta relación propagativa",
+          hasPlaceholder: "Ej: Recuperar energía",
+          hasExtraAttributes: {},
+        },
+        tiene_parametros: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene parámetros:",
+          hasDescription: "Array de valores en JSON para los parámetros de la función (raw injection)",
+          hasPlaceholder: "\"concept-x\", 2, [], {}",
+          hasExtraAttributes: {},
+        },
+        tiene_parametros_extra: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene parámetros extra:",
+          hasDescription: "JavaScript con los parámetros extra (raw injection)",
+          hasPlaceholder: "{msg:0}, 500, function() {}",
+          hasExtraAttributes: {},
+        },
+        tiene_codigo: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene código directo:",
+          hasDescription: "Código JavaScript que se usará directo como propagador",
+          hasPlaceholder: "{}",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Propagador_de_concepto@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "Propagador de concepto"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Limitador", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Limitador@SchemaEntity";
+    }
+    static getName() {
+      return "Limitador";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        en_concepto: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "En concepto de:",
+          hasDescription: "Nombre del concepto al que se atribuye el limitador",
+          hasPlaceholder: "Ej: Dormir",
+          hasExtraAttributes: {},
+        },
+        tiene_funcion: {
+          isType: "text",
+          isFormType: "code",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene función:",
+          hasDescription: "Código JavaScript asociado al limitador",
+          hasPlaceholder: "...",
+          hasExtraAttributes: {},
+        },
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Limitador@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "limitador"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Impresion_de_concepto", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Impresion_de_concepto@SchemaEntity";
+    }
+    static getName() {
+      return "Impresion_de_concepto";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        en_concepto: {
+          refersTo: {
+            entity: "org.allnulled.lsw-conductometria.Concepto@SchemaEntity",
+            table: "Concepto",
+            property: "tiene_nombre",
+            constraint: false,
+          },
+          isType: "ref-object",
+          isFormType: "ref-object",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            if(v.trim() === '') throw new Error("Cannot be empty");
+          },
+          hasFormatter: false,
+          hasLabel: "En concepto de:",
+          hasDescription: "Nombre del concepto al que se atribuye la impresión",
+          hasPlaceholder: "Ej: Correr",
+          hasExtraAttributes: {},
+        },
+        tiene_valores: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene valores:",
+          hasDescription: "Valores asociados a esta impresión",
+          hasPlaceholder: "Ej: 1000p, 50h",
+          hasExtraAttributes: {},
+        },
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Impresion_de_concepto@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "impresión de concepto"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Nota", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Nota@SchemaEntity";
+    }
+    static getName() {
+      return "Nota";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_titulo: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene título:",
+          hasDescription: "El título que se asociará a la nota",
+          hasPlaceholder: "Título de la nota",
+          hasExtraAttributes: {},
+        },
+        tiene_fecha: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasLabel: "Tiene fecha:",
+          hasDescription: "Momento en que se creó la nota",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_categorias: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene categorias:",
+          hasDescription: "El categorías de esta nota, separadas por «;» entre sí.",
+          hasPlaceholder: "Categoría 1; categoría 2; categoría 3",
+          hasExtraAttributes: {},
+        },
+        tiene_estado: {
+          isType: "text",
+          isFormType: "options",
+          isIndexed: true,
+          hasFormtypeParameters: {
+            type: "selector",
+            available: ["", "creada", "urgente", "dudosa", "procesada", "desestimada"],
+            selectable: 1, // could be: number or "*" to all options
+            defaultValue: "",
+          },
+          hasValidator(v) {
+            
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene estado:",
+          hasDescription: "Estado de la nota. Puede ser «creada», «procesada», «dudosa» o «desestimada»",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_contenido: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene contenido:",
+          hasDescription: "El contenido de esta nota. Permite markdown.",
+          hasPlaceholder: "El **contenido** de tu nota o artículo.",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Nota@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "nota"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Automensaje", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Automensaje@SchemaEntity";
+    }
+    static getName() {
+      return "Automensaje";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_contenido: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene contenido:",
+          hasDescription: "El contenido de este automensaje. Permite markdown.",
+          hasPlaceholder: "El **contenido** de tu automensaje o artículo.",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Automensaje@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "automensaje"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Lista", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Lista@SchemaEntity";
+    }
+    static getName() {
+      return "Lista";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_titulo: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene título:",
+          hasDescription: "El título que se asociará a la lista",
+          hasPlaceholder: "Título de la lista",
+          hasExtraAttributes: {},
+        },
+        tiene_fecha: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasLabel: "Tiene fecha:",
+          hasDescription: "Momento en que se creó la lista",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_categorias: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene categorias:",
+          hasDescription: "El categorías de esta lista, separadas por «;» entre sí.",
+          hasPlaceholder: "Categoría 1; categoría 2; categoría 3",
+          hasExtraAttributes: {},
+        },
+        tiene_estado: {
+          isType: "text",
+          isFormType: "options",
+          isIndexed: true,
+          hasFormtypeParameters: {
+            type: "selector",
+            available: ["creada", "procesada", "dudosa", "desestimada"],
+            selectable: 1, // could be: number or "*" to all options
+            defaultValue: "creada",
+          },
+          hasValidator(v) {
+            
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene estado:",
+          hasDescription: "Estado de la lista. Puede ser «creada», «procesada», «dudosa» o «desestimada»",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_contenido: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene contenido:",
+          hasDescription: "El contenido de esta lista. Permite markdown.",
+          hasPlaceholder: "El **contenido** de tu lista.",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Lista@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "lista"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Recordatorio", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Recordatorio@SchemaEntity";
+    }
+    static getName() {
+      return "Recordatorio";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_titulo: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene título:",
+          hasDescription: "El título que se asociará a el recordatorio",
+          hasPlaceholder: "Título del recordatorio",
+          hasExtraAttributes: {},
+        },
+        tiene_fecha: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasLabel: "Tiene fecha:",
+          hasDescription: "Momento en que se creó el recordatorio",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_categorias: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene categorias:",
+          hasDescription: "El categorías de este recordatorio, separadas por «;» entre sí.",
+          hasPlaceholder: "Categoría 1; categoría 2; categoría 3",
+          hasExtraAttributes: {},
+        },
+        tiene_contenido: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene contenido:",
+          hasDescription: "El contenido de este recordatorio. Permite markdown.",
+          hasPlaceholder: "El **contenido** de tu recordatorio.",
+          hasExtraAttributes: {},
+        }
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Recordatorio@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "recordatorio"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
+$proxifier.define("org.allnulled.lsw-conductometria.Articulo", {
+  Item: class extends $proxifier.AbstractItem {
+
+  },
+  List: class extends $proxifier.AbstractList {
+
+  },
+  SchemaEntity: class extends $proxifier.AbstractSchemaEntity {
+    static getEntityId() {
+      return "org.allnulled.lsw-conductometria.Articulo@SchemaEntity";
+    }
+    static getName() {
+      return "Articulo";
+    }
+    static getVersion() {
+      return "1.0.0";
+    }
+    static getMethods() {
+      return {};
+    }
+    static getProperties() {
+      return {
+        tiene_titulo: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasValidator(v) {
+            if(v.trim() === "") {
+              throw new Error("Título no puede estar vacío");
+            }
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene título:",
+          hasDescription: "El título que se asociará a el artículo",
+          hasPlaceholder: "Título de el artículo",
+          hasExtraAttributes: {},
+        },
+        tiene_fecha: {
+          isType: "text",
+          isFormType: "date",
+          isFormSubtype: "datetime",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator: function (v) {
+            LswTimer.utils.isDatetimeOrThrow(v);
+          },
+          hasFormatter: function (v) {
+            return LswTimer.utlis.getDateFromMomentoText(v);
+          },
+          hasInitialValue: function() {
+            return LswTimer.utils.fromDateToDatestring(new Date(), false, false, true);
+          },
+          hasLabel: "Tiene fecha:",
+          hasDescription: "Momento en que se creó el artículo",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_categorias: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene categorias:",
+          hasDescription: "El categorías de este artículo, separadas por «;» entre sí.",
+          hasPlaceholder: "Categoría 1; categoría 2; categoría 3",
+          hasExtraAttributes: {},
+        },
+        tiene_contenido: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene contenido:",
+          hasDescription: "El contenido de este artículo. Permite markdown.",
+          hasPlaceholder: "El **contenido** de tu artículo o artículo.",
+          hasExtraAttributes: {},
+        },
+        tiene_garantia: {
+          isType: "text",
+          isFormType: "options",
+          isIndexed: true,
+          hasFormtypeParameters: {
+            type: "selector",
+            available: ["muy inestable", "inestable", "ns/nc", "estable", "muy estable", "popular"],
+            selectable: 1, // could be: number or "*" to all options
+            defaultValue: "ns/nc",
+          },
+          hasInitialValue: function() {
+            return "ns/nc";
+          },
+          hasValidator(v) {
+            
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene garantía:",
+          hasDescription: "Garantía de verdad del artículo. Puede ser «muy inestable», «inestable», «ns/nc», «estable», «muy estable», «popular»",
+          hasPlaceholder: false,
+          hasExtraAttributes: {},
+        },
+        tiene_tags: {
+          isType: "text",
+          isFormType: "long-text",
+          isIndexed: false,
+          hasFormtypeParameters: {},
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Tiene tags:",
+          hasDescription: "Una línea por cada tag",
+          hasPlaceholder: "tag 1\ntag 2\ntag 3",
+          hasExtraAttributes: {},
+        },
+      }
+    }
+    static getVirtualizerId() {
+      return "org.allnulled.lsw-conductometria.Articulo@Virtualizer";
+    }
+    static getFormSettings() {
+      return {};
+    }
+    static getExtraAttributes() {
+      return {
+        readableName: "artículo"
+      };
+    }
+  },
+  Virtualizer: class extends $proxifier.AbstractVirtualizer {
+
+  }
+});
 
 (() => {
   let isFirstTime = true;
@@ -37803,11 +49030,21 @@ rel correr
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
             <!--div class="mobile_off_panel_cell" v-on:click="clickPicas">✴️</div-->
-            <div class="mobile_off_panel_cell" v-on:click="goToEventTracker">📹</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToFilesystem">📂</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToHomepage">📟</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToEnciclopedia">🔬</div>
-            <div class="mobile_off_panel_cell" v-on:click="goToNotas">💬</div>
+            <div class="mobile_off_panel_cell" v-on:click="goToEventTracker">
+                <div class="mobile_off_panel_button">📹</div>
+            </div>
+            <div class="mobile_off_panel_cell" v-on:click="goToFilesystem">
+                <div class="mobile_off_panel_button">📂</div>
+            </div>
+            <div class="mobile_off_panel_cell" v-on:click="goToHomepage">
+                <div class="mobile_off_panel_button">📟</div>
+            </div>
+            <div class="mobile_off_panel_cell" v-on:click="goToEnciclopedia">
+                <div class="mobile_off_panel_button">🔬</div>
+            </div>
+            <div class="mobile_off_panel_cell" v-on:click="goToNotas">
+                <div class="mobile_off_panel_button">💬</div>
+            </div>
         </div>
     </div>
     <lsw-clockwatcher />
@@ -37860,52 +49097,73 @@ rel correr
           console.log(error);
         }
       },
+      minimizeDialogs() {
+        this.$trace("App.methods.minimizeDialogs");
+        this.$lsw.dialogs.minimizeAll();
+      },
       goToAddNota() {
         this.$trace("App.methods.goToAddNota");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("nueva nota");
       },
       goToAddArticulo() {
         this.$trace("App.methods.goToAddArticulo");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("nuevo articulo");
       },
       goToAddRecordatorio() {
         this.$trace("App.methods.goToAddRecordatorio");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("nuevo recordatorio");
       },
       goToAddAccion() {
         this.$trace("App.methods.goToAddAccion");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("nueva accion");
       },
       goToCalendario() {
         this.$trace("App.methods.goToCalendario");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("calendario");
       },
       goToDesktop() {
         this.$trace("App.methods.goToDesktop");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("none");
       },
       goToNotas() {
         this.$trace("App.methods.goToNotas");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("notas");
       },
       goToEnciclopedia() {
         this.$trace("App.methods.goToEnciclopedia");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("enciclopedia");
       },
       clickPicas() {
         this.$trace("App.methods.clickPicas");
+        this.minimizeDialogs();
         document.querySelector("#the_picas_button").click();
       },
       goToBinaries() {
+        this.$trace("App.methods.goToBinaries");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("binarios");
       },
       goToHomepage() {
+        this.$trace("App.methods.goToHomepage");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("homepage");
       },
       goToFilesystem() {
+        this.$trace("App.methods.goToFilesystem");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("sistema de ficheros");
       },
       goToEventTracker() {
+        this.$trace("App.methods.goToEventTracker");
+        this.minimizeDialogs();
         this.$refs.desktop.selectApplication("event-tracker");
       },
       async initializeFilesystemForLsw() {
@@ -37928,11 +49186,12 @@ rel correr
         await this.$lsw.fs.ensureDirectory("/kernel/goals/records");
         await this.$lsw.fs.ensureDirectory("/kernel/goals/todos");
         await this.$lsw.fs.ensureDirectory("/kernel/bin");
+        await this.$lsw.fs.ensureFile("/kernel/apps/example/load.js", LswConstants.global.pick("/kernel/apps/example/load.js"));
         /*
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-3-veces.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-3-veces.js"));
         await this.$lsw.fs.ensureFile("/kernel/settings/goals/factory/fisico-4h.js", LswConstants.global.pick("/kernel/settings/goals/factory/fisico-4h.js"));
         //*/
-        await this.$lsw.fs.ensureFile("/kernel/settings/goals.env", LswConstants.global.pick("/kernel/settings/goals.env"));
+        await this.$lsw.fs.ensureFile("/kernel/goals/goals.week", LswConstants.global.pick("/kernel/goals/goals.week"));
         
         
         await this.$lsw.fs.ensureDirectory("/kernel/components");

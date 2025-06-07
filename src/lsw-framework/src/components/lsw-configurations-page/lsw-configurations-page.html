@@ -16,13 +16,13 @@
                 <div class="flex_1">
                     <button class="supermini margin_right_1" v-on:click="startCodeReference">Ir a referencia del código</button>
                 </div>
-                <div class="flex_100 explanation_text">te lleva a la documentación oficial del código de `allnulled@lsw-one`.</div>
+                <div class="flex_100 explanation_text">te lleva a la documentación oficial del código de <a href="https://github.com/allnulled/lsw-one">allnulled@lsw-one</a>.</div>
             </div>
             <div class="flex_row centered margin_top_1">
                 <div class="flex_1">
                     <button class="supermini margin_right_1" v-on:click="startGithubHomepage">Ir a repositorio del código</button>
                 </div>
-                <div class="flex_100 explanation_text">te lleva a la página oficial del proyecto de `allnulled@lsw-one`.</div>
+                <div class="flex_100 explanation_text">te lleva a la página oficial del proyecto de <a href="https://github.com/allnulled/lsw-one">allnulled@lsw-one</a>.</div>
             </div>
         </div>
         <hr />
@@ -40,9 +40,21 @@
             </div>
             <div class="flex_row centered margin_top_1">
                 <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startExportarAJsonFile">Exportar a fichero</button>
+                </div>
+                <div class="flex_100 explanation_text">descarga una copia del estado actual en un fichero JSON.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
                     <button class="supermini margin_right_1" v-on:click="startImportarDeJson">Importar de JSON</button>
                 </div>
                 <div class="flex_100 explanation_text">permite pasar un JSON para insertar masivamente en el estado actual.</div>
+            </div>
+            <div class="flex_row centered margin_top_1">
+                <div class="flex_1">
+                    <button class="supermini margin_right_1" v-on:click="startImportarDeJsonFile">Importar de fichero</button>
+                </div>
+                <div class="flex_100 explanation_text">permite importar un JSON para <u style="color:rgb(63, 12, 12); text-shadow: 0 0 1px white;">insertar masivamente</u> en el estado actual.</div>
             </div>
         </div>
         <hr />

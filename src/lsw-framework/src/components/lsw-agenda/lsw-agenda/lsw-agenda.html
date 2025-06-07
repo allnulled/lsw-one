@@ -117,6 +117,16 @@
                 v-on:click="() => selectContext('conductometria')"
                 :class="{activated: selectedContext === 'conductometria'}">📊</button>
         </div>
+        <template v-if="typeof $window.cordova !== 'undefined'">
+            <div class="flex_1">
+                <button class="width_100 nowrap"
+                    v-on:click="synchronizeAlarms">🔔</button>
+            </div>
+            <div class="flex_1">
+                <button class="width_100 nowrap"
+                    v-on:click="unsynchronizeAlarms">🔕</button>
+            </div>
+        </template>
         <div class="flex_100"></div>
         <div class="flex_1">
             <button class="width_100 nowrap"

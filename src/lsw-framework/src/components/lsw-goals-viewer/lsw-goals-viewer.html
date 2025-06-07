@@ -2,7 +2,6 @@
     <div class="flex_row centered pad_bottom_1">
         <div class="flex_100">
             <div class="flex_row centered">
-                <div class="flex_1"></div>
                 <template v-if="isLoaded">
                     <div class="nowrap flex_1">
                         <button class=""
@@ -32,7 +31,7 @@
                 v-on:click="openGoalsFile">🏁↗️</button>
         </div>
         <div class="flex_1 pad_left_1">
-            <button class=""
+            <button class="unselectable_text"
                 :class="{activated: isClicking}"
                 v-on:mousedown="() => isClicking = true"
                 v-on:mouseup="() => isClicking = false"
@@ -57,11 +56,12 @@
                         v-on:click="() => selectGoal(goal)">
                         <div class="bar_text">
                             <div class="position_relative"
-                                v-if="isClicking">
+                                v-if="!isClicking">
                                 <div class="position_absolute"
-                                    style="top: 0px; bottom: auto; left: 0px; opacity: 0.8;">
+                                    style="top: 0px; bottom: auto; left: 0px; opacity: 1;">
                                     <div class="flex_row centered">
-                                        <div class="flex_1"><b><u>{{ goal.originalLine }}</u></b></div>
+                                        <div class="flex_1 pad_right_1">{{ goal.solved ? symbolForSolved : symbolForPending }}</div>
+                                        <div class="flex_1">{{ goal.concept }} ⛔️{{ getAbbrvWord(goal.expectedAsAbbr) }} {{ goal.expectedDuration || goal.expectedTimes }} 🟢 {{ goal.currentDuration || goal.currentTimes }} 🟰 {{ goal.filled }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <div class="bar_filler"
-                            :style="{ width: goal.filledAsint < 100 ? goal.filled : (100 + '%'), backgroundColor: goal.color }">
+                            :style="{ width: goal.expectedAs === 'maximum' ? goal.missingAsint < 100 ? goal.missing : (100 + '%') : goal.filledAsint < 100 ? goal.filled : (100 + '%'), backgroundColor: goal.color }">
                         </div>
                     </div>
                     <div v-if="selectedGoal === goal">
@@ -142,6 +142,10 @@
         <div class="flex_1 pad_left_1">
             <button class="supermini"
                 v-on:click="openRecordsDirectory">📷📂</button>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="importGoalsToDay">🏁→📆</button>
         </div>
         <div class="flex_100"></div>
         <div class="flex_1 pad_left_1">

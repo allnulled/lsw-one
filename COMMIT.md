@@ -1,5 +1,9 @@
 # Último commit:
 
+# 07-06-2025 13:14pm:
+
+[x] Bueno, muchas cositas sueltas. No sabría ahora dar una lista.
+
 # 20-05-2025 02:45am
 
 [x] Panel de binarios

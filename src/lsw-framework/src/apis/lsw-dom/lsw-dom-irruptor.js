@@ -20,8 +20,14 @@
     static async verNotas() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "💬").click();
     }
+    static async abrirHomepage() {
+      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📟").click();
+    }
     static async calendario() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
+    }
+    static async abrirCalendario() {
+      LswDom.querySelectorFirst(".main_topbar_button", "📆").click();
     }
     static async reportesDeCalendario() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
@@ -32,17 +38,17 @@
       
     }
     static async abrirNavegacionRapida() {
-      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
     }
     static async abrirBinarios() {
-      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
       await LswDom.waitForMilliseconds(100);
       LswDom.querySelectorFirst(".lista_apps div", "💣 Binarios").click();
     }
     static async abrirBaseDeDatos() {
-      LswDom.querySelectorFirst(".lsw_apps_button > button", "📟").click();
+      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
       await LswDom.waitForMilliseconds(100);
-      LswDom.querySelectorFirst("div", "↗️ Base de datos").click();
+      LswDom.querySelectorFirst("div", "📦 Base de datos").click();
     }
     static async abrirAccionesVirtuales() {
       await this.abrirBaseDeDatos();
@@ -85,6 +91,20 @@
       Abrir_libros: {
         await LswDom.waitForMilliseconds(100);
         LswDom.querySelectorFirst(".lsw_wiki button.supermini", "📚").click();
+      }
+    }
+    static async abrirWeekPlanner() {
+      await this.abrirCalendario();
+      Abrir_planificador: {
+        await LswDom.waitForMilliseconds(1000);
+        LswDom.querySelectorFirst("button", "7️⃣").click();
+      }
+    }
+    static async abrirAcciones() {
+      await this.abrirBaseDeDatos();
+      Abrir_planificador: {
+        await LswDom.waitForMilliseconds(1000);
+        LswDom.querySelectorFirst("button", "7️⃣").click();
       }
     }
 

@@ -36,14 +36,14 @@ button.boton_de_dia_de_calendario {
 }
 button.boton_de_dia_de_calendario.current {
     background-color: rgb(97, 48, 46);
-    border: 2px solid #6fff00;
     border-radius: 2pt;
-    box-shadow: 0 0 8px rgb(255, 251, 0);
 }
 
 button.boton_de_dia_de_calendario.active {
     background-color: white;
     color: black;
+    border: 2px solid #6fff00;
+    box-shadow: 0 0 8px rgb(255, 251, 0);
 }
 button.boton_de_dia_de_calendario.active.current {
     
@@ -79,7 +79,7 @@ table.tabla_para_horas input {
     
 }
 tr.fila_de_dias_de_semana > td > div {
-    background-color: rgba(29, 217, 29, 0.343);
+    background-color: rgba(6, 2, 51, 0.4);
     color: white;
     text-align: center;
     padding: 4px;

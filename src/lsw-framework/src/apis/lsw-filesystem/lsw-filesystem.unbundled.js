@@ -218,6 +218,24 @@
       }
     }
 
+    async evaluateAsWeekFile() {
+      this.trace("evaluateAsWeekFile", [filepath]);
+      const fileContents = await this.read_file(filepath);
+      return WeekLang.parse(fileContents);
+    }
+
+    async evaluateAsWeekFileOrReturn(filepath, output = {}) {
+      this.trace("evaluateAsWeekFileOrReturn", [filepath]);
+      try {
+        const fileContents = await this.read_file(filepath);
+        const result = WeekLang.parse(fileContents);
+        return result;
+      } catch (error) {
+        console.log("[!] Error evaluating file (as .week):", error);
+        return output;
+      }
+    }
+
   }
 
   return LswFilesystem;

@@ -134,15 +134,14 @@
 }
 
 .hour_task_block.is_completed .celda_de_concepto {
-    background-color: #46c01a88;
+    background-color: #2ea603d6;
     color: black;
     text-decoration: line-through;
 }
 
 .hour_task_block.is_pending .celda_de_concepto {
-    background-color: #cbc51588;
-    color: #050899;
-    border: 1px solid rgb(42, 129, 181);
+    background-color: #f2ea0b99;
+    color: #040688;
 
 }
 
@@ -150,10 +149,9 @@
     margin-top: 4px;
     margin-bottom: 4px;
     padding: 4px;
-    background-color: rgba(9, 2, 45, 0.6);
+    background-color: rgba(0, 0, 0, 0.6);
     border-radius: 3pt;
-    border: 1px double #24153c;
-    box-shadow: 0 0 4px black;
+    border: 0px solid #000;
 }
 
 .tabla_de_detalles {

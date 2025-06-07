@@ -64,7 +64,56 @@
 
       <hr class="dashed" />
 
-      <div class="duration_control_details_panel">
+      <div class="pad_bottom_1 text_align_center">
+        <div class="flex_row centered">
+          <div class="flex_1">Selección: </div>
+          <div class="flex_100 text_align_right" v-if="fecha_seleccionada">
+            {{ LswTimer.utils.fromDateToHour(fecha_seleccionada) }}
+          </div>
+        </div>
+      </div>
+
+      <div class="pad_bottom_1">
+        <div class="flex_row centered">
+          <div class="flex_1">
+            <button class="supermini" v-on:click="() => setHora(0)">⏪</button>
+          </div>
+          <div class="flex_1 pad_horizontal_1">
+            <button class="supermini" v-on:click="() => increaseHora(-1)">➖</button>
+          </div>
+          <div class="flex_100">
+            {{ LswUtils.padStart(hora_actual, 2, '0') }}
+          </div>
+          <div class="flex_1 pad_horizontal_1">
+            <button class="supermini" v-on:click="() => increaseHora(1)">➕</button>
+          </div>
+          <div class="flex_1">
+            <button class="supermini" v-on:click="() => setHora(23)">⏩</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="">
+        <div class="flex_row centered">
+          <div class="flex_1">
+            <button class="supermini" v-on:click="() => setMinuto(0)">⏪</button>
+          </div>
+          <div class="flex_1 pad_horizontal_1">
+            <button class="supermini" v-on:click="() => increaseMinuto(-1)">➖</button>
+          </div>
+          <div class="flex_100">
+            {{ LswUtils.padStart(minuto_actual, 2, '0') }}
+          </div>
+          <div class="flex_1 pad_horizontal_1">
+            <button class="supermini" v-on:click="() => increaseMinuto(1)">➕</button>
+          </div>
+          <div class="flex_1">
+            <button class="supermini" v-on:click="() => setMinuto(59)">⏩</button>
+          </div>
+        </div>
+      </div>
+
+      <!--div class="duration_control_details_panel">
         <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(0)">00:00:00</div>
         <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(1)">01:00:00</div>
         <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(2)">02:00:00</div>
@@ -129,7 +178,7 @@
         <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-5)">-05min</div>
         <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-10)">-10min</div>
         <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-30)">-30min</div>
-      </div>
+      </div-->
 
     </div>
     <!--table class="width_100 no_borders_table"

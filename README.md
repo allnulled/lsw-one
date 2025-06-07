@@ -74,6 +74,12 @@ En el filesystem virtual de la app puedes configurar:
    - Sí, **tripilang** (los *.tri) no está documentado. Pero no es difícil.
 - [/kernel/wiki/libros/*.tri](#):
    - Para los índices de artículos de los libros disponibles desde la enciclopedia.
+- [/kernel/goals/goals.week](#):
+   - Para adjuntar objetivos a fechas y días de semanas
+   - Permite crear escuchas de barras en el widget de `calendario » después`.
+   - Permite crear acciones pendientes a los días
+      - se crean cuando se visita el día y se encuentra la coincidencia
+
 
 Seguramente hay más.
 

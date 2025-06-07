@@ -24,6 +24,7 @@ Vue.component("LswFilesystemExplorer", {
       current_node_subnodes: [],
       current_node_is_file: false,
       current_node_is_directory: false,
+      syntaxValidators: {},
       STANDARIZED_REFRESH_DELAY: 100
     };
   },
@@ -269,12 +270,10 @@ Vue.component("LswFilesystemExplorer", {
       const AsyncFunction = (async function () { }).constructor;
       const asyncFunction = new AsyncFunction(editorContents);
       try {
-        await asyncFunction.call(this);
+        const result = await asyncFunction.call(this);
+        this.$lsw.toasts.debug(result);
       } catch (error) {
-        this.$lsw.toasts.send({
-          title: "Error arised when executing file",
-          text: `File ${this.current_node} produced following error: ${error.name}: ${error.message}`
-        });
+        this.$lsw.toasts.showError(error);
       }
     },
     async processToLoadFile() {
@@ -288,10 +287,18 @@ Vue.component("LswFilesystemExplorer", {
     },
     async processToSaveFile() {
       this.$trace("lsw-filesystem-explorer.methods.processToSaveFile");
-      if (this.$refs.editor) {
+      try {
+        if (!this.$refs.editor) {
+          throw new Error("No hay editor ahora mismo");
+        }
         const editorContents = this.$refs.editor.getContents();
-        console.log(this.current_node, editorContents);
         await this.$lsw.fs.write_file(this.current_node, editorContents);
+        this.$lsw.toasts.send({
+          title: "Fichero guardado",
+          text: "Hablamos de: " + this.current_node
+        });
+      } catch (error) {
+        this.$lsw.toasts.showError(error);
       }
     },
     _setButtonsForFile() {
@@ -387,6 +394,15 @@ Vue.component("LswFilesystemExplorer", {
               click: () => this.processToSearchReplace(),
             });
           }
+          Button_to_validate_code: {
+            if(this.hasSyntaxValidator(this.current_node)) {
+              rightButtonsOnFile.push({
+                text: "✅",
+                classes: "",
+                click: () => this.processToValidateCode(),
+              });
+            }
+          }
         }
         this.$refs.panelRight.setButtons(...rightButtonsOnFile);
       }
@@ -430,7 +446,7 @@ Vue.component("LswFilesystemExplorer", {
                 classes: "",
                 click: () => this.processToViewHtml(),
               });
-            } else if(this.current_node.endsWith(".md")) {
+            } else if (this.current_node.endsWith(".md")) {
               bottomButtonsOnFile.push({
                 text: "📻",
                 classes: "",
@@ -658,7 +674,7 @@ Vue.component("LswFilesystemExplorer", {
           }
         }
       });
-      if(typeof fileoutput !== "string") {
+      if (typeof fileoutput !== "string") {
         return;
       }
       const filepath = this.$lsw.fs.resolve_path(this.current_node_basedir, fileoutput);
@@ -710,7 +726,7 @@ Vue.component("LswFilesystemExplorer", {
           }
         }
       });
-      if(typeof parserOptions !== "object") return;
+      if (typeof parserOptions !== "object") return;
       const fileoutput = parserOptions.output;
       const parserFormat = parserOptions.format;
       const parserExporter = parserOptions.exportVar;
@@ -786,7 +802,7 @@ Vue.component("LswFilesystemExplorer", {
           </div>`,
         factory: { data: { value: filename } },
       });
-      if(typeof confirmation !== "string") return;
+      if (typeof confirmation !== "string") return;
       const filecontents = this.current_node_contents;
       LswUtils.downloadFile(filename, filecontents);
     },
@@ -832,9 +848,54 @@ Vue.component("LswFilesystemExplorer", {
           }
         }
       });
-      if(typeof value !== "string") return;
+      if (typeof value !== "string") return;
       this.$refs.editor.setContents(value);
-    }
+    },
+    processToValidateCode() {
+      this.$trace("lsw-filesystem.explorer.methods.processToValidateCode");
+      const currentContents = this.$refs.editor.getContents();
+      const syntaxExtensions = Object.keys(this.syntaxValidators).map(id => "." + id);
+      let associatedSyntax = undefined;
+      Iterating_syntaxes:
+      for (let index = 0; index < syntaxExtensions.length; index++) {
+        const syntaxExtension = syntaxExtensions[index];
+        const isSyntaxCompliant = this.current_node.endsWith(syntaxExtension);
+        if (isSyntaxCompliant) {
+          associatedSyntax = syntaxExtension;
+          break Iterating_syntaxes;
+        }
+      }
+      if (!associatedSyntax) {
+        return -1;
+      }
+      const associatedValidator = this.syntaxValidators[associatedSyntax];
+      if (!associatedValidator) {
+        return -2;
+      }
+      try {
+        const isValid = associatedValidator(currentContents);
+        this.$lsw.toasts.debug(isValid);
+      } catch (error) {
+        this.$lsw.toasts.showError(error);
+      }
+    },
+    async loadSyntaxValidators() {
+      this.$trace("lsw-filesystem-explorer.methods.loadSyntaxValidators");
+      const validatorsAsMap = await this.$lsw.fs.read_directory("/kernel/editor/validators");
+      const ids = Object.keys(validatorsAsMap).map(f => f.replace(/\.js/g, ""));
+      const allValidators = {};
+      for(let index=0; index<ids.length; index++) {
+        const id = ids[index];
+        const validator = await this.$lsw.fs.evaluateAsJavaScriptFileOrReturn(`/kernel/editor/validators/${id}.js`, () => true);
+        allValidators[id] = validator;
+      }
+      this.syntaxValidators = allValidators;
+      
+    },
+    hasSyntaxValidator(file) {
+      const currentExtension = file.replace(/^([^.]*\.)+/g, "");
+      return Object.keys(this.syntaxValidators || {}).indexOf(currentExtension) !== -1;
+    },
   },
   watch: {
     current_node(newValue) {
@@ -842,9 +903,13 @@ Vue.component("LswFilesystemExplorer", {
       this._updateNodeSubdata(newValue);
     }
   },
+  computed: {
+    
+  },
   async mounted() {
     try {
       this.$trace("lsw-filesystem-explorer.mounted");
+      await this.loadSyntaxValidators();
       this.$lsw.fsExplorer = this;
       // await this.initializeFilesystemForLsw();
       await this.open(this.openedBy ?? "/");

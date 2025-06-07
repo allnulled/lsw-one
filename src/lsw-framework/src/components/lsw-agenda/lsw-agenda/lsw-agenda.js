@@ -37,7 +37,7 @@ Vue.component("LswAgenda", {
     },
     selectAction(accionId, contextId = false) {
       this.$trace("lsw-agenda.methods.selectAction");
-      if(contextId) {
+      if (contextId) {
         this.selectContext(contextId);
       }
       this.selectedAction = accionId;
@@ -71,9 +71,14 @@ Vue.component("LswAgenda", {
         this.hiddenDateHours.splice(pos, 1);
       }
     },
-    async loadDateTasks(newDate, calendario, isOnMounted = false) {
+    reloadDateTasks() {
+      this.$trace("lsw-agenda.methods.reloadDateTasks");
+      return this.loadDateTasks(this.selectedDate);
+    },
+    async loadDateTasks(dateInput, calendario, isOnMounted = false) {
       this.$trace("lsw-agenda.methods.loadDateTasks");
       // this.isLoading = true;
+      const newDate = dateInput || new Date();
       console.log("[*] Loading date tasks of: " + LswTimer.utils.fromDateToDatestring(newDate));
       try {
         this.selectedDate = newDate;
@@ -113,9 +118,9 @@ Vue.component("LswAgenda", {
             return -1;
           }
         });
-        if(isOnMounted) {
+        if (isOnMounted) {
           const noTasksFound = (!this.selectedDateTasks) || (!this.selectedDateTasks.length);
-          if(noTasksFound) {
+          if (noTasksFound) {
             this.isCalendarioSelected = true;
           }
         }
@@ -219,8 +224,69 @@ Vue.component("LswAgenda", {
     },
     async refreshTasks() {
       this.$trace("lsw-agenda.methods.refreshTasks");
-      if(this.$refs.agenda_acciones_viewer) {
+      if (this.$refs.agenda_acciones_viewer) {
         this.$refs.agenda_acciones_viewer.changeDate(new Date(this.selectedDate));
+      }
+    },
+    async synchronizeAlarms() {
+      this.$trace("lsw-agenda.methods.synchronizeAlarms");
+      Cordova_injection: {
+        if (typeof this.$window.cordova !== "undefined") {
+          const dateToday = new Date();
+          const allAlarms = await this.$lsw.database.selectMany("Accion", accion => {
+            const dateAccion = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
+            return LswTimer.utils.areSameDayDates(dateToday, dateAccion);
+          });
+          const soundFile = LswRandomizer.getRandomItem([
+            "file://assets/sounds/alarm.busca.wav",
+            "file://assets/sounds/alarm.clock-light.wav",
+            "file://assets/sounds/alarm.facility-breach.wav",
+            "file://assets/sounds/alarm.heavy.wav",
+            "file://assets/sounds/alarm.submarine.wav",
+          ])
+          try {
+            for (let index = 0; index < allAlarms.length; index++) {
+              const accion = allAlarms[index];
+              const id = index + 1;
+              this.$window.cordova.plugins.notification.local.cancel(id);
+              this.$window.cordova.plugins.notification.local.schedule({
+                id,
+                title: "¡Requiéresete!",
+                text: `¡Vamos con «${accion.en_concepto}»!`,
+                trigger: {
+                  at: LswTimer.utils.fromDatestringToDate(accion.tiene_inicio)
+                },
+                vibrate: [1000, 1000, 1000, 1000],
+                wakeUp: true,
+                lockscreen: true,
+                sound: soundFile
+              });
+            }
+            this.$lsw.toasts.send({
+              title: "Alarmas sincronizadas",
+              text: `Unas ${allAlarms.length} alarmas fueron sincronizadas con el dispositivo`
+            });
+          } catch (error) {
+            this.$lsw.toasts.showError(error);
+          }
+        }
+      }
+    },
+    unsynchronizeAlarms() {
+      this.$trace("lsw-agenda.methods.unsynchronizeAlarms");
+      Cordova_injection: {
+        if (typeof this.$window.cordova !== "undefined") {
+          try {
+            this.$window.cordova.plugins.notification.local.cancelAll(() => {
+              this.$lsw.toasts.send({
+                title: "Alarmas desincronizadas",
+                text: "Las alarmas se eliminaron del dispositivo"
+              });
+            })
+          } catch (error) {
+            this.$lsw.toasts.showError(error);
+          }
+        }
       }
     },
   },

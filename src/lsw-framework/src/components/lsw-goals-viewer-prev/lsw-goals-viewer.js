@@ -64,7 +64,7 @@ Vue.component("LswGoalsViewer", {
       this.$lsw.dialogs.open({
         title: "Directorio de objetivos",
         template: `
-          <lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/goals.env" />
+          <lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/goals/goals.week" />
         `
       });
     },

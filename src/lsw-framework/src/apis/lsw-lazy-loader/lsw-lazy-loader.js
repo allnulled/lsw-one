@@ -41,7 +41,7 @@
         confirmer: options.confirmer || Vue.prototype.$noop,
         confirmation: true,
         once: false,
-        _onceDone: false,
+        onceDone: false,
       }, options);
       if (this.$loads[url].alias) {
         this.$alias[this.$loads[url].alias] = url;
@@ -72,7 +72,7 @@
       const _confirmer = options.confirmer || Vue.prototype.$noop;
       const _confirmation = options.confirmation || Vue.prototype.$noop;
       const _once = options.once || false;
-      const _onceDone = options._onceDone || false;
+      const _onceDone = options.onceDone || false;
       const currentGetterValue = (() => {
         try {
           return _getter();
@@ -100,7 +100,7 @@
           }
         }
       }
-      this.$loads[url]._onceDone = true;
+      this.$loads[url].onceDone = true;
       return this.constructor.UnsolvedLazyLoadModule.create(url);
     }
 

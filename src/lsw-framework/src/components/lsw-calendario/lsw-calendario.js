@@ -33,6 +33,8 @@ Vue.component("LswCalendario", {
         celdas_del_mes_actual: undefined,
         marcadores_del_mes: {},
         hoy: hoy,
+        hora_actual: hoy.getHours(),
+        minuto_actual: hoy.getMinutes(),
         dia_actual: hoy.getDate(),
         mes_actual: hoy.getMonth(),
         anio_actual: hoy.getFullYear(),
@@ -394,15 +396,28 @@ Vue.component("LswCalendario", {
       this.fecha_seleccionada.setSeconds(0);
       this.fecha_seleccionada = new Date(this.fecha_seleccionada);
     },
-    aniadir_minutos_directamente(minutos_aniadidos) {
-      this.$trace("lsw-calendario.methods.aniadir_minutos_directamente");
+    increaseHora(horas_aniadidos) {
+      this.$trace("lsw-calendario.methods.increaseHora");
+      const horas_actuales = this.fecha_seleccionada.getHours();
+      this.fecha_seleccionada.setHours(horas_actuales + horas_aniadidos);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
+    increaseMinuto(minutos_aniadidos) {
+      this.$trace("lsw-calendario.methods.increaseMinuto");
       const minutos_actuales = this.fecha_seleccionada.getMinutes();
       this.fecha_seleccionada.setMinutes(minutos_actuales + minutos_aniadidos);
       this.fecha_seleccionada.setSeconds(0);
       this.fecha_seleccionada = new Date(this.fecha_seleccionada);
     },
-    establecer_minutos_directamente(minutos) {
-      this.$trace("lsw-calendario.methods.establecer_minutos_directamente");
+    setHora(horas) {
+      this.$trace("lsw-calendario.methods.setHora");
+      this.fecha_seleccionada.setHours(horas);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
+    setMinuto(minutos) {
+      this.$trace("lsw-calendario.methods.setMinuto");
       this.fecha_seleccionada.setMinutes(minutos);
       this.fecha_seleccionada.setSeconds(0);
       this.fecha_seleccionada = new Date(this.fecha_seleccionada);
@@ -411,6 +426,8 @@ Vue.component("LswCalendario", {
   watch: {
     fecha_seleccionada(nuevo_valor) {
       this.$trace("lsw-calendario.watch.fecha_seleccionada");
+      this.hora_actual = nuevo_valor.getHours();
+      this.minuto_actual = nuevo_valor.getMinutes();
       this.actualizar_calendario(nuevo_valor);
     },
   },

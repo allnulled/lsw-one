@@ -88,7 +88,7 @@ Vue.component("LswWindowsMainTab", {
     },
   },
   mounted() {
-    
+    this.$lsw.windowsMainTab = this;
   }
 });
 // @code.end: LswWindowsMainTab API

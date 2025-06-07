@@ -557,7 +557,7 @@
             try {
               isAccepted = filterFn(cursor.value);
             } catch (error) {
-              console.error("Error arised from filter callback on «browsie.selectMany»");
+              console.error(`Silent error arised from filter callback on «browsie.selectMany» against store «${store}»`, error);
             }
             if (isAccepted) { // Aplica la función de filtro
               results.push(cursor.value);

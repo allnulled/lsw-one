@@ -70,6 +70,17 @@
       return matched.length ? matched[0] : null;
     }
 
+    static findVue(selector, matchingText = false) {
+      const all = document.querySelectorAll(selector);
+      const matched = Array.from(all).filter(element => {
+        if(!matchingText) {
+          return true;
+        }
+        return element.textContent.trim().toLowerCase() === matchingText.toLowerCase();
+      });
+      return matched.length ? matched[0].__vue__ : null;
+    }
+
     static waitForMilliseconds(ms) {
       return new Promise((resolve, reject) => {
         setTimeout(resolve, ms);

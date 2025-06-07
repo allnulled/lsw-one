@@ -55,6 +55,8 @@ module.exports = [
   `${basepath}/lsw-framework/src/apis/lsw-trigger/triggers-class.js`,
   // LSW DATABASE:
   `${basepath}/lsw-framework/src/apis/lsw-database/browsie.unbundled.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-database-query-language/browsie-script.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-database-query-language/lsw-database-query-language.js`,
   // LSW LOGGER:
   `${basepath}/lsw-framework/src/apis/lsw-logger/superlogger.unbundled.js`,
   // LSW RETURNER:
@@ -214,6 +216,42 @@ module.exports = [
   // NOTAS:
   `${basepath}/lsw-framework/src/components/lsw-notes/lsw-notes`,
   `${basepath}/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page`,
+  // BASIC DESKTOP COMPONENTS:
+  `${basepath}/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer`,
+  `${basepath}/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button`,
+  `${basepath}/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel`,
+  // PROTOLANG:
+  `${basepath}/lsw-framework/src/apis/lsw-languages/protolang/protolang.js`,
+  `${basepath}/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor`,
+  // SPONTANEOUS FORMS & TABLES & CONTROLS:
+  `${basepath}/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion`,
+  `${basepath}/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo`,
+  `${basepath}/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista`,
+  `${basepath}/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota`,
+  `${basepath}/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio`,
+  `${basepath}/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion`,
+  `${basepath}/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo`,
+  `${basepath}/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista`,
+  `${basepath}/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota`,
+  `${basepath}/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio`,
+  `${basepath}/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control`,
+  // WEEK PLANNER:
+  `${basepath}/lsw-framework/src/apis/lsw-languages/weeklang/weeklang.bundled.js`,
+  `${basepath}/lsw-framework/src/components/lsw-week-planner/lsw-week-planner`,
+  // DATABASE PROXIES:
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Accion.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Accion_virtual.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Concepto.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Categoria_de_concepto.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Propagador_prototipo.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Propagador_de_concepto.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Limitador.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Impresion.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Nota.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Automensaje.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Lista.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Recordatorio.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Articulo.js`,
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // APIs Componente:
   `${basepath}/lsw-framework/src/lsw-api.js`,

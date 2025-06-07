@@ -1,6 +1,6 @@
 .lsw_windows_main_tab {
     position: fixed;
-    top: 5px;
+    top: 52px;
     bottom: calc(env(safe-area-inset-bottom, 0) + 46px);
     left: 5px;
     right: 5px;

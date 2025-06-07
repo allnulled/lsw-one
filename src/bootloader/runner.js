@@ -19,8 +19,8 @@
       if(window.location.href.startsWith("https://")) {
         Vue.prototype.$lsw.logger.deactivate();
       } else {
-        // Vue.prototype.$lsw.logger.activate();
         Vue.prototype.$lsw.logger.deactivate();
+        Vue.prototype.$lsw.logger.activate();
       }
     }
   
@@ -31,11 +31,13 @@
         }
         Inject_development_point: {
           if(window.location.href.startsWith("http://")) {
-            // await LswDomIrruptor.abrirBaseDeDatos();
             // await LswDomIrruptor.abrirBinarios();
             // await LswDomIrruptor.abrirTareasPosterioresDeNavegacionRapida();
             // await LswDomIrruptor.abrirRecords();
-            await LswDomIrruptor.abrirFicheros();
+            // await LswDomIrruptor.abrirFicheros();
+            // await LswDomIrruptor.abrirHomepage();
+            // await LswDomIrruptor.abrirWeekPlanner();
+            await LswDomIrruptor.abrirAcciones();
           }
         }
       } catch (error) {

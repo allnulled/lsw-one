@@ -17,25 +17,25 @@
         <div class="selected_day_title"
             v-if="selectedDate">
             <div class="flex_row centered">
-                <div class="flex_1 margin_right_1">
-                    <button class="supermini padded_vertically_1"
-                        v-on:click="openNewRowDialog"
-                        :class="{activated: selectedForm === 'new'}">➕</button>
-                </div>
                 <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
                 <div class="flex_1 nowrap">
-                    <button class="supermini padded_vertically_1"
+                    <button class="padded_vertically_1"
                         v-on:click="openRandomizerFile">{🎲}</button>
-                    <button class="supermini padded_vertically_1"
+                    <button class="padded_vertically_1"
                         v-on:click="randomizeDay">+🎲</button>
-                    <button class="supermini padded_vertically_1"
+                    <button class="padded_vertically_1"
                         v-on:click="cleanRandomizedDays">🔥🎲</button>
-                    <button class="supermini padded_vertically_1"
+                    <button class="padded_vertically_1"
                         v-on:click="showAllHours"
                         style="display: none;">🔓*</button>
-                    <button class="supermini padded_vertically_1"
+                    <button class="padded_vertically_1"
                         v-on:click="hideAllHours"
                         style="display: none;">🔒*</button>
+                </div>
+                <div class="flex_1 margin_left_1">
+                    <button class="padded_vertically_1"
+                        v-on:click="openNewRowDialog"
+                        :class="{activated: selectedForm === 'new'}">➕</button>
                 </div>
             </div>
         </div>
@@ -48,25 +48,25 @@
                 <div class="hour_task_block"
                     v-if="accion.tiene_estado === 'trackeada'">
                     <div class="accion_row flex_row centered" style="padding-top: 2px;">
-                        <button class="supermini flex_1" v-on:click="() => openEditRowDialog(accion)">
-                            #️⃣
-                        </button>
-                        <div class="flex_1 celda_de_hora margin_left_1"
+                        <div class="flex_1 celda_de_hora"
                             v-on:click="$noop">
-                            <div class="padded_vertically_1">
+                            <div class="padded_vertically_1 pad_left_1">
                             {{
                                 $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
                             }}
                             </div>
                         </div>
-                        <div>
+                        <div class="">
                             <button class="supermini padded_vertically_1">
                                 🎥
                             </button>
                         </div>
                         <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
-                        <button class="supermini flex_100 text_align_left pad_0 margin_left_1 nowrap shortable_text" disabled="true" style="min-width: 80px;">
+                        <button class="supermini flex_100 text_align_left pad_0 margin_right_1 nowrap shortable_text" disabled="true" style="min-width: 80px;">
                             <b>{{ accion.en_concepto }}</b><span v-if="accion.tiene_comentarios">: {{ accion.tiene_comentarios }}</span>
+                        </button>
+                        <button class="supermini flex_1" v-on:click="() => openEditRowDialog(accion)">
+                            ↗️
                         </button>
                         <div class="flex_1">
                             <button class="supermini danger_button padded_vertically_1"
@@ -80,14 +80,9 @@
                     v-bind:key="'accion_' + accionIndex">
                     <div class="accion_row flex_row centered"
                         style="padding-top: 2px;">
-                        <div class="flex_1 pad_right_1">
-                            <button class="supermini padded_vertically_1"
-                                :class="{activated: selectedForm === accion.id}"
-                                v-on:click="() => openEditRowDialog(accion)">#️⃣</button>
-                        </div>
                         <div class="flex_1 celda_de_hora"
                             v-on:click="() => toggleShowAccion(accion.id)">
-                            <div class="padded_vertically_1">{{
+                            <div class="padded_vertically_1 pad_left_1">{{
                                 $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
                                 }}
                             </div>
@@ -95,7 +90,7 @@
                         <div>
                             <button class="supermini padded_vertically_1"
                                 v-on:click="(e) => toggleAutogeneration(accion)">{{ accion.tiene_parametros.startsWith("[*autogenerada]") ?
-                                "🤖" : "✍️" }}</button>
+                                "🤖" : accion.tiene_parametros.startsWith("[*semanal]") ? "🏁" : "✍️" }}</button>
                         </div>
                         <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
                         <div class="flex_100 celda_de_concepto shortable_text">
@@ -103,6 +98,11 @@
                                 :class="{activated: shownAcciones.indexOf(accion.id) !== -1}"
                                 v-on:click="() => advanceTaskState(accion)"> {{ accion.en_concepto || '🤔' }}
                             </div>
+                        </div>
+                        <div class="flex_1">
+                            <button class="supermini padded_vertically_1"
+                                :class="{activated: selectedForm === accion.id}"
+                                v-on:click="() => openEditRowDialog(accion)">↗️</button>
                         </div>
                         <div class="flex_1">
                             <button class="supermini danger_button padded_vertically_1"

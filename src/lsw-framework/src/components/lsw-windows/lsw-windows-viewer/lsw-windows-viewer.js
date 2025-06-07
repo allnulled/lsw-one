@@ -27,6 +27,7 @@ Vue.component("LswWindowsViewer", {
   mounted() {
     this.$window.LswWindows = this;
     this.$lsw.windows = this;
+    this.$lsw.windowsViewer = this;
   }
 });
 // @code.end: LswWindowsViewer API

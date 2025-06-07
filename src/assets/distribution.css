@@ -140,14 +140,14 @@ button.boton_de_dia_de_calendario {
 }
 button.boton_de_dia_de_calendario.current {
     background-color: rgb(97, 48, 46);
-    border: 2px solid #6fff00;
     border-radius: 2pt;
-    box-shadow: 0 0 8px rgb(255, 251, 0);
 }
 
 button.boton_de_dia_de_calendario.active {
     background-color: white;
     color: black;
+    border: 2px solid #6fff00;
+    box-shadow: 0 0 8px rgb(255, 251, 0);
 }
 button.boton_de_dia_de_calendario.active.current {
     
@@ -183,7 +183,7 @@ table.tabla_para_horas input {
     
 }
 tr.fila_de_dias_de_semana > td > div {
-    background-color: rgba(29, 217, 29, 0.343);
+    background-color: rgba(6, 2, 51, 0.4);
     color: white;
     text-align: center;
     padding: 4px;
@@ -593,7 +593,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 }
 .lsw_dialogs {
     position: fixed;
-    top: 5px;
+    top: 52px;
     left: 5px;
     right: 5px;
     bottom: 5px;
@@ -607,7 +607,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 
 .dialog_window {
     position: absolute;
-    top: 0;
+    top: 0px;
     left: 0;
     right: 0;
     bottom: calc(env(safe-area-inset-bottom, 0) + 46px);
@@ -647,7 +647,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 }
 .lsw_windows_main_tab {
     position: fixed;
-    top: 5px;
+    top: 52px;
     bottom: calc(env(safe-area-inset-bottom, 0) + 46px);
     left: 5px;
     right: 5px;
@@ -1018,6 +1018,16 @@ table.top_aligned > tbody > tr > td {
 }
 .lsw_filesystem_editor .editor:focus {
     background-color: #FFFFFF;
+}
+
+.lsw_filesystem_editor .editor_position_box {
+    background-color: rgba(255,255,255,0.5);
+    color: rgb(30, 30, 30);
+    border: 1px solid rgb(30, 30, 30);
+    padding: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    text-shadow: 0 0 0px transparent;
 }
 .lsw_filesystem_treeviewer {}
 
@@ -1499,15 +1509,14 @@ button.button_checkbox > label > span {
 }
 
 .hour_task_block.is_completed .celda_de_concepto {
-    background-color: #46c01a88;
+    background-color: #2ea603d6;
     color: black;
     text-decoration: line-through;
 }
 
 .hour_task_block.is_pending .celda_de_concepto {
-    background-color: #cbc51588;
-    color: #050899;
-    border: 1px solid rgb(42, 129, 181);
+    background-color: #f2ea0b99;
+    color: #040688;
 
 }
 
@@ -1515,10 +1524,9 @@ button.button_checkbox > label > span {
     margin-top: 4px;
     margin-bottom: 4px;
     padding: 4px;
-    background-color: rgba(9, 2, 45, 0.6);
+    background-color: rgba(0, 0, 0, 0.6);
     border-radius: 3pt;
-    border: 1px double #24153c;
-    box-shadow: 0 0 4px black;
+    border: 0px solid #000;
 }
 
 .tabla_de_detalles {
@@ -2362,6 +2370,265 @@ select.form_control {
 
 
 .configurations_page {}
+.lsw_automensajes_viewer {
+    
+}
+
+
+.automensaje_block {
+    border: 1px solid #333;
+    border-radius: 3pt;
+    padding: 0px;
+    font-weight: bold;
+    font-weight: normal;
+    text-shadow: 0 0 1px #000;
+    text-align: center;
+    cursor: pointer;
+    min-height: calc(var(--button_height) - 8px);
+    box-shadow: 0 0 2px black;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.37);
+    transition: background-color 0.2s linear;
+}
+
+.automensaje_block:hover {}
+
+.app_main_topbar {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: auto;
+    background-color: #000000D8;
+    border-bottom: 1px solid #333;
+    box-shadow: 0 0 4px black;
+    padding-top: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
+    z-index: 999;
+}
+
+.app_main_panel {
+    margin-top: 54px;
+}
+.lsw_apps_viewer_button {
+
+}
+.scrollable_panel_viewer {
+    min-height: 3px;
+    max-height: 460px;
+    overflow: scroll;
+    border-top: 3px double #333;
+    border-bottom: 3px double #333;
+}
+.tarjetas_de_accion {
+    border-top: 0px solid #222;
+    border-right: 0px solid #222;
+}
+.tarjeta_de_accion {
+    display: flex;
+    flex-direction: row;
+    border-top: 0px solid #222;
+    border-right: 0px solid #222;
+}
+.tarjeta_de_accion > div {
+    white-space: no-wrap;
+    padding: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-top: 1px;
+    border: 0px solid #222;
+    border-right: 0px solid #222;
+    border-top: 0px solid #222;
+}
+.tarjeta_de_accion > div:first-child {
+    
+}
+.tarjeta_de_accion > .cell_en_concepto {
+    
+}
+.tarjeta_de_accion > .cell_en_estado {
+    color: black;
+    text-shadow: 0 0 1px black;
+    border-radius: 8pt;
+    cursor: pointer;
+}
+.tarjeta_de_accion > .cell_en_estado.estado_pendiente {
+    background-color: yellow;
+}
+.tarjeta_de_accion > .cell_en_estado.estado_completada {
+    background-color: rgb(30, 255, 0);
+}
+.tarjeta_de_accion > .cell_en_estado.estado_fallida {
+    background-color: red;
+}
+
+.application_button {
+    background-color: rgba(81, 175, 218, 0.5);
+}
+.application_button.activated,
+.application_button:hover {
+    background-color: rgba(3, 150, 218, 0.7);
+    border: 1px solid rgb(4, 4, 54);
+}
+.section_button {
+    background-color: rgba(68, 68, 68, 0.5);
+}
+.section_button.activated,
+.section_button:hover {
+    background-color: rgba(64, 64, 64, 0.764);
+    border: 1px solid rgb(4, 4, 54);
+}
+
+.side_panel .side_button {
+    min-width: 50px;
+    margin-bottom: 4px;
+}
+.top_panel {
+
+}
+.top_panel .top_button_cell {
+    padding-right: 4px;
+}
+.top_panel .top_button {
+    min-width: 50px;
+}
+
+.lsw_apps_button {
+    
+}
+
+.main_topbar_button {
+    border: 1px solid #333 !important;
+    border-radius: 0pt !important;
+    background-color: rgba(255,255,255,0.0);
+}
+.lsw_apps_viewer_panel {}
+
+.desktop_free_area {
+    padding-bottom: 100px;
+    max-width: 100%;
+}
+
+.desktop_free_available_area {
+    padding: 0px;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: white;
+    text-shadow: 0 0 1px black;
+    border-radius: 2pt;
+    border: 0px solid #ccc;
+}
+
+.padded_vertically_1 {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.celda_de_duracion {
+    white-space: nowrap;
+    font-size: 10px;
+}
+
+.celda_de_concepto {
+    border: 1px solid rgb(6, 60, 92);
+    border-radius: 3pt;
+    padding: 0px;
+    cursor: pointer;
+}
+
+.celda_de_hora {
+    text-shadow: 0 0 1px rgb(0, 0, 0);
+    text-align: left;
+    border: 1px solid rgb(42, 129, 181);
+    border-radius: 3pt;
+    cursor: pointer;
+    background-color: rgba(23, 11, 83, 0.55);
+    color: white;
+    text-shadow: 0 0 1px #000;
+    padding-right: 4px;
+    font-size: 10px;
+}
+.celda_de_hora:hover {
+    background-color: rgba(102, 88, 175, 0.55);
+}
+
+.celda_de_hora.activated {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: inherit;
+}
+
+.cell_en_concepto {
+    font-style: italic;
+}
+
+@keyframes celdaAlarmante {
+    0% {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: white;
+        text-shadow: 0 0 1px rgb(0, 0, 0);
+    }
+    89% {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: white;
+        text-shadow: 0 0 1px rgb(0, 0, 0);
+    }
+    90% {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: black;
+        text-shadow: 0 0 1px rgb(255, 255, 255);
+    }
+    99% {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: black;
+        text-shadow: 0 0 1px rgb(255, 255, 255);
+    }
+    100% {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: white;
+        text-shadow: 0 0 1px rgb(0, 0, 0);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+.nota_button {
+    color: black;
+    text-shadow: 0 0 1px white;
+    background-color: rgba(200, 200, 200, 0.5);
+}
+
+.nota_title_text {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.celda_de_estado_de_nota {
+    background-color: #cfcfcf;
+    color: #000;
+    border: 1px solid #666;
+    box-shadow: 0 0 2px white;
+    padding-left: 1px;
+    padding-right: 1px;
+    border-radius: 2pt;
+}
+
+.celda_de_estado_de_nota.estado_urgente {
+    background-color: rgb(226, 141, 141);
+    color: black;
+    border: 1px solid rgb(64, 9, 9);
+    box-shadow: 0 0 2px white;
+    font-weight: bold;
+}
+
+
+
 :root {
     --button_height: 42px;
 }
@@ -2412,7 +2679,7 @@ button:hover {
     /*background-color: rgb(6, 6, 29);*/
     background-color: rgba(178, 178, 178, 0.50);
     border: 1px solid rgb(227, 227, 227);
-    box-shadow: 0 0 2px black;
+    /*box-shadow: 0 0 2px black;*/
 }
 
 button.activated {
@@ -2460,10 +2727,9 @@ button.iconized_button {
 }
 
 button.has_light_bg {
-    background-color: #22222687;
+    background-color: #65656587;
     color: white;
     border: 1px solid #3c3c3e;
-    box-shadow: 0 0 3px black;
 }
 
 button.has_light_bg:hover {
@@ -2706,7 +2972,7 @@ table.tabla_de_conductometria .minibutton {
 }
 
 .mobile_off_panel_cell:hover {
-    background-color: #181830D8;
+    background-color: rgba(178, 178, 178, 0.50);
 }
 
 pre.codeblock {
@@ -2827,6 +3093,7 @@ pre.codeblock {
     border: 3px double rgb(170, 133, 133);
     border-radius: 3pt;
     box-shadow: 0 0 4px black;
+    overflow: scroll;
 }
 
 .texto_markdown.sin_decorar {
@@ -3231,6 +3498,10 @@ pre.codeblock {
     text-shadow: 0 0 1px black;
 }
 
+.unselectable_text {
+    user-select: none;
+}
+
 .margin_bottom_1px {
     margin-bottom: 4px;
 }
@@ -3251,237 +3522,4 @@ pre.codeblock {
 .min_height_33px {
     min-height: 33px;
 }
-
-.lsw_automensajes_viewer {
-    
-}
-
-
-.automensaje_block {
-    border: 1px solid #ffffff;
-    border-radius: 3pt;
-    padding: 0px;
-    font-weight: bold;
-    font-weight: normal;
-    text-shadow: 0 0 1px #000;
-    text-align: center;
-    cursor: pointer;
-    min-height: calc(var(--button_height) - 8px);
-    box-shadow: 0 0 2px black;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.37);
-    transition: background-color 0.2s linear;
-}
-
-.automensaje_block:hover {}
-.lsw_apps_viewer_button {
-
-}
-.scrollable_panel_viewer {
-    min-height: 3px;
-    max-height: 460px;
-    overflow: scroll;
-    border-top: 3px double #333;
-    border-bottom: 3px double #333;
-}
-.tarjetas_de_accion {
-    border-top: 0px solid #222;
-    border-right: 0px solid #222;
-}
-.tarjeta_de_accion {
-    display: flex;
-    flex-direction: row;
-    border-top: 0px solid #222;
-    border-right: 0px solid #222;
-}
-.tarjeta_de_accion > div {
-    white-space: no-wrap;
-    padding: 2px;
-    padding-left: 4px;
-    padding-right: 4px;
-    margin-top: 1px;
-    border: 0px solid #222;
-    border-right: 0px solid #222;
-    border-top: 0px solid #222;
-}
-.tarjeta_de_accion > div:first-child {
-    
-}
-.tarjeta_de_accion > .cell_en_concepto {
-    
-}
-.tarjeta_de_accion > .cell_en_estado {
-    color: black;
-    text-shadow: 0 0 1px black;
-    border-radius: 8pt;
-    cursor: pointer;
-}
-.tarjeta_de_accion > .cell_en_estado.estado_pendiente {
-    background-color: yellow;
-}
-.tarjeta_de_accion > .cell_en_estado.estado_completada {
-    background-color: rgb(30, 255, 0);
-}
-.tarjeta_de_accion > .cell_en_estado.estado_fallida {
-    background-color: red;
-}
-
-.application_button {
-    background-color: rgba(81, 175, 218, 0.5);
-}
-.application_button.activated,
-.application_button:hover {
-    background-color: rgba(3, 150, 218, 0.7);
-    border: 1px solid rgb(4, 4, 54);
-}
-.section_button {
-    background-color: rgba(68, 68, 68, 0.5);
-}
-.section_button.activated,
-.section_button:hover {
-    background-color: rgba(64, 64, 64, 0.764);
-    border: 1px solid rgb(4, 4, 54);
-}
-
-.side_panel .side_button {
-    min-width: 50px;
-    margin-bottom: 4px;
-}
-.top_panel {
-
-}
-.top_panel .top_button_cell {
-    padding-right: 4px;
-}
-.top_panel .top_button {
-    min-width: 50px;
-}
-
-.lsw_apps_button {
-    
-}
-.lsw_apps_viewer_panel {}
-
-.desktop_free_area {
-    padding-bottom: 100px;
-    max-width: 100%;
-}
-
-.desktop_free_available_area {
-    padding: 0px;
-    background-color: rgba(0, 0, 0, 0.4);
-    color: white;
-    text-shadow: 0 0 1px black;
-    border-radius: 2pt;
-    border: 0px solid #ccc;
-}
-
-.padded_vertically_1 {
-    padding-top: 4px;
-    padding-bottom: 4px;
-}
-
-.celda_de_duracion {
-    white-space: nowrap;
-    font-size: 10px;
-}
-
-.celda_de_concepto {
-    border: 1px solid black;
-    border-radius: 3pt;
-    padding: 0px;
-    cursor: pointer;
-}
-
-.celda_de_hora {
-    text-shadow: 0 0 1px rgb(0, 0, 0);
-    text-align: left;
-    border: 1px solid rgb(42, 129, 181);
-    border-radius: 3pt;
-    cursor: pointer;
-    background-color: rgba(23, 11, 83, 0.55);
-    color: white;
-    text-shadow: 0 0 1px #000;
-    padding-right: 4px;
-    font-size: 10px;
-}
-.celda_de_hora:hover {
-    background-color: rgba(102, 88, 175, 0.55);
-}
-
-.celda_de_hora.activated {
-    background-color: rgba(255, 255, 255, 0.9);
-    border: inherit;
-}
-
-.cell_en_concepto {
-    font-style: italic;
-}
-
-@keyframes celdaAlarmante {
-    0% {
-        background-color: rgba(0, 0, 0, 0.2);
-        color: white;
-        text-shadow: 0 0 1px rgb(0, 0, 0);
-    }
-    89% {
-        background-color: rgba(0, 0, 0, 0.2);
-        color: white;
-        text-shadow: 0 0 1px rgb(0, 0, 0);
-    }
-    90% {
-        background-color: rgba(255, 255, 255, 0.2);
-        color: black;
-        text-shadow: 0 0 1px rgb(255, 255, 255);
-    }
-    99% {
-        background-color: rgba(255, 255, 255, 0.2);
-        color: black;
-        text-shadow: 0 0 1px rgb(255, 255, 255);
-    }
-    100% {
-        background-color: rgba(0, 0, 0, 0.2);
-        color: white;
-        text-shadow: 0 0 1px rgb(0, 0, 0);
-    }
-}
-
-
-
-
-
-
-
-
-
-
-.nota_button {
-    color: black;
-    text-shadow: 0 0 1px white;
-    background-color: rgba(200, 200, 200, 0.5);
-}
-
-.nota_title_text {
-    font-weight: bold;
-    text-decoration: underline;
-}
-
-.celda_de_estado_de_nota {
-    background-color: #cfcfcf;
-    color: #000;
-    border: 1px solid #666;
-    box-shadow: 0 0 2px white;
-    padding-left: 1px;
-    padding-right: 1px;
-    border-radius: 2pt;
-}
-
-.celda_de_estado_de_nota.estado_urgente {
-    background-color: rgb(226, 141, 141);
-    color: black;
-    border: 1px solid rgb(64, 9, 9);
-    box-shadow: 0 0 2px white;
-    font-weight: bold;
-}
-
 

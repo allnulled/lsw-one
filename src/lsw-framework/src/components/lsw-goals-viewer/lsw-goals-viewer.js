@@ -127,7 +127,7 @@ Vue.component("LswGoalsViewer", {
         title: "Editar objetivos",
         template: `
           <div>
-            <lsw-filesystem-explorer opened-by="/kernel/settings/goals.env" :absolute-layout="true" />
+            <lsw-filesystem-explorer opened-by="/kernel/goals/goals.week" :absolute-layout="true" />
           </div>
         `
       });
@@ -150,6 +150,17 @@ Vue.component("LswGoalsViewer", {
         template: `
           <div class="pad_1">
             <lsw-goals-records-viewer />
+          </div>
+        `
+      });
+    },
+    openWeekPlanner() {
+      this.$trace("lsw-goals-viewer.methods.openWeekPlanner");
+      this.$dialogs.open({
+        title: "Planificador de semana",
+        template: `
+          <div class="pad_1">
+            <lsw-week-planner />
           </div>
         `
       });
@@ -187,6 +198,149 @@ Vue.component("LswGoalsViewer", {
           methods: { }
         }
       });
+    },
+    async importGoalsToDay() {
+      this.$trace("lsw-goals-viewer.methods.importGoalsToDay");
+      const originalGoals = await Vue.prototype.$lsw.fs.evaluateAsWeekFileOrReturn("/kernel/goals/goals.week", []);
+      const dayString = LswTimer.utils.fromDateToDatestring(this.dayToAnalize, true);
+      const weekdayString = LswGoals.fromDateToWeekday(this.dayToAnalize);
+      const goalsMatched = originalGoals.filter(goal => {
+        if(goal.type !== "SET") {
+          return false;
+        }
+        Filtro_de_goal_segun_dia: {
+          const {
+            from: goalBegin,
+            to: goalEnd,
+            type: goalType,
+            concept: goalConcept,
+            duration: goalDuration,
+            hour: goalHour,
+            minute: goalMinute,
+            weekday: goalWeekday,
+          } = goal;
+          // No excede el «desde fecha».
+          if(goalBegin !== "*") {
+            if(dayString < goalBegin) {
+              return false;
+            }
+          }
+          // No excede el «hasta fecha»
+          if(goalEnd !== "*") {
+            if(dayString > goalEnd) {
+              return false;
+            }
+          }
+          // Coincide con el «dia de la semana»
+          if(goalWeekday !== "*") {
+            if(weekdayString !== goalWeekday) {
+              return false;
+            }
+          }
+        }
+        return true;
+      });
+      const goalsMissing = [];
+      const accionesDia = await this.$lsw.database.select("Accion", acc => acc.tiene_inicio.startsWith(dayString));
+      Iterating_objetivos:
+      for(let indexGoal=0; indexGoal<goalsMatched.length; indexGoal++) {
+        const goalMatched = goalsMatched[indexGoal];
+        const {
+          from: goalBegin,
+          to: goalEnd,
+          type: goalType,
+          concept: goalConcept,
+          duration: goalDuration,
+          hour: goalHour,
+          minute: goalMinute,
+          weekday: goalWeekday,
+        } = goalMatched;
+        const presuntoInicio = dayString + " " + goalMatched.hour + ":" + goalMatched.minute;
+        let missingAccion = {
+          ast: goalMatched,
+          acc: {
+            en_concepto: goalConcept,
+            tiene_estado: "pendiente",
+            tiene_inicio: presuntoInicio,
+            tiene_duracion: goalDuration || "1h",
+            tiene_parametros: "[*semanal]",
+            tiene_descripcion: "",
+            tiene_comentarios: "",
+          }
+        };
+        Iterating_acciones:
+        for(let indexAcc=0; indexAcc<accionesDia.length; indexAcc++) {
+          const accionDia = accionesDia[indexAcc];
+          const matchesParameter = accionDia.tiene_parametros.indexOf("[*semanal]") !== -1;
+          const matchesTime = accionDia.tiene_inicio.startsWith(presuntoInicio);
+          const matchesConcept = accionDia.tiene_inicio.startsWith(presuntoInicio);
+          if(matchesParameter && matchesTime && matchesConcept) {
+            missingAccion = false;
+            break Iterating_acciones;
+          };
+        }
+        if(missingAccion) {
+          goalsMissing.push(missingAccion);
+        }
+      }
+      if(!goalsMissing.length) {
+        return this.$lsw.dialogs.open({
+          title: "No hay objetivos por importar",
+          template: `
+            <div class="pad_1">
+              <div>No hay objetivos por importar actualmente.</div>
+            </div>
+          `
+        });
+      }
+      const confirmation = await this.$lsw.dialogs.open({
+        title: "Importar objetivos a día",
+        template: `
+          <div class="pad_1">
+            <div>¿Seguro que quieres importar los objetivos al día seleccionado?</div>
+            <div class="pad_vertical_2">Se añadirán las siguientes {{ goalsToImport.length }} acciones:</div>
+            <ul class="margin_vertical_0">
+              <li v-for="goal, goalIndex in goalsToImport" v-bind:key="'goal_' + goalIndex">
+                <div>{{ currentWeekday }}, {{ currentDay }} ➞ {{ goal.ast.hour }}:{{ goal.ast.minute }}@{{ goal.acc.en_concepto }}</div>
+              </li>
+            </ul>
+            <hr />
+            <div class="flex_row centered">
+              <div class="flex_100"></div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="() => accept(true)">Aceptar</button>
+              </div>
+              <div class="flex_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            currentWeekday: LswGoals.fromDateToWeekday(this.dayToAnalize),
+            currentDay: dayString,
+            goalsToImport: goalsMissing
+          }
+        }
+      });
+      if(confirmation !== true) {
+        return;
+      }
+      await this.$lsw.database.insertMany("Accion", goalsMissing.map(goalMetadata => goalMetadata.acc));
+      this.$lsw.toasts.send({
+        title: `Se insertaron ${goalsMissing.length} acciones`,
+        text: `Los objetivos generaron ${goalsMissing.length} acciones para el día seleccionado`
+      });
+      this.updateCalendario();
+    },
+    updateCalendario() {
+      this.$trace("lsw-goals-viewer.methods.updateCalendario");
+      try {
+        LswDom.findVue(".lsw_agenda").reloadDateTasks();
+      } catch (error) {
+        // @BADLUCK
+      }
     }
   },
   watch: {},

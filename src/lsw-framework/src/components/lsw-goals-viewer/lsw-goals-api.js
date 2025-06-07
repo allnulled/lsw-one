@@ -21,65 +21,185 @@
 
     static async getGoalsReport(someDate = new Date()) {
       Vue.prototype.$trace("lsw-goals-viewer.methods.getGoalsReport");
-      try {
-        const parsedLines = await Vue.prototype.$lsw.fs.evaluateAsDotenvListFileOrReturn("/kernel/settings/goals.env", []);
+      let originalGoals = undefined;
+      // @HISTORICAL:
+      Previous_goals_setter: {
+        break Previous_goals_setter;
+        const parsedLinesPromise = Vue.prototype.$lsw.fs.evaluateAsDotenvListFileOrReturn("/kernel/settings/goals.env", []);
+        const parsedLines = await parsedLinesPromise;
         // 1. Get original goals:
-        const originalGoals = parsedLines.map(line => {
+        const previousOriginalGoals = parsedLines.map(line => {
           const [concept, condition = "> 0", urgency = "0"] = line.split(/\|/g).map(item => {
             return item.trim();
           });
-          return {
-            originalLine: line,
-            originalConcept: concept,
-            originalCondition: condition,
-            originalUrgency: urgency,
-          };
+          return { line, concept, condition, urgency };
         });
-        // 2. Get today's completed actions:
-        const todayCompletedActions = await this.getSomeDayActions(someDate, false, "completada");
-        // 3. Expand goals:
-        for (let indexGoal = 0; indexGoal < originalGoals.length; indexGoal++) {
+        originalGoals = previousOriginalGoals;
+      }
+      // @CURRENT:
+      Current_goals_setter: {
+        originalGoals = await Vue.prototype.$lsw.fs.evaluateAsWeekFileOrReturn("/kernel/goals/goals.week", []);
+      }
+      // 2. Get today's completed actions:
+      const todayCompletedActions = await this.getSomeDayActions(someDate, false, "completada");
+      const formattedGoals = [];
+      const insertedGoals = [];
+      // 3. Expand goals:
+      Iterating_goals:
+      for (let indexGoal = 0; indexGoal < originalGoals.length; indexGoal++) {
+        try {
           const originalGoal = originalGoals[indexGoal];
           const {
-            originalConcept: concept,
-            originalCondition: condition,
-            originalUrgency: urgency
+            type: goalType,
+            concept,
+            condition,
+            urgency,
+            from: goalBegin,
+            to: goalEnd
           } = originalGoal;
-          const formattedConcept = this.formatConcept(concept);
-          const formattedCondition = this.formatCondition(condition, formattedConcept);
-          const formattedUrgency = this.formatUrgency(urgency);
-          originalGoals[indexGoal].concept = formattedConcept;
-          Object.assign(originalGoals[indexGoal], formattedCondition(todayCompletedActions));
-          originalGoals[indexGoal].urgency = formattedUrgency;
+          const isRequire = goalType === "REQ";
+          const isSet = goalType === "SET";
+          const datestring = LswTimer.utils.fromDateToDatestring(someDate);
+          // Filtros de fecha:
+          if (goalBegin !== "*") {
+            if (datestring < goalBegin) {
+              continue Iterating_goals;
+            }
+          }
+          if (goalEnd !== "*") {
+            if (datestring > goalEnd) {
+              continue Iterating_goals;
+            }
+          }
+          // Aplica cambios en cada caso:
+          if (isSet) {
+            // Solo si es en un rango de 20 días antes o después:
+            const today = new Date();
+            const maxBefore = new Date(today);
+            maxBefore.setDate(maxBefore.getDate() - 1);
+            const maxLater = new Date(today);
+            maxLater.setDate(maxLater.getDate() + 1);
+            const isInRange = (someDate > maxBefore) && (someDate < maxLater);
+            if(!isInRange) {
+              continue Iterating_goals;
+            }
+            console.log(originalGoal);
+            const duration = originalGoal.duration || "1h";
+            const hour = originalGoal.hour || "00";
+            const minute = originalGoal.minute || "00";
+            const weekday = originalGoal.weekday;
+            const isAnyWeekday = weekday === "*";
+            const currentWeekday = this.fromDateToWeekday(someDate);
+            if(!isAnyWeekday && (currentWeekday !== weekday)) {
+              continue Iterating_goals;
+            }
+            const currDatestring = LswTimer.utils.fromDateToDatestring(someDate, true);
+            const fullDatestring = `${currDatestring} ${hour}:${minute}`;
+            const matchedAcciones = await Vue.prototype.$lsw.database.select("Accion", acc => {
+              const sameConcept = acc.en_concepto === concept;
+              const sameMinute = acc.tiene_inicio.startsWith(fullDatestring);
+              return sameConcept && sameMinute;
+            });
+            if(matchedAcciones.length === 1) {
+              continue Iterating_goals;
+            }
+            No_haremos_el_insert_aqui: {
+              break No_haremos_el_insert_aqui;
+              await Vue.prototype.$lsw.database.insert("Accion", {
+                en_concepto: concept,
+                tiene_estado: "pendiente",
+                tiene_inicio: fullDatestring,
+                tiene_duracion: duration,
+                tiene_parametros: "[*goal]",
+                tiene_resultados: "",
+                tiene_comentarios: "",
+              });
+              insertedGoals.push(`${concept}@${fullDatestring}`);
+            }
+            continue Iterating_goals;
+          } else if (isRequire) {
+            const formattedGoal = {};
+            const formattedConcept = this.formatConcept(concept);
+            const formattedCondition = this.formatCondition(condition, formattedConcept);
+            const formattedUrgency = this.formatUrgency(urgency);
+            formattedGoal.concept = formattedConcept;
+            Object.assign(formattedGoal, formattedCondition(todayCompletedActions));
+            formattedGoal.urgency = formattedUrgency;
+            formattedGoals.push(formattedGoal);
+          }
+        } catch (error) {
+          console.log(error);
         }
-        const sortedGoals = [].concat(originalGoals).sort((g1, g2) => {
+      }
+      const sortedGoals = [].concat(formattedGoals).sort((g1, g2) => {
+        try {
           const u1 = g1.urgency || 0;
           const u2 = g2.urgency || 0;
           const c1 = g1.filledAsint || 0;
           const c2 = g2.filledAsint || 0;
           const g1over = c1 > 100;
           const g2over = c2 > 100;
-          if(g2over) return -1;
-          if(g1over) return 1;
-          if(u1 > u2) return -1;
-          if(u1 < u2) return 1;
-          if(c1 < c2) return -1;
-          if(c1 > c2) return 1;
+          if (g2over) return -1;
+          if (g1over) return 1;
+          if (u1 > u2) return -1;
+          if (u1 < u2) return 1;
+          if (c1 < c2) return -1;
+          if (c1 > c2) return 1;
           return 0;
-        });
-        return {
-          goals: sortedGoals,
-          actions: todayCompletedActions
-        };
-      } catch (error) {
-        console.error(error);
-        return error;
+        } catch (error) {
+          console.log(error);
+        }
+      });
+      if(insertedGoals.length) {
+        Vue.prototype.$lsw.toasts.debug(insertedGoals);
       }
+      return {
+        goals: sortedGoals,
+        actions: todayCompletedActions
+      };
+    }
+
+    static fromDateToWeekday(date) {
+      const weekdayNum = date.getDay();
+      if(weekdayNum === 0) {
+        return "dom";
+      } else if(weekdayNum === 1) {
+        return "lun";
+      } else if(weekdayNum === 2) {
+        return "mar";
+      } else if(weekdayNum === 3) {
+        return "mie";
+      } else if(weekdayNum === 4) {
+        return "jue";
+      } else if(weekdayNum === 5) {
+        return "vie";
+      } else if(weekdayNum === 6) {
+        return "sab";
+      }
+    }
+
+    static $appliesRange(rangeStart, rangeEnd, date) {
+      Vue.prototype.$trace("lsw-goals-viewer.methods.$appliesRange");
+      if (rangeStart === "*") {
+        if (rangeEnd === "*") {
+          return true;
+        } else {
+          return rangeEnd >= date;
+        }
+      } else if (rangeStart <= date) {
+        if (rangeEnd === "*") {
+          return true;
+        } else {
+          return rangeEnd >= date;
+        }
+      }
+      return true;
     }
 
     static formatConcept(txt) {
       return txt;
     }
+
     static formatCondition(originalTxt, concept) {
       const isMin = originalTxt.startsWith(">");
       const op = originalTxt.trim().match(/(\<|\>)(=)?/g);
@@ -178,10 +298,10 @@
     static COLOR_GAMA_3 = {
       SUSPENSO: "#c62828",
       INSUFICIENTE: "#ef6c00",
-      SUFICIENTE: "#f9a825",
+      SUFICIENTE: "#ffe300",
       NOTABLE: "#29b6f6",
-      EXCELENTE: "#66bb6a",
-      SOBRESALIENTE: "#00897b",
+      EXCELENTE: "#00897b",
+      SOBRESALIENTE: "#66bb6a",
     };
 
     static COLOR = this.COLOR_GAMA_3;
@@ -210,23 +330,19 @@
       const percentage = _.filledAsint;
       const asMin = _.expectedAs === "minimum" ? true : false;
       const assignedColor = (() => {
-        if (percentage < 20) {
+        if (percentage <= 0) {
           return asMin ? this.COLOR.SUSPENSO : this.COLOR.SOBRESALIENTE;
-        }
-        else if (percentage < 40) {
+        } else if (percentage < 20) {
           return asMin ? this.COLOR.INSUFICIENTE : this.COLOR.EXCELENTE;
-        }
-        else if (percentage < 60) {
+        } else if (percentage < 40) {
           return asMin ? this.COLOR.SUFICIENTE : this.COLOR.NOTABLE;
-        }
-        else if (percentage < 80) {
+        } else if (percentage < 60) {
           return asMin ? this.COLOR.NOTABLE : this.COLOR.SUFICIENTE;
-        }
-        else if (percentage < 100) {
+        } else if (percentage < 80) {
           return asMin ? this.COLOR.EXCELENTE : this.COLOR.INSUFICIENTE;
-        }
-        else {
+        } else if (percentage > 80) {
           return asMin ? this.COLOR.SOBRESALIENTE : this.COLOR.SUSPENSO;
+        } else {
         }
       })();
       Object.assign(_, {

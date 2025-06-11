@@ -6,7 +6,8 @@ Complemento personal de software.
 
 - web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android: *los links expiran en 1 semana*
-   - última versión: [https://limewire.com/d/Jssxd#rz6sW7c7fb](https://limewire.com/d/Jssxd#rz6sW7c7fb)
+   - última versión: [https://limewire.com/d/3ozEK#mes5pxNwiq](https://limewire.com/d/3ozEK#mes5pxNwiq)
+   - versión del 11 de junio de 2025: [https://limewire.com/d/3ozEK#mes5pxNwiq](https://limewire.com/d/3ozEK#mes5pxNwiq)
    - versión del 07 de junio de 2025: [https://limewire.com/d/Jssxd#rz6sW7c7fb](https://limewire.com/d/Jssxd#rz6sW7c7fb)
    - versión del 25 de mayo de 2025: [https://limewire.com/d/wwZ9R#XVbUKcXNYT](https://limewire.com/d/wwZ9R#XVbUKcXNYT)
    - versión del 22 de mayo de 2025: [https://limewire.com/d/78RSi#zH7uOedSQi](https://limewire.com/d/78RSi#zH7uOedSQi)
@@ -101,3 +102,67 @@ Seguramente hay más.
    - está escondido, porque en principio te pones la rutina semanal y él ya te la va recordando.
 - Y tienes luego para ir añadiendo información, organizándote una base de datos de artículos y libros, de momento.
 - Y tienes el apartado de binarios también, para lanzar scripts rápidamente.
+
+# Extras de interés
+
+## Variables del editor en entorno normal
+
+A parte de toda la API normal, con todas sus globales y demás, destacar:
+
+```js
+// Las básicas:
+Vue.prototype.$lsw.toasts.collapse({});
+this.$lsw;
+lsw.toasts.send({
+   title: "whatever",
+   text: "whatever else",
+});
+Vue.prototype.$lsw.toasts.debug({});
+await LswAndroid.eval(es6code);
+await LswAndroid.evalFile(es6file);
+// Si necesitas más:
+await Vue.prototype.$lsw.dialogs.open({
+   title: "título",
+   template: `<pre class="codeblock">{{ typeof debuggable === 'string' ? debuggable : JSON.stringify(debuggable, null, 2) }}</pre>`,
+   factory: {
+      data: {
+         debuggable: {}
+      }
+   }
+});
+```
+
+## Variables del editor en entorno android
+
+```js
+cordova
+cordova.plugins.Rhinobridge.evaluate(es5code);
+applicationContext
+Packages
+System
+Math
+$RhinobridgePluginClass
+$rhinobridgePlugin
+$scope
+$rhino
+$webview /*
+$webview.loadUrl("javascript:" + es5code);
+*/
+abg /*
+abg instanceof class AndroidBridge {
+   public Context getContext()
+   public Object getSystemService(String name)
+   public Class<?> getClass(String name) throws ClassNotFoundException
+   public Class<?> forName(String name) throws ClassNotFoundException
+   public void toast(String text, int duration)
+   public String getPackageName()
+   public Object getApplicationInfo()
+   public Object getResources()
+   public Object getAssets()
+   public Object getContentResolver()
+   public Object getApplicationContext()
+}
+*/
+print('not seen anywhere')
+evaluateByBrowser("alert('hello')");
+```

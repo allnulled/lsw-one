@@ -87,6 +87,9 @@ Vue.component("LswHomepage", {
       }, {
         label: "🔧 Configuraciones",
         event: () => this.abrirApp("configuraciones"),
+      }, {
+        label: "✨ Nueva feature",
+        event: () => this.abrirApp("nueva feature"),
       }]
     };
   },

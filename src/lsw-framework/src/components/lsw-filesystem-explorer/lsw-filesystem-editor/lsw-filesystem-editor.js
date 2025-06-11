@@ -30,6 +30,9 @@ Vue.component("LswFilesystemEditor", {
     setContents(contents) {
       this.contents = contents;
     },
+    gainFocus() {
+      this.$refs.editorTextarea.focus();
+    },
     increaseFontsize() {
       this.$trace("lsw-filesystem-editor.methods.increaseFontsize");
       this.currentFontsize++;
@@ -62,8 +65,28 @@ Vue.component("LswFilesystemEditor", {
         }
       }
     },
-    synchronizeCusor() {
-      this.$trace("lsw-filesystem-editor.methods.synchronizeCusor");
+    async executeMobileDocument() {
+      this.$trace("lsw-filesystem-editor.methods.executeMobileDocument");
+      if(this.explorer.current_node.endsWith(".js")) {
+        Ejecutar_javascript_asincronamente: {
+          this.explorer.processToExecuteFileOnAndroid();
+        }
+      }
+    },
+    beautifyDocument() {
+      this.$trace("lsw-filesystem-editor.methods.beautifyDocument");
+      const fsExplorer = LswDom.getClosestParent(this.$el, ".lsw_filesystem_explorer");
+      if(!fsExplorer) return;
+      LswDom.querySelectorFirst("button", "{js}", fsExplorer).click();
+    },
+    searchReplace() {
+      this.$trace("lsw-filesystem-editor.methods.searchReplace");
+      const fsExplorer = LswDom.getClosestParent(this.$el, ".lsw_filesystem_explorer");
+      if(!fsExplorer) return;
+      LswDom.querySelectorFirst("button", "🔎↔️", fsExplorer).click();
+    },
+    synchronizeCursor() {
+      this.$trace("lsw-filesystem-editor.methods.synchronizeCursor");
       const editorHtml = this.$refs.editorTextarea;
       const offsetStart = editorHtml.selectionStart
       const offsetEnd = editorHtml.selectionEnd;

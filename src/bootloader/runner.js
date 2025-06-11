@@ -29,15 +29,22 @@
         Inject_kernel_bootjs: {
           await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
         }
+        Inject_kernel_android_bootjs: {
+          if(typeof cordova === "undefined") {
+            break Inject_kernel_android_bootjs;
+          }
+          await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/android/boot.js");
+        }
         Inject_development_point: {
           if(window.location.href.startsWith("http://")) {
             // await LswDomIrruptor.abrirBinarios();
             // await LswDomIrruptor.abrirTareasPosterioresDeNavegacionRapida();
             // await LswDomIrruptor.abrirRecords();
-            // await LswDomIrruptor.abrirFicheros();
+            await LswDomIrruptor.abrirFicheros();
             // await LswDomIrruptor.abrirHomepage();
             // await LswDomIrruptor.abrirWeekPlanner();
-            await LswDomIrruptor.abrirAcciones();
+            //await LswDomIrruptor.abrirAcciones();
+            // await LswDomIrruptor.abrirNuevaFeature();
           }
         }
       } catch (error) {

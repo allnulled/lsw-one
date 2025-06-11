@@ -2,20 +2,20 @@
     <h4 class="">
         <div class="flex_row centered">
             <div class="flex_100">🔬 Enciclopedia:</div>
-            <div class="flex_1">
+            <!--div class="flex_1">
                 <div class="pad_left_1"><button :class="{activated: selectedSection === 'libros'}" class="supermini" v-on:click="() => selectSection('libros')">📚</button></div>
-            </div>
+            </div-->
             <!--div class="flex_1">
                 <div class="pad_left_1"><button :class="{activated: selectedSection === 'revistas'}" class="supermini" v-on:click="() => selectSection('revistas')">📰</button></div>
             </div-->
             <div class="flex_1">
-                <div class="pad_left_1"><button :class="{activated: selectedSection === 'categorias'}" class="supermini" v-on:click="() => selectSection('categorias')">📂</button></div>
-            </div>
-            <div class="flex_1">
-                <div class="pad_left_1"><button :class="{activated: selectedSection === 'articulos'}" class="supermini" v-on:click="() => selectSection('articulos')">🔬</button></div>
-            </div>
-            <div class="flex_1">
                 <div class="pad_left_1"><button class="supermini" v-on:click="() => goToAddArticulo()">➕</button></div>
+            </div>
+            <div class="flex_1">
+                <div class="pad_left_1"><button :class="{activated: selectedSection === 'categorias'}" class="supermini" v-on:click="() => selectSection('categorias')">🧲</button></div>
+            </div>
+            <div class="flex_1">
+                <div class="pad_left_1"><button :class="{activated: selectedSection === 'articulos'}" class="supermini" v-on:click="() => selectSection('articulos')">🔎</button></div>
             </div>
         </div>
     </h4>
@@ -49,7 +49,7 @@
             <h4 class="margin_bottom_1 width_100">
                 <div class="flex_row centered">
                     <div class="flex_100">
-                        📂 Categorías
+                        🧲 Categorías
                     </div>
                     <div class="flex_1 pad_right_1">
                         <button class="supermini" v-on:click="refreshCategorias">🛜</button>
@@ -64,7 +64,7 @@
     </div>
     <div class="wiki_buscador pad_top_1" v-else-if="selectedSection === 'buscador'">
         <div class="flex_row centered">
-            <h4 class="margin_bottom_1">🔭 Buscador</h4>
+            <h4 class="margin_bottom_1">🔎 Buscador</h4>
         </div>
     </div>
     <div class="wiki_articulos pad_top_1"

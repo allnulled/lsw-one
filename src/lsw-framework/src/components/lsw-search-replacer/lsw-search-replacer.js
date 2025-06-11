@@ -6,6 +6,14 @@ Vue.component("LswSearchReplacer", {
       type: String,
       default: () => false,
     },
+    initialSearch: {
+      type: String,
+      default: () => "",
+    },
+    initialReplace: {
+      type: String,
+      default: () => "",
+    },
     onAccept: {
       type: Function,
       default: () => {},
@@ -24,9 +32,9 @@ Vue.component("LswSearchReplacer", {
     return {
       currentInput: this.input,
       currentMatch: false,
-      search: "",
+      search: this.initialSearch || "",
       searchAsRegexp: false,
-      replace: "",
+      replace: this.initialReplace || "",
     };
   },
   methods: {

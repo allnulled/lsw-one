@@ -30,7 +30,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "database-explorer-" + this.getRandomString(5),
         title: "Database explorer",
-        template: `<lsw-database-explorer />`,
+        template: `<div class="pad_1"><lsw-database-explorer /></div>`,
       });
     },
     openFilesystem() {

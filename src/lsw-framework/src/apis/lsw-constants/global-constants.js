@@ -307,3 +307,12 @@ return {
 };
   
 `.trim());
+
+LswConstants.global.define("/kernel/android/boot.js", `
+  
+/*
+// Inject your local android api from here:
+lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
+//*/
+
+`.trim());

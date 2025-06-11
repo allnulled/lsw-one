@@ -146,6 +146,31 @@
       });
     }
 
+    async evaluateAsRhinoFile(filepath, scope = undefined) {
+      this.trace("evaluateAsRhinoFile", [filepath]);
+      if(typeof cordova === "undefined") {
+        throw new Error("Required cordova api on «LswFilesystem.evaluateAsRhinoFile»");
+      }
+      const fileContents = await this.read_file(filepath);
+      await LswLazyLoads.loadBabel();
+      const es6code = fileContents;
+      const es5code = Babel.transform(es6code, {
+        presets: []
+      });
+      const syncFunction = new Function(es5code);
+      console.log("[*] Evaluating file as js (for Android/Rhino):", );
+      const result = await syncFunction.call(scope);
+      return result;
+    }
+
+    evaluateAsRhinoFileOrReturn(filepath, output = null, scope = undefined) {
+      this.trace("evaluateAsRhinoFileOrReturn", [filepath]);
+      return this.evaluateAsRhinoFile(filepath, scope).catch(error => {
+        console.log("[!] Error evaluating file", error);
+        return output;
+      });
+    }
+
     
     
     

@@ -52,11 +52,11 @@
   });
   
   LswLazyLoader.global.register({
-    alias: "html2pdf",
-    url: "assets/lib/html2pdf/html2pdf.js",
+    alias: "babel",
+    url: "assets/lib/babel/babel.js",
     type: "scriptSrc",
     once: true,
-    confirmer: () => typeof html2pdf !== "undefined",
+    confirmer: () => typeof Babel !== "undefined",
   });
 
   class LswLazyLoads {
@@ -81,6 +81,10 @@
 
     static loadHtml2Pdf() {
       return LswLazyLoader.global.load("html2pdf");
+    }
+
+    static loadBabel() {
+      return LswLazyLoader.global.load("babel");
     }
 
   };

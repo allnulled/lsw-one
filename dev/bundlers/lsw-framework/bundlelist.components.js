@@ -238,6 +238,15 @@ module.exports = [
   // WEEK PLANNER:
   `${basepath}/lsw-framework/src/apis/lsw-languages/weeklang/weeklang.bundled.js`,
   `${basepath}/lsw-framework/src/components/lsw-week-planner/lsw-week-planner`,
+  // MERMOID:
+  `${basepath}/lsw-framework/src/apis/lsw-languages/mermoid/mermoid.bundled.js`,
+  `${basepath}/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer`,
+  // PEGJS TESTER:
+  `${basepath}/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester`,
+  // NUEVA FEATURE:
+  `${basepath}/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature`,
+  // ANDROID API:
+  `${basepath}/lsw-framework/src/apis/lsw-android/lsw-android.js`,
   // DATABASE PROXIES:
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Accion.js`,
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Accion_virtual.js`,
@@ -252,6 +261,7 @@ module.exports = [
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Lista.js`,
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Recordatorio.js`,
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Articulo.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Catalogo_1.js`,
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // APIs Componente:
   `${basepath}/lsw-framework/src/lsw-api.js`,

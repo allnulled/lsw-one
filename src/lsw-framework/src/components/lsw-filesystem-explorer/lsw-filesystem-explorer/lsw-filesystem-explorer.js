@@ -378,6 +378,13 @@ Vue.component("LswFilesystemExplorer", {
                 classes: "",
                 click: () => this.processToFormatJs(),
               });
+              if(typeof cordova !== "undefined") {
+                rightButtonsOnFile.push({
+                  text: "📱⚡️",
+                  classes: "",
+                  click: () => this.processToExecuteFileOnAndroid(),
+                });
+              }
             }
           }
           Button_to_download_file: {
@@ -776,9 +783,17 @@ Vue.component("LswFilesystemExplorer", {
         await this.$lsw.lazyLoads.loadBeautifier();
         const output = beautifier.js(input);
         this.$refs.editor.setContents(output);
+        this.$lsw.toasts.send({
+          title: "Documento formateado",
+          text: "El documento fue formateado en js correctamente"
+        });
       } catch (error) {
         this.$lsw.toasts.showError(error, false, true);
       }
+    },
+    processToExecuteFileOnAndroid() {
+      this.$trace("lsw-filesystem.exporer.methods.processToExecuteFileOnAndroid");
+      return LswAndroid.evalFile(this.current_node);
     },
     async processToDownloadFile() {
       this.$trace("lsw-filesystem.explorer.methods.processToDownloadFile");
@@ -833,18 +848,39 @@ Vue.component("LswFilesystemExplorer", {
     },
     async processToSearchReplace() {
       this.$trace("lsw-filesystem.explorer.methods.processToSearchReplace");
+      let selectedText = "";
+      Extract_selected_text: {
+        try {
+          const textareaHtml = this.$refs.editor.$refs.editorTextarea;
+          selectedText = textareaHtml.value.substring(textareaHtml.selectionStart, textareaHtml.selectionEnd);
+        } catch (error) {
+          // @BADLUCK
+          console.log(error);
+        }
+      }
+      const fse = this;
       const value = await this.$lsw.dialogs.open({
         title: "Buscar y reemplazar",
         template: `
           <lsw-search-replacer
             :input="input"
+            :initial-search="search"
+            :initial-replace="replace"
             :on-accept="out => accept(out)"
-            :on-cancel="cancel"
+            :on-cancel="comeBack"
           />
         `,
         factory: {
           data: {
             input: this.$refs.editor.getContents(),
+            search: selectedText,
+            replace: selectedText,
+          },
+          methods: {
+            comeBack() {
+              this.cancel();
+              fse.$refs.editor.gainFocus();
+            }
           }
         }
       });
@@ -886,7 +922,7 @@ Vue.component("LswFilesystemExplorer", {
       const allValidators = {};
       for(let index=0; index<ids.length; index++) {
         const id = ids[index];
-        const validator = await this.$lsw.fs.evaluateAsJavaScriptFileOrReturn(`/kernel/editor/validators/${id}.js`, () => true);
+        const validator = await this.$lsw.fs.evaluateAsJavascriptFileOrReturn(`/kernel/editor/validators/${id}.js`, () => true);
         allValidators[id] = validator;
       }
       this.syntaxValidators = allValidators;

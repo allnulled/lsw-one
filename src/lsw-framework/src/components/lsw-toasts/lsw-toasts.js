@@ -80,6 +80,30 @@ Vue.component("LswToasts", {
         title: typeof anyzing,
         text: LswUtils.stringify(anyzing),
       });
+    },
+    collapse(anyzing) {
+      this.$lsw.dialogs.open({
+        title: "Debugging: type " + typeof anyzing,
+        template: `
+          <div class="">
+            <div>Moment: {{ moment }}</div>
+            <pre class="codeblock" style="font-size: 10px;">{{ code }}</pre>
+          </div>
+        `,
+        factory: function() {
+          return {
+            data() {
+              return {
+                moment: LswTimer.utils.fromDateToDatestring(new Date(), true),
+                code: typeof anyzing === "string" ? anyzing : JSON.stringify(anyzing, null, 2),
+              };
+            },
+            mounted() {
+              setTimeout(() => this.cancel(), 3000);
+            },
+          };
+        }
+      });
     }
   },
   watch: {},

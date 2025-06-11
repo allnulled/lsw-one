@@ -107,6 +107,14 @@
         LswDom.querySelectorFirst("button", "7️⃣").click();
       }
     }
+    
+    static async abrirNuevaFeature() {
+      await this.abrirHomepage();
+      Abrir_planificador: {
+        await LswDom.waitForMilliseconds(1000);
+        LswDom.querySelectorFirst("div", "✨ Nueva feature").click();
+      }
+    }
 
   }
 

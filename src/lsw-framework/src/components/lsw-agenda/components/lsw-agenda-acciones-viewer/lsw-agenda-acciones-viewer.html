@@ -17,25 +17,72 @@
         <div class="selected_day_title"
             v-if="selectedDate">
             <div class="flex_row centered">
-                <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
-                <div class="flex_1 nowrap">
-                    <button class="padded_vertically_1"
-                        v-on:click="openRandomizerFile">{🎲}</button>
-                    <button class="padded_vertically_1"
-                        v-on:click="randomizeDay">+🎲</button>
-                    <button class="padded_vertically_1"
-                        v-on:click="cleanRandomizedDays">🔥🎲</button>
-                    <button class="padded_vertically_1"
-                        v-on:click="showAllHours"
-                        style="display: none;">🔓*</button>
-                    <button class="padded_vertically_1"
-                        v-on:click="hideAllHours"
-                        style="display: none;">🔒*</button>
-                </div>
-                <div class="flex_1 margin_left_1">
+                <div class="flex_1 margin_right_1">
                     <button class="padded_vertically_1"
                         v-on:click="openNewRowDialog"
                         :class="{activated: selectedForm === 'new'}">➕</button>
+                </div>
+                <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
+                <div class="flex_1 nowrap">
+                    <button :class="{activated:isShowingRandomizer}" v-on:click="toggleRandomizer">🎲</button>
+                    <div class="hidden_menu"
+                        v-if="isShowingRandomizer">
+                        <div class="hidden_menu_fixed_layer"
+                            v-on:click="toggleRandomizer"></div>
+                        <div class="hidden_menu_box"
+                            style="min-width: 160px; left: auto; right: 0px; padding: 0px; padding-top:4px;">
+                            <div class="hidden_menu_items flex_column">
+                                <div class="title">
+                                    <div class="flex_100 pad_left_1 pad_right_1">
+                                        El randomizador:
+                                    </div>
+                                    <div class="flex_1">
+                                        <button class="supermini"
+                                            v-on:click="toggleRandomizer">❌</button>
+                                    </div>
+                                </div>
+                                <button class="flex_1 pad_bottom_1 text_align_left supermini"
+                                    v-on:click="openRandomizerFile">
+                                    <div class="flex_row centered">
+                                        <div class="flex_1">
+                                            🎲↗️
+                                        </div>
+                                        <div class="flex_100 text_align_right">
+                                            Editar randomizables
+                                        </div>
+                                    </div>
+                                </button>
+                                <button class="flex_1 pad_bottom_1 text_align_left supermini"
+                                    v-on:click="randomizeDay">
+                                    <div class="flex_row centered">
+                                        <div class="flex_1">
+                                            +🎲
+                                        </div>
+                                        <div class="flex_100 text_align_right">
+                                            Inflar día
+                                        </div>
+                                    </div>
+                                </button>
+                                <button class="flex_1 pad_bottom_1 text_align_left supermini"
+                                    v-on:click="cleanRandomizedDays">
+                                    <div class="flex_row centered">
+                                        <div class="flex_1">
+                                            🔥🎲
+                                        </div>
+                                        <div class="flex_100 text_align_right">
+                                            Limpiar día
+                                        </div>
+                                    </div>
+                                </button>
+                                <button class="flex_1 pad_bottom_1 text_align_left supermini"
+                                    v-on:click="showAllHours"
+                                    style="display: none;">🔓*</button>
+                                <button class="flex_1 pad_bottom_1 text_align_left supermini"
+                                    v-on:click="hideAllHours"
+                                    style="display: none;">🔒*</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -47,13 +94,14 @@
             <template v-for="accion, accionIndex in selectedDateTasksSorted">
                 <div class="hour_task_block"
                     v-if="accion.tiene_estado === 'trackeada'">
-                    <div class="accion_row flex_row centered" style="padding-top: 2px;">
+                    <div class="accion_row flex_row centered"
+                        style="padding-top: 2px;">
                         <div class="flex_1 celda_de_hora"
                             v-on:click="$noop">
                             <div class="padded_vertically_1 pad_left_1">
-                            {{
+                                {{
                                 $lsw.timer.utils.formatHourFromMomentoCode(accion.tiene_inicio, false) ?? '💩'
-                            }}
+                                }}
                             </div>
                         </div>
                         <div class="">
@@ -62,10 +110,13 @@
                             </button>
                         </div>
                         <div class="flex_1 celda_de_duracion pad_right_1">{{ accion.tiene_duracion || '🤔' }}</div>
-                        <button class="supermini flex_100 text_align_left pad_0 margin_right_1 nowrap shortable_text" disabled="true" style="min-width: 80px;">
+                        <button class="supermini flex_100 text_align_left pad_0 margin_right_1 nowrap shortable_text"
+                            disabled="true"
+                            style="min-width: 80px;">
                             <b>{{ accion.en_concepto }}</b><span v-if="accion.tiene_comentarios">: {{ accion.tiene_comentarios }}</span>
                         </button>
-                        <button class="supermini flex_1" v-on:click="() => openEditRowDialog(accion)">
+                        <button class="supermini flex_1"
+                            v-on:click="() => openEditRowDialog(accion)">
                             ↗️
                         </button>
                         <div class="flex_1">

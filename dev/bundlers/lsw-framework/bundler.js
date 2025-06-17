@@ -6,3 +6,6 @@ require(__dirname + "/../core/vuebundler.js").bundle({
   output: __dirname + "/../../../src/lsw-framework/lsw-framework.js",
   ignore: [],
 });
+
+// 2. Compile tests:
+require(__dirname + "/../../../src/assets/tests/build.js");

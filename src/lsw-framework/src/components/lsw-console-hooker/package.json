@@ -4,7 +4,6 @@
   "description": "Console hooker UI tool for LSW",
   "main": "console-hooker.compiled.js",
   "scripts": {
-    "build": "node build.js",
     "test": "node test.js",
     "versionate": "echo 'no versionate for lsw-console-hooker'"
   },

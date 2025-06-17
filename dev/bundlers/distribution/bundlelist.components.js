@@ -6,8 +6,8 @@ module.exports = [
   // 2. El framework:
   `${basepath}/lsw-framework/lsw-framework.css`,
   `${basepath}/lsw-framework/lsw-framework.js`,
-  // 3. Las librerías de terceros:
-  `${basepath}/assets/lib/jquery/jquery-v3.7.1.js`,
+  // 3. Las librerías de terceros imprescindibles solamente:
+  // `${basepath}/assets/lib/jquery/jquery-v3.7.1.js`,
   `${basepath}/assets/lib/marked/marked.js`,
   // 4. El payload de la app:
   `${basepath}/modules/app/load.js`,

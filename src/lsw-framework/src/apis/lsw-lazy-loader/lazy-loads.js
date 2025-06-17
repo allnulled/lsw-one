@@ -58,6 +58,46 @@
     once: true,
     confirmer: () => typeof Babel !== "undefined",
   });
+  
+  LswLazyLoader.global.register({
+    alias: "eruda",
+    url: "assets/lib/eruda/eruda.js",
+    type: "scriptSrc",
+    once: true,
+    confirmer: () => typeof eruda !== "undefined",
+  });
+  
+  LswLazyLoader.global.register({
+    alias: "jmespath",
+    url: "assets/lib/jmespath/jmespath.min.js",
+    type: "scriptSrc",
+    once: true,
+    confirmer: () => typeof jmespath !== "undefined",
+  });
+  
+  LswLazyLoader.global.register({
+    alias: "jquery",
+    url: "assets/lib/jquery/jquery-v3.7.1.js",
+    type: "scriptSrc",
+    once: true,
+    confirmer: () => typeof jQuery !== "undefined",
+  });
+  
+  LswLazyLoader.global.register({
+    alias: "qunit.js",
+    url: "assets/lib/qunit/qunit.js",
+    type: "scriptSrc",
+    once: true,
+    confirmer: () => typeof QUnit !== "undefined",
+  });
+
+  LswLazyLoader.global.register({
+    alias: "qunit.css",
+    url: "assets/lib/qunit/qunit.css",
+    type: "linkStylesheet",
+    once: true,
+    confirmer: () => typeof QUnit !== "undefined",
+  });
 
   class LswLazyLoads {
 
@@ -85,6 +125,26 @@
 
     static loadBabel() {
       return LswLazyLoader.global.load("babel");
+    }
+
+    static loadEruda() {
+      return LswLazyLoader.global.load("eruda");
+    }
+
+    static loadJmespath() {
+      return LswLazyLoader.global.load("jmespath");
+    }
+
+    static loadJquery() {
+      return LswLazyLoader.global.load("jquery");
+    }
+
+    static loadQunit() {
+      return Promise.all([
+        LswLazyLoader.global.load("jquery"),
+        LswLazyLoader.global.load("qunit.css"),
+        LswLazyLoader.global.load("qunit.js"),
+      ]);
     }
 
   };

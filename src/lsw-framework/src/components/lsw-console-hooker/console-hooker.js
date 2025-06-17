@@ -4,60 +4,39 @@ Vue.component("LswConsoleHooker", {
   props: {},
   data() {
     return {
-      is_shown: true,
-      is_minimized: false,
-      is_amplified: false,
-      instance: undefined
+
     }
   },
   methods: {
-    show() {
-      this.is_shown = true;
+
+    async loadEruda() {
+      this.$trace("console-hooker.methods.loadEruda");
+      await LswLazyLoads.loadEruda();
     },
-    hide() {
-      this.is_shown = false;
-    },
-    minimize() {
-      this.is_minimized = true;
-    },
-    maximize() {
-      this.is_minimized = false;
-    },
-    cleanConsole() {
-      this.$refs.console_output.textContent = "⚓️ Consola hookeada preparada ⚓️";
-    },
-    toggleAmplify() {
-      this.is_amplified = !this.is_amplified;
-      this.$forceUpdate(true);
-    },
-    executeInput() {
-      const input = this.$refs.commandInput.value;
-      try {
-        const result = this.$window.eval(input);
-        console.log(result);
-      } catch (error) {
-        console.error({
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
+
+    async toggleConsole() {
+      this.$trace("console-hooker.methods.toggleConsole");
+      if (typeof eruda === "undefined") {
+        await this.loadEruda();
+        eruda.init({
+          container: this.$refs.console_hooker_box,
         });
+        eruda.show();
+      } else {
+        const isShowing = eruda._$el.find(".eruda-dev-tools").css("display") === "block";
+        if (isShowing) {
+          eruda.hide();
+        } else {
+          eruda.show();
+        }
       }
-      this.$refs.commandInput.value = "";
     },
-    deactivateConsole() {
-      this.instance.restoreConsole();
-      this.hide();
-    },
-    activateConsole() {
-      this.instance.hookConsole();
-      this.show();
-    },
+
   },
   mounted() {
-    this.instance = new ConsoleHooker("lsw-console-hooker-output");
-    this.activateConsole();
+    this.$trace("console-hooker.mounted");
     Exportar_consola: {
-      this.$vue.prototype.$consoleHooker = this;
+      Vue.prototype.$consoleHooker = this;
       this.$window.LswConsoleHooker = this;
     }
   },

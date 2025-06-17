@@ -4,8 +4,8 @@ Vue.component("LswNuevaFeature", {
   props: {},
   data() {
     this.$trace("lsw-nueva-feature.data");
+    
     return {
-      isLoaded: false,
       
     };
   },
@@ -16,7 +16,6 @@ Vue.component("LswNuevaFeature", {
   async mounted() {
     try {
       this.$trace("lsw-nueva-feature.mounted");
-      
     } catch (error) {
       console.log(error);
     }

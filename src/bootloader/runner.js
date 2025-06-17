@@ -3,17 +3,6 @@
   const runner = async output => {
   
     console.log("[*] App lifecycle ended.");
-
-    Console_hooker_default_deactivation: {
-      // @IMPORTANT: Can cause recursivity problems with vue@2
-      // @BUGS in database
-      // @BUGS in calendar
-      if(window.location.href.startsWith("https://")) {
-        Vue.prototype.$consoleHooker.deactivateConsole();
-      } else {
-        Vue.prototype.$consoleHooker.deactivateConsole();
-      }
-    }
   
     Logger_activation: {
       if(window.location.href.startsWith("https://")) {
@@ -40,11 +29,15 @@
             // await LswDomIrruptor.abrirBinarios();
             // await LswDomIrruptor.abrirTareasPosterioresDeNavegacionRapida();
             // await LswDomIrruptor.abrirRecords();
-            await LswDomIrruptor.abrirFicheros();
-            // await LswDomIrruptor.abrirHomepage();
             // await LswDomIrruptor.abrirWeekPlanner();
-            //await LswDomIrruptor.abrirAcciones();
+            // await LswDomIrruptor.abrirAcciones();
+            // await LswDomIrruptor.abrirFicheros();
+            // await LswDomIrruptor.abrirJsInspector();
             // await LswDomIrruptor.abrirNuevaFeature();
+            // await LswDomIrruptor.abrirHomepage();
+            // await LswDomIrruptor.arrancarTestsDeAplicacion();
+            // await LswDomIrruptor.abrirTestsDeAplicacion();
+            await LswDomIrruptor.abrirConfiguraciones();
           }
         }
       } catch (error) {

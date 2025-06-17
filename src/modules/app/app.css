@@ -22,6 +22,10 @@ textarea {
     min-height: var(--button_height);
 }
 
+input[type="checkbox"] {
+    min-height: auto;
+}
+
 .like_button,
 button {
     border: 1px solid #b1b1b1;
@@ -148,8 +152,9 @@ input[type="text"] {
     border: 1px solid #CCC;
 }
 
+select.supermini,
 input[type="text"].supermini {
-    min-height: 24px;
+    min-height: 25px;
 }
 
 select {
@@ -344,12 +349,19 @@ table.tabla_de_conductometria .minibutton {
     background-color: rgba(178, 178, 178, 0.50);
 }
 
+div.codeblock_viewer {
+    position: relative;
+    max-width: 100%;
+    overflow: auto;
+}
+
 pre.codeblock {
     background-color: #D0D0FF;
     color: black;
     font-size: 9px;
     border: 1px solid black;
     box-shadow: 0 0 2px black;
+    white-space: pre;
     overflow: scroll;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -726,6 +738,20 @@ pre.codeblock {
     align-items: center;
 }
 
+.align_self_start {
+    align-self: start;
+}
+
+.vertical_align_top {
+    vertical-align: top;
+}
+.vertical_align_center {
+    vertical-align: center;
+}
+.vertical_align_bottom {
+    vertical-align: bottom;
+}
+
 .flex_1,
 .flex_cell {
     flex: 1;
@@ -890,4 +916,8 @@ pre.codeblock {
 
 .min_height_33px {
     min-height: 33px;
+}
+
+.cursor_draggable {
+    cursor: grab;
 }

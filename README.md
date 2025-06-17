@@ -6,7 +6,8 @@ Complemento personal de software.
 
 - web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android: *los links expiran en 1 semana*
-   - última versión: [https://limewire.com/d/3ozEK#mes5pxNwiq](https://limewire.com/d/3ozEK#mes5pxNwiq)
+   - última versión: [https://limewire.com/d/XPVEI#ke3F0Dv4y3](https://limewire.com/d/XPVEI#ke3F0Dv4y3)
+   - versión del 17 de junio de 2025: [https://limewire.com/d/XPVEI#ke3F0Dv4y3](https://limewire.com/d/XPVEI#ke3F0Dv4y3)
    - versión del 11 de junio de 2025: [https://limewire.com/d/3ozEK#mes5pxNwiq](https://limewire.com/d/3ozEK#mes5pxNwiq)
    - versión del 07 de junio de 2025: [https://limewire.com/d/Jssxd#rz6sW7c7fb](https://limewire.com/d/Jssxd#rz6sW7c7fb)
    - versión del 25 de mayo de 2025: [https://limewire.com/d/wwZ9R#XVbUKcXNYT](https://limewire.com/d/wwZ9R#XVbUKcXNYT)
@@ -18,25 +19,27 @@ Complemento personal de software.
 
 ### Aplicaciones:
 
-- [Base de datos](#):
-   - Para gestionar todos los datos desde 1 mismo sitio al menos
-- [Sistema de ficheros](#):
-   - Para persistir en forma de árbol indexado
-- [Agenda](#):
-   - Para llevar un control de los números del yo
-   - Con conductometría como instrumento complementario
-- [Notas rápidas](#):
-   - Para persistir ideas sin forma ni mucho orden
-   - Para hacerse borradores de artículo y pasarlos rápido
-- [Enciclopedia](#):
-   - Para ordenar las ideas
-   - Para clasificar las ideas, con categorías
-   - Para empaquetas las ideas, con libros
-- [Configuraciones](#):
-   - Para gestionar preferencias de usuario
-   - Para operar contra la base de datos globalmente
-   - Para acceder a configuración
-   - Para otras que se pudieran prestar y parezca adecuado
+Las aplicaciones que vienen por defecto son:
+
+- 📦 Base de datos
+- 📂 Sistema de ficheros
+- 💣 Binarios
+- 📆 Calendario con:
+   - 📊 Reportes
+   - 🔮 Conductometría
+   - 🏁 Objetivos y hábitos
+- ⬅️🕔 Tareas anteriores
+- 🕔➡️ Tareas posteriores
+- 💬 Notas
+- 💬➕ Nueva nota
+- 🔬 Enciclopedia
+- 🔬➕ Nuevo artículo
+- 🪲 Inspector de JS
+- 💻 Consola de JS
+- ✅ Tests de aplicación (⚠️: en construcción todavía 🏗)
+- 🔧 Configuraciones
+- ✨ Nueva feature (⚠️: reservado para desarrollo)
+- 🏅 Example of app (⚠️: también reservado para desarrollo)
 
 ## Trucos:
 
@@ -67,6 +70,8 @@ En el filesystem virtual de la app puedes configurar:
    - Para las actividades randomizables de la agenda.
 - [/kernel/settings/rutiner.md](#):
    - Para el mensaje rutinario.
+- [/kernel/settings/rutiner.config.env](#):
+   - Para las configuraciones del mensaje rutinario.
 - [/kernel/settings/user.env](#):
    - Para preferencias de usuario simples.
 - [/kernel/settings/goals/factory](#):
@@ -88,8 +93,9 @@ Seguramente hay más.
 
 ### Flujos ocultos o no intuitivos
 
-- El botón con `{🎲}`:
+- El botón con `🎲↗️`:
    - al clicar, en silencio se importan los `randomizables` que falten, como `Concepto`.
+   - es el bloque `Load_secretly_random_actions_as_concepts` en el código en `lsw-agenda-acciones-viewer.js`.
 - El boton de `Resetear` en *Configuraciones » Base de datos*:
    - borrará la base de datos si no hay conexiones extra:
    - pero puede que tengas que refrescar (o salir y entrar de la app) para que se pueda seguir usando la base de datos.

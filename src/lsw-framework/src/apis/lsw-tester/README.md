@@ -2,12 +2,12 @@
 
 Test like mocha with ensurer on browser or node.js.
 
-Branch of [@allnulled/universal-tester](https://github.com/allnulled/universal-tester).
+Branch of [@allnulled/lsw-tester](https://github.com/allnulled/lsw-tester).
 
 ## Installation
 
 ```sh
-npm i -s lsw-tester
+npm i -s @allnulled/lsw-tester
 ```
 
 ## Importation
@@ -21,102 +21,181 @@ require("@allnulled/lsw-tester");
 In html:
 
 ```html
-<script src="node_modules/@allnulled/lsw-tester/universal-tester.js"></script>
+<script src="node_modules/@allnulled/lsw-tester/lsw-tester.js"></script>
 ```
 
-If you want to use [`@allnulled/ensure`](https://github.com/allnulled/ensure) too, import the `universal-tester.bundled.js` version.
+## Features
+
+- Support for convenient modes:
+   - `normally`
+   - `always`
+   - `never`
+   - `only`
 
 ## Usage
 
-Once the API is loaded, in any environment you can find `UniversalTester` globally declared. But you also have the `describe` global overwritten, so you can directly:
+This is the test of the tester:
 
 ```js
-describe("UniversalTester API Test", async function (it) {
+const LswTester = require(__dirname + "/lsw-tester.js");
 
-  it.onFailure(function(error) {
-    // THIS HALTS THE EXECUTION ON THE FIRST ERROR
-    throw error;
-  });
-  
-  it.never(async function() {
-      this.timeout(1000 * 20);
-  });
+const main = async function () {
 
-  it("can be loaded", async function() {
-      this.timeout(1000 * 20);
-  });
+  const test1 = await LswTester.run("Test ID", function (it) {
 
-  it.always("can do 1", async function() {
+    console.log(1);
+
+    it("can load the API", async function () {
+      console.log(2);
       await new Promise((resolve, reject) => {
-        setTimeout(resolve, 1000 * 0.2);
+        setTimeout(() => resolve(), 1000 * 0.5);
+      })
+      throw 90;
+    });
+
+  });
+
+  const test2 = await LswTester.run("MicrodataBank API Test", function (it) {
+    it.timeout(5000);
+    it.only("can access the API global variable 1", function () {});
+    it.never("can access the API global variable 2", function () {});
+    it.always("can access the API global variable 3", function () {});
+    it.normally("can access the API global variable 4", function () {});
+    it("can access the API global variable 5", function () {});
+  });
+
+  const test3 = await LswTester.run("MicrodataBank API Test", function (it) {
+    it.timeout(1000); // Timeout for all tests
+    it.normally("can set timeout different on specific test", async function(settings) {
+      settings.timeout(3000);
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve();
+        }, 2000);
+      })
+    });
+  });
+
+  const report1 = test1.getReportAsJson();
+  const report2 = test2.getReportAsJson();
+  const report3 = test3.getReportAsJson();
+
+  console.log(report1);
+  console.log(report2);
+  console.log(report3);
+
+};
+
+main();
+```
+
+## Real usecase
+
+This is a real usecase using the tool integrated on the `lsw` project:
+
+```js
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswTests'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswTests'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+
+  LswTestRegistry.define("lsw.first-test", function () {
+    return LswTester.collection("Lsw First Test", function (test) {
+      test("can wait 1 second", async function () {
+        await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve();
+          }, 1000);
+        });
       });
+    });
   });
 
-  it.never("can do 1", async function() {
-      
+  LswTestRegistry.define("lsw.second-test", function () {
+    return LswTester.collection("Lsw Second Test", function (test) {
+      test("can wait 1 second", async function () {
+        await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve();
+          }, 1000);
+        });
+      });
+    });
   });
 
-  it.normally("can do 1", async function() {
-      
+  LswTestRegistry.define("lsw.third-test", function () {
+    return LswTester.collection("Lsw Third Test", async function (test) {
+      test("can wait 1 second", async function () {
+        await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve();
+          }, 1000);
+        });
+      });
+    });
   });
 
-  it.only("can do 1", async function() {
-      
+  LswTestRegistry.define("lsw.fourth-test", function () {
+    return LswTester.collection("Lsw Fourth Test", async function (test) {
+      test("can wait 1 second", async function () {
+        await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve();
+          }, 1000);
+        });
+      });
+    });
   });
 
-  it.always("can throw error 1", async function() {
-      throw new Error("Weherever");
+  LswTestRegistry.collect("Lsw Fifth Test", async function (test) {
+    test("can wait 1 second", async function () {
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve();
+        }, 1000);
+      });
+    });
   });
 
-  it.always("can throw error 2", async function() {
-      throw new Error("Weherever");
-  });
-
-  it.always("can throw error 3", async function() {
-      throw new Error("Weherever");
-  });
+  return LswTestRegistry;
 
 });
 ```
 
-## CLI
+Notice the different method used in the last call.
 
-You can use:
- - `universal-tester`
- - `universal-test`
- - `u-test`
- - `utest`
- - `ute`
+That should be the preferred way to define your tests.
 
-All of them are overwritten. I am afraid I do not remember the name, like, like, *`ute` sabe*.
-
-## Browser
-
-Automatic UI reporting through `data-test` html5 attribute when it matched the `describe(?, ...)` parameter. It pretty-prints the JSON with the state of the tests.
-
-## Error management
-
-To stop the test on the first error, add this line:
+Then you only have to:
 
 ```js
-it.onFailure(error => throw error);
+const currentReport = tester.getReport();
+const currentReportJson = tester.getReportAsJson(true); // The 'true' arg is to compress the output
 ```
 
-## Things
+## Used with lsw
 
-This is a (bundled) less than 300 lines solution for **testing** and **assertion** that covers most of the topics.
-
-## Extras
-
-You can use `describe.SilencedError` to throw errors that the framework will manage as interruptors, and will call `onError` equally, but not `onFailure`, as a `SilencedError`.
+When used on the `lsw` project, you have more classes, as you saw:
 
 ```js
-describe("My API", it => {
-  it("can interrupt with expected-error", () => {
-    // It will still pass the test with this kind of error:
-    throw new describe.SilencedError("This is a good error in a test and will not compute it as failed");
-  });
-});
+LswTester
+LswTestRegistry === LswTests
 ```
 
-Pésima lección ética a primera vista, que un error silenciado sea un error y no un fracaso. Pero también es cierto, es así, y sobre errores continuamos el runtime.
+## The class `LswTestRegistry` / `LswTests`
+
+There we save the known test functions.
+
+Once you have all your tests:
+
+```js
+
+```

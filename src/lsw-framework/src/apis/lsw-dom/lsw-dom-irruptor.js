@@ -21,7 +21,7 @@
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "💬").click();
     }
     static async abrirHomepage() {
-      LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📟").click();
+      LswDom.querySelectorFirst(".main_topbar_button", "📟").click();
     }
     static async calendario() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
@@ -64,6 +64,11 @@
       LswDom.querySelectorFirst("button", "📷📊").click();
     }
     static async configuraciones() {
+      LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
+      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
+    }
+    static async abrirConfiguraciones() {
       LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
       await LswDom.waitForMilliseconds(100);
       LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
@@ -114,6 +119,86 @@
         await LswDom.waitForMilliseconds(1000);
         LswDom.querySelectorFirst("div", "✨ Nueva feature").click();
       }
+    }
+
+    static async abrirJsInspector() {
+      await this.abrirHomepage();
+      Abrir_inspector: {
+        await LswDom.waitForMilliseconds(1000);
+        LswDom.querySelectorFirst("div", "🪲 JS Inspector").click();
+      }
+    }
+
+    static async abrirTestsDeAplicacion() {
+      await this.abrirHomepage();
+      Abrir_tests: {
+        await LswDom.waitForMilliseconds(100);
+        LswDom.querySelectorFirst("div", "✅ Tests de aplicación").click();
+      }
+    }
+
+    static async arrancarTestsDeAplicacion() {
+      await this.abrirTestsDeAplicacion();
+      Abrir_tests: {
+        await LswDom.waitForMilliseconds(100);
+        LswDom.querySelectorFirst("button", "▶️").click();
+      }
+    }
+
+    static async getRutinerTimeout() {
+      const rutinerConfig = await Vue.prototype.$lsw.fs.evaluateAsDotenvFileOrReturn("/kernel/settings/rutiner.config.env", []);
+      LswTimer.utils.fromDurationstringToMilliseconds(rutinerConfig.timeout);
+      return rutinerConfig.timeout;
+    }
+
+    static async setRutinerTimeout(durationstring) {
+      LswTimer.utils.fromDurationstringToMilliseconds(durationstring);
+      await Vue.prototype.$lsw.fs.write_file("/kernel/settings/rutiner.config.env", "timeout=" + durationstring);
+    }
+
+    static async configurarRutinerTimeout() {
+      const currentTimeout = await LswDomIrruptor.getRutinerTimeout();
+      const duracion = await Vue.prototype.$lsw.dialogs.open({
+        title: "Configurar frecuencia de mensaje rutinario",
+        template: `
+          <div class="pad_1" v-xform.form="{ onSubmit }" ref="formulario">
+            <div class="pad_bottom_1">Especifica la duración preferida:</div>
+            <lsw-duration-control :settings="{name:'duracion',initialValue}" />
+            <hr/>
+            <div class="flex_row centered pad_1">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="submitForm">Aceptar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            initialValue: currentTimeout,
+          },
+          methods: {
+            onSubmit(formdata) {
+              return this.accept(formdata.duracion);
+            },
+            async submitForm() {
+              this.$trace("Dialogs.configurar-frecuencia-rutiner.methods.submitForm");
+              return await this.$refs.formulario.$xform.submit();
+            }
+          },
+        }
+      });
+      if(duracion === -1) {
+        return;
+      }
+      if(typeof duracion !== "string") {
+        console.log("duracion", duracion);
+      }
+      const milliseconds = LswTimer.utils.fromDurationstringToMilliseconds(duracion);
+      return await LswDomIrruptor.setRutinerTimeout(duracion);
     }
 
   }

@@ -6,17 +6,17 @@
                     <div class="nowrap flex_1">
                         <button class=""
                             :class="{activated: isFiltering === 'none'}"
-                            v-on:click="() => selectFilter('none')"> 🏁{{ summary.total }} </button>
+                            v-on:click="() => selectFilter('none')"> 🏁 🟰 {{ summary.total }} </button>
                     </div>
                     <div class="nowrap flex_1 pad_left_1">
                         <button class=""
                             :class="{activated: isFiltering === 'completed'}"
-                            v-on:click="() => selectFilter('completed')"> 🟢{{ summary.resolved }} </button>
+                            v-on:click="() => selectFilter('completed')"> 🟢 🟰 {{ summary.resolved }} </button>
                     </div>
                     <div class="nowrap flex_1 pad_left_1">
                         <button class=""
                             :class="{activated: isFiltering === 'failing'}"
-                            v-on:click="() => selectFilter('failing')"> 🔴{{ summary.failed }} </button>
+                            v-on:click="() => selectFilter('failing')"> 🔴 🟰 {{ summary.failed }} </button>
                     </div>
                     <div class="nowrap flex_100"></div>
                 </template>

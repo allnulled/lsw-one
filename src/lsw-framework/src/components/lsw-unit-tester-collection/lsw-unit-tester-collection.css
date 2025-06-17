@@ -1,0 +1,9 @@
+.typical_title_1 {
+    font-size: 12px;
+    background-color: rgba(103, 118, 212, 0.4);
+    padding-top: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
+    box-shadow: 0 0 2px black;
+}

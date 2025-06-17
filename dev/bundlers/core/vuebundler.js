@@ -111,8 +111,8 @@ class vuebundler {
           }
         }
         const content = fs.readFileSync(filepath).toString();
-        bundlingJs += "\n// @vuebundler[" + index + "]=" + filepath + "\n";
-        bundlingCss += "\n/* @vuebundler[" + index + "]=" + filepath + "*/\n";
+        bundlingJs += "\n// @vuebundler[" + id + "][" + index_node + "]=" + filepath + "\n";
+        bundlingCss += "\n/* @vuebundler[" + id + "][" + index_node + "]=" + filepath + "*/\n";
         if(filename.endsWith(".html")) {
           templateHtml = this.printAsString(content);
         } else if(filename.endsWith(".js")) {

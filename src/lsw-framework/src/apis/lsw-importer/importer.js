@@ -317,7 +317,16 @@
       const response = await fetch(url);
       this.$increaseLoadedModules("text", url);
       if (!response.ok) throw new Error(`Failed to fetch text: ${url}`);
-      return response.text();
+      return await response.text();
+    }
+
+    async json(url) {
+      this.$trace("json", arguments);
+      console.log(`[OK][Importer] Loading «${url}» as «json» ${this.$getMillisecondsOfLife()}`);
+      const response = await fetch(url);
+      this.$increaseLoadedModules("json", url);
+      if (!response.ok) throw new Error(`Failed to fetch json: ${url}`);
+      return await response.json();
     }
 
     async importVueComponent(url) {

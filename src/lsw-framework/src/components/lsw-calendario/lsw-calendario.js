@@ -422,6 +422,22 @@ Vue.component("LswCalendario", {
       this.fecha_seleccionada.setSeconds(0);
       this.fecha_seleccionada = new Date(this.fecha_seleccionada);
     },
+    askHora() {
+      this.$trace("lsw-calendario.methods.askHora");
+      const hora = window.prompt("Qué hora quieres poner?", this.fecha_seleccionada.getHours());
+      if(typeof hora !== "string") return;
+      this.fecha_seleccionada.setHours(hora);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
+    askMinuto() {
+      this.$trace("lsw-calendario.methods.askMinuto");
+      const minuto = window.prompt("Qué minuto quieres poner?", this.fecha_seleccionada.getMinutes());
+      if(typeof minuto !== "string") return;
+      this.fecha_seleccionada.setMinutes(minuto);
+      this.fecha_seleccionada.setSeconds(0);
+      this.fecha_seleccionada = new Date(this.fecha_seleccionada);
+    },
   },
   watch: {
     fecha_seleccionada(nuevo_valor) {

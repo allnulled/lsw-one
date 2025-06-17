@@ -523,7 +523,11 @@
       }
       throw orError.unified();
     }
-
+    
+    static id(obj) {
+      return this.create(obj,1);
+    }
+    
     static ensure(...args) {
       return this.create(...args);
     }
@@ -561,6 +565,10 @@
   Export_to_globals: {
     globalThis.$fails = EnsurementV1.fails.bind(EnsurementV1);
     globalThis.$ensure = EnsurementV1.ensure.bind(EnsurementV1);
+    globalThis.$ensure.id = EnsurementV1.id.bind(EnsurementV1);
+    globalThis.$ensure.check = EnsurementV1.check.bind(EnsurementV1);
+    globalThis.$ensure.assert = EnsurementV1.assert.bind(EnsurementV1);
+    globalThis.$ensure.fails = EnsurementV1.fails.bind(EnsurementV1);
     globalThis.$check = EnsurementV1.check.bind(EnsurementV1);
     globalThis.$assert = EnsurementV1.assert.bind(EnsurementV1);
     // globalThis.AssertionError = AssertionError;

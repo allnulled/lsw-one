@@ -15,6 +15,10 @@ Vue.component("LswWindowsMainTab", {
     };
   },
   methods: {
+    async showConsole() {
+      this.$trace("lsw-windows-main-tab.methods.showConsole", arguments);
+      this.$consoleHooker.toggleConsole();
+    },
     getRandomString(len = 10) {
       this.$trace("lsw-windows-main-tab.methods.getRandomString", arguments);
       const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");

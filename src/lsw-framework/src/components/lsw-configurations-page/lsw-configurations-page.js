@@ -254,6 +254,7 @@ Vue.component("LswConfigurationsPage", {
       if(typeof confirmation !== "object") return;
       await this.$lsw.database.close();
       await LswDatabase.deleteDatabase("lsw_default_database");
+      this.$window.location.reload();
     },
     startConfigureBackgrounds() {
       this.$trace("lsw-configurations-page.methods.startConfigureBackgrounds");
@@ -275,6 +276,10 @@ Vue.component("LswConfigurationsPage", {
         title: "Configurar mensaje rutinario",
         template: `<lsw-filesystem-explorer :absolute-layout="true" opened-by="/kernel/settings/rutiner.md" />`,
       });
+    },
+    startConfigureRutinerTimeout() {
+      this.$trace("lsw-configurations-page.methods.startConfigureRutinerTimeout");
+      return LswDomIrruptor.configurarRutinerTimeout();
     },
     startConfigureRandomizables() {
       this.$trace("lsw-configurations-page.methods.startConfigureRandomizables");

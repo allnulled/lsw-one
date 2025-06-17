@@ -171,6 +171,14 @@
                 </div>
 
                 <div class="pad_1"
+                    v-if="selectedApplication === 'js inspector'"
+                    v-bind:key="'js_inspector'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-js-inspector />
+                    </div>
+                </div>
+
+                <div class="pad_1"
                     v-if="selectedApplication === 'homepage'"
                     v-bind:key="'homepage'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
@@ -201,6 +209,15 @@
                         <lsw-nueva-feature />
                     </div>
                 </div>
+
+                <div class="pad_1"
+                    v-if="selectedApplication === 'app tests'"
+                    v-bind:key="'app tests'">
+                    <div class="position_relative pad_top_0 pad_bottom_0">
+                        <lsw-tests-page />
+                    </div>
+                </div>
+                
 
             </div>
         </div>

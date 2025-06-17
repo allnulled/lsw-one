@@ -143,6 +143,7 @@ rel correr
       async initializeFilesystemForLsw() {
         this.$trace("lsw-filesystem-explorer.methods.initializeFilesystemForLsw");
         await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.md", LswConstants.global.pick("rutiner.md"));
+        await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.config.env", LswConstants.global.pick("/kernel/settings/rutiner.config.env"));
         await this.$lsw.fs.ensureFile("/kernel/settings/randomizables.env", LswConstants.global.pick("randomizables.env"));
         await this.$lsw.fs.ensureFile("/kernel/settings/backgrounds.env", LswConstants.global.pick("backgrounds.env"));
         await this.$lsw.fs.ensureFile("/kernel/settings/automessages.env", LswConstants.global.pick("automessages.env"));

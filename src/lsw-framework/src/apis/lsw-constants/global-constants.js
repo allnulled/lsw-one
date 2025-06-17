@@ -6,6 +6,13 @@ Y se te irá recordando.
 
 `.trim());
 
+LswConstants.global.define("/kernel/settings/rutiner.config.env", `
+
+timeout=0h 3min
+  
+`.trim());
+
+
 LswConstants.global.define("randomizables.env", `
 
 números = 1

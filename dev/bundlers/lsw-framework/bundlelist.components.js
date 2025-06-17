@@ -1,14 +1,14 @@
 const path = require("path");
 const basepath = path.resolve(__dirname + "/../../../src");
+const Instrumenter = require(__dirname + "/instrumenter.js");
+const ignoredFiles = [];
 
-module.exports = [
+module.exports = Instrumenter.instrumentSet([
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // FRAMEWORK:
   `${basepath}/lsw-framework/src/styles/lsw-styling-structure.css`,
   `${basepath}/lsw-framework/src/styles/lsw-styling-theme.css`,
   `${basepath}/lsw-framework/src/styles/lsw-styling-framework.css`,
-  // IMPORTER:
-  `${basepath}/lsw-framework/src/apis/lsw-importer/importer.js`,
   // VUE2:
   `${basepath}/lsw-framework/src/others/vue/vue2.min.js`,
   // VUE2 SORTABLE & DRAGGABLE:
@@ -16,6 +16,8 @@ module.exports = [
   `${basepath}/lsw-framework/src/others/vue.draggable/vue.draggable.js`,
   // SOCKET.IO:
   `${basepath}/lsw-framework/src/others/socket.io-client/socket.io-client.js`,
+  // IMPORTER:
+  `${basepath}/lsw-framework/src/apis/lsw-importer/importer.js`,
   // LSW INITIALIZATION
   `${basepath}/bootloader/initialization.js`,
   // LSW ERROR MANAGER:
@@ -34,7 +36,9 @@ module.exports = [
   `${basepath}/lsw-framework/src/apis/lsw-tree-parser/tripilang.parser.js`,
   `${basepath}/lsw-framework/src/apis/lsw-tree-parser/lsw-tree-parser.js`,
   // LSW TESTER:
-  `${basepath}/lsw-framework/src/apis/lsw-tester/universal-tester.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-tester.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-test-registry.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-tests.js`,
   // LSW DOM:
   `${basepath}/lsw-framework/src/apis/lsw-dom/lsw-dom.js`,
   `${basepath}/lsw-framework/src/apis/lsw-dom/lsw-dom-irruptor.js`,
@@ -93,6 +97,8 @@ module.exports = [
   `${basepath}/lsw-framework/src/apis/lsw-backuper/lsw-backuper.js`,
   // LSW TYPER:
   `${basepath}/lsw-framework/src/apis/lsw-typer/lsw-typer.js`,
+  // LSW MICRODATA BANK:
+  `${basepath}/lsw-framework/src/apis/lsw-microdata-bank/lsw-microdata-bank.js`,
   // LSW DATABASE-UI:
   `${basepath}/lsw-framework/src/components/lsw-database-ui/database-adapter/LswDatabaseAdapter.js`,
   // DIRECTIVE V-DESCRIPTOR:
@@ -235,6 +241,9 @@ module.exports = [
   `${basepath}/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota`,
   `${basepath}/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio`,
   `${basepath}/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control`,
+  // JS INSPECTOR:
+  `${basepath}/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.api.js`,
+  `${basepath}/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector`,
   // WEEK PLANNER:
   `${basepath}/lsw-framework/src/apis/lsw-languages/weeklang/weeklang.bundled.js`,
   `${basepath}/lsw-framework/src/components/lsw-week-planner/lsw-week-planner`,
@@ -245,10 +254,15 @@ module.exports = [
   `${basepath}/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester`,
   // NUEVA FEATURE:
   `${basepath}/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature`,
+  // TESTS PAGE:
+  `${basepath}/lsw-framework/src/components/lsw-tests-page/lsw-tests-page`,
+  // JS VIEWER:
+  `${basepath}/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer`,
   // ANDROID API:
   `${basepath}/lsw-framework/src/apis/lsw-android/lsw-android.js`,
   // DATABASE PROXIES:
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Accion.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-proxies/Banco_de_datos_principal.js`,
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Accion_virtual.js`,
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Concepto.js`,
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Categoria_de_concepto.js`,
@@ -261,11 +275,23 @@ module.exports = [
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Lista.js`,
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Recordatorio.js`,
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Articulo.js`,
-  `${basepath}/lsw-framework/src/apis/lsw-proxies/Catalogo_1.js`,
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // APIs Componente:
   `${basepath}/lsw-framework/src/lsw-api.js`,
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // APPLICATION:
   `${basepath}/modules/app/app`,
-];
+], {
+  fileFilter: function (file) {
+    Ignore_selectively: {
+      if (file.endsWith(".css")) {
+        return false;
+      } else if (file.endsWith(".inst.js")) {
+        return false;
+      } else if (ignoredFiles.indexOf(file) !== -1) {
+        return false;
+      }
+    }
+    return file.endsWith(".js");
+  }
+});

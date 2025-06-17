@@ -42,11 +42,16 @@
 
     all = {};
 
+    findTriggerCollectionByEventAndId(event, id) {
+      return LswLifecycle.hooks.all[event].filter(trigger => trigger.id === id);
+    }
+
     register(triggerNamePattern, triggerIdentifier, triggerCallback, triggerConfigurations = {}) {
       const { priority = 0 } = triggerConfigurations; // Default priority is 0
       if (!this.all[triggerNamePattern]) {
         this.all[triggerNamePattern] = [];
       }
+      
       this.all[triggerNamePattern].push({
         id: triggerIdentifier,
         callback: triggerCallback,

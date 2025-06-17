@@ -205,7 +205,7 @@
   };
 
 
-  LswUtils.stringify = function (argInput, avoidedIndexes = []) {
+  LswUtils.stringify = function (argInput, avoidedIndexes = [], currentLevel = 0, maxLevel = -1) {
     const seen = new WeakSet();
     return JSON.stringify(argInput, function (key, value) {
       if (avoidedIndexes.indexOf(key) !== -1) {
@@ -602,7 +602,54 @@
 
   LswUtils.padStart = function(txt, ...args) {
     return ("" + txt).padStart(...args);
+  };
+
+  LswUtils.flattenObjects = function(list, options = {}) {
+    const {
+      keyMapper = false, // can be function or false
+      valueMapper = false, // can be function or false
+      duplicatedsStrategy = 'override', // can be "override" | "error"
+      nonFlattenablesStrategy = 'ignore', // can be "ignore" | "error"
+    } = options;
+    const output = {};
+    let totalKeys = 0;
+    for(let index=0; index<list.length; index++) {
+      const item = list[index];
+      const isFlattenable = (typeof item === "object") && (item !== null);
+      if(isFlattenable) {
+        const allKeys = Object.keys(item);
+        for(let indexKey=0; indexKey<allKeys.length; indexKey++) {
+          const key = allKeys[indexKey];
+          const isDuplicated = key in output;
+          if((!isDuplicated) || (duplicatedsStrategy === 'override')) {
+            const finalKey = typeof keyMapper === 'function' ? keyMapper(key, totalKeys, indexKey, item, index, list) : key;
+            const finalValue = typeof valueMapper === 'function' ? valueMapper(item[key], totalKeys, indexKey, item, index, list) : item[key];
+            totalKeys++;
+            output[finalKey] = finalValue;
+          } else if(duplicatedsStrategy === 'error') {
+            throw new Error(`Required item on index «${index}» key «${key}» to not be duplicated on «LswUtils.flattenObjects»`);
+          } else {
+            throw new Error(`Unknown strategy for duplicateds «${duplicatedsStrategy}» on «LswUtils.flattenObjects»`);
+          }
+        }
+      } else if(nonFlattenablesStrategy === 'ignore') {
+        // @OK.
+      } else if(nonFlattenablesStrategy === 'error') {
+        throw new Error(`Required item on index «${index}=${typeof item}» to be flattenable on «LswUtils.flattenObjects»`);
+      } else {
+        throw new Error(`Unknown strategy for non-flattenables «${nonFlattenablesStrategy}» on «LswUtils.flattenObjects»`);
+      }
+    }
+    return output;
   }
+
+
+  Global_injection: {
+    window.kk = (...args) => Object.keys(...args);
+    window.dd = (...args) => Vue.prototype.$lsw.toasts.view(...args);
+    window.ddd = (...args) => Vue.prototype.$lsw.toasts.collapse(...args);
+  }
+
   // @code.end: LswUtils
 
   return LswUtils;

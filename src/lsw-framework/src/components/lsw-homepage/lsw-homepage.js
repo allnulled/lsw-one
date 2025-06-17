@@ -85,6 +85,15 @@ Vue.component("LswHomepage", {
         label: "🔬➕ Nuevo artículo",
         event: () => this.abrirApp("nuevo articulo"),
       }, {
+        label: "🪲 Inspector de JS",
+        event: () => this.abrirApp("js inspector"),
+      }, {
+        label: "💻 Consola de JS",
+        event: () => this.abrirApp("js consola"),
+      }, {
+        label: "✅ Tests de aplicación",
+        event: () => this.abrirApp("app tests"),
+      }, {
         label: "🔧 Configuraciones",
         event: () => this.abrirApp("configuraciones"),
       }, {

@@ -84,6 +84,9 @@
           <div class="flex_100">
             {{ LswUtils.padStart(hora_actual, 2, '0') }}
           </div>
+          <div class="flex_1">
+            <button class="supermini" v-on:click="() => askHora()">💉</button>
+          </div>
           <div class="flex_1 pad_horizontal_1">
             <button class="supermini" v-on:click="() => increaseHora(1)">➕</button>
           </div>
@@ -103,6 +106,9 @@
           </div>
           <div class="flex_100">
             {{ LswUtils.padStart(minuto_actual, 2, '0') }}
+          </div>
+          <div class="flex_1">
+            <button class="supermini" v-on:click="() => askMinuto()">💉</button>
           </div>
           <div class="flex_1 pad_horizontal_1">
             <button class="supermini" v-on:click="() => increaseMinuto(1)">➕</button>

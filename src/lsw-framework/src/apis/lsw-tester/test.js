@@ -1,63 +1,50 @@
-let hasFailed = 0;
-let hasErrored = 0;
+const LswTester = require(__dirname + "/lsw-tester.js");
 
-const SpecialError = class extends Error { };
+const main = async function () {
 
-describe("UniversalTester API Test", async function (it) {
+  const test1 = await LswTester.run("Test ID", function (it) {
 
-  it.onFailure(function (error) {
-    return true;
+    console.log(1);
+
+    it("can load the API", async function () {
+      console.log(2);
+      await new Promise((resolve, reject) => {
+        setTimeout(() => resolve(), 1000 * 0.5);
+      })
+      throw 90;
+    });
+
   });
 
-  it.onError(function (error) {
-    hasErrored++;
+  const test2 = await LswTester.run("MicrodataBank API Test", function (it) {
+    it.timeout(5000);
+    it.only("can access the API global variable 1", function () {});
+    it.never("can access the API global variable 2", function () {});
+    it.always("can access the API global variable 3", function () {});
+    it.normally("can access the API global variable 4", function () {});
+    it("can access the API global variable 5", function () {});
   });
 
-  it.never(async function () {
-    this.timeout(1000 * 20);
-  });
-
-  it("can be loaded", async function () {
-    this.timeout(1000 * 20);
-  });
-
-  it.always("can do 1", async function () {
-    await new Promise((resolve, reject) => {
-      setTimeout(resolve, 1000 * 0.2);
+  const test3 = await LswTester.run("MicrodataBank API Test", function (it) {
+    it.timeout(1000); // Timeout for all tests
+    it.normally("can set timeout different on specific test", async function(settings) {
+      settings.timeout(3000);
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve();
+        }, 2000);
+      })
     });
   });
 
-  it.never("can do 1", async function () {
+  const report1 = test1.getReportAsJson();
+  const report2 = test2.getReportAsJson();
+  const report3 = test3.getReportAsJson();
 
-  });
+  console.log(report1);
+  console.log(report2);
+  console.log(report3);
 
-  it.normally("can do 1", async function () {
+};
 
-  });
-
-  it.only("can do 1", async function () {
-
-  });
-
-  it.always("can throw error 1", async function () {
-    throw new describe.SilencedError("Weherever 1");
-  });
-
-  it.always("can throw error 2", async function () {
-    throw new describe.SilencedError("Weherever 2");
-  });
-
-  it.always("can throw error 3", async function () {
-    throw new describe.SilencedError("Weherever 3");
-  });
-
-  it.always("can throw onError on silenced errors but not onFailure", async function () {
-    if (hasErrored !== 3) {
-      throw new Error("The test should have errores 3 times before this one");
-    }
-    if (hasFailed !== 0) {
-      throw new Error("The test should have failed 0 times before this one");
-    }
-  });
-
-});
+main();

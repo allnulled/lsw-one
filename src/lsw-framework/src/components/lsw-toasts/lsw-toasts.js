@@ -81,11 +81,11 @@ Vue.component("LswToasts", {
         text: LswUtils.stringify(anyzing),
       });
     },
-    collapse(anyzing) {
+    collapse(anyzing, timeout = 3000) {
       this.$lsw.dialogs.open({
         title: "Debugging: type " + typeof anyzing,
         template: `
-          <div class="">
+          <div class="pad_1">
             <div>Moment: {{ moment }}</div>
             <pre class="codeblock" style="font-size: 10px;">{{ code }}</pre>
           </div>
@@ -99,7 +99,7 @@ Vue.component("LswToasts", {
               };
             },
             mounted() {
-              setTimeout(() => this.cancel(), 3000);
+              setTimeout(() => this.cancel(), timeout);
             },
           };
         }

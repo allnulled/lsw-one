@@ -1,7 +1,7 @@
 <div class="lsw_event_tracker">
-    <h4>
+    <div class="typical_title_1">
         <div class="flex_row centered">
-            <div class="flex_100">📹 Trackeables</div>
+            <div class="flex_100">📹 Trackeables:</div>
             <div class="flex_1 pad_right_1">
                 <button class="supermini"
                     v-on:click="loadTrackables">🛜</button>
@@ -11,7 +11,7 @@
                     v-on:click="editTrackables">📄↗️</button>
             </div>
         </div>
-    </h4>
+    </div>
     <template v-if="!isLoaded">
         Cargando componente. Por favor, aguarde...
     </template>

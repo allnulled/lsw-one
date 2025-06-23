@@ -99,6 +99,14 @@
     confirmer: () => typeof QUnit !== "undefined",
   });
 
+  LswLazyLoader.global.register({
+    alias: "ejs",
+    url: "assets/lib/ejs/ejs.js",
+    type: "scriptSrc",
+    once: true,
+    confirmer: () => typeof ejs !== "undefined",
+  });
+
   class LswLazyLoads {
 
     static loadHighlightJs() {
@@ -145,6 +153,10 @@
         LswLazyLoader.global.load("qunit.css"),
         LswLazyLoader.global.load("qunit.js"),
       ]);
+    }
+
+    static loadEjs() {
+      return LswLazyLoader.global.load("ejs");
     }
 
   };

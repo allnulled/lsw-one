@@ -31,28 +31,40 @@
     }
     static async reportesDeCalendario() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button.nowrap", "📊").click();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button", "🔮 Iniciar conductometría").click();
       
     }
     static async abrirNavegacionRapida() {
-      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
+      LswDom.querySelectorFirst(".main_topbar_button", "📟").click();
     }
     static async abrirBinarios() {
-      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
-      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst(".main_topbar_button", "📟").click();
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst(".lista_apps div", "💣 Binarios").click();
     }
     static async abrirBaseDeDatos() {
-      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
-      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst(".main_topbar_button", "📟").click();
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("div", "📦 Base de datos").click();
+    }
+    static async abrirBaseDeDatosPorTabla(tabla) {
+      LswDom.querySelectorFirst(".main_topbar_button", "📟").click();
+      await LswDom.waitForMilliseconds(200);
+      LswDom.querySelectorFirst("div", "📦 Base de datos").click();
+      await LswDom.waitForMilliseconds(200);
+      LswDom.querySelectorFirst("span.table_name", tabla).click();
+    }
+    static async abrirBaseDeDatosPorNuevoDatoDeTabla(tabla) {
+      this.abrirBaseDeDatosPorTabla(tabla);
+      await LswDom.waitForMilliseconds(500);
+      LswDom.querySelectorFirst("button", "➕").click();
     }
     static async abrirAccionesVirtuales() {
       await this.abrirBaseDeDatos();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button", "Accion_virtual").click();
     }
     static async abrirTareasPosterioresDeNavegacionRapida() {
@@ -65,17 +77,17 @@
     }
     static async configuraciones() {
       LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
     }
     static async abrirConfiguraciones() {
       LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
     }
     static async abrirFicheros() {
       LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button.main_tab_topbar_button", "📂").click();
     }
     static async abrirWiki() {
@@ -85,7 +97,7 @@
       await this.abrirWiki();
       await LswDom.waitForMilliseconds();
       Abrir_articulos: {
-        await LswDom.waitForMilliseconds(100);
+        await LswDom.waitForMilliseconds(200);
         LswDom.querySelectorFirst(".lsw_wiki button.supermini", "🔬").click();
         return;
       }
@@ -94,7 +106,7 @@
       await this.abrirWiki();
       await LswDom.waitForMilliseconds();
       Abrir_libros: {
-        await LswDom.waitForMilliseconds(100);
+        await LswDom.waitForMilliseconds(200);
         LswDom.querySelectorFirst(".lsw_wiki button.supermini", "📚").click();
       }
     }
@@ -125,14 +137,14 @@
       await this.abrirHomepage();
       Abrir_inspector: {
         await LswDom.waitForMilliseconds(1000);
-        LswDom.querySelectorFirst("div", "🪲 JS Inspector").click();
+        LswDom.querySelectorFirst("div", "🪲 Inspector de JS").click();
       }
     }
 
     static async abrirTestsDeAplicacion() {
       await this.abrirHomepage();
       Abrir_tests: {
-        await LswDom.waitForMilliseconds(100);
+        await LswDom.waitForMilliseconds(200);
         LswDom.querySelectorFirst("div", "✅ Tests de aplicación").click();
       }
     }
@@ -140,7 +152,7 @@
     static async arrancarTestsDeAplicacion() {
       await this.abrirTestsDeAplicacion();
       Abrir_tests: {
-        await LswDom.waitForMilliseconds(100);
+        await LswDom.waitForMilliseconds(200);
         LswDom.querySelectorFirst("button", "▶️").click();
       }
     }

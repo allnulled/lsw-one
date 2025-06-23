@@ -1,252 +1,33 @@
 <div class="lsw_agenda">
-    <div v-descriptor="'agenda.calendar.buttons_panel_1'"
-        class="flex_1 flex_row"
+
+    <div class="agenda_topbar flex_1 flex_row"
         style="gap: 4px;">
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="() => selectHiddenMenu('add')"
-                :class="{activated: selectedHiddenMenu === 'add'}">+</button>
-            <div class="hidden_menu"
-                v-if="selectedHiddenMenu === 'add'">
-                <div class="hidden_menu_fixed_layer"
-                    v-on:click="() => selectHiddenMenu('none')"></div>
-                <div class="hidden_menu_box"
-                    style="min-width: 160px;">
-                    <div class="hidden_menu_items">
-                        <div class="title">
-                            <div class="flex_100 pad_right_2 pad_left_2">
-                                Insertar info
-                            </div>
-                            <div class="flex_1">
-                                <button class="mini"
-                                    v-on:click="() => selectHiddenMenu('none')">❌</button>
-                            </div>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('accion.add', { initialValues: { tiene_inicio: selectedDate } })">Crear
-                                acción</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('concepto.add')">Crear concepto</button>
-                        </div>
-                        <!--div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('limitador.add')">Crear limitador</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('impresion.add')">Crear impresión</button>
-                        </div-->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="() => selectHiddenMenu('search')"
-                :class="{activated: selectedHiddenMenu === 'search'}">🔎</button>
-            <div class="hidden_menu"
-                v-if="selectedHiddenMenu === 'search'">
-                <div class="hidden_menu_fixed_layer"
-                    v-on:click="() => selectHiddenMenu('none')"></div>
-                <div class="hidden_menu_box"
-                    style="min-width: 160px;">
-                    <div class="hidden_menu_items">
-                        <div class="title">
-                            <div class="flex_100 pad_left_2 pad_right_2">
-                                Buscar info
-                            </div>
-                            <div class="flex_1">
-                                <button class="mini"
-                                    v-on:click="() => selectHiddenMenu('none')">❌</button>
-                            </div>
-                        </div>
-                        <!--div class="separator">
-                            <div class="flex_100 pad_left_1 pad_right_1">Tablas físicas:</div>
-                        </div-->
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('concepto.search')">Buscar por concepto</button>
-                        </div>
-                        <!--
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('propagador.search')">Buscar por propagador</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('limitador.search')">Buscar por límite</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('impresion.search')">Buscar por impresión</button>
-                        </div>
-                        <div class="separator">
-                            <div class="flex_100"
-                                style="padding-left: 4px;">Tablas virtuales:</div>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('propagacion.search')">Buscar por propagación</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('infraccion.search')">Buscar por infracción</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('postimpresion.search')">Buscar por postimpresión</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('evento.search')">Buscar por evento</button>
-                        </div>
-                        -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="() => selectContext('conductometria')"
-                :class="{activated: selectedContext === 'conductometria'}">📊</button>
-        </div>
+        <div class="flex_100"></div>
         <template v-if="typeof $window.cordova !== 'undefined'">
             <div class="flex_1">
-                <button class="width_100 nowrap"
+                <button class="width_100 nowrap supermini"
                     v-on:click="synchronizeAlarms">🔔</button>
             </div>
             <div class="flex_1">
-                <button class="width_100 nowrap"
+                <button class="width_100 nowrap supermini"
                     v-on:click="unsynchronizeAlarms">🔕</button>
             </div>
         </template>
-        <div class="flex_100"></div>
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="toggleCalendario"
-                :class="{activated: selectedAction === 'calendario'}">📅</button>
-        </div>
     </div>
 
-    <div class="calendar_main_panel">
-        <div v-if="selectedContext === 'accion.add'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Añadir acción'}]" />
-            </div>
-            <lsw-agenda-accion-add :initial-data="selectedContextParameters.values" />
-        </div>
-        <div v-else-if="selectedContext === 'accion.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar acción'}]" />
-            </div>
-            <lsw-agenda-accion-search />
-        </div>
-        <div v-else-if="selectedContext === 'concepto.add'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Añadir concepto'}]" />
-            </div>
-            <lsw-agenda-concepto-add />
-        </div>
-        <div v-else-if="selectedContext === 'concepto.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar concepto'}]" />
-            </div>
-            <lsw-agenda-concepto-search />
-        </div>
-        <div v-else-if="selectedContext === 'limitador.add'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Añadir límite'}]" />
-            </div>
-            <lsw-agenda-limitador-add />
-        </div>
-        <div v-else-if="selectedContext === 'limitador.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar límite'}]" />
-            </div>
-            <lsw-agenda-limitador-search />
-        </div>
-        <div v-else-if="selectedContext === 'impresion.add'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Añadir impresión'}]" />
-            </div>
-            <lsw-agenda-impresion-add />
-        </div>
-        <div v-else-if="selectedContext === 'impresion.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar impresión'}]" />
-            </div>
-            <lsw-agenda-impresion-search />
-        </div>
-        <div v-else-if="selectedContext === 'propagacion.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar propagación'}]" />
-            </div>
-            <lsw-agenda-propagacion-search />
-        </div>
-        <div v-else-if="selectedContext === 'postimpresion.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar postimpresión'}]" />
-            </div>
-            <lsw-agenda-postimpresion-search />
-        </div>
-        <div v-else-if="selectedContext === 'infraccion.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar infracción'}]" />
-            </div>
-            <lsw-agenda-infraccion-search />
-        </div>
-        <div v-else-if="selectedContext === 'evento.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar evento'}]" />
-            </div>
-            <lsw-agenda-evento-search />
-        </div>
-        <div v-else-if="selectedContext === 'propagador.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar propagador'}]" />
-            </div>
-            <lsw-agenda-propagador-search />
-        </div>
+    <div v-if="selectedContext === 'conductometria'" class="pad_top_1">
+        <lsw-conductometria />
     </div>
-
-    <div class="calendar_viewer pad_bottom_1"
+    
+    <div class="calendar_viewer pad_top_1"
         v-show="(selectedContext === 'agenda') && (selectedAction === 'calendario')">
         <lsw-calendario ref="calendario"
             modo="date"
             :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
             :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)" />
-    </div>
-    
-    <div class=""
-        v-if="selectedContext === 'agenda'">
-        <div class="limitador_viewer">
-            <lsw-agenda-limitador-viewer :agenda="this" />
+        <div class="pad_top_1">
+            <lsw-agenda-acciones-viewer :initial-date="selectedDate" ref="agenda_acciones_viewer" />
         </div>
-        <lsw-agenda-acciones-viewer :initial-date="selectedDate"
-            ref="agenda_acciones_viewer" />
-    </div>
-    <div v-else-if="selectedContext === 'conductometria'">
-        <lsw-conductometria />
     </div>
 
 </div>

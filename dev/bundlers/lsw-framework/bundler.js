@@ -7,5 +7,8 @@ require(__dirname + "/../core/vuebundler.js").bundle({
   ignore: [],
 });
 
-// 2. Compile tests:
+// 2. Copy instrumented code to assets/coverage:
+require("fs-extra").copySync(__dirname + "/../../../src-instrumented", __dirname + "/../../../src/assets/coverage");
+
+// 3. Compile tests:
 require(__dirname + "/../../../src/assets/tests/build.js");

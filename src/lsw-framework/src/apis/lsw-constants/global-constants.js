@@ -79,61 +79,6 @@ En algún momento encontraremos la luz.
 
 `.trim());
 
-LswConstants.global.define("Boot.tri", `
-
-@{
-  "categorias": [],
-  "asco": [],
-  "de": [],
-  "persona": [],
-  "universal": "ok"
-}
-Boot [Artículo para el boot] {
-  @{
-    "autor": "github.com/allnulled",
-    "mensaje": "...",
-    "año": 2025
-  }
-  Capitulo 1 {}
-  Otro más nuevo [Otro más nuevo] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 3 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 4 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 5 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 6 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-}
-  
-`.trim());
-
 
 LswConstants.global.define("categorias.tri", `
 

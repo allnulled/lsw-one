@@ -70,8 +70,8 @@
       return matched.length ? matched[0] : null;
     }
 
-    static findVue(selector, matchingText = false) {
-      const all = document.querySelectorAll(selector);
+    static findVue(selector, matchingText = false, base = document) {
+      const all = base.querySelectorAll(selector);
       const matched = Array.from(all).filter(element => {
         if(!matchingText) {
           return true;

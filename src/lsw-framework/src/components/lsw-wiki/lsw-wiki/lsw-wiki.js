@@ -67,6 +67,15 @@ Vue.component("LswWiki", {
         this.isLoadedCategorias = true;
       }, 100);
     },
+    refreshRevistas() {
+      this.$trace("lsw-wiki.methods.refreshRevistas");
+    },
+    refreshBuscador() {
+      this.$trace("lsw-wiki.methods.refreshBuscador");
+    },
+    refreshArticulos() {
+      this.$trace("lsw-wiki.methods.refreshArticulos");
+    },
     goToAddArticulo() {
       this.$trace("lsw-wiki.methods.goToAddArticulo");
       this.$lsw.dialogs.open({

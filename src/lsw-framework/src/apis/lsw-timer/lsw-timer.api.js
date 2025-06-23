@@ -24,7 +24,7 @@
     return `${hora}:${minuto}`;
   };
 
-  LswTimer.utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false, setOnlyHour = false) {
+  LswTimer.utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false, setOnlyHour = false, setMilliseconds = false) {
     if (typeof dateObject === "undefined") {
       return undefined;
     }
@@ -37,7 +37,11 @@
     const hora = ("" + (dateObject.getHours() ?? 0)).padStart(2, '0');
     const minuto = ("" + (dateObject.getMinutes() ?? 0)).padStart(2, '0');
     const segundo = setSeconds ? ("" + (dateObject.getSeconds() ?? 0)).padStart(2, '0') : false;
-    const laHora = `${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
+    let milisegundo = false;
+    if(setMilliseconds) {
+      milisegundo = dateObject.getMilliseconds();
+    }
+    const laHora = `${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${milisegundo ? '.' + milisegundo : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
     if (setOnlyHour) {
       return laHora;
     }

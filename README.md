@@ -2,11 +2,23 @@
 
 Complemento personal de software.
 
-## Links del proyecto:
+- Links del proyecto
+- Aplicaciones
+- Trucos
+- Ficheros útiles
+- Flujos ocultos o no intuitivos
+- Flujo funcional básico
+- Extras de interés
+- Variables del editor en entorno normal
+- Variables del editor en entorno android
+
+
+### Links del proyecto
 
 - web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android: *los links expiran en 1 semana*
-   - última versión: [https://limewire.com/d/XPVEI#ke3F0Dv4y3](https://limewire.com/d/XPVEI#ke3F0Dv4y3)
+   - última versión: [https://limewire.com/d/2lIZi#0CCQvtNDxZ](https://limewire.com/d/2lIZi#0CCQvtNDxZ)
+   - versión del 23 de junio de 2025: [https://limewire.com/d/2lIZi#0CCQvtNDxZ](https://limewire.com/d/2lIZi#0CCQvtNDxZ)
    - versión del 17 de junio de 2025: [https://limewire.com/d/XPVEI#ke3F0Dv4y3](https://limewire.com/d/XPVEI#ke3F0Dv4y3)
    - versión del 11 de junio de 2025: [https://limewire.com/d/3ozEK#mes5pxNwiq](https://limewire.com/d/3ozEK#mes5pxNwiq)
    - versión del 07 de junio de 2025: [https://limewire.com/d/Jssxd#rz6sW7c7fb](https://limewire.com/d/Jssxd#rz6sW7c7fb)
@@ -17,7 +29,7 @@ Complemento personal de software.
 - github: [https://github.com/allnulled/lsw-one](https://github.com/allnulled/lsw-one)
 - documentación: [https://allnulled.github.io/lsw-one/reference](https://allnulled.github.io/lsw-one/reference)
 
-### Aplicaciones:
+### Aplicaciones
 
 Las aplicaciones que vienen por defecto son:
 
@@ -41,7 +53,7 @@ Las aplicaciones que vienen por defecto son:
 - ✨ Nueva feature (⚠️: reservado para desarrollo)
 - 🏅 Example of app (⚠️: también reservado para desarrollo)
 
-## Trucos:
+### Trucos
 
 La aplicación es bastante intuitiva considero, así que paso a explicar directamente los "trucos" o aspectos más particulares y específicos.
 
@@ -101,7 +113,7 @@ Seguramente hay más.
    - pero puede que tengas que refrescar (o salir y entrar de la app) para que se pueda seguir usando la base de datos.
       - son cosas de *IndexedDB* y yo no puedo hacer nada con esto.
 
-# Flujo funcional básico
+### Flujo funcional básico
 
 - Se trataría de hacer el script de `weeklang` para que las barras se te vayan poniendo para tus cosas.
    - en el calendario, este botón: `🏁↗️`
@@ -109,9 +121,9 @@ Seguramente hay más.
 - Y tienes luego para ir añadiendo información, organizándote una base de datos de artículos y libros, de momento.
 - Y tienes el apartado de binarios también, para lanzar scripts rápidamente.
 
-# Extras de interés
+### Extras de interés
 
-## Variables del editor en entorno normal
+### Variables del editor en entorno normal
 
 A parte de toda la API normal, con todas sus globales y demás, destacar:
 
@@ -136,9 +148,24 @@ await Vue.prototype.$lsw.dialogs.open({
       }
    }
 });
+LswDebugger.global.debug("aquí puede ir cualquier cosa")
+LswDebugger.global.debug("y será accesible")
+LswDebugger.global.debug("aunque acumules muchos logs")
+LswDebugger.global.debug("porque se autoexpiran")
 ```
 
-## Variables del editor en entorno android
+
+
+### Variables del editor en entorno android
+
+Para invocar JavaScript en entorno `android/rhino` tienes los ganchos finales:
+
+```js
+LswAndroid.evalFile("/kernel/android/myscript.js");
+LswAndroid.eval(function() {
+   // @android-rhino-js
+});
+```
 
 ```js
 cordova
@@ -172,3 +199,4 @@ abg instanceof class AndroidBridge {
 print('not seen anywhere')
 evaluateByBrowser("alert('hello')");
 ```
+

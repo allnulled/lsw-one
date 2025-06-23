@@ -27,8 +27,8 @@ $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
             property: "tiene_nombre",
             constraint: false,
           },
-          isType: "ref-object",
-          isFormType: "ref-object",
+          isType: "ref-object-by-label",
+          isFormType: "ref-object-by-label",
           isIndexed: true,
           hasFormtypeParameters: {},
           hasValidator(v) {

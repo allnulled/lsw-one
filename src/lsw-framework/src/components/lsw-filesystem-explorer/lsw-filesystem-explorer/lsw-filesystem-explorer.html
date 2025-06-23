@@ -1,4 +1,12 @@
 <div class="lsw_filesystem_explorer" :class="{absolute_version: absoluteLayout}">
+    <div :class=" absoluteLayout ? 'pad_vertical_1' : 'pad_1'">
+        <div class="typical_title_1 flex_row centered">
+            <div class="flex_100">📁 Sistema de ficheros:</div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini visibility_hidden">ok</button>
+            </div>
+        </div>
+    </div>
     <div class="current_node_box">
         <span class="previous_node_path" :class="current_node !== '/' ? '' : 'visibility_hidden'">
             <button class="previous_node_button" v-on:click="goUp"

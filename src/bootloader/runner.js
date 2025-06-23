@@ -36,8 +36,12 @@
             // await LswDomIrruptor.abrirNuevaFeature();
             // await LswDomIrruptor.abrirHomepage();
             // await LswDomIrruptor.arrancarTestsDeAplicacion();
+            // await LswDomIrruptor.abrirConfiguraciones();
             // await LswDomIrruptor.abrirTestsDeAplicacion();
-            await LswDomIrruptor.abrirConfiguraciones();
+            // await LswDomIrruptor.abrirNuevaFeature();
+            // await LswDomIrruptor.abrirBaseDeDatos();
+            // await LswDomIrruptor.abrirBaseDeDatosPorTabla("Accion");
+            await LswDomIrruptor.abrirBaseDeDatosPorNuevoDatoDeTabla("Accion");
           }
         }
       } catch (error) {

@@ -134,14 +134,14 @@
                                         <!--src/lsw-framework/components/lsw-formtype/type/lsw-*-control/lsw-*-control.{html,css,js}-->
                                         <template v-if="externalColumn.isType === 'ref-list'">
                                             <lsw-ref-list-control :settings="{
-                                            name: externalColumnId,
-                                            database: model.databaseId,
-                                            table: model.tableId,
-                                            entity: model.entityId,
-                                            column: externalColumn,
-                                            parentSchemaForm: own,
-                                            label: (externalColumnCounter+1) + '. ' + (externalColumn.hasLabel || ('Campo «' + externalColumnId + '»')),
-                                        }" />
+                                                name: externalColumnId,
+                                                database: model.databaseId,
+                                                table: model.tableId,
+                                                entity: model.entityId,
+                                                column: externalColumn,
+                                                parentSchemaForm: own,
+                                                label: (externalColumnCounter+1) + '. ' + (externalColumn.hasLabel || ('Campo «' + externalColumnId + '»')),
+                                            }" />
                                         </template>
                                         <!--component :is="column.hasFormtypeSettings.id"
                                         v-bind="{}"

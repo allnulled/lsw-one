@@ -71,4 +71,7 @@ table.basic_table > thead > tr > th:last-child {
 .width_100 { width: 100%; }
 .width_1 { width: 1%; }
 .width_auto { width: auto; }
+.height_100 { height: 100%; }
+.height_1 { height: 1%; }
+.height_auto { height: auto; }
 /* // @code.end: Lsw Styling Framework */

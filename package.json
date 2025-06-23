@@ -23,5 +23,8 @@
   "directories": {
     "doc": "docs"
   },
-  "devDependencies": {}
+  "dependencies": {
+    "fs-extra": "^11.3.0",
+    "istanbul-lib-instrument": "^6.0.3"
+  }
 }

@@ -1,76 +1,74 @@
 <div class="lsw_wiki">
-    <h4 class="">
+    <div class="typical_title_1">
         <div class="flex_row centered">
             <div class="flex_100">🔬 Enciclopedia:</div>
-            <!--div class="flex_1">
-                <div class="pad_left_1"><button :class="{activated: selectedSection === 'libros'}" class="supermini" v-on:click="() => selectSection('libros')">📚</button></div>
-            </div-->
-            <!--div class="flex_1">
-                <div class="pad_left_1"><button :class="{activated: selectedSection === 'revistas'}" class="supermini" v-on:click="() => selectSection('revistas')">📰</button></div>
-            </div-->
             <div class="flex_1">
-                <div class="pad_left_1"><button class="supermini" v-on:click="() => goToAddArticulo()">➕</button></div>
+                <div class="pad_left_1">
+                    <button :class="{activated: selectedSection === 'libros'}"
+                        class="supermini"
+                        v-on:click="() => selectSection('libros')"> 📚</button>
+                </div>
             </div>
             <div class="flex_1">
-                <div class="pad_left_1"><button :class="{activated: selectedSection === 'categorias'}" class="supermini" v-on:click="() => selectSection('categorias')">🧲</button></div>
+                <div class="pad_left_1">
+                    <button :class="{activated: selectedSection === 'categorias'}"
+                        class="supermini"
+                        v-on:click="() => selectSection('categorias')">🧲</button>
+                </div>
             </div>
             <div class="flex_1">
-                <div class="pad_left_1"><button :class="{activated: selectedSection === 'articulos'}" class="supermini" v-on:click="() => selectSection('articulos')">🔎</button></div>
+                <div class="pad_left_1">
+                    <button :class="{activated: selectedSection === 'articulos'}"
+                        class="supermini"
+                        v-on:click="() => selectSection('articulos')">🔎</button>
+                </div>
+            </div>
+            <div class="flex_1">
+                <div class="pad_left_1">
+                    <button class="supermini"
+                        v-on:click="() => goToAddArticulo()">➕</button>
+                </div>
             </div>
         </div>
-    </h4>
+    </div>
     <hr />
-    <div class="wiki_libros" v-if="selectedSection === 'libros'">
-        <div class="flex_row centered">
-            <h4 class="margin_bottom_1 width_100">
-                <div class="flex_row centered">
-                    <div class="flex_100">
-                        📚 Libros
-                    </div>
-                    <div class="flex_1 pad_right_1">
-                        <button class="supermini" v-on:click="refreshLibros">🛜</button>
-                    </div>
-                    <div class="flex_1">
-                        <button class="supermini" v-on:click="openLibrosFolder">↗️</button>
-                    </div>
+    <div class="wiki_libros"
+        v-if="selectedSection === 'libros'">
+        <lsw-book-factory />
+    </div>
+    <div class="wiki_categorias"
+        v-else-if="selectedSection === 'categorias'">
+        <div class="typical_title_1">
+            <div class="flex_row centered">
+                <div class="flex_100">🧲 Categorías</div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini"
+                        v-on:click="refreshCategorias">🛜</button>
                 </div>
-            </h4>
-        </div>
-        <lsw-wiki-libros v-if="isLoadedLibros" />
-    </div>
-    <div class="wiki_revistas pad_top_1" v-else-if="selectedSection === 'revistas'">
-        <div class="flex_row centered">
-            <h4 class="margin_bottom_1">📰 Revistas</h4>
-        </div>
-        <lsw-wiki-revistas />
-    </div>
-    <div class="wiki_categorias" v-else-if="selectedSection === 'categorias'">
-        <div class="flex_row centered">
-            <h4 class="margin_bottom_1 width_100">
-                <div class="flex_row centered">
-                    <div class="flex_100">
-                        🧲 Categorías
-                    </div>
-                    <div class="flex_1 pad_right_1">
-                        <button class="supermini" v-on:click="refreshCategorias">🛜</button>
-                    </div>
-                    <div class="flex_1">
-                        <button class="supermini" v-on:click="openCategoriasFile">↗️</button>
-                    </div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini"
+                        v-on:click="openCategoriasFile">↗️</button>
                 </div>
-            </h4>
+            </div>
         </div>
-        <lsw-wiki-categorias v-if="isLoadedCategorias" />
-    </div>
-    <div class="wiki_buscador pad_top_1" v-else-if="selectedSection === 'buscador'">
-        <div class="flex_row centered">
-            <h4 class="margin_bottom_1">🔎 Buscador</h4>
+        <div class="pad_top_1">
+            <lsw-wiki-categorias v-if="isLoadedCategorias" />
         </div>
     </div>
-    <div class="wiki_articulos pad_top_1"
+    <div class="wiki_articulos"
         :class="{esta_buscando:isSearching}"
         v-else-if="selectedSection === 'articulos'">
-        <h4 class="margin_bottom_1">📃 Artículos</h4>
-        <lsw-wiki-articulos />
+        <div class="typical_title_1">
+            <div class="flex_row centered">
+                <div class="flex_100">📃 Artículos</div>
+                <div class="flex_1">
+                    <button class="supermini visibility_hidden"
+                        v-on:click="refreshArticulos">🛜</button>
+                </div>
+            </div>
+        </div>
+        <div class="pad_top_1">
+            <lsw-wiki-articulos />
+        </div>
     </div>
 </div>

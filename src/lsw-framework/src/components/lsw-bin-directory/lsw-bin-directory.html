@@ -15,7 +15,7 @@
     <template v-if="!isLoaded">
         Un momento, se están cargando...
     </template>
-    <lsw-error-viewer :error="hasError"
+    <lsw-error-box :error="hasError"
         v-else-if="hasError" />
     <div class="binaries_list"
         :class="{is_searching: isAboutSearching}"

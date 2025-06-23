@@ -1,8 +1,9 @@
 <div class="lsw_js_inspector">
-    <div class="flex_row pad_1">
+    <div class="flex_row centered">
         <div class="flex_100">🪲 JS inspector</div>
         <div class="flex_1">
-
+            <button class="supermini"
+                v-on:click="openConsole">💻</button>
         </div>
     </div>
     <div class="flex_row centered pad_top_1">
@@ -16,6 +17,12 @@
                     {{ tab.id }} ({{ tab.uid }})
                 </option>
             </select>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="cloneTab">
+                🐑🐑
+            </button>
         </div>
         <div class="flex_1 pad_left_1">
             <button class="supermini"
@@ -42,6 +49,10 @@
                                                 v-model="tab.id"
                                                 v-on:keypress.enter="digestInput" />
                                         </div>
+                                        <div class="flex_1 pad_left_1">
+                                            <button class="supermini"
+                                                v-on:click="() => resetTabId(tabIndex)">❎</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -60,8 +71,12 @@
                                             v-model="tab.inputSource"
                                             v-on:keypress.enter="digestInput" />
                                     </div>
+                                    <div class="flex_1 pad_left_1">
+                                        <button class="supermini"
+                                            v-on:click="() => resetTabInput(tabIndex)">❎</button>
+                                    </div>
                                 </div>
-                                <lsw-error-viewer v-if="errorGettingInput"
+                                <lsw-error-box v-if="errorGettingInput"
                                     :error="errorGettingInput"
                                     :on-clear-error="() => errorGettingInput = false" />
                             </div>
@@ -78,14 +93,18 @@
                                                 placeholder="Jmespath, ej: list.*.property"
                                                 v-on:keypress.enter="digestInput" />
                                         </div>
+                                        <div class="flex_1 pad_left_1">
+                                            <button class="supermini"
+                                                v-on:click="() => resetTabPath(tabIndex)">❎</button>
+                                        </div>
                                     </div>
                                     <template v-if="errorPathingInput">
-                                        <lsw-error-viewer :error="errorPathingInput"
+                                        <lsw-error-box :error="errorPathingInput"
                                             :on-clear-error="() => errorPathingInput = false" />
                                     </template>
                                 </div>
                                 <div>
-                                    <div class="flex_row centered pad_top_1">
+                                    <div class="flex_row pad_top_1">
                                         <div class="flex_1 pad_right_1 align_self_start pad_top_1">
                                             💉:
                                         </div>
@@ -96,8 +115,12 @@
                                                 placeholder="Js transformer, ej: return it.map(row => row.field)"
                                                 v-on:keypress.ctrl.enter="digestInput" />
                                         </div>
+                                        <div class="flex_1 pad_left_1 align_self_stretch">
+                                            <button class="supermini height_100"
+                                                v-on:click="() => resetTabTransformer(tabIndex)">❎</button>
+                                        </div>
                                     </div>
-                                    <lsw-error-viewer v-if="errorTransformingInput"
+                                    <lsw-error-box v-if="errorTransformingInput"
                                         :error="errorTransformingInput"
                                         :on-clear-error="() => errorTransformingInput = false" />
                                 </div>
@@ -114,8 +137,12 @@
                                                 v-on:input="(e) => updateSearchWithDelay(tab, e.target.value)"
                                                 v-on:keypress.enter="digestInput" />
                                         </div>
+                                        <div class="flex_1 pad_left_1">
+                                            <button class="supermini"
+                                                v-on:click="() => resetTabSearch(tabIndex)">❎</button>
+                                        </div>
                                     </div>
-                                    <lsw-error-viewer v-if="errorTransformingInput"
+                                    <lsw-error-box v-if="errorTransformingInput"
                                         :error="errorTransformingInput"
                                         :on-clear-error="() => errorTransformingInput = false" />
                                 </div>

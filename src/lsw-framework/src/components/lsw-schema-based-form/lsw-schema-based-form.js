@@ -37,6 +37,7 @@ Vue.component("LswSchemaBasedForm", {
         "date",
         "duration",
         "ref-object",
+        "ref-object-by-label",
         "ref-list",
         "ref-relation",
         "source-code",

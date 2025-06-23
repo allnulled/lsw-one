@@ -67,7 +67,7 @@ globalThis.Error = class AccumulableError extends Error {
       return new ErrorSummary({
         name: this.name,
         message: this.message,
-        stack: this.stack ? this.stack.split("\n    at ") : [],
+        stack: this.stack ? this.stack.split("\n").map(line => line.split("@")) : [],
         uniqueTraces: uniqueTraces,
         commonTraces: commonTraces,
       });

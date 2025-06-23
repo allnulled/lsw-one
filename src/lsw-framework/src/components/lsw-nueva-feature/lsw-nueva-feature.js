@@ -10,12 +10,28 @@ Vue.component("LswNuevaFeature", {
     };
   },
   methods: {
-    
+    async load() {
+
+
+
+      const output = await LswTester.create().define({
+        id: "lsw.test.api.intro",
+        fromCallback: function() {
+          console.log("lsw.test.api.into");
+        }
+      }).run();
+
+      console.log(output);
+
+
+
+    }
   },
   watch: {},
   async mounted() {
     try {
       this.$trace("lsw-nueva-feature.mounted");
+      this.load();
     } catch (error) {
       console.log(error);
     }

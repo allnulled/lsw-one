@@ -52,7 +52,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "wiki-explorer-" + this.getRandomString(5),
         title: "Wiki explorer",
-        template: `<div class="pad_2"><lsw-wiki /></div>`,
+        template: `<div class="pad_1"><lsw-wiki /></div>`,
       });
     },
     openAgenda() {
@@ -61,7 +61,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "agenda-viewer-" + this.getRandomString(5),
         title: "Agenda viewer",
-        template: `<div class="pad_2"><lsw-agenda /></div>`,
+        template: `<div class="pad_1"><lsw-agenda /></div>`,
       });
     },
     openAutomessages() {
@@ -74,7 +74,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "notas-" + this.getRandomString(5),
         title: "Notas",
-        template: `<div class="pad_2"><lsw-spontaneous-table-nota /></div>`,
+        template: `<div class="pad_1"><lsw-spontaneous-table-nota /></div>`,
       });
     },
     openConfigurationsPage() {
@@ -83,7 +83,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "configurations-page-" + this.getRandomString(5),
         title: "Configuraciones",
-        template: `<div class="pad_2"><lsw-configurations-page /></div>`,
+        template: `<div class="pad_1"><lsw-configurations-page /></div>`,
       });
     },
     closeProcess(dialog) {

@@ -58,6 +58,16 @@ Vue.component("LswAgenda", {
       }
       this.selectAction(finalState);
     },
+    selectCalendario() {
+      this.$trace("lsw-agenda.methods.selectCalendario");
+      this.selectContext("agenda");
+      this.selectAction("calendario");
+    },
+    selectConductometria() {
+      this.$trace("lsw-agenda.methods.selectCondutometria");
+      this.selectContext("conductometria");
+      // this.selectAction("calendario");
+    },
     togglePsicodelia() {
       this.$trace("lsw-agenda.methods.togglePsicodelia");
       this.hasPsicodelia = !this.hasPsicodelia;

@@ -6,6 +6,10 @@ Vue.component("LswRefObjectControl", {
       type: Object,
       default: () => ({})
     },
+    labelField: {
+      type: String,
+      required: true,
+    }
   },
   data() {
     this.$trace("lsw-ref-object-control.data");
@@ -13,11 +17,12 @@ Vue.component("LswRefObjectControl", {
     return {
       uuid: LswRandomizer.getRandomString(5),
       value: this.settings.initialValue || [],
+      isLoaded: false,
       isValueLoaded: false,
       isEditable: true,
-      isShownSelector: false,
+      isShownSelector: true,
       isShownInfo: false,
-      rows: []
+      rows: [],
     };
   },
   methods: {
@@ -46,12 +51,17 @@ Vue.component("LswRefObjectControl", {
       this.$trace("lsw-page-rows.methods.loadRows", arguments);
       const selection = await this.$lsw.database.select(this.settings.column.refersTo.table, it => true);
       this.rows = selection;
+      this.isLoaded = true;
       return selection;
     },
     async loadValue() {
       this.$trace("lsw-ref-object-control.methods.loadValue");
       const selection = await this.$lsw.database.select(this.settings.tableId, it => true);
     },
+    selectRow(row) {
+      this.$trace("lsw-ref-object-control.methods.selectRow");
+      this.value = row;
+    }
   },
   watch: {},
   async mounted() {

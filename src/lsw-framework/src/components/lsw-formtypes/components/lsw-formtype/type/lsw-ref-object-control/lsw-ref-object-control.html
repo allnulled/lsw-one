@@ -32,7 +32,7 @@
                 <div class="" style="white-space: pre; font-size:12px; border: 1px solid white; background-color: white; color: black;">{{ $lsw.utils.stringify(settings) }}</div>
             </div>
             <div class=""
-                v-if="isShownSelector">
+                v-if="isShownSelector && isLoaded">
                 <lsw-table
                     :initial-input="rows"
                     :initial-settings="{title: `Un ítem de «${settings.column.refersTo.table}.${settings.column.refersTo.property}»:`, itemsPerPage: 50 }"

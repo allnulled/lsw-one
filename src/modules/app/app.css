@@ -14,6 +14,8 @@ body {
 
 html,
 button,
+.button_like,
+.like_button,
 input,
 textarea {
     font-family: Arial;
@@ -26,6 +28,7 @@ input[type="checkbox"] {
     min-height: auto;
 }
 
+.button_like,
 .like_button,
 button {
     border: 1px solid #b1b1b1;
@@ -47,6 +50,12 @@ button {
     overflow: hidden;
 }
 
+.button_like,
+.like_button {
+    text-align: center;
+}
+
+.button_like:hover,
 .like_button:hover,
 button:hover {
     /*background-color: rgb(6, 6, 29);*/
@@ -55,11 +64,16 @@ button:hover {
     /*box-shadow: 0 0 2px black;*/
 }
 
+
+.button_like.activated,
+.like_button.activated,
 button.activated {
     border: 1px solid rgb(227, 227, 227);
     background-color: rgba(255, 255, 255, 0.4);
 }
 
+.button_like.mini,
+.like_button.mini,
 button.mini {
     padding: 4px;
     padding-right: 4px;
@@ -68,6 +82,8 @@ button.mini {
     font-size: 13px !important;
 }
 
+.button_like.supermini,
+.like_button.supermini,
 button.supermini {
     min-width: auto;
     min-width: 25px;
@@ -76,11 +92,15 @@ button.supermini {
     font-size: 12px !important;
 }
 
+.button_like.supermini.activated,
+.like_button.supermini.activated,
 button.supermini.activated {
     border: default;
     background-color: default;
 }
 
+.button_like.superbig,
+.like_button.superbig,
 button.superbig {
     min-width: auto;
     min-width: 25px;
@@ -99,16 +119,22 @@ button.iconized_button {
     font-size: 12px;
 }
 
+.button_like.has_light_bg,
+.like_button.has_light_bg,
 button.has_light_bg {
     background-color: #65656587;
     color: white;
     border: 1px solid #3c3c3e;
 }
 
+.button_like.has_light_bg:hover,
+.like_button.has_light_bg:hover,
 button.has_light_bg:hover {
     background-color: #41416c87;
 }
 
+.button_like.has_light_bg.activated,
+.like_button.has_light_bg.activated,
 button.has_light_bg.activated {
     background-color: #363673c7;
     box-shadow: 0 0 3px white;
@@ -120,11 +146,16 @@ button>span.button_text {
     font-size: 13px !important;
 }
 
+.button_like.disabled,
+.like_button.disabled,
 button[disabled] {
     cursor: default;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     background-color: #484848;
 }
+
+.button_like.disabled:hover,
+.like_button.disabled:hover,
 button[disabled]:hover {
     box-shadow: 0 0 0px transparent;
 }
@@ -169,7 +200,12 @@ select>option {
     font-family: Arial;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin: 0px;
 }
 
@@ -381,10 +417,9 @@ pre.codeblock {
     margin: 0px;
 }
 
-.lista_de_botones_unilinea {
-    
-}
-.lista_de_botones_unilinea > button:first-child {
+.lista_de_botones_unilinea {}
+
+.lista_de_botones_unilinea>button:first-child {
     margin-top: 0px;
 }
 
@@ -392,7 +427,7 @@ pre.codeblock {
     border: 0px solid white;
     box-shadow: 0 0 2px black;
     border-radius: 2pt;
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(255, 255, 255, 0.5);
     padding: 0px;
     padding-left: 4px;
     padding-right: 4px;
@@ -405,9 +440,11 @@ pre.codeblock {
     color: rgb(216, 219, 251);
     cursor: pointer;
 }
+
 .linkable_text:hover {
     color: white;
 }
+
 .linkable_text.activated {
     color: yellow;
 }
@@ -417,9 +454,11 @@ pre.codeblock {
     color: rgb(25, 24, 52);
     cursor: pointer;
 }
+
 .linkable_text:hover.has_light_bg {
     color: rgb(27, 23, 117);
 }
+
 .linkable_text.activated.has_light_bg {
     color: rgb(58, 55, 116);
 }
@@ -428,6 +467,7 @@ pre.codeblock {
     padding-top: 0px;
     padding-bottom: 1px;
 }
+
 .list_button {
     margin-top: 0px;
     border: 1px solid white;
@@ -436,26 +476,63 @@ pre.codeblock {
     padding-bottom: 2px;
     padding-left: 4px;
     padding-right: 4px;
-    background-color: rgba(255,255,255,0.4);
+    background-color: rgba(255, 255, 255, 0.4);
     color: black;
     text-shadow: 0 0 1px black;
     cursor: pointer;
 }
+
 .list_button:hover {
-    background-color: rgba(255,255,255,0.6);
+    background-color: rgba(255, 255, 255, 0.6);
 }
+
 .list_button.activated {
-    background-color: rgba(255,255,255,0.8);
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
+.list_style_none {
+    padding: 0px;
+    padding-left: 0px;
+    margin: 0px;
+    list-style-type: none;
+}
 
+.list_style_0 {
+    padding: 0px;
+    padding-left: 16px;
+    margin: 0px;
+    list-style-type: none;
+}
+
+.list_style_1 {
+    padding: 0px;
+    padding-left: 16px;
+    margin: 0px;
+    list-style-type: decimal;
+}
+
+.typical_title_1 {
+    font-size: 12px;
+    background-color: rgba(103, 118, 212, 0.4);
+    padding-top: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
+    box-shadow: 0 0 2px black;
+}
+
+.underlined {
+    text-decoration: underline;
+}
 
 .texto_markdown {
     min-height: 32px;
 }
+
 .texto_markdown.light_bg {
-    background-color: rgba(0,0,0,0.85);
+    background-color: rgba(0, 0, 0, 0.85);
 }
+
 .texto_markdown h1,
 .texto_markdown h2,
 .texto_markdown h3,
@@ -465,6 +542,7 @@ pre.codeblock {
 .texto_markdown p {
     margin: 0px;
 }
+
 .texto_markdown {
     padding: 7px;
     margin: 0px;
@@ -489,6 +567,7 @@ pre.codeblock {
 .texto_markdown>p:last-child {
     margin-bottom: 0px;
 }
+
 .texto_markdown ol,
 .texto_markdown ul {
     margin: 0px;
@@ -742,12 +821,18 @@ pre.codeblock {
     align-self: start;
 }
 
+.align_self_stretch {
+    align-self: stretch;
+}
+
 .vertical_align_top {
     vertical-align: top;
 }
+
 .vertical_align_center {
     vertical-align: center;
 }
+
 .vertical_align_bottom {
     vertical-align: bottom;
 }

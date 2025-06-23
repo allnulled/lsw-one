@@ -2,6 +2,10 @@ const path = require("path");
 const basepath = path.resolve(__dirname + "/../../../src");
 const Instrumenter = require(__dirname + "/instrumenter.js");
 const ignoredFiles = [];
+const instrumentedFiles = [
+  `${basepath}/lsw-framework/src/apis/lsw-dom/lsw-vue2.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-ensurer/ensure.js`,
+];
 
 module.exports = Instrumenter.instrumentSet([
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,8 +41,9 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/apis/lsw-tree-parser/lsw-tree-parser.js`,
   // LSW TESTER:
   `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-tester.js`,
-  `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-test-registry.js`,
-  `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-tests.js`,
+  // `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-test-registry.js`,
+  // `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-tests.js`,
+  
   // LSW DOM:
   `${basepath}/lsw-framework/src/apis/lsw-dom/lsw-dom.js`,
   `${basepath}/lsw-framework/src/apis/lsw-dom/lsw-dom-irruptor.js`,
@@ -69,6 +74,8 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/apis/lsw-store/dist/store.unbundled.js`,
   // LSW TIMER:
   `${basepath}/lsw-framework/src/apis/lsw-timer/lsw-timer.bundled.js`,
+  // LSW TEMPORIZER:
+  `${basepath}/lsw-framework/src/apis/lsw-temporizer/lsw-temporizer.js`,
   // LSW INTRUDER:
   `${basepath}/lsw-framework/src/apis/lsw-intruder/lsw-intruder.js`,
   // LSW CYCLER:
@@ -99,6 +106,8 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/apis/lsw-typer/lsw-typer.js`,
   // LSW MICRODATA BANK:
   `${basepath}/lsw-framework/src/apis/lsw-microdata-bank/lsw-microdata-bank.js`,
+  // LSW BOOKS:
+  `${basepath}/lsw-framework/src/apis/lsw-books/lsw-books.js`,
   // LSW DATABASE-UI:
   `${basepath}/lsw-framework/src/components/lsw-database-ui/database-adapter/LswDatabaseAdapter.js`,
   // DIRECTIVE V-DESCRIPTOR:
@@ -113,6 +122,12 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-homepage/lsw-homepage`,
   // SOURCEABLE:
   `${basepath}/lsw-framework/src/components/lsw-sourceable/lsw-sourceable`,
+  // LSW DEBUGGER:
+  `${basepath}/lsw-framework/src/components/lsw-debugger/lsw-debugger.api.js`,
+  `${basepath}/lsw-framework/src/components/lsw-debugger/lsw-debugger`,
+  // COVERAGE:
+  `${basepath}/lsw-framework/src/components/lsw-coverage-viewer/lsw-coverage-viewer`,
+  `${basepath}/lsw-framework/src/components/lsw-js-file-coverage-viewer/lsw-js-file-coverage-viewer`,
   // CALENDARIO:
   `${basepath}/lsw-framework/src/components/lsw-calendario/lsw-calendario`,
   // TABLE:
@@ -161,6 +176,12 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode`,
   `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki`,
   `${basepath}/lsw-framework/src/components/lsw-wiki/lsw-wiki-utils/lsw-wiki-utils.js`,
+  `${basepath}/lsw-framework/src/components/lsw-book-factory/lsw-book-factory`,
+  `${basepath}/lsw-framework/src/components/lsw-book-library/lsw-book-library`,
+  // MARKDOWN VIEWER:
+  `${basepath}/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer`,
+  // MICRODATA BANK EXPLORER:
+  `${basepath}/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer`,
   // CLOCKWATCHER:
   `${basepath}/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher`,
   // GOALS VIEWER:
@@ -202,7 +223,6 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error`,
-  `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-error-viewer/lsw-error-viewer`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control`,
@@ -211,6 +231,7 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control`,
+  `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-by-label-control/lsw-ref-object-by-label-control`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control`,
   `${basepath}/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control`,
   // SCHEMA-BASED FORMS:
@@ -241,6 +262,8 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota`,
   `${basepath}/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio`,
   `${basepath}/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control`,
+  // INLINE TAGS PICKER:
+  `${basepath}/lsw-framework/src/components/lsw-inline-tags-picker/lsw-inline-tags-picker`,
   // JS INSPECTOR:
   `${basepath}/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.api.js`,
   `${basepath}/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector`,
@@ -254,8 +277,13 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester`,
   // NUEVA FEATURE:
   `${basepath}/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature`,
+  // ERROR VIEWER:
+  `${basepath}/lsw-framework/src/components/lsw-error-box/lsw-error-box`,
+  `${basepath}/lsw-framework/src/components/lsw-syntax-error-viewer/lsw-syntax-error-viewer`,
   // TESTS PAGE:
   `${basepath}/lsw-framework/src/components/lsw-tests-page/lsw-tests-page`,
+  `${basepath}/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer`,
+  `${basepath}/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer`,
   // JS VIEWER:
   `${basepath}/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer`,
   // ANDROID API:
@@ -282,16 +310,16 @@ module.exports = Instrumenter.instrumentSet([
   // APPLICATION:
   `${basepath}/modules/app/app`,
 ], {
+  instrumentedFiles,
   fileFilter: function (file) {
-    Ignore_selectively: {
-      if (file.endsWith(".css")) {
-        return false;
-      } else if (file.endsWith(".inst.js")) {
-        return false;
-      } else if (ignoredFiles.indexOf(file) !== -1) {
-        return false;
-      }
+    const filepath = require("path").resolve(file);
+    const isJs = file.endsWith(".js");
+    if(!isJs) return false;
+    let isAccepted = instrumentedFiles.indexOf(file) !== -1;
+    let isIgnored = true;
+    if(ignoredFiles.indexOf(filepath) === -1) {
+      isIgnored = false;
     }
-    return file.endsWith(".js");
+    return isAccepted && (!isIgnored);
   }
 });

@@ -5,7 +5,7 @@ Vue.component("LswJsViewer", {
     source: {
       type: String,
       required: true,
-    }
+    },
   },
   data() {
     this.$trace("lsw-js-viewer.data");

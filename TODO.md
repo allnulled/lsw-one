@@ -1,9 +1,9 @@
 # TODOs
 
-[x] barra de arriba fija y contenido debajo scroleable
-  [x] para que se puedan abrir desde los diálogos
-[x] invertir coloreado de barras cuando es max en vez de min
-[ ] soporte para weeklang con bindings en:
-  [ ] barras del día
-    [ ] se inyectan los REQ
-      [ ] si pertocan según fechas
+- [x] Optimizar js inspector:
+   - [ ] botón de borrar ruta de jmespath
+   - [ ] botón de borrar filtro por texto
+   - [ ] botón de clonar en una pestaña nueva al lado del de crearla
+- [ ] Instrumentalizar código
+   - [ ] Que fabrique los intr
+   - [ ] Que que los incluya en el distribution

@@ -3,8 +3,8 @@
         :parent-formtype="this"
         v-if="skipLabel === false"
     />
-    <lsw-error-viewer v-if="validateError" :error="validateError" />
-    <lsw-error-viewer v-if="submitError" :error="submitError" />
+    <lsw-error-box v-if="validateError" :error="validateError" />
+    <lsw-error-box v-if="submitError" :error="submitError" />
     <div v-show="isEditable" v-else>
         <div ref="controller"
             v-xform.control="{

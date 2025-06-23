@@ -14,7 +14,7 @@
                 ➡️
             </button>
         </div>
-        <lsw-error-viewer
+        <lsw-syntax-error-viewer
             ref="parserErrorViewer"
             :error="false" />
     </div>
@@ -47,7 +47,7 @@
             <div class="">Salida:</div>
             <pre class="codeblock">{{ currentAst }}</pre>
         </div>
-        <lsw-error-viewer
+        <lsw-syntax-error-viewer
             ref="snippetErrorViewer"
             :error="false" />
     </div>

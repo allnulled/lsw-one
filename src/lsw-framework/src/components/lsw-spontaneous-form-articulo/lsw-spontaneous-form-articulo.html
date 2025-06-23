@@ -4,9 +4,9 @@
         <div class="flex_100">
             <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
             <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de artículo" v-model="tiene_titulo" />
-            <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de artículo." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido"></textarea>
-            <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias"></textarea>
-            <textarea class="width_100 margin_bottom_0 margin_top_1" placeholder="tag 1; tag 2; tag 3;" v-model="tiene_tags"></textarea>
+            <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de artículo." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido" spellcheck="false"></textarea>
+            <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias" spellcheck="false"></textarea>
+            <textarea class="width_100 margin_bottom_0 margin_top_1" placeholder="tag 1; tag 2; tag 3;" v-model="tiene_tags" spellcheck="false"></textarea>
             <div class="flex_row centered">
                 <div class="flex_1">
                     Garantía: 

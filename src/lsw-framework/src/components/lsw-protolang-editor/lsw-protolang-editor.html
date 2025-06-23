@@ -13,7 +13,7 @@
             <textarea class="nowrap" v-model="contents" :placeholder="placeholder" style="height: 380px;" spellcheck="false" />
         </div>
         <template v-if="error">
-            <lsw-error-viewer :error="error" :on-clear-error="() => error = false" />
+            <lsw-syntax-error-viewer :error="error" :on-clear-error="() => error = false" />
         </template>
         <pre v-if="result" style="font-size:10px;">{{ result }}</pre>
     </div>

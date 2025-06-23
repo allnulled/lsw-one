@@ -6,7 +6,7 @@
       this.inspector = inspector;
       this.uid = LswRandomizer.getRandomString(5);
       this.id = inspector.tabs.length;
-      this.inputSource = "Vue.options.components.LswCalendario.options.template";
+      // this.inputSource = "Vue.options.components.LswCalendario.options.template";
       this.inputSource = "Vue";
       this.pathSource = '';
       this.transformerSource = '';
@@ -46,10 +46,23 @@
         this.selectedTab = anotherTab.uid;
         return anotherTab;
       },
+      cloneTab() {
+        const specifications = {
+          input: this.inputSource,
+          path: this.pathSource,
+          transformer: this.transformerSource,
+          search: this.searchSource,
+        };
+        const anotherTab = new InspectorTab(specifications, this);
+        this.tabs.push(anotherTab);
+        this.selectedTab = anotherTab.uid;
+        return anotherTab;
+      },
       async digestInput() {
         try {
           this.$trace("lsw-js-inspector.methods.digestInput");
           this.isDigesting = true;
+          clearTimeout(this.digestTimeoutId);
           const currentTab = this.tabs.filter(tab => tab.uid === this.selectedTab)[0];
           let transformedInput = undefined;
           Getting_input: {
@@ -119,46 +132,75 @@
           tab.inputSource = newPath;
         }
         this.digestInput();
-    },
-    openProperty(tabIndex, propId) {
-      this.$trace("lsw-js-inspector.methods.openProperty");
-      const tab = this.tabs[tabIndex];
-      const propRegex = /^[A-Za-z$_][A-Za-z0-9$_]*$/g;
-      const byString = !propRegex.test(propId);
-      const appendment = byString ? `[${JSON.stringify(propId)}]` : `.${propId}`;
-      tab.inputSource += appendment;
-      this.digestInput();
-    },
-    updateSearchWithDelay(tab, searchSource) {
-      this.$trace("lsw-js-inspector.methods.updateSearchWithDelay");
-      clearTimeout(this.digestTimeoutId);
-      this.digestTimeoutId = setTimeout(() => {
-        tab.searchSource = searchSource;
+      },
+      openProperty(tabIndex, propId) {
+        this.$trace("lsw-js-inspector.methods.openProperty");
+        const tab = this.tabs[tabIndex];
+        const propRegex = /^[A-Za-z$_][A-Za-z0-9$_]*$/g;
+        const byString = !propRegex.test(propId);
+        const appendment = byString ? `[${JSON.stringify(propId)}]` : `.${propId}`;
+        tab.inputSource += appendment;
         this.digestInput();
-      }, this.digestTimeoutMilliseconds);
-    }
-  },
+      },
+      updateSearchWithDelay(tab, searchSource) {
+        this.$trace("lsw-js-inspector.methods.updateSearchWithDelay");
+        clearTimeout(this.digestTimeoutId);
+        this.digestTimeoutId = setTimeout(() => {
+          tab.searchSource = searchSource;
+          this.digestInput();
+        }, this.digestTimeoutMilliseconds);
+      },
+      resetTabId(tabIndex) {
+        this.$trace("lsw-js-inspector.methods.resetTabId");
+        this.tabs[tabIndex].idSource = '';
+        this.digestInput();
+      },
+      resetTabInput(tabIndex) {
+        this.$trace("lsw-js-inspector.methods.resetTabInput");
+        this.tabs[tabIndex].inputSource = '';
+        this.digestInput();
+      },
+      resetTabPath(tabIndex) {
+        this.$trace("lsw-js-inspector.methods.resetTabPath");
+        this.tabs[tabIndex].pathSource = '';
+        this.digestInput();
+      },
+      resetTabTransformer(tabIndex) {
+        this.$trace("lsw-js-inspector.methods.resetTabTransformer");
+        this.tabs[tabIndex].transformerSource = '';
+        this.digestInput();
+      },
+      resetTabSearch(tabIndex) {
+        this.$trace("lsw-js-inspector.methods.resetTabSearch");
+        this.tabs[tabIndex].searchSource = '';
+        this.digestInput();
+      },
+      openConsole() {
+        this.$trace("lsw-js-inspector.methods.openConsole");
+        this.$consoleHooker.toggleConsole();
+      },
+    },
     watch: {
       selectedTab() {
         this.digestInput();
       }
     },
     async mounted() {
-    try {
-      this.$trace("lsw-js-inspector.mounted");
-      await LswLazyLoads.loadBeautifier();
-      await LswLazyLoads.loadJmespath();
-      await LswJsInspector.initializeFully();
-      if(this.tabs.length === 0) {
-    this.selectedTab = this.addTab({
-      id: "Principal",
-    }).uid;
-  }
-  await this.digestInput();
-} catch (error) {
-  console.log(error);
-}
+      try {
+        this.$trace("lsw-js-inspector.mounted");
+        await LswLazyLoads.loadBeautifier();
+        await LswLazyLoads.loadJmespath();
+        await LswJsInspector.initializeFully();
+        if (this.tabs.length === 0) {
+          this.selectedTab = this.addTab({
+            id: "Principal",
+          }).uid;
+        }
+        await this.digestInput();
+      } catch (error) {
+        console.log(error);
+      }
     }
   });
-}) ();
+})();
 // @code.end: LswJsInspector API

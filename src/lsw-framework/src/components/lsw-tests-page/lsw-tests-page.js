@@ -6,115 +6,107 @@ Vue.component("LswTestsPage", {
   },
   data() {
     return {
-      isLoaded: false,
-      isRunning: false,
-      isDownloaded: false,
-      isCompleted: false,
-      section: "available",
-      baseUrl: "assets/tests/cases/",
-      available: [],
-      selected: [],
-      downloaded: [],
+      selectedSection: "coverage",
+      initializationError: false,
+      choosenTester: false,
     };
   },
   methods: {
-    goToSection(section) {
-      this.$trace("lsw-tests-page.methods.goToSection");
-      this.section = section;
+    selectSection(subsection) {
+      this.$trace("lsw-tests-page.methods.selectSection");
+      this.selectedSection = subsection;
     },
-    backToTests() {
-      this.$trace("lsw-tests-page.methods.backToTests");
-      this.resetState();
-    },
-    resetState() {
-      this.$trace("lsw-tests-page.methods.resetState");
-      this.isLoaded = false;
-      this.isRunning = false;
-      this.isDownloaded = false;
-    },
-    selectTest(test) {
-      const pos = this.selected.indexOf(test);
-      if(pos !== -1) {
-        this.selected.splice(pos, 1);
-      } else {
-        this.selected.push(test);
-      }
-    },
-    resetSelectedTests() {
-      this.$trace("lsw-tests-page.methods.resetSelectedTests");
-      this.selected = [].concat(this.available);
-    },
-    async loadTests() {
-      this.$trace("lsw-tests-page.methods.loadTests");
+    async initializeTester() {
+      this.$trace("lsw-tests-page.methods.initializeTester");
       try {
-        this.available = await importer.json("assets/tests/testcases.json");
-        this.selected = [].concat(this.available);
-        this.isLoaded = true;
-      } catch (error) {
-        this.$lsw.toasts.showError(error);
-      }
-    },
-    async downloadTests() {
-      this.$trace("lsw-tests-page.methods.downloadTests");
-      try {
-        const allDownloads = [];
-        for (let index = 0; index < this.selected.length; index++) {
-          const selectedTest = this.selected[index];
-          const testCallbackPromise = importer.scriptAsync(selectedTest);
-          allDownloads.push(testCallbackPromise)
-        }
-        const testsResult = await Promise.all(allDownloads);
-        const testsFormatted = LswUtils.flattenObjects(testsResult, {
-          keyMapper(key, totalKeys, indexKey) {
-            return `[T${('' + (totalKeys + 1)).padStart(4, '0')}] ${key}`;
+        this.choosenTester = LswTester.create().define({
+          id: "lsw.test.main",
+          fromCollection: [{
+            id: "lsw.test.main.intro",
+            fromCallback: async function (context) {
+              const { assert } = context;
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              throw new Error("algo pasó aquí")
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              console.log("lsw.test.main.intro");
+            },
+          }, {
+            id: "lsw.test.main.body",
+            fromCollection: [{
+              id: "lsw.test.main.body.check-globals",
+              fromCallback: async function (context) {
+                const { assert } = context;
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                console.log("lsw.test.main.body.check-globals");
+              }
+            }, {
+              id: "lsw.test.main.body.check-vue",
+              fromCallback: async function (context) {
+                const { assert } = context;
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                console.log("lsw.test.main.body.check-vue");
+              }
+            }],
+          }, {
+            id: "lsw.test.main.end",
+            fromCallback: async function (context) {
+              const { assert } = context;
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              console.log("lsw.test.main.end");
+            },
+          }]
+        }).options({
+          onAnything(event) {
+            console.log("eventuated:", event);
           }
         });
-        this.downloaded = testsFormatted;
-        this.isDownloaded = true;
       } catch (error) {
+        this.initializationError = error;
         this.$lsw.toasts.showError(error);
-      }
-    },
-    selectAllTests() {
-      this.$trace("lsw-tests-page.methods.selectAllTests");
-      if(this.available.length === this.selected.length ) {
-        this.selected = [];
-      } else {
-        this.selected = [].concat(this.available);
-      }
-      this.$forceUpdate(true);
-    },
-    shortSubpath(subpath) {
-      return subpath.replace(this.baseUrl, "");
-    },
-    async runTests() {
-      this.$trace("lsw-tests-page.methods.runTests");
-      try {
-        this.isRunning = true;
-        this.goToSection("running");
-        // @TODO: continue running tests:
-      } catch (error) {
-        this.showError(error);
-      }
-    },
-    interruptTests() {
-      this.$trace("lsw-tests-page.methods.interruptTests");
-      this.isRunning = false;
-    },
-    async start() {
-      this.$trace("lsw-tests-page.methods.start");
-      try {
-        await this.downloadTests();
-        await this.runTests();
-      } catch (error) {
-        this.showError(error);
+        console.log(error);
+        throw error;
       }
     }
   },
   watch: {},
   async mounted() {
     this.$trace("lsw-tests-page.mounted");
-    await this.loadTests();
+    await this.initializeTester();
   }
 });
 // @code.end: LswTestsPage API

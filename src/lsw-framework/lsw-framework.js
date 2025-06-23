@@ -11114,7 +11114,7 @@ globalThis.Error = class AccumulableError extends Error {
       return new ErrorSummary({
         name: this.name,
         message: this.message,
-        stack: this.stack ? this.stack.split("\n    at ") : [],
+        stack: this.stack ? this.stack.split("\n").map(line => line.split("@")) : [],
         uniqueTraces: uniqueTraces,
         commonTraces: commonTraces,
       });
@@ -11174,587 +11174,8852 @@ if (process?.env?.NODE_ENV === "test") {
 }
 // @code.end: LswReloadable injection
 
-// @vuebundler[Lsw_framework_components][11]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-ensurer/ensure.js
-(function (factory) {
-  const mod = factory();
-  if (typeof window !== 'undefined') {
-    window["LswEnsurer"] = mod;
-  }
-  if (typeof global !== 'undefined') {
-    global["LswEnsurer"] = mod;
-  }
-  if (typeof module !== 'undefined') {
-    module.exports = mod;
-  }
-})(function () {
-
-  /**
-   * 
-   * 
-   * @$section: Lsw Ensurer API » LswEnsurer class
-   * @type: class
-   * @extends: Object
-   * @vendor: lsw
-   * @namespace: LswEnsurer
-   * @source code: La clase está definida así:
-   * 
-   */
-  // @code.start: LswEnsurer class | @section: Lsw Ensurer API » LswEnsurer class
-  class AssertionError extends Error {
-
-    constructor(...args) {
-      super(...args);
-      this.name = "AssertionError";
+// @vuebundler[Lsw_framework_components][11]=/home/carlos/Escritorio/lsw-one/src-instrumented/lsw-framework/src/apis/lsw-ensurer/ensure.instr.js
+function cov_2clevwsapt() {
+    var path = "/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-ensurer/ensure.js";
+    var hash = "094ff1bc4e2d2e722fad579c301b0fe44c31886a";
+    var global = new Function("return this")();
+    var gcv = "__coverage__";
+    var coverageData = {
+        path: "/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-ensurer/ensure.js",
+        statementMap: {
+            "0": {
+                start: {
+                    line: 1,
+                    column: 0
+                },
+                end: {
+                    line: 581,
+                    column: 3
+                }
+            },
+            "1": {
+                start: {
+                    line: 2,
+                    column: 14
+                },
+                end: {
+                    line: 2,
+                    column: 23
+                }
+            },
+            "2": {
+                start: {
+                    line: 3,
+                    column: 2
+                },
+                end: {
+                    line: 5,
+                    column: 3
+                }
+            },
+            "3": {
+                start: {
+                    line: 4,
+                    column: 4
+                },
+                end: {
+                    line: 4,
+                    column: 31
+                }
+            },
+            "4": {
+                start: {
+                    line: 6,
+                    column: 2
+                },
+                end: {
+                    line: 8,
+                    column: 3
+                }
+            },
+            "5": {
+                start: {
+                    line: 7,
+                    column: 4
+                },
+                end: {
+                    line: 7,
+                    column: 31
+                }
+            },
+            "6": {
+                start: {
+                    line: 9,
+                    column: 2
+                },
+                end: {
+                    line: 11,
+                    column: 3
+                }
+            },
+            "7": {
+                start: {
+                    line: 10,
+                    column: 4
+                },
+                end: {
+                    line: 10,
+                    column: 25
+                }
+            },
+            "8": {
+                start: {
+                    line: 29,
+                    column: 6
+                },
+                end: {
+                    line: 29,
+                    column: 21
+                }
+            },
+            "9": {
+                start: {
+                    line: 30,
+                    column: 6
+                },
+                end: {
+                    line: 30,
+                    column: 35
+                }
+            },
+            "10": {
+                start: {
+                    line: 38,
+                    column: 6
+                },
+                end: {
+                    line: 38,
+                    column: 31
+                }
+            },
+            "11": {
+                start: {
+                    line: 42,
+                    column: 6
+                },
+                end: {
+                    line: 57,
+                    column: 7
+                }
+            },
+            "12": {
+                start: {
+                    line: 43,
+                    column: 8
+                },
+                end: {
+                    line: 56,
+                    column: 9
+                }
+            },
+            "13": {
+                start: {
+                    line: 44,
+                    column: 29
+                },
+                end: {
+                    line: 44,
+                    column: 48
+                }
+            },
+            "14": {
+                start: {
+                    line: 45,
+                    column: 10
+                },
+                end: {
+                    line: 47,
+                    column: 11
+                }
+            },
+            "15": {
+                start: {
+                    line: 46,
+                    column: 12
+                },
+                end: {
+                    line: 46,
+                    column: 173
+                }
+            },
+            "16": {
+                start: {
+                    line: 48,
+                    column: 10
+                },
+                end: {
+                    line: 48,
+                    column: 42
+                }
+            },
+            "17": {
+                start: {
+                    line: 49,
+                    column: 10
+                },
+                end: {
+                    line: 49,
+                    column: 50
+                }
+            },
+            "18": {
+                start: {
+                    line: 50,
+                    column: 15
+                },
+                end: {
+                    line: 56,
+                    column: 9
+                }
+            },
+            "19": {
+                start: {
+                    line: 51,
+                    column: 10
+                },
+                end: {
+                    line: 51,
+                    column: 44
+                }
+            },
+            "20": {
+                start: {
+                    line: 52,
+                    column: 10
+                },
+                end: {
+                    line: 52,
+                    column: 33
+                }
+            },
+            "21": {
+                start: {
+                    line: 54,
+                    column: 10
+                },
+                end: {
+                    line: 54,
+                    column: 32
+                }
+            },
+            "22": {
+                start: {
+                    line: 55,
+                    column: 10
+                },
+                end: {
+                    line: 55,
+                    column: 33
+                }
+            },
+            "23": {
+                start: {
+                    line: 58,
+                    column: 6
+                },
+                end: {
+                    line: 58,
+                    column: 34
+                }
+            },
+            "24": {
+                start: {
+                    line: 59,
+                    column: 6
+                },
+                end: {
+                    line: 59,
+                    column: 36
+                }
+            },
+            "25": {
+                start: {
+                    line: 60,
+                    column: 6
+                },
+                end: {
+                    line: 60,
+                    column: 29
+                }
+            },
+            "26": {
+                start: {
+                    line: 63,
+                    column: 6
+                },
+                end: {
+                    line: 63,
+                    column: 37
+                }
+            },
+            "27": {
+                start: {
+                    line: 64,
+                    column: 6
+                },
+                end: {
+                    line: 64,
+                    column: 32
+                }
+            },
+            "28": {
+                start: {
+                    line: 65,
+                    column: 6
+                },
+                end: {
+                    line: 75,
+                    column: 7
+                }
+            },
+            "29": {
+                start: {
+                    line: 66,
+                    column: 8
+                },
+                end: {
+                    line: 68,
+                    column: 9
+                }
+            },
+            "30": {
+                start: {
+                    line: 67,
+                    column: 10
+                },
+                end: {
+                    line: 67,
+                    column: 34
+                }
+            },
+            "31": {
+                start: {
+                    line: 69,
+                    column: 13
+                },
+                end: {
+                    line: 75,
+                    column: 7
+                }
+            },
+            "32": {
+                start: {
+                    line: 70,
+                    column: 8
+                },
+                end: {
+                    line: 72,
+                    column: 9
+                }
+            },
+            "33": {
+                start: {
+                    line: 71,
+                    column: 10
+                },
+                end: {
+                    line: 71,
+                    column: 34
+                }
+            },
+            "34": {
+                start: {
+                    line: 74,
+                    column: 8
+                },
+                end: {
+                    line: 74,
+                    column: 98
+                }
+            },
+            "35": {
+                start: {
+                    line: 76,
+                    column: 6
+                },
+                end: {
+                    line: 76,
+                    column: 32
+                }
+            },
+            "36": {
+                start: {
+                    line: 79,
+                    column: 6
+                },
+                end: {
+                    line: 79,
+                    column: 41
+                }
+            },
+            "37": {
+                start: {
+                    line: 80,
+                    column: 6
+                },
+                end: {
+                    line: 80,
+                    column: 32
+                }
+            },
+            "38": {
+                start: {
+                    line: 81,
+                    column: 6
+                },
+                end: {
+                    line: 83,
+                    column: 7
+                }
+            },
+            "39": {
+                start: {
+                    line: 82,
+                    column: 8
+                },
+                end: {
+                    line: 82,
+                    column: 32
+                }
+            },
+            "40": {
+                start: {
+                    line: 84,
+                    column: 6
+                },
+                end: {
+                    line: 84,
+                    column: 32
+                }
+            },
+            "41": {
+                start: {
+                    line: 87,
+                    column: 6
+                },
+                end: {
+                    line: 87,
+                    column: 29
+                }
+            },
+            "42": {
+                start: {
+                    line: 88,
+                    column: 6
+                },
+                end: {
+                    line: 88,
+                    column: 32
+                }
+            },
+            "43": {
+                start: {
+                    line: 89,
+                    column: 6
+                },
+                end: {
+                    line: 91,
+                    column: 7
+                }
+            },
+            "44": {
+                start: {
+                    line: 90,
+                    column: 8
+                },
+                end: {
+                    line: 90,
+                    column: 32
+                }
+            },
+            "45": {
+                start: {
+                    line: 92,
+                    column: 6
+                },
+                end: {
+                    line: 92,
+                    column: 32
+                }
+            },
+            "46": {
+                start: {
+                    line: 95,
+                    column: 6
+                },
+                end: {
+                    line: 95,
+                    column: 33
+                }
+            },
+            "47": {
+                start: {
+                    line: 96,
+                    column: 6
+                },
+                end: {
+                    line: 96,
+                    column: 32
+                }
+            },
+            "48": {
+                start: {
+                    line: 97,
+                    column: 6
+                },
+                end: {
+                    line: 99,
+                    column: 7
+                }
+            },
+            "49": {
+                start: {
+                    line: 98,
+                    column: 8
+                },
+                end: {
+                    line: 98,
+                    column: 32
+                }
+            },
+            "50": {
+                start: {
+                    line: 100,
+                    column: 6
+                },
+                end: {
+                    line: 100,
+                    column: 32
+                }
+            },
+            "51": {
+                start: {
+                    line: 103,
+                    column: 6
+                },
+                end: {
+                    line: 103,
+                    column: 30
+                }
+            },
+            "52": {
+                start: {
+                    line: 104,
+                    column: 6
+                },
+                end: {
+                    line: 104,
+                    column: 32
+                }
+            },
+            "53": {
+                start: {
+                    line: 105,
+                    column: 6
+                },
+                end: {
+                    line: 107,
+                    column: 7
+                }
+            },
+            "54": {
+                start: {
+                    line: 106,
+                    column: 8
+                },
+                end: {
+                    line: 106,
+                    column: 32
+                }
+            },
+            "55": {
+                start: {
+                    line: 108,
+                    column: 6
+                },
+                end: {
+                    line: 108,
+                    column: 32
+                }
+            },
+            "56": {
+                start: {
+                    line: 111,
+                    column: 6
+                },
+                end: {
+                    line: 111,
+                    column: 31
+                }
+            },
+            "57": {
+                start: {
+                    line: 112,
+                    column: 6
+                },
+                end: {
+                    line: 112,
+                    column: 32
+                }
+            },
+            "58": {
+                start: {
+                    line: 113,
+                    column: 6
+                },
+                end: {
+                    line: 115,
+                    column: 7
+                }
+            },
+            "59": {
+                start: {
+                    line: 114,
+                    column: 8
+                },
+                end: {
+                    line: 114,
+                    column: 32
+                }
+            },
+            "60": {
+                start: {
+                    line: 116,
+                    column: 6
+                },
+                end: {
+                    line: 116,
+                    column: 32
+                }
+            },
+            "61": {
+                start: {
+                    line: 119,
+                    column: 6
+                },
+                end: {
+                    line: 119,
+                    column: 33
+                }
+            },
+            "62": {
+                start: {
+                    line: 120,
+                    column: 6
+                },
+                end: {
+                    line: 120,
+                    column: 32
+                }
+            },
+            "63": {
+                start: {
+                    line: 121,
+                    column: 6
+                },
+                end: {
+                    line: 126,
+                    column: 7
+                }
+            },
+            "64": {
+                start: {
+                    line: 122,
+                    column: 8
+                },
+                end: {
+                    line: 122,
+                    column: 35
+                }
+            },
+            "65": {
+                start: {
+                    line: 123,
+                    column: 8
+                },
+                end: {
+                    line: 123,
+                    column: 32
+                }
+            },
+            "66": {
+                start: {
+                    line: 125,
+                    column: 8
+                },
+                end: {
+                    line: 125,
+                    column: 34
+                }
+            },
+            "67": {
+                start: {
+                    line: 129,
+                    column: 6
+                },
+                end: {
+                    line: 129,
+                    column: 38
+                }
+            },
+            "68": {
+                start: {
+                    line: 130,
+                    column: 6
+                },
+                end: {
+                    line: 130,
+                    column: 32
+                }
+            },
+            "69": {
+                start: {
+                    line: 131,
+                    column: 6
+                },
+                end: {
+                    line: 136,
+                    column: 7
+                }
+            },
+            "70": {
+                start: {
+                    line: 132,
+                    column: 8
+                },
+                end: {
+                    line: 132,
+                    column: 29
+                }
+            },
+            "71": {
+                start: {
+                    line: 133,
+                    column: 8
+                },
+                end: {
+                    line: 133,
+                    column: 32
+                }
+            },
+            "72": {
+                start: {
+                    line: 135,
+                    column: 8
+                },
+                end: {
+                    line: 135,
+                    column: 34
+                }
+            },
+            "73": {
+                start: {
+                    line: 139,
+                    column: 6
+                },
+                end: {
+                    line: 141,
+                    column: 7
+                }
+            },
+            "74": {
+                start: {
+                    line: 140,
+                    column: 8
+                },
+                end: {
+                    line: 140,
+                    column: 21
+                }
+            },
+            "75": {
+                start: {
+                    line: 142,
+                    column: 6
+                },
+                end: {
+                    line: 142,
+                    column: 167
+                }
+            },
+            "76": {
+                start: {
+                    line: 145,
+                    column: 6
+                },
+                end: {
+                    line: 145,
+                    column: 47
+                }
+            },
+            "77": {
+                start: {
+                    line: 148,
+                    column: 6
+                },
+                end: {
+                    line: 152,
+                    column: 7
+                }
+            },
+            "78": {
+                start: {
+                    line: 149,
+                    column: 8
+                },
+                end: {
+                    line: 149,
+                    column: 20
+                }
+            },
+            "79": {
+                start: {
+                    line: 151,
+                    column: 8
+                },
+                end: {
+                    line: 151,
+                    column: 20
+                }
+            },
+            "80": {
+                start: {
+                    line: 156,
+                    column: 29
+                },
+                end: {
+                    line: 183,
+                    column: 3
+                }
+            },
+            "81": {
+                start: {
+                    line: 157,
+                    column: 17
+                },
+                end: {
+                    line: 157,
+                    column: 22
+                }
+            },
+            "82": {
+                start: {
+                    line: 159,
+                    column: 6
+                },
+                end: {
+                    line: 159,
+                    column: 42
+                }
+            },
+            "83": {
+                start: {
+                    line: 162,
+                    column: 6
+                },
+                end: {
+                    line: 162,
+                    column: 41
+                }
+            },
+            "84": {
+                start: {
+                    line: 165,
+                    column: 6
+                },
+                end: {
+                    line: 165,
+                    column: 44
+                }
+            },
+            "85": {
+                start: {
+                    line: 168,
+                    column: 6
+                },
+                end: {
+                    line: 168,
+                    column: 43
+                }
+            },
+            "86": {
+                start: {
+                    line: 171,
+                    column: 6
+                },
+                end: {
+                    line: 171,
+                    column: 36
+                }
+            },
+            "87": {
+                start: {
+                    line: 172,
+                    column: 6
+                },
+                end: {
+                    line: 172,
+                    column: 48
+                }
+            },
+            "88": {
+                start: {
+                    line: 175,
+                    column: 6
+                },
+                end: {
+                    line: 175,
+                    column: 63
+                }
+            },
+            "89": {
+                start: {
+                    line: 178,
+                    column: 6
+                },
+                end: {
+                    line: 178,
+                    column: 42
+                }
+            },
+            "90": {
+                start: {
+                    line: 181,
+                    column: 6
+                },
+                end: {
+                    line: 181,
+                    column: 73
+                }
+            },
+            "91": {
+                start: {
+                    line: 185,
+                    column: 24
+                },
+                end: {
+                    line: 313,
+                    column: 3
+                }
+            },
+            "92": {
+                start: {
+                    line: 187,
+                    column: 6
+                },
+                end: {
+                    line: 187,
+                    column: 74
+                }
+            },
+            "93": {
+                start: {
+                    line: 188,
+                    column: 6
+                },
+                end: {
+                    line: 188,
+                    column: 36
+                }
+            },
+            "94": {
+                start: {
+                    line: 189,
+                    column: 6
+                },
+                end: {
+                    line: 189,
+                    column: 88
+                }
+            },
+            "95": {
+                start: {
+                    line: 189,
+                    column: 64
+                },
+                end: {
+                    line: 189,
+                    column: 88
+                }
+            },
+            "96": {
+                start: {
+                    line: 190,
+                    column: 6
+                },
+                end: {
+                    line: 190,
+                    column: 44
+                }
+            },
+            "97": {
+                start: {
+                    line: 193,
+                    column: 6
+                },
+                end: {
+                    line: 193,
+                    column: 74
+                }
+            },
+            "98": {
+                start: {
+                    line: 194,
+                    column: 6
+                },
+                end: {
+                    line: 194,
+                    column: 36
+                }
+            },
+            "99": {
+                start: {
+                    line: 195,
+                    column: 6
+                },
+                end: {
+                    line: 195,
+                    column: 119
+                }
+            },
+            "100": {
+                start: {
+                    line: 195,
+                    column: 95
+                },
+                end: {
+                    line: 195,
+                    column: 119
+                }
+            },
+            "101": {
+                start: {
+                    line: 196,
+                    column: 6
+                },
+                end: {
+                    line: 196,
+                    column: 44
+                }
+            },
+            "102": {
+                start: {
+                    line: 199,
+                    column: 6
+                },
+                end: {
+                    line: 199,
+                    column: 74
+                }
+            },
+            "103": {
+                start: {
+                    line: 200,
+                    column: 6
+                },
+                end: {
+                    line: 200,
+                    column: 36
+                }
+            },
+            "104": {
+                start: {
+                    line: 201,
+                    column: 6
+                },
+                end: {
+                    line: 201,
+                    column: 88
+                }
+            },
+            "105": {
+                start: {
+                    line: 201,
+                    column: 64
+                },
+                end: {
+                    line: 201,
+                    column: 88
+                }
+            },
+            "106": {
+                start: {
+                    line: 202,
+                    column: 6
+                },
+                end: {
+                    line: 202,
+                    column: 44
+                }
+            },
+            "107": {
+                start: {
+                    line: 205,
+                    column: 6
+                },
+                end: {
+                    line: 205,
+                    column: 72
+                }
+            },
+            "108": {
+                start: {
+                    line: 206,
+                    column: 6
+                },
+                end: {
+                    line: 206,
+                    column: 36
+                }
+            },
+            "109": {
+                start: {
+                    line: 207,
+                    column: 6
+                },
+                end: {
+                    line: 207,
+                    column: 84
+                }
+            },
+            "110": {
+                start: {
+                    line: 207,
+                    column: 60
+                },
+                end: {
+                    line: 207,
+                    column: 84
+                }
+            },
+            "111": {
+                start: {
+                    line: 208,
+                    column: 6
+                },
+                end: {
+                    line: 208,
+                    column: 44
+                }
+            },
+            "112": {
+                start: {
+                    line: 211,
+                    column: 6
+                },
+                end: {
+                    line: 211,
+                    column: 77
+                }
+            },
+            "113": {
+                start: {
+                    line: 212,
+                    column: 6
+                },
+                end: {
+                    line: 212,
+                    column: 36
+                }
+            },
+            "114": {
+                start: {
+                    line: 213,
+                    column: 6
+                },
+                end: {
+                    line: 213,
+                    column: 91
+                }
+            },
+            "115": {
+                start: {
+                    line: 213,
+                    column: 67
+                },
+                end: {
+                    line: 213,
+                    column: 91
+                }
+            },
+            "116": {
+                start: {
+                    line: 214,
+                    column: 6
+                },
+                end: {
+                    line: 214,
+                    column: 44
+                }
+            },
+            "117": {
+                start: {
+                    line: 217,
+                    column: 6
+                },
+                end: {
+                    line: 217,
+                    column: 75
+                }
+            },
+            "118": {
+                start: {
+                    line: 218,
+                    column: 6
+                },
+                end: {
+                    line: 218,
+                    column: 36
+                }
+            },
+            "119": {
+                start: {
+                    line: 219,
+                    column: 6
+                },
+                end: {
+                    line: 219,
+                    column: 89
+                }
+            },
+            "120": {
+                start: {
+                    line: 219,
+                    column: 65
+                },
+                end: {
+                    line: 219,
+                    column: 89
+                }
+            },
+            "121": {
+                start: {
+                    line: 220,
+                    column: 6
+                },
+                end: {
+                    line: 220,
+                    column: 44
+                }
+            },
+            "122": {
+                start: {
+                    line: 223,
+                    column: 6
+                },
+                end: {
+                    line: 223,
+                    column: 78
+                }
+            },
+            "123": {
+                start: {
+                    line: 224,
+                    column: 6
+                },
+                end: {
+                    line: 224,
+                    column: 36
+                }
+            },
+            "124": {
+                start: {
+                    line: 225,
+                    column: 6
+                },
+                end: {
+                    line: 225,
+                    column: 88
+                }
+            },
+            "125": {
+                start: {
+                    line: 225,
+                    column: 64
+                },
+                end: {
+                    line: 225,
+                    column: 88
+                }
+            },
+            "126": {
+                start: {
+                    line: 226,
+                    column: 6
+                },
+                end: {
+                    line: 226,
+                    column: 44
+                }
+            },
+            "127": {
+                start: {
+                    line: 229,
+                    column: 6
+                },
+                end: {
+                    line: 229,
+                    column: 73
+                }
+            },
+            "128": {
+                start: {
+                    line: 230,
+                    column: 6
+                },
+                end: {
+                    line: 230,
+                    column: 36
+                }
+            },
+            "129": {
+                start: {
+                    line: 231,
+                    column: 6
+                },
+                end: {
+                    line: 231,
+                    column: 84
+                }
+            },
+            "130": {
+                start: {
+                    line: 231,
+                    column: 60
+                },
+                end: {
+                    line: 231,
+                    column: 84
+                }
+            },
+            "131": {
+                start: {
+                    line: 232,
+                    column: 6
+                },
+                end: {
+                    line: 232,
+                    column: 44
+                }
+            },
+            "132": {
+                start: {
+                    line: 235,
+                    column: 6
+                },
+                end: {
+                    line: 235,
+                    column: 76
+                }
+            },
+            "133": {
+                start: {
+                    line: 236,
+                    column: 6
+                },
+                end: {
+                    line: 236,
+                    column: 36
+                }
+            },
+            "134": {
+                start: {
+                    line: 237,
+                    column: 6
+                },
+                end: {
+                    line: 237,
+                    column: 92
+                }
+            },
+            "135": {
+                start: {
+                    line: 237,
+                    column: 68
+                },
+                end: {
+                    line: 237,
+                    column: 92
+                }
+            },
+            "136": {
+                start: {
+                    line: 238,
+                    column: 6
+                },
+                end: {
+                    line: 238,
+                    column: 44
+                }
+            },
+            "137": {
+                start: {
+                    line: 241,
+                    column: 6
+                },
+                end: {
+                    line: 241,
+                    column: 73
+                }
+            },
+            "138": {
+                start: {
+                    line: 242,
+                    column: 6
+                },
+                end: {
+                    line: 242,
+                    column: 36
+                }
+            },
+            "139": {
+                start: {
+                    line: 243,
+                    column: 22
+                },
+                end: {
+                    line: 258,
+                    column: 10
+                }
+            },
+            "140": {
+                start: {
+                    line: 244,
+                    column: 18
+                },
+                end: {
+                    line: 244,
+                    column: 31
+                }
+            },
+            "141": {
+                start: {
+                    line: 245,
+                    column: 8
+                },
+                end: {
+                    line: 257,
+                    column: 9
+                }
+            },
+            "142": {
+                start: {
+                    line: 246,
+                    column: 10
+                },
+                end: {
+                    line: 246,
+                    column: 32
+                }
+            },
+            "143": {
+                start: {
+                    line: 247,
+                    column: 15
+                },
+                end: {
+                    line: 257,
+                    column: 9
+                }
+            },
+            "144": {
+                start: {
+                    line: 248,
+                    column: 10
+                },
+                end: {
+                    line: 248,
+                    column: 59
+                }
+            },
+            "145": {
+                start: {
+                    line: 249,
+                    column: 15
+                },
+                end: {
+                    line: 257,
+                    column: 9
+                }
+            },
+            "146": {
+                start: {
+                    line: 250,
+                    column: 10
+                },
+                end: {
+                    line: 250,
+                    column: 26
+                }
+            },
+            "147": {
+                start: {
+                    line: 251,
+                    column: 15
+                },
+                end: {
+                    line: 257,
+                    column: 9
+                }
+            },
+            "148": {
+                start: {
+                    line: 252,
+                    column: 10
+                },
+                end: {
+                    line: 252,
+                    column: 25
+                }
+            },
+            "149": {
+                start: {
+                    line: 253,
+                    column: 15
+                },
+                end: {
+                    line: 257,
+                    column: 9
+                }
+            },
+            "150": {
+                start: {
+                    line: 254,
+                    column: 10
+                },
+                end: {
+                    line: 254,
+                    column: 29
+                }
+            },
+            "151": {
+                start: {
+                    line: 256,
+                    column: 10
+                },
+                end: {
+                    line: 256,
+                    column: 22
+                }
+            },
+            "152": {
+                start: {
+                    line: 259,
+                    column: 6
+                },
+                end: {
+                    line: 259,
+                    column: 63
+                }
+            },
+            "153": {
+                start: {
+                    line: 259,
+                    column: 39
+                },
+                end: {
+                    line: 259,
+                    column: 63
+                }
+            },
+            "154": {
+                start: {
+                    line: 260,
+                    column: 6
+                },
+                end: {
+                    line: 260,
+                    column: 44
+                }
+            },
+            "155": {
+                start: {
+                    line: 263,
+                    column: 6
+                },
+                end: {
+                    line: 263,
+                    column: 76
+                }
+            },
+            "156": {
+                start: {
+                    line: 264,
+                    column: 6
+                },
+                end: {
+                    line: 264,
+                    column: 32
+                }
+            },
+            "157": {
+                start: {
+                    line: 265,
+                    column: 20
+                },
+                end: {
+                    line: 265,
+                    column: 43
+                }
+            },
+            "158": {
+                start: {
+                    line: 266,
+                    column: 6
+                },
+                end: {
+                    line: 266,
+                    column: 63
+                }
+            },
+            "159": {
+                start: {
+                    line: 266,
+                    column: 39
+                },
+                end: {
+                    line: 266,
+                    column: 63
+                }
+            },
+            "160": {
+                start: {
+                    line: 267,
+                    column: 6
+                },
+                end: {
+                    line: 267,
+                    column: 44
+                }
+            },
+            "161": {
+                start: {
+                    line: 270,
+                    column: 6
+                },
+                end: {
+                    line: 270,
+                    column: 89
+                }
+            },
+            "162": {
+                start: {
+                    line: 271,
+                    column: 6
+                },
+                end: {
+                    line: 271,
+                    column: 32
+                }
+            },
+            "163": {
+                start: {
+                    line: 272,
+                    column: 29
+                },
+                end: {
+                    line: 272,
+                    column: 51
+                }
+            },
+            "164": {
+                start: {
+                    line: 273,
+                    column: 6
+                },
+                end: {
+                    line: 273,
+                    column: 72
+                }
+            },
+            "165": {
+                start: {
+                    line: 273,
+                    column: 48
+                },
+                end: {
+                    line: 273,
+                    column: 72
+                }
+            },
+            "166": {
+                start: {
+                    line: 274,
+                    column: 6
+                },
+                end: {
+                    line: 274,
+                    column: 44
+                }
+            },
+            "167": {
+                start: {
+                    line: 277,
+                    column: 6
+                },
+                end: {
+                    line: 277,
+                    column: 80
+                }
+            },
+            "168": {
+                start: {
+                    line: 278,
+                    column: 6
+                },
+                end: {
+                    line: 278,
+                    column: 32
+                }
+            },
+            "169": {
+                start: {
+                    line: 279,
+                    column: 22
+                },
+                end: {
+                    line: 279,
+                    column: 43
+                }
+            },
+            "170": {
+                start: {
+                    line: 280,
+                    column: 6
+                },
+                end: {
+                    line: 280,
+                    column: 65
+                }
+            },
+            "171": {
+                start: {
+                    line: 280,
+                    column: 41
+                },
+                end: {
+                    line: 280,
+                    column: 65
+                }
+            },
+            "172": {
+                start: {
+                    line: 281,
+                    column: 6
+                },
+                end: {
+                    line: 281,
+                    column: 44
+                }
+            },
+            "173": {
+                start: {
+                    line: 284,
+                    column: 6
+                },
+                end: {
+                    line: 284,
+                    column: 46
+                }
+            },
+            "174": {
+                start: {
+                    line: 287,
+                    column: 6
+                },
+                end: {
+                    line: 287,
+                    column: 84
+                }
+            },
+            "175": {
+                start: {
+                    line: 288,
+                    column: 6
+                },
+                end: {
+                    line: 288,
+                    column: 32
+                }
+            },
+            "176": {
+                start: {
+                    line: 289,
+                    column: 29
+                },
+                end: {
+                    line: 289,
+                    column: 51
+                }
+            },
+            "177": {
+                start: {
+                    line: 290,
+                    column: 6
+                },
+                end: {
+                    line: 290,
+                    column: 72
+                }
+            },
+            "178": {
+                start: {
+                    line: 290,
+                    column: 48
+                },
+                end: {
+                    line: 290,
+                    column: 72
+                }
+            },
+            "179": {
+                start: {
+                    line: 291,
+                    column: 6
+                },
+                end: {
+                    line: 291,
+                    column: 44
+                }
+            },
+            "180": {
+                start: {
+                    line: 294,
+                    column: 6
+                },
+                end: {
+                    line: 294,
+                    column: 78
+                }
+            },
+            "181": {
+                start: {
+                    line: 295,
+                    column: 6
+                },
+                end: {
+                    line: 295,
+                    column: 32
+                }
+            },
+            "182": {
+                start: {
+                    line: 296,
+                    column: 22
+                },
+                end: {
+                    line: 296,
+                    column: 43
+                }
+            },
+            "183": {
+                start: {
+                    line: 297,
+                    column: 6
+                },
+                end: {
+                    line: 297,
+                    column: 65
+                }
+            },
+            "184": {
+                start: {
+                    line: 297,
+                    column: 41
+                },
+                end: {
+                    line: 297,
+                    column: 65
+                }
+            },
+            "185": {
+                start: {
+                    line: 298,
+                    column: 6
+                },
+                end: {
+                    line: 298,
+                    column: 44
+                }
+            },
+            "186": {
+                start: {
+                    line: 301,
+                    column: 6
+                },
+                end: {
+                    line: 301,
+                    column: 44
+                }
+            },
+            "187": {
+                start: {
+                    line: 304,
+                    column: 6
+                },
+                end: {
+                    line: 304,
+                    column: 74
+                }
+            },
+            "188": {
+                start: {
+                    line: 305,
+                    column: 6
+                },
+                end: {
+                    line: 305,
+                    column: 32
+                }
+            },
+            "189": {
+                start: {
+                    line: 306,
+                    column: 6
+                },
+                end: {
+                    line: 308,
+                    column: 7
+                }
+            },
+            "190": {
+                start: {
+                    line: 307,
+                    column: 8
+                },
+                end: {
+                    line: 307,
+                    column: 114
+                }
+            },
+            "191": {
+                start: {
+                    line: 309,
+                    column: 18
+                },
+                end: {
+                    line: 309,
+                    column: 65
+                }
+            },
+            "192": {
+                start: {
+                    line: 310,
+                    column: 6
+                },
+                end: {
+                    line: 310,
+                    column: 61
+                }
+            },
+            "193": {
+                start: {
+                    line: 310,
+                    column: 37
+                },
+                end: {
+                    line: 310,
+                    column: 61
+                }
+            },
+            "194": {
+                start: {
+                    line: 311,
+                    column: 6
+                },
+                end: {
+                    line: 311,
+                    column: 44
+                }
+            },
+            "195": {
+                start: {
+                    line: 315,
+                    column: 27
+                },
+                end: {
+                    line: 317,
+                    column: 3
+                }
+            },
+            "196": {
+                start: {
+                    line: 316,
+                    column: 17
+                },
+                end: {
+                    line: 316,
+                    column: 21
+                }
+            },
+            "197": {
+                start: {
+                    line: 319,
+                    column: 26
+                },
+                end: {
+                    line: 432,
+                    column: 3
+                }
+            },
+            "198": {
+                start: {
+                    line: 322,
+                    column: 6
+                },
+                end: {
+                    line: 322,
+                    column: 74
+                }
+            },
+            "199": {
+                start: {
+                    line: 323,
+                    column: 6
+                },
+                end: {
+                    line: 323,
+                    column: 31
+                }
+            },
+            "200": {
+                start: {
+                    line: 324,
+                    column: 27
+                },
+                end: {
+                    line: 324,
+                    column: 61
+                }
+            },
+            "201": {
+                start: {
+                    line: 325,
+                    column: 6
+                },
+                end: {
+                    line: 325,
+                    column: 68
+                }
+            },
+            "202": {
+                start: {
+                    line: 325,
+                    column: 44
+                },
+                end: {
+                    line: 325,
+                    column: 68
+                }
+            },
+            "203": {
+                start: {
+                    line: 326,
+                    column: 6
+                },
+                end: {
+                    line: 326,
+                    column: 44
+                }
+            },
+            "204": {
+                start: {
+                    line: 330,
+                    column: 6
+                },
+                end: {
+                    line: 330,
+                    column: 73
+                }
+            },
+            "205": {
+                start: {
+                    line: 331,
+                    column: 6
+                },
+                end: {
+                    line: 331,
+                    column: 31
+                }
+            },
+            "206": {
+                start: {
+                    line: 332,
+                    column: 19
+                },
+                end: {
+                    line: 332,
+                    column: 45
+                }
+            },
+            "207": {
+                start: {
+                    line: 333,
+                    column: 21
+                },
+                end: {
+                    line: 333,
+                    column: 46
+                }
+            },
+            "208": {
+                start: {
+                    line: 334,
+                    column: 6
+                },
+                end: {
+                    line: 334,
+                    column: 62
+                }
+            },
+            "209": {
+                start: {
+                    line: 334,
+                    column: 38
+                },
+                end: {
+                    line: 334,
+                    column: 62
+                }
+            },
+            "210": {
+                start: {
+                    line: 335,
+                    column: 6
+                },
+                end: {
+                    line: 335,
+                    column: 44
+                }
+            },
+            "211": {
+                start: {
+                    line: 339,
+                    column: 6
+                },
+                end: {
+                    line: 339,
+                    column: 75
+                }
+            },
+            "212": {
+                start: {
+                    line: 340,
+                    column: 6
+                },
+                end: {
+                    line: 340,
+                    column: 31
+                }
+            },
+            "213": {
+                start: {
+                    line: 341,
+                    column: 21
+                },
+                end: {
+                    line: 341,
+                    column: 49
+                }
+            },
+            "214": {
+                start: {
+                    line: 342,
+                    column: 23
+                },
+                end: {
+                    line: 342,
+                    column: 50
+                }
+            },
+            "215": {
+                start: {
+                    line: 343,
+                    column: 6
+                },
+                end: {
+                    line: 343,
+                    column: 64
+                }
+            },
+            "216": {
+                start: {
+                    line: 343,
+                    column: 40
+                },
+                end: {
+                    line: 343,
+                    column: 64
+                }
+            },
+            "217": {
+                start: {
+                    line: 344,
+                    column: 6
+                },
+                end: {
+                    line: 344,
+                    column: 44
+                }
+            },
+            "218": {
+                start: {
+                    line: 348,
+                    column: 6
+                },
+                end: {
+                    line: 348,
+                    column: 89
+                }
+            },
+            "219": {
+                start: {
+                    line: 349,
+                    column: 6
+                },
+                end: {
+                    line: 349,
+                    column: 32
+                }
+            },
+            "220": {
+                start: {
+                    line: 350,
+                    column: 19
+                },
+                end: {
+                    line: 350,
+                    column: 45
+                }
+            },
+            "221": {
+                start: {
+                    line: 351,
+                    column: 20
+                },
+                end: {
+                    line: 351,
+                    column: 24
+                }
+            },
+            "222": {
+                start: {
+                    line: 352,
+                    column: 6
+                },
+                end: {
+                    line: 359,
+                    column: 7
+                }
+            },
+            "223": {
+                start: {
+                    line: 353,
+                    column: 6
+                },
+                end: {
+                    line: 359,
+                    column: 7
+                }
+            },
+            "224": {
+                start: {
+                    line: 353,
+                    column: 23
+                },
+                end: {
+                    line: 353,
+                    column: 24
+                }
+            },
+            "225": {
+                start: {
+                    line: 354,
+                    column: 20
+                },
+                end: {
+                    line: 354,
+                    column: 31
+                }
+            },
+            "226": {
+                start: {
+                    line: 355,
+                    column: 8
+                },
+                end: {
+                    line: 358,
+                    column: 9
+                }
+            },
+            "227": {
+                start: {
+                    line: 356,
+                    column: 10
+                },
+                end: {
+                    line: 356,
+                    column: 26
+                }
+            },
+            "228": {
+                start: {
+                    line: 357,
+                    column: 10
+                },
+                end: {
+                    line: 357,
+                    column: 32
+                }
+            },
+            "229": {
+                start: {
+                    line: 360,
+                    column: 6
+                },
+                end: {
+                    line: 360,
+                    column: 63
+                }
+            },
+            "230": {
+                start: {
+                    line: 360,
+                    column: 39
+                },
+                end: {
+                    line: 360,
+                    column: 63
+                }
+            },
+            "231": {
+                start: {
+                    line: 361,
+                    column: 6
+                },
+                end: {
+                    line: 361,
+                    column: 44
+                }
+            },
+            "232": {
+                start: {
+                    line: 365,
+                    column: 6
+                },
+                end: {
+                    line: 365,
+                    column: 74
+                }
+            },
+            "233": {
+                start: {
+                    line: 366,
+                    column: 6
+                },
+                end: {
+                    line: 366,
+                    column: 32
+                }
+            },
+            "234": {
+                start: {
+                    line: 367,
+                    column: 19
+                },
+                end: {
+                    line: 367,
+                    column: 45
+                }
+            },
+            "235": {
+                start: {
+                    line: 368,
+                    column: 20
+                },
+                end: {
+                    line: 368,
+                    column: 24
+                }
+            },
+            "236": {
+                start: {
+                    line: 369,
+                    column: 6
+                },
+                end: {
+                    line: 376,
+                    column: 7
+                }
+            },
+            "237": {
+                start: {
+                    line: 370,
+                    column: 6
+                },
+                end: {
+                    line: 376,
+                    column: 7
+                }
+            },
+            "238": {
+                start: {
+                    line: 370,
+                    column: 23
+                },
+                end: {
+                    line: 370,
+                    column: 24
+                }
+            },
+            "239": {
+                start: {
+                    line: 371,
+                    column: 21
+                },
+                end: {
+                    line: 371,
+                    column: 33
+                }
+            },
+            "240": {
+                start: {
+                    line: 372,
+                    column: 8
+                },
+                end: {
+                    line: 375,
+                    column: 9
+                }
+            },
+            "241": {
+                start: {
+                    line: 373,
+                    column: 10
+                },
+                end: {
+                    line: 373,
+                    column: 26
+                }
+            },
+            "242": {
+                start: {
+                    line: 374,
+                    column: 10
+                },
+                end: {
+                    line: 374,
+                    column: 32
+                }
+            },
+            "243": {
+                start: {
+                    line: 377,
+                    column: 6
+                },
+                end: {
+                    line: 377,
+                    column: 63
+                }
+            },
+            "244": {
+                start: {
+                    line: 377,
+                    column: 39
+                },
+                end: {
+                    line: 377,
+                    column: 63
+                }
+            },
+            "245": {
+                start: {
+                    line: 378,
+                    column: 6
+                },
+                end: {
+                    line: 378,
+                    column: 44
+                }
+            },
+            "246": {
+                start: {
+                    line: 382,
+                    column: 6
+                },
+                end: {
+                    line: 382,
+                    column: 76
+                }
+            },
+            "247": {
+                start: {
+                    line: 383,
+                    column: 6
+                },
+                end: {
+                    line: 383,
+                    column: 32
+                }
+            },
+            "248": {
+                start: {
+                    line: 384,
+                    column: 21
+                },
+                end: {
+                    line: 384,
+                    column: 49
+                }
+            },
+            "249": {
+                start: {
+                    line: 385,
+                    column: 22
+                },
+                end: {
+                    line: 385,
+                    column: 26
+                }
+            },
+            "250": {
+                start: {
+                    line: 386,
+                    column: 6
+                },
+                end: {
+                    line: 393,
+                    column: 7
+                }
+            },
+            "251": {
+                start: {
+                    line: 387,
+                    column: 6
+                },
+                end: {
+                    line: 393,
+                    column: 7
+                }
+            },
+            "252": {
+                start: {
+                    line: 387,
+                    column: 23
+                },
+                end: {
+                    line: 387,
+                    column: 24
+                }
+            },
+            "253": {
+                start: {
+                    line: 388,
+                    column: 21
+                },
+                end: {
+                    line: 388,
+                    column: 33
+                }
+            },
+            "254": {
+                start: {
+                    line: 389,
+                    column: 8
+                },
+                end: {
+                    line: 392,
+                    column: 9
+                }
+            },
+            "255": {
+                start: {
+                    line: 390,
+                    column: 10
+                },
+                end: {
+                    line: 390,
+                    column: 28
+                }
+            },
+            "256": {
+                start: {
+                    line: 391,
+                    column: 10
+                },
+                end: {
+                    line: 391,
+                    column: 32
+                }
+            },
+            "257": {
+                start: {
+                    line: 394,
+                    column: 6
+                },
+                end: {
+                    line: 394,
+                    column: 65
+                }
+            },
+            "258": {
+                start: {
+                    line: 394,
+                    column: 41
+                },
+                end: {
+                    line: 394,
+                    column: 65
+                }
+            },
+            "259": {
+                start: {
+                    line: 395,
+                    column: 6
+                },
+                end: {
+                    line: 395,
+                    column: 44
+                }
+            },
+            "260": {
+                start: {
+                    line: 399,
+                    column: 6
+                },
+                end: {
+                    line: 399,
+                    column: 82
+                }
+            },
+            "261": {
+                start: {
+                    line: 400,
+                    column: 6
+                },
+                end: {
+                    line: 400,
+                    column: 32
+                }
+            },
+            "262": {
+                start: {
+                    line: 401,
+                    column: 19
+                },
+                end: {
+                    line: 401,
+                    column: 45
+                }
+            },
+            "263": {
+                start: {
+                    line: 402,
+                    column: 20
+                },
+                end: {
+                    line: 402,
+                    column: 24
+                }
+            },
+            "264": {
+                start: {
+                    line: 403,
+                    column: 6
+                },
+                end: {
+                    line: 410,
+                    column: 7
+                }
+            },
+            "265": {
+                start: {
+                    line: 404,
+                    column: 6
+                },
+                end: {
+                    line: 410,
+                    column: 7
+                }
+            },
+            "266": {
+                start: {
+                    line: 404,
+                    column: 23
+                },
+                end: {
+                    line: 404,
+                    column: 24
+                }
+            },
+            "267": {
+                start: {
+                    line: 405,
+                    column: 20
+                },
+                end: {
+                    line: 405,
+                    column: 31
+                }
+            },
+            "268": {
+                start: {
+                    line: 406,
+                    column: 8
+                },
+                end: {
+                    line: 409,
+                    column: 9
+                }
+            },
+            "269": {
+                start: {
+                    line: 407,
+                    column: 10
+                },
+                end: {
+                    line: 407,
+                    column: 26
+                }
+            },
+            "270": {
+                start: {
+                    line: 408,
+                    column: 10
+                },
+                end: {
+                    line: 408,
+                    column: 32
+                }
+            },
+            "271": {
+                start: {
+                    line: 411,
+                    column: 6
+                },
+                end: {
+                    line: 411,
+                    column: 63
+                }
+            },
+            "272": {
+                start: {
+                    line: 411,
+                    column: 39
+                },
+                end: {
+                    line: 411,
+                    column: 63
+                }
+            },
+            "273": {
+                start: {
+                    line: 412,
+                    column: 6
+                },
+                end: {
+                    line: 412,
+                    column: 44
+                }
+            },
+            "274": {
+                start: {
+                    line: 416,
+                    column: 6
+                },
+                end: {
+                    line: 416,
+                    column: 84
+                }
+            },
+            "275": {
+                start: {
+                    line: 417,
+                    column: 6
+                },
+                end: {
+                    line: 417,
+                    column: 32
+                }
+            },
+            "276": {
+                start: {
+                    line: 418,
+                    column: 21
+                },
+                end: {
+                    line: 418,
+                    column: 49
+                }
+            },
+            "277": {
+                start: {
+                    line: 419,
+                    column: 22
+                },
+                end: {
+                    line: 419,
+                    column: 26
+                }
+            },
+            "278": {
+                start: {
+                    line: 420,
+                    column: 6
+                },
+                end: {
+                    line: 427,
+                    column: 7
+                }
+            },
+            "279": {
+                start: {
+                    line: 421,
+                    column: 6
+                },
+                end: {
+                    line: 427,
+                    column: 7
+                }
+            },
+            "280": {
+                start: {
+                    line: 421,
+                    column: 23
+                },
+                end: {
+                    line: 421,
+                    column: 24
+                }
+            },
+            "281": {
+                start: {
+                    line: 422,
+                    column: 22
+                },
+                end: {
+                    line: 422,
+                    column: 35
+                }
+            },
+            "282": {
+                start: {
+                    line: 423,
+                    column: 8
+                },
+                end: {
+                    line: 426,
+                    column: 9
+                }
+            },
+            "283": {
+                start: {
+                    line: 424,
+                    column: 10
+                },
+                end: {
+                    line: 424,
+                    column: 28
+                }
+            },
+            "284": {
+                start: {
+                    line: 425,
+                    column: 10
+                },
+                end: {
+                    line: 425,
+                    column: 32
+                }
+            },
+            "285": {
+                start: {
+                    line: 428,
+                    column: 6
+                },
+                end: {
+                    line: 428,
+                    column: 65
+                }
+            },
+            "286": {
+                start: {
+                    line: 428,
+                    column: 41
+                },
+                end: {
+                    line: 428,
+                    column: 65
+                }
+            },
+            "287": {
+                start: {
+                    line: 429,
+                    column: 6
+                },
+                end: {
+                    line: 429,
+                    column: 44
+                }
+            },
+            "288": {
+                start: {
+                    line: 434,
+                    column: 29
+                },
+                end: {
+                    line: 436,
+                    column: 3
+                }
+            },
+            "289": {
+                start: {
+                    line: 435,
+                    column: 17
+                },
+                end: {
+                    line: 435,
+                    column: 21
+                }
+            },
+            "290": {
+                start: {
+                    line: 438,
+                    column: 23
+                },
+                end: {
+                    line: 563,
+                    column: 3
+                }
+            },
+            "291": {
+                start: {
+                    line: 441,
+                    column: 6
+                },
+                end: {
+                    line: 441,
+                    column: 38
+                }
+            },
+            "292": {
+                start: {
+                    line: 445,
+                    column: 6
+                },
+                end: {
+                    line: 445,
+                    column: 40
+                }
+            },
+            "293": {
+                start: {
+                    line: 449,
+                    column: 6
+                },
+                end: {
+                    line: 449,
+                    column: 42
+                }
+            },
+            "294": {
+                start: {
+                    line: 453,
+                    column: 6
+                },
+                end: {
+                    line: 456,
+                    column: 7
+                }
+            },
+            "295": {
+                start: {
+                    line: 460,
+                    column: 6
+                },
+                end: {
+                    line: 460,
+                    column: 37
+                }
+            },
+            "296": {
+                start: {
+                    line: 464,
+                    column: 6
+                },
+                end: {
+                    line: 464,
+                    column: 39
+                }
+            },
+            "297": {
+                start: {
+                    line: 468,
+                    column: 6
+                },
+                end: {
+                    line: 472,
+                    column: 8
+                }
+            },
+            "298": {
+                start: {
+                    line: 476,
+                    column: 6
+                },
+                end: {
+                    line: 481,
+                    column: 9
+                }
+            },
+            "299": {
+                start: {
+                    line: 485,
+                    column: 6
+                },
+                end: {
+                    line: 485,
+                    column: 27
+                }
+            },
+            "300": {
+                start: {
+                    line: 489,
+                    column: 6
+                },
+                end: {
+                    line: 495,
+                    column: 7
+                }
+            },
+            "301": {
+                start: {
+                    line: 489,
+                    column: 23
+                },
+                end: {
+                    line: 489,
+                    column: 24
+                }
+            },
+            "302": {
+                start: {
+                    line: 490,
+                    column: 8
+                },
+                end: {
+                    line: 494,
+                    column: 9
+                }
+            },
+            "303": {
+                start: {
+                    line: 491,
+                    column: 10
+                },
+                end: {
+                    line: 491,
+                    column: 32
+                }
+            },
+            "304": {
+                start: {
+                    line: 499,
+                    column: 19
+                },
+                end: {
+                    line: 499,
+                    column: 23
+                }
+            },
+            "305": {
+                start: {
+                    line: 500,
+                    column: 6
+                },
+                end: {
+                    line: 506,
+                    column: 7
+                }
+            },
+            "306": {
+                start: {
+                    line: 500,
+                    column: 23
+                },
+                end: {
+                    line: 500,
+                    column: 24
+                }
+            },
+            "307": {
+                start: {
+                    line: 501,
+                    column: 8
+                },
+                end: {
+                    line: 505,
+                    column: 9
+                }
+            },
+            "308": {
+                start: {
+                    line: 502,
+                    column: 10
+                },
+                end: {
+                    line: 502,
+                    column: 32
+                }
+            },
+            "309": {
+                start: {
+                    line: 504,
+                    column: 10
+                },
+                end: {
+                    line: 504,
+                    column: 118
+                }
+            },
+            "310": {
+                start: {
+                    line: 507,
+                    column: 6
+                },
+                end: {
+                    line: 507,
+                    column: 20
+                }
+            },
+            "311": {
+                start: {
+                    line: 511,
+                    column: 26
+                },
+                end: {
+                    line: 511,
+                    column: 35
+                }
+            },
+            "312": {
+                start: {
+                    line: 512,
+                    column: 21
+                },
+                end: {
+                    line: 512,
+                    column: 41
+                }
+            },
+            "313": {
+                start: {
+                    line: 513,
+                    column: 22
+                },
+                end: {
+                    line: 513,
+                    column: 101
+                }
+            },
+            "314": {
+                start: {
+                    line: 514,
+                    column: 6
+                },
+                end: {
+                    line: 523,
+                    column: 7
+                }
+            },
+            "315": {
+                start: {
+                    line: 514,
+                    column: 20
+                },
+                end: {
+                    line: 514,
+                    column: 21
+                }
+            },
+            "316": {
+                start: {
+                    line: 515,
+                    column: 26
+                },
+                end: {
+                    line: 515,
+                    column: 39
+                }
+            },
+            "317": {
+                start: {
+                    line: 516,
+                    column: 38
+                },
+                end: {
+                    line: 516,
+                    column: 56
+                }
+            },
+            "318": {
+                start: {
+                    line: 517,
+                    column: 8
+                },
+                end: {
+                    line: 522,
+                    column: 9
+                }
+            },
+            "319": {
+                start: {
+                    line: 518,
+                    column: 10
+                },
+                end: {
+                    line: 518,
+                    column: 34
+                }
+            },
+            "320": {
+                start: {
+                    line: 519,
+                    column: 10
+                },
+                end: {
+                    line: 519,
+                    column: 27
+                }
+            },
+            "321": {
+                start: {
+                    line: 521,
+                    column: 10
+                },
+                end: {
+                    line: 521,
+                    column: 37
+                }
+            },
+            "322": {
+                start: {
+                    line: 524,
+                    column: 6
+                },
+                end: {
+                    line: 524,
+                    column: 30
+                }
+            },
+            "323": {
+                start: {
+                    line: 528,
+                    column: 6
+                },
+                end: {
+                    line: 528,
+                    column: 32
+                }
+            },
+            "324": {
+                start: {
+                    line: 532,
+                    column: 6
+                },
+                end: {
+                    line: 532,
+                    column: 34
+                }
+            },
+            "325": {
+                start: {
+                    line: 536,
+                    column: 6
+                },
+                end: {
+                    line: 538,
+                    column: 9
+                }
+            },
+            "326": {
+                start: {
+                    line: 542,
+                    column: 6
+                },
+                end: {
+                    line: 544,
+                    column: 7
+                }
+            },
+            "327": {
+                start: {
+                    line: 543,
+                    column: 8
+                },
+                end: {
+                    line: 543,
+                    column: 47
+                }
+            },
+            "328": {
+                start: {
+                    line: 545,
+                    column: 6
+                },
+                end: {
+                    line: 545,
+                    column: 18
+                }
+            },
+            "329": {
+                start: {
+                    line: 549,
+                    column: 19
+                },
+                end: {
+                    line: 549,
+                    column: 23
+                }
+            },
+            "330": {
+                start: {
+                    line: 550,
+                    column: 6
+                },
+                end: {
+                    line: 555,
+                    column: 7
+                }
+            },
+            "331": {
+                start: {
+                    line: 551,
+                    column: 8
+                },
+                end: {
+                    line: 551,
+                    column: 19
+                }
+            },
+            "332": {
+                start: {
+                    line: 552,
+                    column: 8
+                },
+                end: {
+                    line: 552,
+                    column: 23
+                }
+            },
+            "333": {
+                start: {
+                    line: 554,
+                    column: 8
+                },
+                end: {
+                    line: 554,
+                    column: 20
+                }
+            },
+            "334": {
+                start: {
+                    line: 556,
+                    column: 6
+                },
+                end: {
+                    line: 558,
+                    column: 7
+                }
+            },
+            "335": {
+                start: {
+                    line: 557,
+                    column: 8
+                },
+                end: {
+                    line: 557,
+                    column: 47
+                }
+            },
+            "336": {
+                start: {
+                    line: 561,
+                    column: 28
+                },
+                end: {
+                    line: 561,
+                    column: 42
+                }
+            },
+            "337": {
+                start: {
+                    line: 565,
+                    column: 2
+                },
+                end: {
+                    line: 576,
+                    column: 3
+                }
+            },
+            "338": {
+                start: {
+                    line: 566,
+                    column: 4
+                },
+                end: {
+                    line: 566,
+                    column: 62
+                }
+            },
+            "339": {
+                start: {
+                    line: 567,
+                    column: 4
+                },
+                end: {
+                    line: 567,
+                    column: 64
+                }
+            },
+            "340": {
+                start: {
+                    line: 568,
+                    column: 4
+                },
+                end: {
+                    line: 568,
+                    column: 63
+                }
+            },
+            "341": {
+                start: {
+                    line: 569,
+                    column: 4
+                },
+                end: {
+                    line: 569,
+                    column: 69
+                }
+            },
+            "342": {
+                start: {
+                    line: 570,
+                    column: 4
+                },
+                end: {
+                    line: 570,
+                    column: 71
+                }
+            },
+            "343": {
+                start: {
+                    line: 571,
+                    column: 4
+                },
+                end: {
+                    line: 571,
+                    column: 69
+                }
+            },
+            "344": {
+                start: {
+                    line: 572,
+                    column: 4
+                },
+                end: {
+                    line: 572,
+                    column: 62
+                }
+            },
+            "345": {
+                start: {
+                    line: 573,
+                    column: 4
+                },
+                end: {
+                    line: 573,
+                    column: 64
+                }
+            },
+            "346": {
+                start: {
+                    line: 575,
+                    column: 4
+                },
+                end: {
+                    line: 575,
+                    column: 46
+                }
+            },
+            "347": {
+                start: {
+                    line: 578,
+                    column: 2
+                },
+                end: {
+                    line: 578,
+                    column: 22
+                }
+            }
+        },
+        fnMap: {
+            "0": {
+                name: "(anonymous_0)",
+                decl: {
+                    start: {
+                        line: 1,
+                        column: 1
+                    },
+                    end: {
+                        line: 1,
+                        column: 2
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 1,
+                        column: 20
+                    },
+                    end: {
+                        line: 12,
+                        column: 1
+                    }
+                },
+                line: 1
+            },
+            "1": {
+                name: "(anonymous_1)",
+                decl: {
+                    start: {
+                        line: 12,
+                        column: 3
+                    },
+                    end: {
+                        line: 12,
+                        column: 4
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 12,
+                        column: 15
+                    },
+                    end: {
+                        line: 581,
+                        column: 1
+                    }
+                },
+                line: 12
+            },
+            "2": {
+                name: "(anonymous_2)",
+                decl: {
+                    start: {
+                        line: 28,
+                        column: 4
+                    },
+                    end: {
+                        line: 28,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 28,
+                        column: 25
+                    },
+                    end: {
+                        line: 31,
+                        column: 5
+                    }
+                },
+                line: 28
+            },
+            "3": {
+                name: "(anonymous_3)",
+                decl: {
+                    start: {
+                        line: 37,
+                        column: 4
+                    },
+                    end: {
+                        line: 37,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 37,
+                        column: 27
+                    },
+                    end: {
+                        line: 39,
+                        column: 5
+                    }
+                },
+                line: 37
+            },
+            "4": {
+                name: "(anonymous_4)",
+                decl: {
+                    start: {
+                        line: 41,
+                        column: 4
+                    },
+                    end: {
+                        line: 41,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 41,
+                        column: 45
+                    },
+                    end: {
+                        line: 61,
+                        column: 5
+                    }
+                },
+                line: 41
+            },
+            "5": {
+                name: "(anonymous_5)",
+                decl: {
+                    start: {
+                        line: 62,
+                        column: 4
+                    },
+                    end: {
+                        line: 62,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 62,
+                        column: 16
+                    },
+                    end: {
+                        line: 77,
+                        column: 5
+                    }
+                },
+                line: 62
+            },
+            "6": {
+                name: "(anonymous_6)",
+                decl: {
+                    start: {
+                        line: 78,
+                        column: 4
+                    },
+                    end: {
+                        line: 78,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 78,
+                        column: 19
+                    },
+                    end: {
+                        line: 85,
+                        column: 5
+                    }
+                },
+                line: 78
+            },
+            "7": {
+                name: "(anonymous_7)",
+                decl: {
+                    start: {
+                        line: 86,
+                        column: 4
+                    },
+                    end: {
+                        line: 86,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 86,
+                        column: 14
+                    },
+                    end: {
+                        line: 93,
+                        column: 5
+                    }
+                },
+                line: 86
+            },
+            "8": {
+                name: "(anonymous_8)",
+                decl: {
+                    start: {
+                        line: 94,
+                        column: 4
+                    },
+                    end: {
+                        line: 94,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 94,
+                        column: 16
+                    },
+                    end: {
+                        line: 101,
+                        column: 5
+                    }
+                },
+                line: 94
+            },
+            "9": {
+                name: "(anonymous_9)",
+                decl: {
+                    start: {
+                        line: 102,
+                        column: 4
+                    },
+                    end: {
+                        line: 102,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 102,
+                        column: 15
+                    },
+                    end: {
+                        line: 109,
+                        column: 5
+                    }
+                },
+                line: 102
+            },
+            "10": {
+                name: "(anonymous_10)",
+                decl: {
+                    start: {
+                        line: 110,
+                        column: 4
+                    },
+                    end: {
+                        line: 110,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 110,
+                        column: 16
+                    },
+                    end: {
+                        line: 117,
+                        column: 5
+                    }
+                },
+                line: 110
+            },
+            "11": {
+                name: "(anonymous_11)",
+                decl: {
+                    start: {
+                        line: 118,
+                        column: 4
+                    },
+                    end: {
+                        line: 118,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 118,
+                        column: 18
+                    },
+                    end: {
+                        line: 127,
+                        column: 5
+                    }
+                },
+                line: 118
+            },
+            "12": {
+                name: "(anonymous_12)",
+                decl: {
+                    start: {
+                        line: 128,
+                        column: 4
+                    },
+                    end: {
+                        line: 128,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 128,
+                        column: 23
+                    },
+                    end: {
+                        line: 137,
+                        column: 5
+                    }
+                },
+                line: 128
+            },
+            "13": {
+                name: "(anonymous_13)",
+                decl: {
+                    start: {
+                        line: 138,
+                        column: 4
+                    },
+                    end: {
+                        line: 138,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 138,
+                        column: 43
+                    },
+                    end: {
+                        line: 143,
+                        column: 5
+                    }
+                },
+                line: 138
+            },
+            "14": {
+                name: "(anonymous_14)",
+                decl: {
+                    start: {
+                        line: 144,
+                        column: 4
+                    },
+                    end: {
+                        line: 144,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 144,
+                        column: 30
+                    },
+                    end: {
+                        line: 146,
+                        column: 5
+                    }
+                },
+                line: 144
+            },
+            "15": {
+                name: "(anonymous_15)",
+                decl: {
+                    start: {
+                        line: 147,
+                        column: 4
+                    },
+                    end: {
+                        line: 147,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 147,
+                        column: 18
+                    },
+                    end: {
+                        line: 153,
+                        column: 5
+                    }
+                },
+                line: 147
+            },
+            "16": {
+                name: "(anonymous_16)",
+                decl: {
+                    start: {
+                        line: 158,
+                        column: 4
+                    },
+                    end: {
+                        line: 158,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 158,
+                        column: 26
+                    },
+                    end: {
+                        line: 160,
+                        column: 5
+                    }
+                },
+                line: 158
+            },
+            "17": {
+                name: "(anonymous_17)",
+                decl: {
+                    start: {
+                        line: 161,
+                        column: 4
+                    },
+                    end: {
+                        line: 161,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 161,
+                        column: 21
+                    },
+                    end: {
+                        line: 163,
+                        column: 5
+                    }
+                },
+                line: 161
+            },
+            "18": {
+                name: "(anonymous_18)",
+                decl: {
+                    start: {
+                        line: 164,
+                        column: 4
+                    },
+                    end: {
+                        line: 164,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 164,
+                        column: 28
+                    },
+                    end: {
+                        line: 166,
+                        column: 5
+                    }
+                },
+                line: 164
+            },
+            "19": {
+                name: "(anonymous_19)",
+                decl: {
+                    start: {
+                        line: 167,
+                        column: 4
+                    },
+                    end: {
+                        line: 167,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 167,
+                        column: 23
+                    },
+                    end: {
+                        line: 169,
+                        column: 5
+                    }
+                },
+                line: 167
+            },
+            "20": {
+                name: "(anonymous_20)",
+                decl: {
+                    start: {
+                        line: 170,
+                        column: 4
+                    },
+                    end: {
+                        line: 170,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 170,
+                        column: 28
+                    },
+                    end: {
+                        line: 173,
+                        column: 5
+                    }
+                },
+                line: 170
+            },
+            "21": {
+                name: "(anonymous_21)",
+                decl: {
+                    start: {
+                        line: 174,
+                        column: 4
+                    },
+                    end: {
+                        line: 174,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 174,
+                        column: 28
+                    },
+                    end: {
+                        line: 176,
+                        column: 5
+                    }
+                },
+                line: 174
+            },
+            "22": {
+                name: "(anonymous_22)",
+                decl: {
+                    start: {
+                        line: 177,
+                        column: 4
+                    },
+                    end: {
+                        line: 177,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 177,
+                        column: 16
+                    },
+                    end: {
+                        line: 179,
+                        column: 5
+                    }
+                },
+                line: 177
+            },
+            "23": {
+                name: "(anonymous_23)",
+                decl: {
+                    start: {
+                        line: 180,
+                        column: 4
+                    },
+                    end: {
+                        line: 180,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 180,
+                        column: 32
+                    },
+                    end: {
+                        line: 182,
+                        column: 5
+                    }
+                },
+                line: 180
+            },
+            "24": {
+                name: "(anonymous_24)",
+                decl: {
+                    start: {
+                        line: 186,
+                        column: 4
+                    },
+                    end: {
+                        line: 186,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 186,
+                        column: 13
+                    },
+                    end: {
+                        line: 191,
+                        column: 5
+                    }
+                },
+                line: 186
+            },
+            "25": {
+                name: "(anonymous_25)",
+                decl: {
+                    start: {
+                        line: 192,
+                        column: 4
+                    },
+                    end: {
+                        line: 192,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 192,
+                        column: 13
+                    },
+                    end: {
+                        line: 197,
+                        column: 5
+                    }
+                },
+                line: 192
+            },
+            "26": {
+                name: "(anonymous_26)",
+                decl: {
+                    start: {
+                        line: 198,
+                        column: 4
+                    },
+                    end: {
+                        line: 198,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 198,
+                        column: 13
+                    },
+                    end: {
+                        line: 203,
+                        column: 5
+                    }
+                },
+                line: 198
+            },
+            "27": {
+                name: "(anonymous_27)",
+                decl: {
+                    start: {
+                        line: 204,
+                        column: 4
+                    },
+                    end: {
+                        line: 204,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 204,
+                        column: 11
+                    },
+                    end: {
+                        line: 209,
+                        column: 5
+                    }
+                },
+                line: 204
+            },
+            "28": {
+                name: "(anonymous_28)",
+                decl: {
+                    start: {
+                        line: 210,
+                        column: 4
+                    },
+                    end: {
+                        line: 210,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 210,
+                        column: 16
+                    },
+                    end: {
+                        line: 215,
+                        column: 5
+                    }
+                },
+                line: 210
+            },
+            "29": {
+                name: "(anonymous_29)",
+                decl: {
+                    start: {
+                        line: 216,
+                        column: 4
+                    },
+                    end: {
+                        line: 216,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 216,
+                        column: 14
+                    },
+                    end: {
+                        line: 221,
+                        column: 5
+                    }
+                },
+                line: 216
+            },
+            "30": {
+                name: "(anonymous_30)",
+                decl: {
+                    start: {
+                        line: 222,
+                        column: 4
+                    },
+                    end: {
+                        line: 222,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 222,
+                        column: 22
+                    },
+                    end: {
+                        line: 227,
+                        column: 5
+                    }
+                },
+                line: 222
+            },
+            "31": {
+                name: "(anonymous_31)",
+                decl: {
+                    start: {
+                        line: 228,
+                        column: 4
+                    },
+                    end: {
+                        line: 228,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 228,
+                        column: 12
+                    },
+                    end: {
+                        line: 233,
+                        column: 5
+                    }
+                },
+                line: 228
+            },
+            "32": {
+                name: "(anonymous_32)",
+                decl: {
+                    start: {
+                        line: 234,
+                        column: 4
+                    },
+                    end: {
+                        line: 234,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 234,
+                        column: 15
+                    },
+                    end: {
+                        line: 239,
+                        column: 5
+                    }
+                },
+                line: 234
+            },
+            "33": {
+                name: "(anonymous_33)",
+                decl: {
+                    start: {
+                        line: 240,
+                        column: 4
+                    },
+                    end: {
+                        line: 240,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 240,
+                        column: 12
+                    },
+                    end: {
+                        line: 261,
+                        column: 5
+                    }
+                },
+                line: 240
+            },
+            "34": {
+                name: "(anonymous_34)",
+                decl: {
+                    start: {
+                        line: 243,
+                        column: 23
+                    },
+                    end: {
+                        line: 243,
+                        column: 24
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 243,
+                        column: 29
+                    },
+                    end: {
+                        line: 258,
+                        column: 7
+                    }
+                },
+                line: 243
+            },
+            "35": {
+                name: "(anonymous_35)",
+                decl: {
+                    start: {
+                        line: 262,
+                        column: 4
+                    },
+                    end: {
+                        line: 262,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 262,
+                        column: 19
+                    },
+                    end: {
+                        line: 268,
+                        column: 5
+                    }
+                },
+                line: 262
+            },
+            "36": {
+                name: "(anonymous_36)",
+                decl: {
+                    start: {
+                        line: 269,
+                        column: 4
+                    },
+                    end: {
+                        line: 269,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 269,
+                        column: 30
+                    },
+                    end: {
+                        line: 275,
+                        column: 5
+                    }
+                },
+                line: 269
+            },
+            "37": {
+                name: "(anonymous_37)",
+                decl: {
+                    start: {
+                        line: 276,
+                        column: 4
+                    },
+                    end: {
+                        line: 276,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 276,
+                        column: 23
+                    },
+                    end: {
+                        line: 282,
+                        column: 5
+                    }
+                },
+                line: 276
+            },
+            "38": {
+                name: "(anonymous_38)",
+                decl: {
+                    start: {
+                        line: 283,
+                        column: 4
+                    },
+                    end: {
+                        line: 283,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 283,
+                        column: 30
+                    },
+                    end: {
+                        line: 285,
+                        column: 5
+                    }
+                },
+                line: 283
+            },
+            "39": {
+                name: "(anonymous_39)",
+                decl: {
+                    start: {
+                        line: 286,
+                        column: 4
+                    },
+                    end: {
+                        line: 286,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 286,
+                        column: 28
+                    },
+                    end: {
+                        line: 292,
+                        column: 5
+                    }
+                },
+                line: 286
+            },
+            "40": {
+                name: "(anonymous_40)",
+                decl: {
+                    start: {
+                        line: 293,
+                        column: 4
+                    },
+                    end: {
+                        line: 293,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 293,
+                        column: 21
+                    },
+                    end: {
+                        line: 299,
+                        column: 5
+                    }
+                },
+                line: 293
+            },
+            "41": {
+                name: "(anonymous_41)",
+                decl: {
+                    start: {
+                        line: 300,
+                        column: 4
+                    },
+                    end: {
+                        line: 300,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 300,
+                        column: 26
+                    },
+                    end: {
+                        line: 302,
+                        column: 5
+                    }
+                },
+                line: 300
+            },
+            "42": {
+                name: "(anonymous_42)",
+                decl: {
+                    start: {
+                        line: 303,
+                        column: 4
+                    },
+                    end: {
+                        line: 303,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 303,
+                        column: 17
+                    },
+                    end: {
+                        line: 312,
+                        column: 5
+                    }
+                },
+                line: 303
+            },
+            "43": {
+                name: "(anonymous_43)",
+                decl: {
+                    start: {
+                        line: 321,
+                        column: 4
+                    },
+                    end: {
+                        line: 321,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 321,
+                        column: 15
+                    },
+                    end: {
+                        line: 327,
+                        column: 5
+                    }
+                },
+                line: 321
+            },
+            "44": {
+                name: "(anonymous_44)",
+                decl: {
+                    start: {
+                        line: 329,
+                        column: 4
+                    },
+                    end: {
+                        line: 329,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 329,
+                        column: 14
+                    },
+                    end: {
+                        line: 336,
+                        column: 5
+                    }
+                },
+                line: 329
+            },
+            "45": {
+                name: "(anonymous_45)",
+                decl: {
+                    start: {
+                        line: 338,
+                        column: 4
+                    },
+                    end: {
+                        line: 338,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 338,
+                        column: 16
+                    },
+                    end: {
+                        line: 345,
+                        column: 5
+                    }
+                },
+                line: 338
+            },
+            "46": {
+                name: "(anonymous_46)",
+                decl: {
+                    start: {
+                        line: 347,
+                        column: 4
+                    },
+                    end: {
+                        line: 347,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 347,
+                        column: 29
+                    },
+                    end: {
+                        line: 362,
+                        column: 5
+                    }
+                },
+                line: 347
+            },
+            "47": {
+                name: "(anonymous_47)",
+                decl: {
+                    start: {
+                        line: 364,
+                        column: 4
+                    },
+                    end: {
+                        line: 364,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 364,
+                        column: 16
+                    },
+                    end: {
+                        line: 379,
+                        column: 5
+                    }
+                },
+                line: 364
+            },
+            "48": {
+                name: "(anonymous_48)",
+                decl: {
+                    start: {
+                        line: 381,
+                        column: 4
+                    },
+                    end: {
+                        line: 381,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 381,
+                        column: 18
+                    },
+                    end: {
+                        line: 396,
+                        column: 5
+                    }
+                },
+                line: 381
+            },
+            "49": {
+                name: "(anonymous_49)",
+                decl: {
+                    start: {
+                        line: 398,
+                        column: 4
+                    },
+                    end: {
+                        line: 398,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 398,
+                        column: 24
+                    },
+                    end: {
+                        line: 413,
+                        column: 5
+                    }
+                },
+                line: 398
+            },
+            "50": {
+                name: "(anonymous_50)",
+                decl: {
+                    start: {
+                        line: 415,
+                        column: 4
+                    },
+                    end: {
+                        line: 415,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 415,
+                        column: 26
+                    },
+                    end: {
+                        line: 430,
+                        column: 5
+                    }
+                },
+                line: 415
+            },
+            "51": {
+                name: "(anonymous_51)",
+                decl: {
+                    start: {
+                        line: 440,
+                        column: 4
+                    },
+                    end: {
+                        line: 440,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 440,
+                        column: 20
+                    },
+                    end: {
+                        line: 442,
+                        column: 5
+                    }
+                },
+                line: 440
+            },
+            "52": {
+                name: "(anonymous_52)",
+                decl: {
+                    start: {
+                        line: 444,
+                        column: 4
+                    },
+                    end: {
+                        line: 444,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 444,
+                        column: 19
+                    },
+                    end: {
+                        line: 446,
+                        column: 5
+                    }
+                },
+                line: 444
+            },
+            "53": {
+                name: "(anonymous_53)",
+                decl: {
+                    start: {
+                        line: 448,
+                        column: 4
+                    },
+                    end: {
+                        line: 448,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 448,
+                        column: 21
+                    },
+                    end: {
+                        line: 450,
+                        column: 5
+                    }
+                },
+                line: 448
+            },
+            "54": {
+                name: "(anonymous_54)",
+                decl: {
+                    start: {
+                        line: 452,
+                        column: 4
+                    },
+                    end: {
+                        line: 452,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 452,
+                        column: 17
+                    },
+                    end: {
+                        line: 457,
+                        column: 5
+                    }
+                },
+                line: 452
+            },
+            "55": {
+                name: "(anonymous_55)",
+                decl: {
+                    start: {
+                        line: 459,
+                        column: 4
+                    },
+                    end: {
+                        line: 459,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 459,
+                        column: 16
+                    },
+                    end: {
+                        line: 461,
+                        column: 5
+                    }
+                },
+                line: 459
+            },
+            "56": {
+                name: "(anonymous_56)",
+                decl: {
+                    start: {
+                        line: 463,
+                        column: 4
+                    },
+                    end: {
+                        line: 463,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 463,
+                        column: 18
+                    },
+                    end: {
+                        line: 465,
+                        column: 5
+                    }
+                },
+                line: 463
+            },
+            "57": {
+                name: "(anonymous_57)",
+                decl: {
+                    start: {
+                        line: 467,
+                        column: 4
+                    },
+                    end: {
+                        line: 467,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 467,
+                        column: 13
+                    },
+                    end: {
+                        line: 473,
+                        column: 5
+                    }
+                },
+                line: 467
+            },
+            "58": {
+                name: "(anonymous_58)",
+                decl: {
+                    start: {
+                        line: 475,
+                        column: 4
+                    },
+                    end: {
+                        line: 475,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 475,
+                        column: 12
+                    },
+                    end: {
+                        line: 482,
+                        column: 5
+                    }
+                },
+                line: 475
+            },
+            "59": {
+                name: "(anonymous_59)",
+                decl: {
+                    start: {
+                        line: 484,
+                        column: 4
+                    },
+                    end: {
+                        line: 484,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 484,
+                        column: 17
+                    },
+                    end: {
+                        line: 486,
+                        column: 5
+                    }
+                },
+                line: 484
+            },
+            "60": {
+                name: "(anonymous_60)",
+                decl: {
+                    start: {
+                        line: 488,
+                        column: 4
+                    },
+                    end: {
+                        line: 488,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 488,
+                        column: 27
+                    },
+                    end: {
+                        line: 496,
+                        column: 5
+                    }
+                },
+                line: 488
+            },
+            "61": {
+                name: "(anonymous_61)",
+                decl: {
+                    start: {
+                        line: 498,
+                        column: 4
+                    },
+                    end: {
+                        line: 498,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 498,
+                        column: 21
+                    },
+                    end: {
+                        line: 508,
+                        column: 5
+                    }
+                },
+                line: 498
+            },
+            "62": {
+                name: "(anonymous_62)",
+                decl: {
+                    start: {
+                        line: 510,
+                        column: 4
+                    },
+                    end: {
+                        line: 510,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 510,
+                        column: 24
+                    },
+                    end: {
+                        line: 525,
+                        column: 5
+                    }
+                },
+                line: 510
+            },
+            "63": {
+                name: "(anonymous_63)",
+                decl: {
+                    start: {
+                        line: 527,
+                        column: 4
+                    },
+                    end: {
+                        line: 527,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 527,
+                        column: 19
+                    },
+                    end: {
+                        line: 529,
+                        column: 5
+                    }
+                },
+                line: 527
+            },
+            "64": {
+                name: "(anonymous_64)",
+                decl: {
+                    start: {
+                        line: 531,
+                        column: 4
+                    },
+                    end: {
+                        line: 531,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 531,
+                        column: 27
+                    },
+                    end: {
+                        line: 533,
+                        column: 5
+                    }
+                },
+                line: 531
+            },
+            "65": {
+                name: "(anonymous_65)",
+                decl: {
+                    start: {
+                        line: 535,
+                        column: 4
+                    },
+                    end: {
+                        line: 535,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 535,
+                        column: 26
+                    },
+                    end: {
+                        line: 539,
+                        column: 5
+                    }
+                },
+                line: 535
+            },
+            "66": {
+                name: "(anonymous_66)",
+                decl: {
+                    start: {
+                        line: 541,
+                        column: 4
+                    },
+                    end: {
+                        line: 541,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 541,
+                        column: 72
+                    },
+                    end: {
+                        line: 546,
+                        column: 5
+                    }
+                },
+                line: 541
+            },
+            "67": {
+                name: "(anonymous_67)",
+                decl: {
+                    start: {
+                        line: 548,
+                        column: 4
+                    },
+                    end: {
+                        line: 548,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 548,
+                        column: 70
+                    },
+                    end: {
+                        line: 559,
+                        column: 5
+                    }
+                },
+                line: 548
+            }
+        },
+        branchMap: {
+            "0": {
+                loc: {
+                    start: {
+                        line: 3,
+                        column: 2
+                    },
+                    end: {
+                        line: 5,
+                        column: 3
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 3,
+                        column: 2
+                    },
+                    end: {
+                        line: 5,
+                        column: 3
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 3
+            },
+            "1": {
+                loc: {
+                    start: {
+                        line: 6,
+                        column: 2
+                    },
+                    end: {
+                        line: 8,
+                        column: 3
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 6,
+                        column: 2
+                    },
+                    end: {
+                        line: 8,
+                        column: 3
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 6
+            },
+            "2": {
+                loc: {
+                    start: {
+                        line: 9,
+                        column: 2
+                    },
+                    end: {
+                        line: 11,
+                        column: 3
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 9,
+                        column: 2
+                    },
+                    end: {
+                        line: 11,
+                        column: 3
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 9
+            },
+            "3": {
+                loc: {
+                    start: {
+                        line: 41,
+                        column: 24
+                    },
+                    end: {
+                        line: 41,
+                        column: 43
+                    }
+                },
+                type: "default-arg",
+                locations: [{
+                    start: {
+                        line: 41,
+                        column: 42
+                    },
+                    end: {
+                        line: 41,
+                        column: 43
+                    }
+                }],
+                line: 41
+            },
+            "4": {
+                loc: {
+                    start: {
+                        line: 43,
+                        column: 8
+                    },
+                    end: {
+                        line: 56,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 43,
+                        column: 8
+                    },
+                    end: {
+                        line: 56,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: 50,
+                        column: 15
+                    },
+                    end: {
+                        line: 56,
+                        column: 9
+                    }
+                }],
+                line: 43
+            },
+            "5": {
+                loc: {
+                    start: {
+                        line: 43,
+                        column: 12
+                    },
+                    end: {
+                        line: 43,
+                        column: 67
+                    }
+                },
+                type: "binary-expr",
+                locations: [{
+                    start: {
+                        line: 43,
+                        column: 13
+                    },
+                    end: {
+                        line: 43,
+                        column: 34
+                    }
+                }, {
+                    start: {
+                        line: 43,
+                        column: 40
+                    },
+                    end: {
+                        line: 43,
+                        column: 66
+                    }
+                }],
+                line: 43
+            },
+            "6": {
+                loc: {
+                    start: {
+                        line: 45,
+                        column: 10
+                    },
+                    end: {
+                        line: 47,
+                        column: 11
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 45,
+                        column: 10
+                    },
+                    end: {
+                        line: 47,
+                        column: 11
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 45
+            },
+            "7": {
+                loc: {
+                    start: {
+                        line: 50,
+                        column: 15
+                    },
+                    end: {
+                        line: 56,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 50,
+                        column: 15
+                    },
+                    end: {
+                        line: 56,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: 53,
+                        column: 15
+                    },
+                    end: {
+                        line: 56,
+                        column: 9
+                    }
+                }],
+                line: 50
+            },
+            "8": {
+                loc: {
+                    start: {
+                        line: 65,
+                        column: 6
+                    },
+                    end: {
+                        line: 75,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 65,
+                        column: 6
+                    },
+                    end: {
+                        line: 75,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: 69,
+                        column: 13
+                    },
+                    end: {
+                        line: 75,
+                        column: 7
+                    }
+                }],
+                line: 65
+            },
+            "9": {
+                loc: {
+                    start: {
+                        line: 66,
+                        column: 8
+                    },
+                    end: {
+                        line: 68,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 66,
+                        column: 8
+                    },
+                    end: {
+                        line: 68,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 66
+            },
+            "10": {
+                loc: {
+                    start: {
+                        line: 69,
+                        column: 13
+                    },
+                    end: {
+                        line: 75,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 69,
+                        column: 13
+                    },
+                    end: {
+                        line: 75,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: 73,
+                        column: 13
+                    },
+                    end: {
+                        line: 75,
+                        column: 7
+                    }
+                }],
+                line: 69
+            },
+            "11": {
+                loc: {
+                    start: {
+                        line: 70,
+                        column: 8
+                    },
+                    end: {
+                        line: 72,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 70,
+                        column: 8
+                    },
+                    end: {
+                        line: 72,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 70
+            },
+            "12": {
+                loc: {
+                    start: {
+                        line: 81,
+                        column: 6
+                    },
+                    end: {
+                        line: 83,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 81,
+                        column: 6
+                    },
+                    end: {
+                        line: 83,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 81
+            },
+            "13": {
+                loc: {
+                    start: {
+                        line: 89,
+                        column: 6
+                    },
+                    end: {
+                        line: 91,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 89,
+                        column: 6
+                    },
+                    end: {
+                        line: 91,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 89
+            },
+            "14": {
+                loc: {
+                    start: {
+                        line: 97,
+                        column: 6
+                    },
+                    end: {
+                        line: 99,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 97,
+                        column: 6
+                    },
+                    end: {
+                        line: 99,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 97
+            },
+            "15": {
+                loc: {
+                    start: {
+                        line: 105,
+                        column: 6
+                    },
+                    end: {
+                        line: 107,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 105,
+                        column: 6
+                    },
+                    end: {
+                        line: 107,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 105
+            },
+            "16": {
+                loc: {
+                    start: {
+                        line: 113,
+                        column: 6
+                    },
+                    end: {
+                        line: 115,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 113,
+                        column: 6
+                    },
+                    end: {
+                        line: 115,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 113
+            },
+            "17": {
+                loc: {
+                    start: {
+                        line: 138,
+                        column: 14
+                    },
+                    end: {
+                        line: 138,
+                        column: 41
+                    }
+                },
+                type: "default-arg",
+                locations: [{
+                    start: {
+                        line: 138,
+                        column: 26
+                    },
+                    end: {
+                        line: 138,
+                        column: 41
+                    }
+                }],
+                line: 138
+            },
+            "18": {
+                loc: {
+                    start: {
+                        line: 139,
+                        column: 6
+                    },
+                    end: {
+                        line: 141,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 139,
+                        column: 6
+                    },
+                    end: {
+                        line: 141,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 139
+            },
+            "19": {
+                loc: {
+                    start: {
+                        line: 142,
+                        column: 92
+                    },
+                    end: {
+                        line: 142,
+                        column: 159
+                    }
+                },
+                type: "cond-expr",
+                locations: [{
+                    start: {
+                        line: 142,
+                        column: 112
+                    },
+                    end: {
+                        line: 142,
+                        column: 155
+                    }
+                }, {
+                    start: {
+                        line: 142,
+                        column: 157
+                    },
+                    end: {
+                        line: 142,
+                        column: 159
+                    }
+                }],
+                line: 142
+            },
+            "20": {
+                loc: {
+                    start: {
+                        line: 148,
+                        column: 6
+                    },
+                    end: {
+                        line: 152,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 148,
+                        column: 6
+                    },
+                    end: {
+                        line: 152,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: 150,
+                        column: 13
+                    },
+                    end: {
+                        line: 152,
+                        column: 7
+                    }
+                }],
+                line: 148
+            },
+            "21": {
+                loc: {
+                    start: {
+                        line: 175,
+                        column: 13
+                    },
+                    end: {
+                        line: 175,
+                        column: 62
+                    }
+                },
+                type: "cond-expr",
+                locations: [{
+                    start: {
+                        line: 175,
+                        column: 40
+                    },
+                    end: {
+                        line: 175,
+                        column: 50
+                    }
+                }, {
+                    start: {
+                        line: 175,
+                        column: 53
+                    },
+                    end: {
+                        line: 175,
+                        column: 62
+                    }
+                }],
+                line: 175
+            },
+            "22": {
+                loc: {
+                    start: {
+                        line: 181,
+                        column: 42
+                    },
+                    end: {
+                        line: 181,
+                        column: 71
+                    }
+                },
+                type: "cond-expr",
+                locations: [{
+                    start: {
+                        line: 181,
+                        column: 60
+                    },
+                    end: {
+                        line: 181,
+                        column: 66
+                    }
+                }, {
+                    start: {
+                        line: 181,
+                        column: 69
+                    },
+                    end: {
+                        line: 181,
+                        column: 71
+                    }
+                }],
+                line: 181
+            },
+            "23": {
+                loc: {
+                    start: {
+                        line: 189,
+                        column: 6
+                    },
+                    end: {
+                        line: 189,
+                        column: 88
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 189,
+                        column: 6
+                    },
+                    end: {
+                        line: 189,
+                        column: 88
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 189
+            },
+            "24": {
+                loc: {
+                    start: {
+                        line: 195,
+                        column: 6
+                    },
+                    end: {
+                        line: 195,
+                        column: 119
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 195,
+                        column: 6
+                    },
+                    end: {
+                        line: 195,
+                        column: 119
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 195
+            },
+            "25": {
+                loc: {
+                    start: {
+                        line: 195,
+                        column: 10
+                    },
+                    end: {
+                        line: 195,
+                        column: 93
+                    }
+                },
+                type: "binary-expr",
+                locations: [{
+                    start: {
+                        line: 195,
+                        column: 10
+                    },
+                    end: {
+                        line: 195,
+                        column: 62
+                    }
+                }, {
+                    start: {
+                        line: 195,
+                        column: 66
+                    },
+                    end: {
+                        line: 195,
+                        column: 93
+                    }
+                }],
+                line: 195
+            },
+            "26": {
+                loc: {
+                    start: {
+                        line: 201,
+                        column: 6
+                    },
+                    end: {
+                        line: 201,
+                        column: 88
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 201,
+                        column: 6
+                    },
+                    end: {
+                        line: 201,
+                        column: 88
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 201
+            },
+            "27": {
+                loc: {
+                    start: {
+                        line: 207,
+                        column: 6
+                    },
+                    end: {
+                        line: 207,
+                        column: 84
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 207,
+                        column: 6
+                    },
+                    end: {
+                        line: 207,
+                        column: 84
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 207
+            },
+            "28": {
+                loc: {
+                    start: {
+                        line: 213,
+                        column: 6
+                    },
+                    end: {
+                        line: 213,
+                        column: 91
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 213,
+                        column: 6
+                    },
+                    end: {
+                        line: 213,
+                        column: 91
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 213
+            },
+            "29": {
+                loc: {
+                    start: {
+                        line: 219,
+                        column: 6
+                    },
+                    end: {
+                        line: 219,
+                        column: 89
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 219,
+                        column: 6
+                    },
+                    end: {
+                        line: 219,
+                        column: 89
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 219
+            },
+            "30": {
+                loc: {
+                    start: {
+                        line: 225,
+                        column: 6
+                    },
+                    end: {
+                        line: 225,
+                        column: 88
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 225,
+                        column: 6
+                    },
+                    end: {
+                        line: 225,
+                        column: 88
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 225
+            },
+            "31": {
+                loc: {
+                    start: {
+                        line: 231,
+                        column: 6
+                    },
+                    end: {
+                        line: 231,
+                        column: 84
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 231,
+                        column: 6
+                    },
+                    end: {
+                        line: 231,
+                        column: 84
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 231
+            },
+            "32": {
+                loc: {
+                    start: {
+                        line: 237,
+                        column: 6
+                    },
+                    end: {
+                        line: 237,
+                        column: 92
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 237,
+                        column: 6
+                    },
+                    end: {
+                        line: 237,
+                        column: 92
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 237
+            },
+            "33": {
+                loc: {
+                    start: {
+                        line: 245,
+                        column: 8
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 245,
+                        column: 8
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: 247,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                }],
+                line: 245
+            },
+            "34": {
+                loc: {
+                    start: {
+                        line: 247,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 247,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: 249,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                }],
+                line: 247
+            },
+            "35": {
+                loc: {
+                    start: {
+                        line: 248,
+                        column: 17
+                    },
+                    end: {
+                        line: 248,
+                        column: 58
+                    }
+                },
+                type: "binary-expr",
+                locations: [{
+                    start: {
+                        line: 248,
+                        column: 17
+                    },
+                    end: {
+                        line: 248,
+                        column: 27
+                    }
+                }, {
+                    start: {
+                        line: 248,
+                        column: 31
+                    },
+                    end: {
+                        line: 248,
+                        column: 58
+                    }
+                }],
+                line: 248
+            },
+            "36": {
+                loc: {
+                    start: {
+                        line: 249,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 249,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: 251,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                }],
+                line: 249
+            },
+            "37": {
+                loc: {
+                    start: {
+                        line: 251,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 251,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: 253,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                }],
+                line: 251
+            },
+            "38": {
+                loc: {
+                    start: {
+                        line: 253,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 253,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: 255,
+                        column: 15
+                    },
+                    end: {
+                        line: 257,
+                        column: 9
+                    }
+                }],
+                line: 253
+            },
+            "39": {
+                loc: {
+                    start: {
+                        line: 259,
+                        column: 6
+                    },
+                    end: {
+                        line: 259,
+                        column: 63
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 259,
+                        column: 6
+                    },
+                    end: {
+                        line: 259,
+                        column: 63
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 259
+            },
+            "40": {
+                loc: {
+                    start: {
+                        line: 266,
+                        column: 6
+                    },
+                    end: {
+                        line: 266,
+                        column: 63
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 266,
+                        column: 6
+                    },
+                    end: {
+                        line: 266,
+                        column: 63
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 266
+            },
+            "41": {
+                loc: {
+                    start: {
+                        line: 273,
+                        column: 6
+                    },
+                    end: {
+                        line: 273,
+                        column: 72
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 273,
+                        column: 6
+                    },
+                    end: {
+                        line: 273,
+                        column: 72
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 273
+            },
+            "42": {
+                loc: {
+                    start: {
+                        line: 280,
+                        column: 6
+                    },
+                    end: {
+                        line: 280,
+                        column: 65
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 280,
+                        column: 6
+                    },
+                    end: {
+                        line: 280,
+                        column: 65
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 280
+            },
+            "43": {
+                loc: {
+                    start: {
+                        line: 290,
+                        column: 6
+                    },
+                    end: {
+                        line: 290,
+                        column: 72
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 290,
+                        column: 6
+                    },
+                    end: {
+                        line: 290,
+                        column: 72
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 290
+            },
+            "44": {
+                loc: {
+                    start: {
+                        line: 297,
+                        column: 6
+                    },
+                    end: {
+                        line: 297,
+                        column: 65
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 297,
+                        column: 6
+                    },
+                    end: {
+                        line: 297,
+                        column: 65
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 297
+            },
+            "45": {
+                loc: {
+                    start: {
+                        line: 306,
+                        column: 6
+                    },
+                    end: {
+                        line: 308,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 306,
+                        column: 6
+                    },
+                    end: {
+                        line: 308,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 306
+            },
+            "46": {
+                loc: {
+                    start: {
+                        line: 310,
+                        column: 6
+                    },
+                    end: {
+                        line: 310,
+                        column: 61
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 310,
+                        column: 6
+                    },
+                    end: {
+                        line: 310,
+                        column: 61
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 310
+            },
+            "47": {
+                loc: {
+                    start: {
+                        line: 325,
+                        column: 6
+                    },
+                    end: {
+                        line: 325,
+                        column: 68
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 325,
+                        column: 6
+                    },
+                    end: {
+                        line: 325,
+                        column: 68
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 325
+            },
+            "48": {
+                loc: {
+                    start: {
+                        line: 334,
+                        column: 6
+                    },
+                    end: {
+                        line: 334,
+                        column: 62
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 334,
+                        column: 6
+                    },
+                    end: {
+                        line: 334,
+                        column: 62
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 334
+            },
+            "49": {
+                loc: {
+                    start: {
+                        line: 343,
+                        column: 6
+                    },
+                    end: {
+                        line: 343,
+                        column: 64
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 343,
+                        column: 6
+                    },
+                    end: {
+                        line: 343,
+                        column: 64
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 343
+            },
+            "50": {
+                loc: {
+                    start: {
+                        line: 355,
+                        column: 8
+                    },
+                    end: {
+                        line: 358,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 355,
+                        column: 8
+                    },
+                    end: {
+                        line: 358,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 355
+            },
+            "51": {
+                loc: {
+                    start: {
+                        line: 360,
+                        column: 6
+                    },
+                    end: {
+                        line: 360,
+                        column: 63
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 360,
+                        column: 6
+                    },
+                    end: {
+                        line: 360,
+                        column: 63
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 360
+            },
+            "52": {
+                loc: {
+                    start: {
+                        line: 372,
+                        column: 8
+                    },
+                    end: {
+                        line: 375,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 372,
+                        column: 8
+                    },
+                    end: {
+                        line: 375,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 372
+            },
+            "53": {
+                loc: {
+                    start: {
+                        line: 377,
+                        column: 6
+                    },
+                    end: {
+                        line: 377,
+                        column: 63
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 377,
+                        column: 6
+                    },
+                    end: {
+                        line: 377,
+                        column: 63
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 377
+            },
+            "54": {
+                loc: {
+                    start: {
+                        line: 389,
+                        column: 8
+                    },
+                    end: {
+                        line: 392,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 389,
+                        column: 8
+                    },
+                    end: {
+                        line: 392,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 389
+            },
+            "55": {
+                loc: {
+                    start: {
+                        line: 394,
+                        column: 6
+                    },
+                    end: {
+                        line: 394,
+                        column: 65
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 394,
+                        column: 6
+                    },
+                    end: {
+                        line: 394,
+                        column: 65
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 394
+            },
+            "56": {
+                loc: {
+                    start: {
+                        line: 406,
+                        column: 8
+                    },
+                    end: {
+                        line: 409,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 406,
+                        column: 8
+                    },
+                    end: {
+                        line: 409,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 406
+            },
+            "57": {
+                loc: {
+                    start: {
+                        line: 411,
+                        column: 6
+                    },
+                    end: {
+                        line: 411,
+                        column: 63
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 411,
+                        column: 6
+                    },
+                    end: {
+                        line: 411,
+                        column: 63
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 411
+            },
+            "58": {
+                loc: {
+                    start: {
+                        line: 423,
+                        column: 8
+                    },
+                    end: {
+                        line: 426,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 423,
+                        column: 8
+                    },
+                    end: {
+                        line: 426,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 423
+            },
+            "59": {
+                loc: {
+                    start: {
+                        line: 428,
+                        column: 6
+                    },
+                    end: {
+                        line: 428,
+                        column: 65
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 428,
+                        column: 6
+                    },
+                    end: {
+                        line: 428,
+                        column: 65
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 428
+            },
+            "60": {
+                loc: {
+                    start: {
+                        line: 488,
+                        column: 15
+                    },
+                    end: {
+                        line: 488,
+                        column: 25
+                    }
+                },
+                type: "default-arg",
+                locations: [{
+                    start: {
+                        line: 488,
+                        column: 24
+                    },
+                    end: {
+                        line: 488,
+                        column: 25
+                    }
+                }],
+                line: 488
+            },
+            "61": {
+                loc: {
+                    start: {
+                        line: 498,
+                        column: 9
+                    },
+                    end: {
+                        line: 498,
+                        column: 19
+                    }
+                },
+                type: "default-arg",
+                locations: [{
+                    start: {
+                        line: 498,
+                        column: 18
+                    },
+                    end: {
+                        line: 498,
+                        column: 19
+                    }
+                }],
+                line: 498
+            },
+            "62": {
+                loc: {
+                    start: {
+                        line: 541,
+                        column: 29
+                    },
+                    end: {
+                        line: 541,
+                        column: 70
+                    }
+                },
+                type: "default-arg",
+                locations: [{
+                    start: {
+                        line: 541,
+                        column: 44
+                    },
+                    end: {
+                        line: 541,
+                        column: 70
+                    }
+                }],
+                line: 541
+            },
+            "63": {
+                loc: {
+                    start: {
+                        line: 542,
+                        column: 6
+                    },
+                    end: {
+                        line: 544,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 542,
+                        column: 6
+                    },
+                    end: {
+                        line: 544,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 542
+            },
+            "64": {
+                loc: {
+                    start: {
+                        line: 548,
+                        column: 27
+                    },
+                    end: {
+                        line: 548,
+                        column: 68
+                    }
+                },
+                type: "default-arg",
+                locations: [{
+                    start: {
+                        line: 548,
+                        column: 42
+                    },
+                    end: {
+                        line: 548,
+                        column: 68
+                    }
+                }],
+                line: 548
+            },
+            "65": {
+                loc: {
+                    start: {
+                        line: 556,
+                        column: 6
+                    },
+                    end: {
+                        line: 558,
+                        column: 7
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 556,
+                        column: 6
+                    },
+                    end: {
+                        line: 558,
+                        column: 7
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 556
+            }
+        },
+        s: {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "5": 0,
+            "6": 0,
+            "7": 0,
+            "8": 0,
+            "9": 0,
+            "10": 0,
+            "11": 0,
+            "12": 0,
+            "13": 0,
+            "14": 0,
+            "15": 0,
+            "16": 0,
+            "17": 0,
+            "18": 0,
+            "19": 0,
+            "20": 0,
+            "21": 0,
+            "22": 0,
+            "23": 0,
+            "24": 0,
+            "25": 0,
+            "26": 0,
+            "27": 0,
+            "28": 0,
+            "29": 0,
+            "30": 0,
+            "31": 0,
+            "32": 0,
+            "33": 0,
+            "34": 0,
+            "35": 0,
+            "36": 0,
+            "37": 0,
+            "38": 0,
+            "39": 0,
+            "40": 0,
+            "41": 0,
+            "42": 0,
+            "43": 0,
+            "44": 0,
+            "45": 0,
+            "46": 0,
+            "47": 0,
+            "48": 0,
+            "49": 0,
+            "50": 0,
+            "51": 0,
+            "52": 0,
+            "53": 0,
+            "54": 0,
+            "55": 0,
+            "56": 0,
+            "57": 0,
+            "58": 0,
+            "59": 0,
+            "60": 0,
+            "61": 0,
+            "62": 0,
+            "63": 0,
+            "64": 0,
+            "65": 0,
+            "66": 0,
+            "67": 0,
+            "68": 0,
+            "69": 0,
+            "70": 0,
+            "71": 0,
+            "72": 0,
+            "73": 0,
+            "74": 0,
+            "75": 0,
+            "76": 0,
+            "77": 0,
+            "78": 0,
+            "79": 0,
+            "80": 0,
+            "81": 0,
+            "82": 0,
+            "83": 0,
+            "84": 0,
+            "85": 0,
+            "86": 0,
+            "87": 0,
+            "88": 0,
+            "89": 0,
+            "90": 0,
+            "91": 0,
+            "92": 0,
+            "93": 0,
+            "94": 0,
+            "95": 0,
+            "96": 0,
+            "97": 0,
+            "98": 0,
+            "99": 0,
+            "100": 0,
+            "101": 0,
+            "102": 0,
+            "103": 0,
+            "104": 0,
+            "105": 0,
+            "106": 0,
+            "107": 0,
+            "108": 0,
+            "109": 0,
+            "110": 0,
+            "111": 0,
+            "112": 0,
+            "113": 0,
+            "114": 0,
+            "115": 0,
+            "116": 0,
+            "117": 0,
+            "118": 0,
+            "119": 0,
+            "120": 0,
+            "121": 0,
+            "122": 0,
+            "123": 0,
+            "124": 0,
+            "125": 0,
+            "126": 0,
+            "127": 0,
+            "128": 0,
+            "129": 0,
+            "130": 0,
+            "131": 0,
+            "132": 0,
+            "133": 0,
+            "134": 0,
+            "135": 0,
+            "136": 0,
+            "137": 0,
+            "138": 0,
+            "139": 0,
+            "140": 0,
+            "141": 0,
+            "142": 0,
+            "143": 0,
+            "144": 0,
+            "145": 0,
+            "146": 0,
+            "147": 0,
+            "148": 0,
+            "149": 0,
+            "150": 0,
+            "151": 0,
+            "152": 0,
+            "153": 0,
+            "154": 0,
+            "155": 0,
+            "156": 0,
+            "157": 0,
+            "158": 0,
+            "159": 0,
+            "160": 0,
+            "161": 0,
+            "162": 0,
+            "163": 0,
+            "164": 0,
+            "165": 0,
+            "166": 0,
+            "167": 0,
+            "168": 0,
+            "169": 0,
+            "170": 0,
+            "171": 0,
+            "172": 0,
+            "173": 0,
+            "174": 0,
+            "175": 0,
+            "176": 0,
+            "177": 0,
+            "178": 0,
+            "179": 0,
+            "180": 0,
+            "181": 0,
+            "182": 0,
+            "183": 0,
+            "184": 0,
+            "185": 0,
+            "186": 0,
+            "187": 0,
+            "188": 0,
+            "189": 0,
+            "190": 0,
+            "191": 0,
+            "192": 0,
+            "193": 0,
+            "194": 0,
+            "195": 0,
+            "196": 0,
+            "197": 0,
+            "198": 0,
+            "199": 0,
+            "200": 0,
+            "201": 0,
+            "202": 0,
+            "203": 0,
+            "204": 0,
+            "205": 0,
+            "206": 0,
+            "207": 0,
+            "208": 0,
+            "209": 0,
+            "210": 0,
+            "211": 0,
+            "212": 0,
+            "213": 0,
+            "214": 0,
+            "215": 0,
+            "216": 0,
+            "217": 0,
+            "218": 0,
+            "219": 0,
+            "220": 0,
+            "221": 0,
+            "222": 0,
+            "223": 0,
+            "224": 0,
+            "225": 0,
+            "226": 0,
+            "227": 0,
+            "228": 0,
+            "229": 0,
+            "230": 0,
+            "231": 0,
+            "232": 0,
+            "233": 0,
+            "234": 0,
+            "235": 0,
+            "236": 0,
+            "237": 0,
+            "238": 0,
+            "239": 0,
+            "240": 0,
+            "241": 0,
+            "242": 0,
+            "243": 0,
+            "244": 0,
+            "245": 0,
+            "246": 0,
+            "247": 0,
+            "248": 0,
+            "249": 0,
+            "250": 0,
+            "251": 0,
+            "252": 0,
+            "253": 0,
+            "254": 0,
+            "255": 0,
+            "256": 0,
+            "257": 0,
+            "258": 0,
+            "259": 0,
+            "260": 0,
+            "261": 0,
+            "262": 0,
+            "263": 0,
+            "264": 0,
+            "265": 0,
+            "266": 0,
+            "267": 0,
+            "268": 0,
+            "269": 0,
+            "270": 0,
+            "271": 0,
+            "272": 0,
+            "273": 0,
+            "274": 0,
+            "275": 0,
+            "276": 0,
+            "277": 0,
+            "278": 0,
+            "279": 0,
+            "280": 0,
+            "281": 0,
+            "282": 0,
+            "283": 0,
+            "284": 0,
+            "285": 0,
+            "286": 0,
+            "287": 0,
+            "288": 0,
+            "289": 0,
+            "290": 0,
+            "291": 0,
+            "292": 0,
+            "293": 0,
+            "294": 0,
+            "295": 0,
+            "296": 0,
+            "297": 0,
+            "298": 0,
+            "299": 0,
+            "300": 0,
+            "301": 0,
+            "302": 0,
+            "303": 0,
+            "304": 0,
+            "305": 0,
+            "306": 0,
+            "307": 0,
+            "308": 0,
+            "309": 0,
+            "310": 0,
+            "311": 0,
+            "312": 0,
+            "313": 0,
+            "314": 0,
+            "315": 0,
+            "316": 0,
+            "317": 0,
+            "318": 0,
+            "319": 0,
+            "320": 0,
+            "321": 0,
+            "322": 0,
+            "323": 0,
+            "324": 0,
+            "325": 0,
+            "326": 0,
+            "327": 0,
+            "328": 0,
+            "329": 0,
+            "330": 0,
+            "331": 0,
+            "332": 0,
+            "333": 0,
+            "334": 0,
+            "335": 0,
+            "336": 0,
+            "337": 0,
+            "338": 0,
+            "339": 0,
+            "340": 0,
+            "341": 0,
+            "342": 0,
+            "343": 0,
+            "344": 0,
+            "345": 0,
+            "346": 0,
+            "347": 0
+        },
+        f: {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "5": 0,
+            "6": 0,
+            "7": 0,
+            "8": 0,
+            "9": 0,
+            "10": 0,
+            "11": 0,
+            "12": 0,
+            "13": 0,
+            "14": 0,
+            "15": 0,
+            "16": 0,
+            "17": 0,
+            "18": 0,
+            "19": 0,
+            "20": 0,
+            "21": 0,
+            "22": 0,
+            "23": 0,
+            "24": 0,
+            "25": 0,
+            "26": 0,
+            "27": 0,
+            "28": 0,
+            "29": 0,
+            "30": 0,
+            "31": 0,
+            "32": 0,
+            "33": 0,
+            "34": 0,
+            "35": 0,
+            "36": 0,
+            "37": 0,
+            "38": 0,
+            "39": 0,
+            "40": 0,
+            "41": 0,
+            "42": 0,
+            "43": 0,
+            "44": 0,
+            "45": 0,
+            "46": 0,
+            "47": 0,
+            "48": 0,
+            "49": 0,
+            "50": 0,
+            "51": 0,
+            "52": 0,
+            "53": 0,
+            "54": 0,
+            "55": 0,
+            "56": 0,
+            "57": 0,
+            "58": 0,
+            "59": 0,
+            "60": 0,
+            "61": 0,
+            "62": 0,
+            "63": 0,
+            "64": 0,
+            "65": 0,
+            "66": 0,
+            "67": 0
+        },
+        b: {
+            "0": [0, 0],
+            "1": [0, 0],
+            "2": [0, 0],
+            "3": [0],
+            "4": [0, 0],
+            "5": [0, 0],
+            "6": [0, 0],
+            "7": [0, 0],
+            "8": [0, 0],
+            "9": [0, 0],
+            "10": [0, 0],
+            "11": [0, 0],
+            "12": [0, 0],
+            "13": [0, 0],
+            "14": [0, 0],
+            "15": [0, 0],
+            "16": [0, 0],
+            "17": [0],
+            "18": [0, 0],
+            "19": [0, 0],
+            "20": [0, 0],
+            "21": [0, 0],
+            "22": [0, 0],
+            "23": [0, 0],
+            "24": [0, 0],
+            "25": [0, 0],
+            "26": [0, 0],
+            "27": [0, 0],
+            "28": [0, 0],
+            "29": [0, 0],
+            "30": [0, 0],
+            "31": [0, 0],
+            "32": [0, 0],
+            "33": [0, 0],
+            "34": [0, 0],
+            "35": [0, 0],
+            "36": [0, 0],
+            "37": [0, 0],
+            "38": [0, 0],
+            "39": [0, 0],
+            "40": [0, 0],
+            "41": [0, 0],
+            "42": [0, 0],
+            "43": [0, 0],
+            "44": [0, 0],
+            "45": [0, 0],
+            "46": [0, 0],
+            "47": [0, 0],
+            "48": [0, 0],
+            "49": [0, 0],
+            "50": [0, 0],
+            "51": [0, 0],
+            "52": [0, 0],
+            "53": [0, 0],
+            "54": [0, 0],
+            "55": [0, 0],
+            "56": [0, 0],
+            "57": [0, 0],
+            "58": [0, 0],
+            "59": [0, 0],
+            "60": [0],
+            "61": [0],
+            "62": [0],
+            "63": [0, 0],
+            "64": [0],
+            "65": [0, 0]
+        },
+        _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+        hash: "094ff1bc4e2d2e722fad579c301b0fe44c31886a"
+    };
+    var coverage = global[gcv] || (global[gcv] = {});
+    if (!coverage[path] || coverage[path].hash !== hash) {
+        coverage[path] = coverageData;
     }
-
-  }
-
-  class Ensurement {
-
-    static create(...args) {
-      return new this(...args);
+    var actualCoverage = coverage[path];
+    { // @ts-ignore
+        cov_2clevwsapt = function() {
+            return actualCoverage;
+        };
     }
-
-    constructor(source, asLabeledObject = 0) {
-      Resolve_subject: {
-        if ((asLabeledObject === 1) && (typeof source === "object")) {
-          const sourceKeys = Object.keys(source);
-          if (sourceKeys.length !== 1) {
-            throw new Error(`The first parameter of $ensure or $check {when $2 is literally 1} must have 1 property (not ${sourceKeys.length}) on «Ensurement.constructor»`);
-          }
-          this.$subjectId = sourceKeys[0];
-          this.$subject = source[this.$subjectId];
-        } else if(typeof asLabeledObject === "string") {
-          this.$subjectId = asLabeledObject;
-          this.$subject = source;
-        } else {
-          this.$subjectId = "@";
-          this.$subject = source;
+    return actualCoverage;
+}
+cov_2clevwsapt();
+cov_2clevwsapt().s[0]++;
+(function(factory) {
+    cov_2clevwsapt().f[0]++;
+    const mod = (cov_2clevwsapt().s[1]++, factory());
+    cov_2clevwsapt().s[2]++;
+    if (typeof window !== 'undefined') {
+        cov_2clevwsapt().b[0][0]++;
+        cov_2clevwsapt().s[3]++;
+        window["LswEnsurer"] = mod;
+    } else {
+        cov_2clevwsapt().b[0][1]++;
+    }
+    cov_2clevwsapt().s[4]++;
+    if (typeof global !== 'undefined') {
+        cov_2clevwsapt().b[1][0]++;
+        cov_2clevwsapt().s[5]++;
+        global["LswEnsurer"] = mod;
+    } else {
+        cov_2clevwsapt().b[1][1]++;
+    }
+    cov_2clevwsapt().s[6]++;
+    if (typeof module !== 'undefined') {
+        cov_2clevwsapt().b[2][0]++;
+        cov_2clevwsapt().s[7]++;
+        module.exports = mod;
+    } else {
+        cov_2clevwsapt().b[2][1]++;
+    }
+})(function() {
+    cov_2clevwsapt().f[1]++;
+    /**
+     * 
+     * 
+     * @$section: Lsw Ensurer API » LswEnsurer class
+     * @type: class
+     * @extends: Object
+     * @vendor: lsw
+     * @namespace: LswEnsurer
+     * @source code: La clase está definida así:
+     * 
+     */ // @code.start: LswEnsurer class | @section: Lsw Ensurer API » LswEnsurer class
+    class AssertionError extends Error {
+        constructor(...args) {
+            cov_2clevwsapt().f[2]++;
+            cov_2clevwsapt().s[8]++;
+            super(...args);
+            cov_2clevwsapt().s[9]++;
+            this.name = "AssertionError";
         }
-      }
-      this.$operation = undefined;
-      this.$objectation = undefined;
-      this.asBoolean = false;
     }
-    type(value) {
-      this.$operation = "is of type";
-      this.$objectation = value;
-      if(typeof value === "string") {
-        if (typeof this.$subject !== value) {
-          return this.$asFailed();
+    class Ensurement {
+        static create(...args) {
+            cov_2clevwsapt().f[3]++;
+            cov_2clevwsapt().s[10]++;
+            return new this(...args);
         }
-      } else if(Array.isArray(value)) {
-        if(value.indexOf(typeof this.$subject) === -1) {
-          return this.$asFailed();
+        constructor(source, asLabeledObject = (cov_2clevwsapt().b[3][0]++, 0)) {
+            cov_2clevwsapt().f[4]++;
+            cov_2clevwsapt().s[11]++;
+            Resolve_subject: {
+                cov_2clevwsapt().s[12]++;
+                if ((cov_2clevwsapt().b[5][0]++, asLabeledObject === 1) && (cov_2clevwsapt().b[5][1]++, typeof source === "object")) {
+                    cov_2clevwsapt().b[4][0]++;
+                    const sourceKeys = (cov_2clevwsapt().s[13]++, Object.keys(source));
+                    cov_2clevwsapt().s[14]++;
+                    if (sourceKeys.length !== 1) {
+                        cov_2clevwsapt().b[6][0]++;
+                        cov_2clevwsapt().s[15]++;
+                        throw new Error(`The first parameter of $ensure or $check {when $2 is literally 1} must have 1 property (not ${sourceKeys.length}) on «Ensurement.constructor»`);
+                    } else {
+                        cov_2clevwsapt().b[6][1]++;
+                    }
+                    cov_2clevwsapt().s[16]++;
+                    this.$subjectId = sourceKeys[0];
+                    cov_2clevwsapt().s[17]++;
+                    this.$subject = source[this.$subjectId];
+                } else {
+                    cov_2clevwsapt().b[4][1]++;
+                    cov_2clevwsapt().s[18]++;
+                    if (typeof asLabeledObject === "string") {
+                        cov_2clevwsapt().b[7][0]++;
+                        cov_2clevwsapt().s[19]++;
+                        this.$subjectId = asLabeledObject;
+                        cov_2clevwsapt().s[20]++;
+                        this.$subject = source;
+                    } else {
+                        cov_2clevwsapt().b[7][1]++;
+                        cov_2clevwsapt().s[21]++;
+                        this.$subjectId = "@";
+                        cov_2clevwsapt().s[22]++;
+                        this.$subject = source;
+                    }
+                }
+            }
+            cov_2clevwsapt().s[23]++;
+            this.$operation = undefined;
+            cov_2clevwsapt().s[24]++;
+            this.$objectation = undefined;
+            cov_2clevwsapt().s[25]++;
+            this.asBoolean = false;
         }
-      } else {
-        throw new Error(`Bad parameter on «$ensure(...).type(?)» (${typeof value} not admitted)`);
-      }
-      return this.$asResolved();
-    }
-    notType(value) {
-      this.$operation = "is not of type";
-      this.$objectation = value;
-      if (typeof this.$subject === value) {
-        return this.$asFailed();
-      }
-      return this.$asResolved();
-    }
-    is(value) {
-      this.$operation = "is";
-      this.$objectation = value;
-      if (this.$subject !== value) {
-        return this.$asFailed();
-      }
-      return this.$asResolved();
-    }
-    isnt(value) {
-      this.$operation = "is not";
-      this.$objectation = value;
-      if (this.$subject === value) {
-        return this.$asFailed();
-      }
-      return this.$asResolved();
-    }
-    can(value) {
-      this.$operation = "can";
-      this.$objectation = value;
-      if (!value(this.$subject)) {
-        return this.$asFailed();
-      }
-      return this.$asResolved();
-    }
-    cant(value) {
-      this.$operation = "cant";
-      this.$objectation = value;
-      if (value(this.$subject)) {
-        return this.$asFailed();
-      }
-      return this.$asResolved();
-    }
-    throws(value) {
-      this.$operation = "throws";
-      this.$objectation = value;
-      try {
-        objectation(this.$subject);
-        return this.$asFailed();
-      } catch (error) {
-        return this.$asResolved();
-      }
-    }
-    doesntThrow(value) {
-      this.$operation = "doesntThrow";
-      this.$objectation = value;
-      try {
-        value(this.$subject);
-        return this.$asFailed();
-      } catch (error) {
-        return this.$asResolved();
-      }
-    }
-    $asFailed(operation = this.$operation) {
-      if (this.asBoolean) {
-        return false;
-      }
-      throw new AssertionError("could not ensure «" + this.$subjectId + "» " + operation + (this.$objectation ? " «" + this.$getObjectationAsString() + "»": "") + "");
-    }
-    $getObjectationAsString() {
-      return JSON.stringify(this.$objectation);
-    }
-    $asResolved() {
-      if (this.asBoolean) {
-        return true;
-      } else {
-        return this;
-      }
-    }
-  };
-
-  const BasicToBeInterface = class {
-    $isNegated = false;
-    set $operation(value) {
-      this.$ensurement.$operation = value;
-    }
-    get $operation() {
-      return this.$ensurement.$operation;
-    }
-    set $objectation(value) {
-      this.$ensurement.$objectation = value;
-    }
-    get $objectation() {
-      return this.$ensurement.$objectation;
-    }
-    constructor(ensurement) {
-      this.$ensurement = ensurement;
-      this.$subject = this.$ensurement.$subject;
-    }
-    $makeNegable(condition) {
-      return this.$isNegated === true ? !condition : condition;
-    }
-    $asFailed() {
-      return this.$ensurement.$asFailed();
-    }
-    $resolveNegableString(text) {
-      return text.replace(/\{not\?\} */g, this.$isNegated ? "not " : "");
-    }
-  };
-
-  const ToBeInterface = class extends BasicToBeInterface {
-    string() {
-      this.$operation = this.$resolveNegableString("to {not?} be string");
-      this.$objectation = undefined;
-      if (this.$makeNegable(typeof this.$subject !== "string")) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    number() {
-      this.$operation = this.$resolveNegableString("to {not?} be number");
-      this.$objectation = undefined;
-      if (this.$makeNegable(typeof this.$subject !== "number") || Number.isNaN(this.$subject)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    object() {
-      this.$operation = this.$resolveNegableString("to {not?} be object");
-      this.$objectation = undefined;
-      if (this.$makeNegable(typeof this.$subject !== "object")) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    null() {
-      this.$operation = this.$resolveNegableString("to {not?} be null");
-      this.$objectation = undefined;
-      if (this.$makeNegable(typeof this.$subject !== null)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    undefined() {
-      this.$operation = this.$resolveNegableString("to {not?} be undefined");
-      this.$objectation = undefined;
-      if (this.$makeNegable(typeof this.$subject !== "undefined")) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    boolean() {
-      this.$operation = this.$resolveNegableString("to {not?} be boolean");
-      this.$objectation = undefined;
-      if (this.$makeNegable(typeof this.$subject !== "boolean")) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    instanceOf(clazz) {
-      this.$operation = this.$resolveNegableString("to {not?} be instanceOf");
-      this.$objectation = undefined;
-      if (this.$makeNegable(!(this.$subject instanceof clazz))) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    array() {
-      this.$operation = this.$resolveNegableString("to {not?} be array");
-      this.$objectation = undefined;
-      if (this.$makeNegable(!Array.isArray(this.$subject))) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    function() {
-      this.$operation = this.$resolveNegableString("to {not?} be function");
-      this.$objectation = undefined;
-      if (this.$makeNegable(typeof (this.$subject) !== "function")) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    empty() {
-      this.$operation = this.$resolveNegableString("to {not?} be empty");
-      this.$objectation = undefined;
-      const isEmpty = (() => {
-        const s = this.$subject;
-        if (Array.isArray(s)) {
-          return s.length === 0;
-        } else if (typeof s === "object") {
-          return s === null || Object.keys(s).length === 0;
-        } else if (typeof s === "string") {
-          return s === "";
-        } else if (typeof s === "number") {
-          return s === 0;
-        } else if (typeof s === "boolean") {
-          return s === false;
-        } else {
-          return true;
+        type(value) {
+            cov_2clevwsapt().f[5]++;
+            cov_2clevwsapt().s[26]++;
+            this.$operation = "is of type";
+            cov_2clevwsapt().s[27]++;
+            this.$objectation = value;
+            cov_2clevwsapt().s[28]++;
+            if (typeof value === "string") {
+                cov_2clevwsapt().b[8][0]++;
+                cov_2clevwsapt().s[29]++;
+                if (typeof this.$subject !== value) {
+                    cov_2clevwsapt().b[9][0]++;
+                    cov_2clevwsapt().s[30]++;
+                    return this.$asFailed();
+                } else {
+                    cov_2clevwsapt().b[9][1]++;
+                }
+            } else {
+                cov_2clevwsapt().b[8][1]++;
+                cov_2clevwsapt().s[31]++;
+                if (Array.isArray(value)) {
+                    cov_2clevwsapt().b[10][0]++;
+                    cov_2clevwsapt().s[32]++;
+                    if (value.indexOf(typeof this.$subject) === -1) {
+                        cov_2clevwsapt().b[11][0]++;
+                        cov_2clevwsapt().s[33]++;
+                        return this.$asFailed();
+                    } else {
+                        cov_2clevwsapt().b[11][1]++;
+                    }
+                } else {
+                    cov_2clevwsapt().b[10][1]++;
+                    cov_2clevwsapt().s[34]++;
+                    throw new Error(`Bad parameter on «$ensure(...).type(?)» (${typeof value} not admitted)`);
+                }
+            }
+            cov_2clevwsapt().s[35]++;
+            return this.$asResolved();
         }
-      })();
-      if (this.$makeNegable(!isEmpty)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    equalTo(value) {
-      this.$operation = this.$resolveNegableString("to {not?} be equal to");
-      this.$objectation = value;
-      let isEqual = this.$subject === value;
-      if (this.$makeNegable(!isEqual)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    equalOrGreaterThan(value) {
-      this.$operation = this.$resolveNegableString("to {not?} be equal or greater than");
-      this.$objectation = value;
-      let isGreaterOrEqual = this.$subject >= value;
-      if (this.$makeNegable(!isGreaterOrEqual)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    greaterThan(value) {
-      this.$operation = this.$resolveNegableString("to {not?} be greater than");
-      this.$objectation = value;
-      let isGreater = this.$subject > value;
-      if (this.$makeNegable(!isGreater)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    greaterOrEqualTo(...args) {
-      return this.equalOrGreaterThan(...args);
-    }
-    equalOrLowerThan(value) {
-      this.$operation = this.$resolveNegableString("to {not?} equal or lower than");
-      this.$objectation = value;
-      let isGreaterOrEqual = this.$subject <= value;
-      if (this.$makeNegable(!isGreaterOrEqual)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    lowerThan(value) {
-      this.$operation = this.$resolveNegableString("to {not?} be lower than");
-      this.$objectation = value;
-      let isGreater = this.$subject < value;
-      if (this.$makeNegable(!isGreater)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    lowerOrEqualTo(value) {
-      return this.equalOrLowerThan(...args);
-    }
-    oneOf(value) {
-      this.$operation = this.$resolveNegableString("to {not?} be one of");
-      this.$objectation = value;
-      if(!Array.isArray(value)) {
-        throw new Error(`Required on «$ensure(...).to.be.oneOf(!)» to provide an array on «ToBeInterface.oneOf»`);
-      }
-      let isOne = this.$objectation.indexOf(this.$subject) !== -1;
-      if (this.$makeNegable(!isOne)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-  };
-
-  const ToNotBeInterface = class extends ToBeInterface {
-    $isNegated = true;
-  };
-
-  const ToHaveInterface = class extends BasicToBeInterface {
-
-    text(prop) {
-      this.$operation = this.$resolveNegableString("to {not?} have text");
-      this.$objectation = prop;
-      const hasSubstring = this.$subject.indexOf(prop) !== -1;
-      if (this.$makeNegable(!hasSubstring)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-    
-    key(prop) {
-      this.$operation = this.$resolveNegableString("to {not?} have key");
-      this.$objectation = prop;
-      const keys = Object.keys(this.$subject);
-      const hasKey = keys.indexOf(prop) !== -1;
-      if (this.$makeNegable(!hasKey)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-
-    value(prop) {
-      this.$operation = this.$resolveNegableString("to {not?} have value");
-      this.$objectation = prop;
-      const values = Object.values(this.$subject);
-      const hasValue = values.indexOf(prop) !== -1;
-      if (this.$makeNegable(!hasValue)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-
-    onlyPotentialKeys(props) {
-      this.$operation = this.$resolveNegableString("to {not?} have only potential keys");
-      this.$objectation = props;
-      const keys = Object.keys(this.$subject);
-      let hasOnly = true;
-      Iterating_props:
-      for (let index = 0; index < keys.length; index++) {
-        const key = keys[index];
-        if (props.indexOf(key) === -1) {
-          hasOnly = false;
-          break Iterating_props;
+        notType(value) {
+            cov_2clevwsapt().f[6]++;
+            cov_2clevwsapt().s[36]++;
+            this.$operation = "is not of type";
+            cov_2clevwsapt().s[37]++;
+            this.$objectation = value;
+            cov_2clevwsapt().s[38]++;
+            if (typeof this.$subject === value) {
+                cov_2clevwsapt().b[12][0]++;
+                cov_2clevwsapt().s[39]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[12][1]++;
+            }
+            cov_2clevwsapt().s[40]++;
+            return this.$asResolved();
         }
-      }
-      if (this.$makeNegable(!hasOnly)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-
-    keys(props) {
-      this.$operation = this.$resolveNegableString("to {not?} have keys");
-      this.$objectation = props;
-      const keys = Object.keys(this.$subject);
-      let hasKeys = true;
-      Iterating_props:
-      for (let index = 0; index < props.length; index++) {
-        const prop = props[index];
-        if (keys.indexOf(prop) === -1) {
-          hasKeys = false;
-          break Iterating_props;
+        is(value) {
+            cov_2clevwsapt().f[7]++;
+            cov_2clevwsapt().s[41]++;
+            this.$operation = "is";
+            cov_2clevwsapt().s[42]++;
+            this.$objectation = value;
+            cov_2clevwsapt().s[43]++;
+            if (this.$subject !== value) {
+                cov_2clevwsapt().b[13][0]++;
+                cov_2clevwsapt().s[44]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[13][1]++;
+            }
+            cov_2clevwsapt().s[45]++;
+            return this.$asResolved();
         }
-      }
-      if (this.$makeNegable(!hasKeys)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-
-    values(props) {
-      this.$operation = this.$resolveNegableString("to {not?} have values");
-      this.$objectation = props;
-      const values = Object.values(this.$subject);
-      let hasValues = true;
-      Iterating_props:
-      for (let index = 0; index < props.length; index++) {
-        const prop = props[index];
-        if (values.indexOf(prop) === -1) {
-          hasValues = false;
-          break Iterating_props;
+        isnt(value) {
+            cov_2clevwsapt().f[8]++;
+            cov_2clevwsapt().s[46]++;
+            this.$operation = "is not";
+            cov_2clevwsapt().s[47]++;
+            this.$objectation = value;
+            cov_2clevwsapt().s[48]++;
+            if (this.$subject === value) {
+                cov_2clevwsapt().b[14][0]++;
+                cov_2clevwsapt().s[49]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[14][1]++;
+            }
+            cov_2clevwsapt().s[50]++;
+            return this.$asResolved();
         }
-      }
-      if (this.$makeNegable(!hasValues)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-
-    uniquelyKeys(props) {
-      this.$operation = this.$resolveNegableString("to {not?} have uniquelyKeys");
-      this.$objectation = props;
-      const keys = Object.keys(this.$subject);
-      let hasKeys = true;
-      Iterating_props:
-      for (let index = 0; index < keys.length; index++) {
-        const key = keys[index];
-        if (props.indexOf(key) === -1) {
-          hasKeys = false;
-          break Iterating_props;
+        can(value) {
+            cov_2clevwsapt().f[9]++;
+            cov_2clevwsapt().s[51]++;
+            this.$operation = "can";
+            cov_2clevwsapt().s[52]++;
+            this.$objectation = value;
+            cov_2clevwsapt().s[53]++;
+            if (!value(this.$subject)) {
+                cov_2clevwsapt().b[15][0]++;
+                cov_2clevwsapt().s[54]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[15][1]++;
+            }
+            cov_2clevwsapt().s[55]++;
+            return this.$asResolved();
         }
-      }
-      if (this.$makeNegable(!hasKeys)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-
-    uniquelyValues(props) {
-      this.$operation = this.$resolveNegableString("to {not?} have uniquelyValues");
-      this.$objectation = props;
-      const values = Object.values(this.$subject);
-      let hasValues = true;
-      Iterating_props:
-      for (let index = 0; index < values.length; index++) {
-        const value = values[index];
-        if (props.indexOf(value) === -1) {
-          hasValues = false;
-          break Iterating_props;
+        cant(value) {
+            cov_2clevwsapt().f[10]++;
+            cov_2clevwsapt().s[56]++;
+            this.$operation = "cant";
+            cov_2clevwsapt().s[57]++;
+            this.$objectation = value;
+            cov_2clevwsapt().s[58]++;
+            if (value(this.$subject)) {
+                cov_2clevwsapt().b[16][0]++;
+                cov_2clevwsapt().s[59]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[16][1]++;
+            }
+            cov_2clevwsapt().s[60]++;
+            return this.$asResolved();
         }
-      }
-      if (this.$makeNegable(!hasValues)) return this.$asFailed();
-      return this.$ensurement.$asResolved();
-    }
-
-  };
-
-  const ToNotHaveInterface = class extends ToHaveInterface {
-    $isNegated = true;
-  };
-
-  const EnsurementV1 = class extends Ensurement {
-
-    selfExtend(obj) {
-      return Object.assign(this, obj);
-    }
-
-    get $toNotBe() {
-      return new ToNotBeInterface(this);
-    }
-
-    get $toNotHave() {
-      return new ToNotHaveInterface(this);
-    }
-
-    get $toNot() {
-      return {
-        be: this.$toNotBe,
-        have: this.$toNotHave,
-      }
-    }
-
-    get $toBe() {
-      return new ToBeInterface(this);
-    }
-
-    get $toHave() {
-      return new ToHaveInterface(this);
-    }
-
-    get to() {
-      return {
-        be: this.$toBe,
-        have: this.$toHave,
-        not: this.$toNot,
-      };
-    }
-
-    its(id) {
-      return this.constructor.create({
-        [id]: this.$subject[id]
-      }, 1).selfExtend({
-        $parent: this,
-        asBoolean: this.asBoolean,
-      });
-    }
-
-    getSubject() {
-      return this.$subject;
-    }
-
-    safelyBack(levels = 1) {
-      for (let index = 0; index < levels; index++) {
-        try {
-          parent = this.$parent;
-        } catch (error) {
-          // @OK.
+        throws(value) {
+            cov_2clevwsapt().f[11]++;
+            cov_2clevwsapt().s[61]++;
+            this.$operation = "throws";
+            cov_2clevwsapt().s[62]++;
+            this.$objectation = value;
+            cov_2clevwsapt().s[63]++;
+            try {
+                cov_2clevwsapt().s[64]++;
+                objectation(this.$subject);
+                cov_2clevwsapt().s[65]++;
+                return this.$asFailed();
+            } catch (error) {
+                cov_2clevwsapt().s[66]++;
+                return this.$asResolved();
+            }
         }
-      }
-    }
-
-    back(levels = 1) {
-      let parent = this;
-      for (let index = 0; index < levels; index++) {
-        try {
-          parent = this.$parent;
-        } catch (error) {
-          throw new Error(`Ensurement could not go «back» reaching parent on level «${index}» on «ensure(...).back»`);
+        doesntThrow(value) {
+            cov_2clevwsapt().f[12]++;
+            cov_2clevwsapt().s[67]++;
+            this.$operation = "doesntThrow";
+            cov_2clevwsapt().s[68]++;
+            this.$objectation = value;
+            cov_2clevwsapt().s[69]++;
+            try {
+                cov_2clevwsapt().s[70]++;
+                value(this.$subject);
+                cov_2clevwsapt().s[71]++;
+                return this.$asFailed();
+            } catch (error) {
+                cov_2clevwsapt().s[72]++;
+                return this.$asResolved();
+            }
         }
-      }
-      return parent;
-    }
-
-    static $or(options) {
-      let correctOption = undefined;
-      const allIds = Object.keys(options);
-      const orError = new Error(`could not ensure «or» group with options: «${allIds.join("», «")}»`);
-      for(let index=0; index<allIds.length; index++) {
-        const currentId = allIds[index];
-        const currentOptionCallback = options[currentId];
-        try {
-          currentOptionCallback();
-          return currentId;
-        } catch (error) {
-          orError.appendError(error);
+        $asFailed(operation = (cov_2clevwsapt().b[17][0]++, this.$operation)) {
+            cov_2clevwsapt().f[13]++;
+            cov_2clevwsapt().s[73]++;
+            if (this.asBoolean) {
+                cov_2clevwsapt().b[18][0]++;
+                cov_2clevwsapt().s[74]++;
+                return false;
+            } else {
+                cov_2clevwsapt().b[18][1]++;
+            }
+            cov_2clevwsapt().s[75]++;
+            throw new AssertionError("could not ensure «" + this.$subjectId + "» " + operation + (this.$objectation ? (cov_2clevwsapt().b[19][0]++, " «" + this.$getObjectationAsString() + "»") : (cov_2clevwsapt().b[19][1]++, "")) + "");
         }
-      }
-      throw orError.unified();
+        $getObjectationAsString() {
+            cov_2clevwsapt().f[14]++;
+            cov_2clevwsapt().s[76]++;
+            return JSON.stringify(this.$objectation);
+        }
+        $asResolved() {
+            cov_2clevwsapt().f[15]++;
+            cov_2clevwsapt().s[77]++;
+            if (this.asBoolean) {
+                cov_2clevwsapt().b[20][0]++;
+                cov_2clevwsapt().s[78]++;
+                return true;
+            } else {
+                cov_2clevwsapt().b[20][1]++;
+                cov_2clevwsapt().s[79]++;
+                return this;
+            }
+        }
+    };
+    cov_2clevwsapt().s[80]++;
+    const BasicToBeInterface = class {
+        $isNegated = (cov_2clevwsapt().s[81]++, false);
+        set $operation(value) {
+            cov_2clevwsapt().f[16]++;
+            cov_2clevwsapt().s[82]++;
+            this.$ensurement.$operation = value;
+        }
+        get $operation() {
+            cov_2clevwsapt().f[17]++;
+            cov_2clevwsapt().s[83]++;
+            return this.$ensurement.$operation;
+        }
+        set $objectation(value) {
+            cov_2clevwsapt().f[18]++;
+            cov_2clevwsapt().s[84]++;
+            this.$ensurement.$objectation = value;
+        }
+        get $objectation() {
+            cov_2clevwsapt().f[19]++;
+            cov_2clevwsapt().s[85]++;
+            return this.$ensurement.$objectation;
+        }
+        constructor(ensurement) {
+            cov_2clevwsapt().f[20]++;
+            cov_2clevwsapt().s[86]++;
+            this.$ensurement = ensurement;
+            cov_2clevwsapt().s[87]++;
+            this.$subject = this.$ensurement.$subject;
+        }
+        $makeNegable(condition) {
+            cov_2clevwsapt().f[21]++;
+            cov_2clevwsapt().s[88]++;
+            return this.$isNegated === true ? (cov_2clevwsapt().b[21][0]++, !condition) : (cov_2clevwsapt().b[21][1]++, condition);
+        }
+        $asFailed() {
+            cov_2clevwsapt().f[22]++;
+            cov_2clevwsapt().s[89]++;
+            return this.$ensurement.$asFailed();
+        }
+        $resolveNegableString(text) {
+            cov_2clevwsapt().f[23]++;
+            cov_2clevwsapt().s[90]++;
+            return text.replace(/\{not\?\} */g, this.$isNegated ? (cov_2clevwsapt().b[22][0]++, "not ") : (cov_2clevwsapt().b[22][1]++, ""));
+        }
+    };
+    cov_2clevwsapt().s[91]++;
+    const ToBeInterface = class extends BasicToBeInterface {
+        string() {
+            cov_2clevwsapt().f[24]++;
+            cov_2clevwsapt().s[92]++;
+            this.$operation = this.$resolveNegableString("to {not?} be string");
+            cov_2clevwsapt().s[93]++;
+            this.$objectation = undefined;
+            cov_2clevwsapt().s[94]++;
+            if (this.$makeNegable(typeof this.$subject !== "string")) {
+                cov_2clevwsapt().b[23][0]++;
+                cov_2clevwsapt().s[95]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[23][1]++;
+            }
+            cov_2clevwsapt().s[96]++;
+            return this.$ensurement.$asResolved();
+        }
+        number() {
+            cov_2clevwsapt().f[25]++;
+            cov_2clevwsapt().s[97]++;
+            this.$operation = this.$resolveNegableString("to {not?} be number");
+            cov_2clevwsapt().s[98]++;
+            this.$objectation = undefined;
+            cov_2clevwsapt().s[99]++;
+            if ((cov_2clevwsapt().b[25][0]++, this.$makeNegable(typeof this.$subject !== "number")) || (cov_2clevwsapt().b[25][1]++, Number.isNaN(this.$subject))) {
+                cov_2clevwsapt().b[24][0]++;
+                cov_2clevwsapt().s[100]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[24][1]++;
+            }
+            cov_2clevwsapt().s[101]++;
+            return this.$ensurement.$asResolved();
+        }
+        object() {
+            cov_2clevwsapt().f[26]++;
+            cov_2clevwsapt().s[102]++;
+            this.$operation = this.$resolveNegableString("to {not?} be object");
+            cov_2clevwsapt().s[103]++;
+            this.$objectation = undefined;
+            cov_2clevwsapt().s[104]++;
+            if (this.$makeNegable(typeof this.$subject !== "object")) {
+                cov_2clevwsapt().b[26][0]++;
+                cov_2clevwsapt().s[105]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[26][1]++;
+            }
+            cov_2clevwsapt().s[106]++;
+            return this.$ensurement.$asResolved();
+        }
+        null() {
+            cov_2clevwsapt().f[27]++;
+            cov_2clevwsapt().s[107]++;
+            this.$operation = this.$resolveNegableString("to {not?} be null");
+            cov_2clevwsapt().s[108]++;
+            this.$objectation = undefined;
+            cov_2clevwsapt().s[109]++;
+            if (this.$makeNegable(typeof this.$subject !== null)) {
+                cov_2clevwsapt().b[27][0]++;
+                cov_2clevwsapt().s[110]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[27][1]++;
+            }
+            cov_2clevwsapt().s[111]++;
+            return this.$ensurement.$asResolved();
+        }
+        undefined() {
+            cov_2clevwsapt().f[28]++;
+            cov_2clevwsapt().s[112]++;
+            this.$operation = this.$resolveNegableString("to {not?} be undefined");
+            cov_2clevwsapt().s[113]++;
+            this.$objectation = undefined;
+            cov_2clevwsapt().s[114]++;
+            if (this.$makeNegable(typeof this.$subject !== "undefined")) {
+                cov_2clevwsapt().b[28][0]++;
+                cov_2clevwsapt().s[115]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[28][1]++;
+            }
+            cov_2clevwsapt().s[116]++;
+            return this.$ensurement.$asResolved();
+        }
+        boolean() {
+            cov_2clevwsapt().f[29]++;
+            cov_2clevwsapt().s[117]++;
+            this.$operation = this.$resolveNegableString("to {not?} be boolean");
+            cov_2clevwsapt().s[118]++;
+            this.$objectation = undefined;
+            cov_2clevwsapt().s[119]++;
+            if (this.$makeNegable(typeof this.$subject !== "boolean")) {
+                cov_2clevwsapt().b[29][0]++;
+                cov_2clevwsapt().s[120]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[29][1]++;
+            }
+            cov_2clevwsapt().s[121]++;
+            return this.$ensurement.$asResolved();
+        }
+        instanceOf(clazz) {
+            cov_2clevwsapt().f[30]++;
+            cov_2clevwsapt().s[122]++;
+            this.$operation = this.$resolveNegableString("to {not?} be instanceOf");
+            cov_2clevwsapt().s[123]++;
+            this.$objectation = undefined;
+            cov_2clevwsapt().s[124]++;
+            if (this.$makeNegable(!(this.$subject instanceof clazz))) {
+                cov_2clevwsapt().b[30][0]++;
+                cov_2clevwsapt().s[125]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[30][1]++;
+            }
+            cov_2clevwsapt().s[126]++;
+            return this.$ensurement.$asResolved();
+        }
+        array() {
+            cov_2clevwsapt().f[31]++;
+            cov_2clevwsapt().s[127]++;
+            this.$operation = this.$resolveNegableString("to {not?} be array");
+            cov_2clevwsapt().s[128]++;
+            this.$objectation = undefined;
+            cov_2clevwsapt().s[129]++;
+            if (this.$makeNegable(!Array.isArray(this.$subject))) {
+                cov_2clevwsapt().b[31][0]++;
+                cov_2clevwsapt().s[130]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[31][1]++;
+            }
+            cov_2clevwsapt().s[131]++;
+            return this.$ensurement.$asResolved();
+        }
+
+        function() {
+            cov_2clevwsapt().f[32]++;
+            cov_2clevwsapt().s[132]++;
+            this.$operation = this.$resolveNegableString("to {not?} be function");
+            cov_2clevwsapt().s[133]++;
+            this.$objectation = undefined;
+            cov_2clevwsapt().s[134]++;
+            if (this.$makeNegable(typeof this.$subject !== "function")) {
+                cov_2clevwsapt().b[32][0]++;
+                cov_2clevwsapt().s[135]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[32][1]++;
+            }
+            cov_2clevwsapt().s[136]++;
+            return this.$ensurement.$asResolved();
+        }
+        empty() {
+            cov_2clevwsapt().f[33]++;
+            cov_2clevwsapt().s[137]++;
+            this.$operation = this.$resolveNegableString("to {not?} be empty");
+            cov_2clevwsapt().s[138]++;
+            this.$objectation = undefined;
+            const isEmpty = (cov_2clevwsapt().s[139]++, (() => {
+                cov_2clevwsapt().f[34]++;
+                const s = (cov_2clevwsapt().s[140]++, this.$subject);
+                cov_2clevwsapt().s[141]++;
+                if (Array.isArray(s)) {
+                    cov_2clevwsapt().b[33][0]++;
+                    cov_2clevwsapt().s[142]++;
+                    return s.length === 0;
+                } else {
+                    cov_2clevwsapt().b[33][1]++;
+                    cov_2clevwsapt().s[143]++;
+                    if (typeof s === "object") {
+                        cov_2clevwsapt().b[34][0]++;
+                        cov_2clevwsapt().s[144]++;
+                        return (cov_2clevwsapt().b[35][0]++, s === null) || (cov_2clevwsapt().b[35][1]++, Object.keys(s).length === 0);
+                    } else {
+                        cov_2clevwsapt().b[34][1]++;
+                        cov_2clevwsapt().s[145]++;
+                        if (typeof s === "string") {
+                            cov_2clevwsapt().b[36][0]++;
+                            cov_2clevwsapt().s[146]++;
+                            return s === "";
+                        } else {
+                            cov_2clevwsapt().b[36][1]++;
+                            cov_2clevwsapt().s[147]++;
+                            if (typeof s === "number") {
+                                cov_2clevwsapt().b[37][0]++;
+                                cov_2clevwsapt().s[148]++;
+                                return s === 0;
+                            } else {
+                                cov_2clevwsapt().b[37][1]++;
+                                cov_2clevwsapt().s[149]++;
+                                if (typeof s === "boolean") {
+                                    cov_2clevwsapt().b[38][0]++;
+                                    cov_2clevwsapt().s[150]++;
+                                    return s === false;
+                                } else {
+                                    cov_2clevwsapt().b[38][1]++;
+                                    cov_2clevwsapt().s[151]++;
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            })());
+            cov_2clevwsapt().s[152]++;
+            if (this.$makeNegable(!isEmpty)) {
+                cov_2clevwsapt().b[39][0]++;
+                cov_2clevwsapt().s[153]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[39][1]++;
+            }
+            cov_2clevwsapt().s[154]++;
+            return this.$ensurement.$asResolved();
+        }
+        equalTo(value) {
+            cov_2clevwsapt().f[35]++;
+            cov_2clevwsapt().s[155]++;
+            this.$operation = this.$resolveNegableString("to {not?} be equal to");
+            cov_2clevwsapt().s[156]++;
+            this.$objectation = value;
+            let isEqual = (cov_2clevwsapt().s[157]++, this.$subject === value);
+            cov_2clevwsapt().s[158]++;
+            if (this.$makeNegable(!isEqual)) {
+                cov_2clevwsapt().b[40][0]++;
+                cov_2clevwsapt().s[159]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[40][1]++;
+            }
+            cov_2clevwsapt().s[160]++;
+            return this.$ensurement.$asResolved();
+        }
+        equalOrGreaterThan(value) {
+            cov_2clevwsapt().f[36]++;
+            cov_2clevwsapt().s[161]++;
+            this.$operation = this.$resolveNegableString("to {not?} be equal or greater than");
+            cov_2clevwsapt().s[162]++;
+            this.$objectation = value;
+            let isGreaterOrEqual = (cov_2clevwsapt().s[163]++, this.$subject >= value);
+            cov_2clevwsapt().s[164]++;
+            if (this.$makeNegable(!isGreaterOrEqual)) {
+                cov_2clevwsapt().b[41][0]++;
+                cov_2clevwsapt().s[165]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[41][1]++;
+            }
+            cov_2clevwsapt().s[166]++;
+            return this.$ensurement.$asResolved();
+        }
+        greaterThan(value) {
+            cov_2clevwsapt().f[37]++;
+            cov_2clevwsapt().s[167]++;
+            this.$operation = this.$resolveNegableString("to {not?} be greater than");
+            cov_2clevwsapt().s[168]++;
+            this.$objectation = value;
+            let isGreater = (cov_2clevwsapt().s[169]++, this.$subject > value);
+            cov_2clevwsapt().s[170]++;
+            if (this.$makeNegable(!isGreater)) {
+                cov_2clevwsapt().b[42][0]++;
+                cov_2clevwsapt().s[171]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[42][1]++;
+            }
+            cov_2clevwsapt().s[172]++;
+            return this.$ensurement.$asResolved();
+        }
+        greaterOrEqualTo(...args) {
+            cov_2clevwsapt().f[38]++;
+            cov_2clevwsapt().s[173]++;
+            return this.equalOrGreaterThan(...args);
+        }
+        equalOrLowerThan(value) {
+            cov_2clevwsapt().f[39]++;
+            cov_2clevwsapt().s[174]++;
+            this.$operation = this.$resolveNegableString("to {not?} equal or lower than");
+            cov_2clevwsapt().s[175]++;
+            this.$objectation = value;
+            let isGreaterOrEqual = (cov_2clevwsapt().s[176]++, this.$subject <= value);
+            cov_2clevwsapt().s[177]++;
+            if (this.$makeNegable(!isGreaterOrEqual)) {
+                cov_2clevwsapt().b[43][0]++;
+                cov_2clevwsapt().s[178]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[43][1]++;
+            }
+            cov_2clevwsapt().s[179]++;
+            return this.$ensurement.$asResolved();
+        }
+        lowerThan(value) {
+            cov_2clevwsapt().f[40]++;
+            cov_2clevwsapt().s[180]++;
+            this.$operation = this.$resolveNegableString("to {not?} be lower than");
+            cov_2clevwsapt().s[181]++;
+            this.$objectation = value;
+            let isGreater = (cov_2clevwsapt().s[182]++, this.$subject < value);
+            cov_2clevwsapt().s[183]++;
+            if (this.$makeNegable(!isGreater)) {
+                cov_2clevwsapt().b[44][0]++;
+                cov_2clevwsapt().s[184]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[44][1]++;
+            }
+            cov_2clevwsapt().s[185]++;
+            return this.$ensurement.$asResolved();
+        }
+        lowerOrEqualTo(value) {
+            cov_2clevwsapt().f[41]++;
+            cov_2clevwsapt().s[186]++;
+            return this.equalOrLowerThan(...args);
+        }
+        oneOf(value) {
+            cov_2clevwsapt().f[42]++;
+            cov_2clevwsapt().s[187]++;
+            this.$operation = this.$resolveNegableString("to {not?} be one of");
+            cov_2clevwsapt().s[188]++;
+            this.$objectation = value;
+            cov_2clevwsapt().s[189]++;
+            if (!Array.isArray(value)) {
+                cov_2clevwsapt().b[45][0]++;
+                cov_2clevwsapt().s[190]++;
+                throw new Error(`Required on «$ensure(...).to.be.oneOf(!)» to provide an array on «ToBeInterface.oneOf»`);
+            } else {
+                cov_2clevwsapt().b[45][1]++;
+            }
+            let isOne = (cov_2clevwsapt().s[191]++, this.$objectation.indexOf(this.$subject) !== -1);
+            cov_2clevwsapt().s[192]++;
+            if (this.$makeNegable(!isOne)) {
+                cov_2clevwsapt().b[46][0]++;
+                cov_2clevwsapt().s[193]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[46][1]++;
+            }
+            cov_2clevwsapt().s[194]++;
+            return this.$ensurement.$asResolved();
+        }
+    };
+    cov_2clevwsapt().s[195]++;
+    const ToNotBeInterface = class extends ToBeInterface {
+        $isNegated = (cov_2clevwsapt().s[196]++, true);
+    };
+    cov_2clevwsapt().s[197]++;
+    const ToHaveInterface = class extends BasicToBeInterface {
+        text(prop) {
+            cov_2clevwsapt().f[43]++;
+            cov_2clevwsapt().s[198]++;
+            this.$operation = this.$resolveNegableString("to {not?} have text");
+            cov_2clevwsapt().s[199]++;
+            this.$objectation = prop;
+            const hasSubstring = (cov_2clevwsapt().s[200]++, this.$subject.indexOf(prop) !== -1);
+            cov_2clevwsapt().s[201]++;
+            if (this.$makeNegable(!hasSubstring)) {
+                cov_2clevwsapt().b[47][0]++;
+                cov_2clevwsapt().s[202]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[47][1]++;
+            }
+            cov_2clevwsapt().s[203]++;
+            return this.$ensurement.$asResolved();
+        }
+        key(prop) {
+            cov_2clevwsapt().f[44]++;
+            cov_2clevwsapt().s[204]++;
+            this.$operation = this.$resolveNegableString("to {not?} have key");
+            cov_2clevwsapt().s[205]++;
+            this.$objectation = prop;
+            const keys = (cov_2clevwsapt().s[206]++, Object.keys(this.$subject));
+            const hasKey = (cov_2clevwsapt().s[207]++, keys.indexOf(prop) !== -1);
+            cov_2clevwsapt().s[208]++;
+            if (this.$makeNegable(!hasKey)) {
+                cov_2clevwsapt().b[48][0]++;
+                cov_2clevwsapt().s[209]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[48][1]++;
+            }
+            cov_2clevwsapt().s[210]++;
+            return this.$ensurement.$asResolved();
+        }
+        value(prop) {
+            cov_2clevwsapt().f[45]++;
+            cov_2clevwsapt().s[211]++;
+            this.$operation = this.$resolveNegableString("to {not?} have value");
+            cov_2clevwsapt().s[212]++;
+            this.$objectation = prop;
+            const values = (cov_2clevwsapt().s[213]++, Object.values(this.$subject));
+            const hasValue = (cov_2clevwsapt().s[214]++, values.indexOf(prop) !== -1);
+            cov_2clevwsapt().s[215]++;
+            if (this.$makeNegable(!hasValue)) {
+                cov_2clevwsapt().b[49][0]++;
+                cov_2clevwsapt().s[216]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[49][1]++;
+            }
+            cov_2clevwsapt().s[217]++;
+            return this.$ensurement.$asResolved();
+        }
+        onlyPotentialKeys(props) {
+            cov_2clevwsapt().f[46]++;
+            cov_2clevwsapt().s[218]++;
+            this.$operation = this.$resolveNegableString("to {not?} have only potential keys");
+            cov_2clevwsapt().s[219]++;
+            this.$objectation = props;
+            const keys = (cov_2clevwsapt().s[220]++, Object.keys(this.$subject));
+            let hasOnly = (cov_2clevwsapt().s[221]++, true);
+            cov_2clevwsapt().s[222]++;
+            cov_2clevwsapt().s[223]++;
+            Iterating_props: for (let index = (cov_2clevwsapt().s[224]++, 0); index < keys.length; index++) {
+                const key = (cov_2clevwsapt().s[225]++, keys[index]);
+                cov_2clevwsapt().s[226]++;
+                if (props.indexOf(key) === -1) {
+                    cov_2clevwsapt().b[50][0]++;
+                    cov_2clevwsapt().s[227]++;
+                    hasOnly = false;
+                    cov_2clevwsapt().s[228]++;
+                    break Iterating_props;
+                } else {
+                    cov_2clevwsapt().b[50][1]++;
+                }
+            }
+            cov_2clevwsapt().s[229]++;
+            if (this.$makeNegable(!hasOnly)) {
+                cov_2clevwsapt().b[51][0]++;
+                cov_2clevwsapt().s[230]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[51][1]++;
+            }
+            cov_2clevwsapt().s[231]++;
+            return this.$ensurement.$asResolved();
+        }
+        keys(props) {
+            cov_2clevwsapt().f[47]++;
+            cov_2clevwsapt().s[232]++;
+            this.$operation = this.$resolveNegableString("to {not?} have keys");
+            cov_2clevwsapt().s[233]++;
+            this.$objectation = props;
+            const keys = (cov_2clevwsapt().s[234]++, Object.keys(this.$subject));
+            let hasKeys = (cov_2clevwsapt().s[235]++, true);
+            cov_2clevwsapt().s[236]++;
+            cov_2clevwsapt().s[237]++;
+            Iterating_props: for (let index = (cov_2clevwsapt().s[238]++, 0); index < props.length; index++) {
+                const prop = (cov_2clevwsapt().s[239]++, props[index]);
+                cov_2clevwsapt().s[240]++;
+                if (keys.indexOf(prop) === -1) {
+                    cov_2clevwsapt().b[52][0]++;
+                    cov_2clevwsapt().s[241]++;
+                    hasKeys = false;
+                    cov_2clevwsapt().s[242]++;
+                    break Iterating_props;
+                } else {
+                    cov_2clevwsapt().b[52][1]++;
+                }
+            }
+            cov_2clevwsapt().s[243]++;
+            if (this.$makeNegable(!hasKeys)) {
+                cov_2clevwsapt().b[53][0]++;
+                cov_2clevwsapt().s[244]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[53][1]++;
+            }
+            cov_2clevwsapt().s[245]++;
+            return this.$ensurement.$asResolved();
+        }
+        values(props) {
+            cov_2clevwsapt().f[48]++;
+            cov_2clevwsapt().s[246]++;
+            this.$operation = this.$resolveNegableString("to {not?} have values");
+            cov_2clevwsapt().s[247]++;
+            this.$objectation = props;
+            const values = (cov_2clevwsapt().s[248]++, Object.values(this.$subject));
+            let hasValues = (cov_2clevwsapt().s[249]++, true);
+            cov_2clevwsapt().s[250]++;
+            cov_2clevwsapt().s[251]++;
+            Iterating_props: for (let index = (cov_2clevwsapt().s[252]++, 0); index < props.length; index++) {
+                const prop = (cov_2clevwsapt().s[253]++, props[index]);
+                cov_2clevwsapt().s[254]++;
+                if (values.indexOf(prop) === -1) {
+                    cov_2clevwsapt().b[54][0]++;
+                    cov_2clevwsapt().s[255]++;
+                    hasValues = false;
+                    cov_2clevwsapt().s[256]++;
+                    break Iterating_props;
+                } else {
+                    cov_2clevwsapt().b[54][1]++;
+                }
+            }
+            cov_2clevwsapt().s[257]++;
+            if (this.$makeNegable(!hasValues)) {
+                cov_2clevwsapt().b[55][0]++;
+                cov_2clevwsapt().s[258]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[55][1]++;
+            }
+            cov_2clevwsapt().s[259]++;
+            return this.$ensurement.$asResolved();
+        }
+        uniquelyKeys(props) {
+            cov_2clevwsapt().f[49]++;
+            cov_2clevwsapt().s[260]++;
+            this.$operation = this.$resolveNegableString("to {not?} have uniquelyKeys");
+            cov_2clevwsapt().s[261]++;
+            this.$objectation = props;
+            const keys = (cov_2clevwsapt().s[262]++, Object.keys(this.$subject));
+            let hasKeys = (cov_2clevwsapt().s[263]++, true);
+            cov_2clevwsapt().s[264]++;
+            cov_2clevwsapt().s[265]++;
+            Iterating_props: for (let index = (cov_2clevwsapt().s[266]++, 0); index < keys.length; index++) {
+                const key = (cov_2clevwsapt().s[267]++, keys[index]);
+                cov_2clevwsapt().s[268]++;
+                if (props.indexOf(key) === -1) {
+                    cov_2clevwsapt().b[56][0]++;
+                    cov_2clevwsapt().s[269]++;
+                    hasKeys = false;
+                    cov_2clevwsapt().s[270]++;
+                    break Iterating_props;
+                } else {
+                    cov_2clevwsapt().b[56][1]++;
+                }
+            }
+            cov_2clevwsapt().s[271]++;
+            if (this.$makeNegable(!hasKeys)) {
+                cov_2clevwsapt().b[57][0]++;
+                cov_2clevwsapt().s[272]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[57][1]++;
+            }
+            cov_2clevwsapt().s[273]++;
+            return this.$ensurement.$asResolved();
+        }
+        uniquelyValues(props) {
+            cov_2clevwsapt().f[50]++;
+            cov_2clevwsapt().s[274]++;
+            this.$operation = this.$resolveNegableString("to {not?} have uniquelyValues");
+            cov_2clevwsapt().s[275]++;
+            this.$objectation = props;
+            const values = (cov_2clevwsapt().s[276]++, Object.values(this.$subject));
+            let hasValues = (cov_2clevwsapt().s[277]++, true);
+            cov_2clevwsapt().s[278]++;
+            cov_2clevwsapt().s[279]++;
+            Iterating_props: for (let index = (cov_2clevwsapt().s[280]++, 0); index < values.length; index++) {
+                const value = (cov_2clevwsapt().s[281]++, values[index]);
+                cov_2clevwsapt().s[282]++;
+                if (props.indexOf(value) === -1) {
+                    cov_2clevwsapt().b[58][0]++;
+                    cov_2clevwsapt().s[283]++;
+                    hasValues = false;
+                    cov_2clevwsapt().s[284]++;
+                    break Iterating_props;
+                } else {
+                    cov_2clevwsapt().b[58][1]++;
+                }
+            }
+            cov_2clevwsapt().s[285]++;
+            if (this.$makeNegable(!hasValues)) {
+                cov_2clevwsapt().b[59][0]++;
+                cov_2clevwsapt().s[286]++;
+                return this.$asFailed();
+            } else {
+                cov_2clevwsapt().b[59][1]++;
+            }
+            cov_2clevwsapt().s[287]++;
+            return this.$ensurement.$asResolved();
+        }
+    };
+    cov_2clevwsapt().s[288]++;
+    const ToNotHaveInterface = class extends ToHaveInterface {
+        $isNegated = (cov_2clevwsapt().s[289]++, true);
+    };
+    cov_2clevwsapt().s[290]++;
+    const EnsurementV1 = class extends Ensurement {
+        selfExtend(obj) {
+            cov_2clevwsapt().f[51]++;
+            cov_2clevwsapt().s[291]++;
+            return Object.assign(this, obj);
+        }
+        get $toNotBe() {
+            cov_2clevwsapt().f[52]++;
+            cov_2clevwsapt().s[292]++;
+            return new ToNotBeInterface(this);
+        }
+        get $toNotHave() {
+            cov_2clevwsapt().f[53]++;
+            cov_2clevwsapt().s[293]++;
+            return new ToNotHaveInterface(this);
+        }
+        get $toNot() {
+            cov_2clevwsapt().f[54]++;
+            cov_2clevwsapt().s[294]++;
+            return {
+                be: this.$toNotBe,
+                have: this.$toNotHave
+            };
+        }
+        get $toBe() {
+            cov_2clevwsapt().f[55]++;
+            cov_2clevwsapt().s[295]++;
+            return new ToBeInterface(this);
+        }
+        get $toHave() {
+            cov_2clevwsapt().f[56]++;
+            cov_2clevwsapt().s[296]++;
+            return new ToHaveInterface(this);
+        }
+        get to() {
+            cov_2clevwsapt().f[57]++;
+            cov_2clevwsapt().s[297]++;
+            return {
+                be: this.$toBe,
+                have: this.$toHave,
+                not: this.$toNot
+            };
+        }
+        its(id) {
+            cov_2clevwsapt().f[58]++;
+            cov_2clevwsapt().s[298]++;
+            return this.constructor.create({
+                [id]: this.$subject[id]
+            }, 1).selfExtend({
+                $parent: this,
+                asBoolean: this.asBoolean
+            });
+        }
+        getSubject() {
+            cov_2clevwsapt().f[59]++;
+            cov_2clevwsapt().s[299]++;
+            return this.$subject;
+        }
+        safelyBack(levels = (cov_2clevwsapt().b[60][0]++, 1)) {
+            cov_2clevwsapt().f[60]++;
+            cov_2clevwsapt().s[300]++;
+            for (let index = (cov_2clevwsapt().s[301]++, 0); index < levels; index++) {
+                cov_2clevwsapt().s[302]++;
+                try {
+                    cov_2clevwsapt().s[303]++;
+                    parent = this.$parent;
+                } catch (error) { // @OK.
+                }
+            }
+        }
+        back(levels = (cov_2clevwsapt().b[61][0]++, 1)) {
+            cov_2clevwsapt().f[61]++;
+            let parent = (cov_2clevwsapt().s[304]++, this);
+            cov_2clevwsapt().s[305]++;
+            for (let index = (cov_2clevwsapt().s[306]++, 0); index < levels; index++) {
+                cov_2clevwsapt().s[307]++;
+                try {
+                    cov_2clevwsapt().s[308]++;
+                    parent = this.$parent;
+                } catch (error) {
+                    cov_2clevwsapt().s[309]++;
+                    throw new Error(`Ensurement could not go «back» reaching parent on level «${index}» on «ensure(...).back»`);
+                }
+            }
+            cov_2clevwsapt().s[310]++;
+            return parent;
+        }
+        static $or(options) {
+            cov_2clevwsapt().f[62]++;
+            let correctOption = (cov_2clevwsapt().s[311]++, undefined);
+            const allIds = (cov_2clevwsapt().s[312]++, Object.keys(options));
+            const orError = (cov_2clevwsapt().s[313]++, new Error(`could not ensure «or» group with options: «${allIds.join("», «")}»`));
+            cov_2clevwsapt().s[314]++;
+            for (let index = (cov_2clevwsapt().s[315]++, 0); index < allIds.length; index++) {
+                const currentId = (cov_2clevwsapt().s[316]++, allIds[index]);
+                const currentOptionCallback = (cov_2clevwsapt().s[317]++, options[currentId]);
+                cov_2clevwsapt().s[318]++;
+                try {
+                    cov_2clevwsapt().s[319]++;
+                    currentOptionCallback();
+                    cov_2clevwsapt().s[320]++;
+                    return currentId;
+                } catch (error) {
+                    cov_2clevwsapt().s[321]++;
+                    orError.appendError(error);
+                }
+            }
+            cov_2clevwsapt().s[322]++;
+            throw orError.unified();
+        }
+        static id(obj) {
+            cov_2clevwsapt().f[63]++;
+            cov_2clevwsapt().s[323]++;
+            return this.create(obj, 1);
+        }
+        static ensure(...args) {
+            cov_2clevwsapt().f[64]++;
+            cov_2clevwsapt().s[324]++;
+            return this.create(...args);
+        }
+        static check(...args) {
+            cov_2clevwsapt().f[65]++;
+            cov_2clevwsapt().s[325]++;
+            return this.create(...args).selfExtend({
+                asBoolean: true
+            });
+        }
+        static assert(condition, errorMessage = (cov_2clevwsapt().b[62][0]++, "Assertion error happened")) {
+            cov_2clevwsapt().f[66]++;
+            cov_2clevwsapt().s[326]++;
+            if (!condition) {
+                cov_2clevwsapt().b[63][0]++;
+                cov_2clevwsapt().s[327]++;
+                throw new AssertionError(errorMessage);
+            } else {
+                cov_2clevwsapt().b[63][1]++;
+            }
+            cov_2clevwsapt().s[328]++;
+            return true;
+        }
+        static fails(callback, errorMessage = (cov_2clevwsapt().b[64][0]++, "Assertion error happened")) {
+            cov_2clevwsapt().f[67]++;
+            let passes = (cov_2clevwsapt().s[329]++, true);
+            cov_2clevwsapt().s[330]++;
+            try {
+                cov_2clevwsapt().s[331]++;
+                callback();
+                cov_2clevwsapt().s[332]++;
+                passes = false;
+            } catch (error) {
+                cov_2clevwsapt().s[333]++;
+                return true;
+            }
+            cov_2clevwsapt().s[334]++;
+            if (!passes) {
+                cov_2clevwsapt().b[65][0]++;
+                cov_2clevwsapt().s[335]++;
+                throw new AssertionError(errorMessage);
+            } else {
+                cov_2clevwsapt().b[65][1]++;
+            }
+        }
+        static AssertionError = (cov_2clevwsapt().s[336]++, AssertionError);
+    };
+    cov_2clevwsapt().s[337]++;
+    Export_to_globals: {
+        cov_2clevwsapt().s[338]++;globalThis.$fails = EnsurementV1.fails.bind(EnsurementV1);cov_2clevwsapt().s[339]++;globalThis.$ensure = EnsurementV1.ensure.bind(EnsurementV1);cov_2clevwsapt().s[340]++;globalThis.$ensure.id = EnsurementV1.id.bind(EnsurementV1);cov_2clevwsapt().s[341]++;globalThis.$ensure.check = EnsurementV1.check.bind(EnsurementV1);cov_2clevwsapt().s[342]++;globalThis.$ensure.assert = EnsurementV1.assert.bind(EnsurementV1);cov_2clevwsapt().s[343]++;globalThis.$ensure.fails = EnsurementV1.fails.bind(EnsurementV1);cov_2clevwsapt().s[344]++;globalThis.$check = EnsurementV1.check.bind(EnsurementV1);cov_2clevwsapt().s[345]++;globalThis.$assert = EnsurementV1.assert.bind(EnsurementV1); // globalThis.AssertionError = AssertionError;
+        cov_2clevwsapt().s[346]++;globalThis.$ensure.$or = EnsurementV1.$or;
     }
-    
-    static id(obj) {
-      return this.create(obj,1);
-    }
-    
-    static ensure(...args) {
-      return this.create(...args);
-    }
-
-    static check(...args) {
-      return this.create(...args).selfExtend({
-        asBoolean: true
-      });
-    }
-
-    static assert(condition, errorMessage = "Assertion error happened") {
-      if (!condition) {
-        throw new AssertionError(errorMessage);
-      }
-      return true;
-    }
-
-    static fails(callback, errorMessage = "Assertion error happened") {
-      let passes = true;
-      try {
-        callback();
-        passes = false;
-      } catch (error) {
-        return true;
-      }
-      if (!passes) {
-        throw new AssertionError(errorMessage);
-      }
-    }
-
-    static AssertionError = AssertionError;
-
-  };
-
-  Export_to_globals: {
-    globalThis.$fails = EnsurementV1.fails.bind(EnsurementV1);
-    globalThis.$ensure = EnsurementV1.ensure.bind(EnsurementV1);
-    globalThis.$ensure.id = EnsurementV1.id.bind(EnsurementV1);
-    globalThis.$ensure.check = EnsurementV1.check.bind(EnsurementV1);
-    globalThis.$ensure.assert = EnsurementV1.assert.bind(EnsurementV1);
-    globalThis.$ensure.fails = EnsurementV1.fails.bind(EnsurementV1);
-    globalThis.$check = EnsurementV1.check.bind(EnsurementV1);
-    globalThis.$assert = EnsurementV1.assert.bind(EnsurementV1);
-    // globalThis.AssertionError = AssertionError;
-    globalThis.$ensure.$or = EnsurementV1.$or;
-  }
-  
-  return EnsurementV1;
-  // @code.end: LswEnsurer class
-
+    cov_2clevwsapt().s[347]++;
+    return EnsurementV1; // @code.end: LswEnsurer class
 });
 
 // @vuebundler[Lsw_framework_components][12]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-constants/lsw-constants.js
@@ -11887,61 +20152,6 @@ Todo se andará.
 Sigamos adelante.
 En algún momento encontraremos la luz.
 
-`.trim());
-
-LswConstants.global.define("Boot.tri", `
-
-@{
-  "categorias": [],
-  "asco": [],
-  "de": [],
-  "persona": [],
-  "universal": "ok"
-}
-Boot [Artículo para el boot] {
-  @{
-    "autor": "github.com/allnulled",
-    "mensaje": "...",
-    "año": 2025
-  }
-  Capitulo 1 {}
-  Otro más nuevo [Otro más nuevo] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 3 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 4 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 5 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-  Capítulo 6 [] {
-    Parte 1 [Capitulo 2/Parte 1] {}
-    Parte 2 [Capitulo 2/Parte 2] {}
-    Parte 3 [Capitulo 2/Parte 3] {}
-    Parte 4 [Capitulo 2/Parte 4] {}
-    Parte 5 [Capitulo 2/Parte 5] {}
-  }
-}
-  
 `.trim());
 
 
@@ -12411,6 +20621,14 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
     confirmer: () => typeof QUnit !== "undefined",
   });
 
+  LswLazyLoader.global.register({
+    alias: "ejs",
+    url: "assets/lib/ejs/ejs.js",
+    type: "scriptSrc",
+    once: true,
+    confirmer: () => typeof ejs !== "undefined",
+  });
+
   class LswLazyLoads {
 
     static loadHighlightJs() {
@@ -12457,6 +20675,10 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
         LswLazyLoader.global.load("qunit.css"),
         LswLazyLoader.global.load("qunit.js"),
       ]);
+    }
+
+    static loadEjs() {
+      return LswLazyLoader.global.load("ejs");
     }
 
   };
@@ -14794,545 +23016,427 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 })(function () {
 
   // @code.start: LswTester API | @$section: LswTester API » LswTester classes and functions
-  const TestSettings = class {
-    static AVAILABLE_MODES = ["normally", "never", "always", "only"];
-    constructor(testObject) {
-      this.$test = testObject;
+  const LswAssertion = class {
+
+    static create(...args) {
+      return new this(...args);
     }
-    timeout(value = undefined) {
-      if(typeof value !== "number") {
-        throw new Error(`Required parameter 1 «value=${typeof value}» to be number on «TestSettings.mode»`)
-      }
-      this.$test.timeoutLimit = value;
+
+    $trace(method) {
+      this.$tester.$trace(method);
+    }
+
+    constructor(tester, submodule, result = undefined, message = undefined) {
+      this.$tester = tester;
+      this.$module = submodule;
+      this.$moduleId = submodule.id;
+      this.$result = result;
+      this.$message = message;
+    }
+
+    as(message = undefined) {
+      this.$trace("LswAssertion.as");
+      this.$message = message;
       return this;
     }
-    mode(mode) {
-      if(this.constructor.AVAILABLE_MODES.indexOf(mode) === -1) {
-        throw new Error(`Required parameter 1 «mode=${mode}» to be one of: «${this.constructor.AVAILABLE_MODES.join("|")}» on «TestSettings.mode»`)
+
+    that(result = undefined) {
+      this.$trace("LswAssertion.that");
+      this.$result = result;
+      if(this.$result === true) {
+        this.$tester.hookedBy("onSuccessAssertion", { tester: this.$tester, value: this.$module, assertionText: this.$message, assertionResult: this.$result });
+      } else {
+        this.$tester.hookedBy("onErrorAssertion", { tester: this.$tester, value: this.$module, assertionText: this.$message, assertionResult: this.$result });
       }
-      this.$test.mode = mode;
-      return this;
     }
-    onError(onErrorCallback) {
-      if(typeof onErrorCallback !== "function") {
-        throw new Error(`Required parameter 1 «onErrorCallback=${typeof onErrorCallback}» to be string on «TestSettings.onError»`)
-      }
-      this.$test.errorHandler = onErrorCallback;
-      return this;
-    }
-    onSuccess(onSuccessCallback) {
-      if(typeof onSuccessCallback !== "function") {
-        throw new Error(`Required parameter 1 «onSuccessCallback=${typeof onSuccessCallback}» to be string on «TestSettings.onError»`)
-      }
-      this.$test.successHandler = onSuccessCallback;
-      return this;
-    }
+
   };
 
-  const LswTester = class {
+  const createAssert = (tester, submodule) => {
+    return LswAssertion.create(tester, submodule);
+  };
 
-    static run(...args) {
-      return this.create(...args).run();
+  const LswTester_BasicLayer = class {
+
+    async innerLoad() {
+      this.$trace("LswTester.innerLoad");
+      return this.innerLoadTest(this.$composition, [], null);
+    }
+
+    innerCheckIsNotTyped(val, path) {
+      this.$trace("LswTester.innerCheckIsNotTyped");
+      if (typeof val.fromType === "string") {
+        throw new Error(`Required test on index «${path.join(".")}» to not have property «fromType» resolved on «LswTester.innerCheckIsNotTyped»`);
+      }
+    }
+
+    innerTypeAsUrl(val, path) {
+      this.$trace("LswTester.innerTypeAsUrl");
+      this.innerCheckIsNotTyped(val, path);
+      val.fromType = "url";
+    }
+
+    innerTypeAsFile(val, path) {
+      this.$trace("LswTester.innerTypeAsFile");
+      this.innerCheckIsNotTyped(val, path);
+      val.fromType = "file";
+    }
+
+    innerTypeAsId(val, path) {
+      this.$trace("LswTester.innerTypeAsId");
+      this.innerCheckIsNotTyped(val, path);
+      val.fromType = "id";
+    }
+
+    innerTypeAsCallback(val, path) {
+      this.$trace("LswTester.innerTypeAsCallback");
+      this.innerCheckIsNotTyped(val, path);
+      val.fromType = "callback";
+    }
+
+    innerTypeAsCollection(val, path) {
+      this.$trace("LswTester.innerTypeAsCollection");
+      this.innerCheckIsNotTyped(val, path);
+      val.fromType = "collection";
+    }
+
+    addDefinition(test, pathToTest = false) {
+      this.$trace("LswTester.addDefinition");
+      if (pathToTest) {
+        test.path = pathToTest;
+      }
+      if (test.id in this.$definitions) {
+        throw new Error(`Required property «id» in test on index «${pathToTest.join(".")}» to be a non-duplicated id for «this.$definitions» on «LswTester.addDefinition»`);
+      }
+      this.$definitions[test.id] = test.path;
+    }
+
+    innerLoadTest(val, path, parent = null, parentIndex = []) {
+      this.$trace("LswTester.innerLoadTest");
+      this.addDefinition(val, path);
+      if (val.fromUrl) {
+        this.innerTypeAsUrl(val, path);
+      }
+      if (val.fromFile) {
+        this.innerTypeAsFile(val, path);
+      }
+      if (val.fromId) {
+        this.innerTypeAsId(val, path);
+      }
+      if (val.fromCallback) {
+        this.innerTypeAsCallback(val, path);
+      }
+      if (val.fromCollection) {
+        this.innerTypeAsCollection(val, path);
+        for (let index = 0; index < val.fromCollection.length; index++) {
+          const subval = val.fromCollection[index];
+          this.innerLoadTest(subval, path.concat(["fromCollection", index]), val, path);
+        }
+      }
+    }
+
+    async innerRun() {
+      this.$trace("LswTester.innerRun");
+      this.hookedBy("onStartTester", []);
+      let results = new Error(`Tester «${this.$composition.id}» was not started yet`);
+      try {
+        results = await this.innerRunTests(this.$composition, [], null, [], []);
+        this.hookedBy("onSuccessTester", [results]);
+      } catch (error) {
+        this.hookedBy("onErrorTester", [error]);
+        results = results.concat([error]);
+      } finally {
+        this.hookedBy("onEndTester", [results]);
+        return results;
+      }
+    }
+
+    innerHandleCallback(val, path, parent, parentIndex, accumulated) {
+      this.$trace("LswTester.innerHandleCallback");
+      return val.fromCallback.call(this, {
+        tester: this,
+        test: val,
+        testPath: path,
+        assert: createAssert(this, val),
+      });
+    }
+
+    innerHandleUrl(val, path, parent, parentIndex, accumulated) {
+      this.$trace("LswTester.innerHandleUrl");
+      return importer.scriptAsync(val.fromUrl, {
+        $tester: this,
+        $test: val,
+        $testPath: path,
+        $testParent: parent,
+        $testParentPath: parentIndex,
+        $accumulated: accumulated,
+        assert: createAssert(this, val),
+      });
+    }
+
+    innerHandleFile(val, path, parent, parentIndex, accumulated) {
+      this.$trace("LswTester.innerHandleFile");
+      return Vue.prototype.$lsw.fs.evaluateAsJavascriptFile(val.fromFile);
+    }
+
+    async innerRunTests(val, path, parent = null, parentIndex = [], accumulated = []) {
+      this.$trace("LswTester.innerRunTests");
+      this.hookedBy("onStartModule", { tester:this, value:val, path, parent, parentIndex, accumulated });
+      let reported = undefined;
+      RunningTest: {
+        try {
+          Manage_bad_inputs: {
+            if (typeof val !== "object") {
+              throw new Error(`[ERROR: LswTester complain x004006] Required type of test «${typeof val}» on index «${path.join(".")}» to be an object on «LswTester.innerRunTests» in order to process module as test by «LswTester» instance`);
+            }
+            if (val === null) {
+              break RunningTest;
+            }
+            if (!val.id) {
+              throw new Error(`[ERROR: LswTester complain x004001] Required test «${typeof val}» on index «${path.join(".")}» to have property «id» on «LswTester.innerRunTests» in order to process module as test by «LswTester» instance`);
+            }
+            if (typeof val.id !== "string") {
+              throw new Error(`[ERROR: LswTester complain x004002] Required test «${typeof val}» on index «${path.join(".")}» to have a string on property «id» on «LswTester.innerRunTests» in order to process module as test by «LswTester» instance`);
+            }
+            if (typeof val.fromType !== "string") {
+              throw new Error(`[ERROR: LswTester complain x004003] Required test «${typeof val}» on index «${path.join(".")}» to have a string on property «fromType» on «LswTester.innerRunTests» in order to process module as test by «LswTester» instance. This indicates that the previous step «LswTester.innerLoad» DID NOT (while it SHOULD, or SHOULD HAVE arised an error otherwise) mark this test module as a known type`);
+            }
+            const validTypes = ["url", "file", "collection", "callback"];
+            if (validTypes.indexOf(val.fromType) === -1) {
+              throw new Error(`[ERROR: LswTester complain x004008] Required test «${typeof val}» on index «${path.join(".")}» to have property «fromType» with a valid type instead of «${val.fromType}» on «LswTester.innerRunTests» in order to process module as test by «LswTester» instance. This indicates that the previous step «LswTester.innerLoad» DID NOT (while it SHOULD, or SHOULD HAVE arised an error otherwise) mark this test module as a known type`);
+            }
+          }
+          if (val.fromType === "url") {
+            reported = await this.innerHandleUrl(val, path, parent, parentIndex, accumulated);
+          } else if (val.fromType === "callback") {
+            reported = await this.innerHandleCallback(val, path, parent, parentIndex, accumulated);
+          } else if (val.fromType === "file") {
+            reported = await this.innerHandleFile(val, path, parent, parentIndex, accumulated);
+          } else if (val.fromType === "collection") {
+            const collection = val.fromCollection;
+            reported = [];
+            for (let index = 0; index < collection.length; index++) {
+              const item = collection[index];
+              try {
+                const result = await this.innerRunTests(item, path.concat(["fromCollection", index]), val, path, accumulated);
+                reported.push(result);
+              } catch (error) {
+                if (this.$options.continueOnErrors === false) {
+                  throw error;
+                }
+              }
+            }
+          }
+          this.hookedBy("onSuccessModule", { tester:this, value:val, path, parent, parentIndex, accumulated });
+        } catch (error) {
+          this.$trace(`Error on test artifact «${val.id}» located at «${path.join(".")}» on LswTester instance`);
+          if (this.$options.printErrors === true) {
+            console.error(error);
+          }
+          this.hookedBy("onErrorModule", { tester:this, value:val, error, path, parent, parentIndex, accumulated });
+          if (this.$options.continueOnErrors === false) {
+            throw error;
+          } else {
+            reported = error;
+          }
+        }
+      }
+      this.hookedBy("onEndModule", { tester:this, value:val, path, parent, parentIndex, accumulated, reported });
+      if (path.length === 0) {
+        this.$result = reported
+      }
+      return reported;
+    }
+
+  }
+
+  const LswTester = class extends LswTester_BasicLayer {
+
+    static Assertion = LswAssertion;
+
+    static createAssertion(...args) {
+      return new this.Assertion(...args);
     }
 
     static create(...args) {
       return new this(...args);
     }
 
-    static STATES = {
-      DEFINED: "defined",
-      STARTED: "started",
-      PASSED: "passed",
-      FAILED: "failed",
+    $trace(method) {
+      if (this.$options.trace) {
+        console.log(`[trace][lsw-tester][${method}]`);
+      }
     }
 
-    static formatDate(dateObject = new Date()) {
-      const anio = ("" + (dateObject.getFullYear() ?? 0)).padStart(4, '0');
-      const mes = ("" + ((dateObject.getMonth() ?? 0) + 1)).padStart(2, '0');
-      const dia = ("" + (dateObject.getDate() ?? 0)).padStart(2, '0');
-      const hora = ("" + (dateObject.getHours() ?? 0)).padStart(2, '0');
-      const minuto = ("" + (dateObject.getMinutes() ?? 0)).padStart(2, '0');
-      const segundo = ("" + (dateObject.getSeconds() ?? 0)).padStart(2, '0');
-      const milisegundo = ("" + (dateObject.getMilliseconds() ?? 0)).padStart(3, '0');
-      const laHora = `${hora}:${minuto}:${segundo}.${milisegundo}`;
-      return `${anio}/${mes}/${dia} ${laHora}`;
-    }
-
-    static getTimeDifferenceBetweenDates(dateStr1, dateStr2) {
-      const date1 = new Date(dateStr1);
-      const date2 = new Date(dateStr2);
-      return date2 - date1;
-    }
-
-    static getDefaultOptions(overrider = {}) {
-      return Object.assign({}, {
-        trace: true,
-        successHandler: false,
-        errorHandler: false,
-        failureHandler: false,
-        finishHandler: false,
-      }, overrider);
+    static defaultOptions = {
+      trace: false,
+      continueOnErrors: false,
+      printErrors: true,
+      onAnything: false,
+      onStartTester: false,
+      onEndTester: false,
+      onSuccessTester: false,
+      onErrorTester: false,
+      onStartModule: false,
+      onFinishModule: false,
+      onSuccessModule: false,
+      onErrorModule: false,
+      onSuccessAssertion: false,
+      onErrorAssertion: false,
     };
 
-    constructor(id, callback, options = {}) {
-      if(typeof id !== "string") throw new Error("Required argument 1 to be string on «LswTester.constructor»");
-      if(typeof callback !== "function") throw new Error("Required argument 2 to be function on «LswTester.constructor»");
-      this.$options = this.constructor.getDefaultOptions(options);
-      this.$id = id;
-      this.$callback = callback;
-      this.$queue = [];
-      this.$state = {
-        testCollectionId: this.$id,
-        loaded: false,
-        createdAt: this.constructor.formatDate(),
-        startedAt: false,
-        finishedAt: false,
-        loadedAt: false,
-        timeoutLimit: 4000,
-        tests: {
-          ids: [],
-          all: [],
-        },
-      };
-      Validate_parameters: {
-        if(typeof this.$id !== "string") throw new Error(`Required parameter 1 «id=${typeof this.$id}» to be string on «LswTester.constructor»`);
-        if(typeof this.$callback !== "function") throw new Error(`Required parameter 2 «callback=${typeof this.$callback}» to be function on «LswTester.constructor»`);
-        if(typeof this.$options !== "object") throw new Error(`Required parameter 3 «options=${typeof this.$options}» to be object on «LswTester.constructor»`);
-        if(!Array.isArray(this.$queue)) throw new Error(`Required property «$queue=${typeof this.$queue}» to be object on «LswTester.constructor»`);
-        if(typeof this.$state !== "object") throw new Error(`Required property «$state=${typeof this.$state}» to be object on «LswTester.constructor»`);
+    static noop() { }
+
+    constructor() {
+      super();
+      this.reset();
+    }
+
+    reset() {
+      this.$isLoaded = false;
+      this.$isExecuted = false;
+      this.$definitions = {};
+      this.$options = Object.assign({}, this.constructor.defaultOptions);
+      this.$composition = undefined;
+    }
+
+    hookedBy(callbackId, uniqueParameter = {}) {
+      this.$trace("LswTester.hookedBy");
+      const isAnyEventCallback = typeof this.$options.onAnything === "function";
+      if (isAnyEventCallback) {
+        this.$options.onAnything.call(this, { eventType: callbackId }, uniqueParameter);
       }
-    }
-
-    $trace(method) {
-      if(this.$options.trace) {
-        console.log(`[trace][lsw-tester] ${method}`);
+      const isCallback = typeof this.$options[callbackId] === "function";
+      if (!isCallback) {
+        return false;
       }
+      return this.$options[callbackId].call(this, uniqueParameter);
     }
 
-    $createTestObject(id, action, attachedMode = "normally") {
-      this.$trace("$createTestObject");
-      return {
-        id: id,
-        // Property «currently» can be: "started", "passed", "failed" or "defined".
-        currently: this.constructor.STATES.DEFINED,
-        took: undefined,
-        action: action,
-        mode: attachedMode,
-        successHandler: undefined,
-        errorHandler: undefined,
-        timeoutLimit: undefined,
-      };
-    }
-
-    $createItFunction() {
-      this.$trace("$createItFunction");
-      let it2 = undefined;
-      // Cuidaico con esta variable porque si llamas al mismo «it» 2 veces, puede jugártela.
-      let testObject = undefined;
-      const it = function(id, action, attachedMode = "normally") {
-        Ensure_id_uniqueness: {
-          if(this.$state.tests.ids.indexOf(id) !== -1) {
-            console.log(this.$state.tests.ids);
-            throw new Error(`Required parameter 1 «id=${id}» to not be a repeated test identifier on «LswTester.it»`);
-          }
-        }
-        Append_test_object: {
-          testObject = this.$createTestObject(id, action, attachedMode);
-          this.$state.tests.ids.push(id);
-          this.$state.tests.all.push(testObject);
-        }
-        return it2;
-      };
-      it2 = it.bind(this);
-      it2.always = (id, action) => it2(id, action, "always");
-      it2.normally = (id, action) => it2(id, action, "normally");
-      it2.only = (id, action) => it2(id, action, "only");
-      it2.never = (id, action) => it2(id, action, "never");
-      it2.timeout = this.timeout.bind(this);
-      it2.onSuccess = this.onSuccess.bind(this);
-      it2.onError = this.onError.bind(this);
-      it2.onFailure = this.onFailure.bind(this);
-      return it2;
-    }
-
-    $handleLoadError(error) {
-      this.$trace("$handleLoadError");
-      console.error("LswTester failed on «load» step:", error);
-      throw error;
-    }
-
-    $handleRunError(error) {
-      this.$trace("$handleRunError");
-      console.error("LswTester arised error on «run» step:", error);
-      throw error;
-    }
-
-    $handleTestError(error, lastStartedTest) {
-      this.$trace("$handleTestError");
-      By_tester_first: {
-        if(typeof this.$options.errorHandler === "function") {
-          const handlerFeedback = this.$options.errorHandler(error, lastStartedTest);
-          if(typeof handlerFeedback !== "undefined") {
-            return handlerFeedback;
-          }
-        }
+    define(composition = {}) {
+      this.$trace("LswTester.define");
+      if (typeof this.$composition !== "undefined") {
+        throw new Error("Required property «$composition» to not be defined before on «LswTester.define»");
       }
-      By_test_second: {
-        if(typeof lastStartedTest.errorHandler === "function") {
-          const testHandlerFeedback = lastStartedTest.errorHandler(error, lastStartedTest);
-          if(typeof testHandlerFeedback !== "undefined") {
-            return testHandlerFeedback;
-          }
-        } else {
-          console.error("LswTester arised error on «test» step:", error);
-          throw error;
-        }
-      }
+      this.$composition = composition;
+      return this;
     }
 
-    $handleTestSuccess(lastStartedTest) {
-      this.$trace("$handleTestSuccess");
-      By_tester_first: {
-        if(typeof this.$options.successHandler === "function") {
-          const handlerFeedback = this.$options.successHandler(lastStartedTest);
-          if(typeof handlerFeedback !== "undefined") {
-            return handlerFeedback;
-          }
-        }
-      }
-      By_test_second: {
-        if(typeof lastStartedTest.successHandler === "function") {
-          const testHandlerFeedback = lastStartedTest.successHandler(lastStartedTest);
-          if(typeof testHandlerFeedback !== "undefined") {
-            return testHandlerFeedback;
-          }
-        } else {
-          // @OK.
-        }
-      }
-      if(typeof lastStartedTest.successHandler === "function") {
-        return lastStartedTest.successHandler(lastStartedTest);
-      } else {
-        // @OK.
-      }
+    options(options) {
+      this.$trace("LswTester.options");
+      this.$options = Object.assign({}, this.constructor.defaultOptions, options);
+      return this;
     }
 
-    $handleTestTimeout(indexTest) {
-      const testObject = this.$state.tests.all[indexTest];
-      const isStarted = testObject.currently === this.constructor.STATES.STARTED;
-      if(isStarted) {
-        testObject.currently = this.constructor.STATES.FAILED;
-        testObject.failureReason = "timed out";
-      }
+    onAnything(callback) {
+      this.$trace("LswTester.onAnything");
+      this.$options.onAnything = callback;
+      return this;
     }
 
-    timeout(limit) {
-      this.$trace("timeout");
-      this.$state.timeoutLimit = limit;
+    onStartTester(callback) {
+      this.$trace("LswTester.onStartTester");
+      this.$options.onStartTester = callback;
+      return this;
     }
 
-    onSuccess(successHandler) {
-      this.$trace("onSuccess");
-      this.$options.successHandler = successHandler;
+    onEndTester(callback) {
+      this.$trace("LswTester.onEndTester");
+      this.$options.onEndTester = callback;
+      return this;
     }
 
-    onError(errorHandler) {
-      this.$trace("onError");
-      this.$options.errorHandler = errorHandler;
+    onSuccessTester(callback) {
+      this.$trace("LswTester.onSuccessTester");
+      this.$options.onSuccessTester = callback;
+      return this;
     }
 
-    onFailure(failureHandler) {
-      this.$trace("onFailure");
-      this.$options.failureHandler = failureHandler;
+    onErrorTester(callback) {
+      this.$trace("LswTester.onErrorTester");
+      this.$options.onErrorTester = callback;
+      return this;
     }
 
-    async load(ignoreDuplication = false) {
-      this.$trace("load");
+    onStartModule(callback) {
+      this.$trace("LswTester.onStartModule");
+      this.$options.onStartModule = callback;
+      return this;
+    }
+
+    onFinishModule(callback) {
+      this.$trace("LswTester.onFinishModule");
+      this.$options.onFinishModule = callback;
+      return this;
+    }
+
+    onSuccessModule(callback) {
+      this.$trace("LswTester.onSuccessModule");
+      this.$options.onSuccessModule = callback;
+      return this;
+    }
+
+    onErrorModule(callback) {
+      this.$trace("LswTester.onErrorModule");
+      this.$options.onErrorModule = callback;
+      return this;
+    }
+
+    onSuccessAssertion(callback) {
+      this.$trace("LswTester.onSuccessAssertion");
+      this.$options.onSuccessAssertion = callback;
+      return this;
+    }
+
+    onErrorAssertion(callback) {
+      this.$trace("LswTester.onErrorAssertion");
+      this.$options.onErrorAssertion = callback;
+      return this;
+    }
+
+    async load() {
+      this.$trace("LswTester.load");
       try {
-        Validate_state_before_reloading_by_error: {
-          const wasLoadedBefore = typeof this.$state.loadedAt === "string";
-          const allowsDuplication = !ignoreDuplication;
-          if(wasLoadedBefore && !allowsDuplication) {
-            throw new Error("Cannot call «LswTester.load» more than once");
-          }
-        }
-        this.$state.loadedAt = this.constructor.formatDate();
-        const it = this.$createItFunction();
-        await this.$callback(it);
-        this.$state.loaded = true;
+        await this.innerLoad();
+        this.$isLoaded = true;
+        return this;
       } catch (error) {
-        this.$handleLoadError(error);
+        console.error("[!] Failed «LswTester» on «load» phase with:", error);
+        throw error;
       }
     }
 
-    async run() {
-      this.$trace("run");
+    async run(skipLoad = false) {
+      this.$trace("LswTester.run");
       try {
-        await this.load();
-        const testList = this.$state.tests.all;
-        const wasActivatedOnlyMode = this.$state.tests.all.reduce((out, testObject) => {
-          out = out || (testObject.mode === 'only');
-          return out;
-        }, false);
-        let lastStartedTest = undefined;
-        this.$state.startedAt = this.constructor.formatDate();
-        Executing_tests:
-        for(let indexTest=0; indexTest<testList.length; indexTest++) {
-          try {
-            const testObject = testList[indexTest];
-            lastStartedTest = testObject;
-            const {
-              id,
-              mode,
-              action,
-              currently,
-            } = testObject;
-            let testTimeoutId = undefined;
-            Ignore_by_mode: {
-              if(mode === "never") {
-                continue Executing_tests;
-              }
-              if(wasActivatedOnlyMode) {
-                if(mode === "normally") {
-                  continue Executing_tests;
-                }
-              }
-            }
-            Throw_on_state_conflict: {
-              if(currently !== this.constructor.STATES.DEFINED) {
-                throw new Error(`Cannot run test «${id}» because its state is «${currently}» on «LswTester.run»`);
-              }
-            }
-            Change_state_to_started: {
-              this.$state.tests.all[indexTest].currently = this.constructor.STATES.STARTED;
-              this.$state.tests.all[indexTest].startedAt = this.constructor.formatDate();
-            }
-            let testPromise = undefined;
-            Execute_test_and_reserve_promise: {
-              const testSettings = new TestSettings(testObject);
-              testPromise = action(testSettings);
-            }
-            Start_timeout_callback_to_fail_test: {
-              // Priorizamos el timeout del test al del tester:
-              const timeoutLimit = testObject.timeoutLimit || this.$state.timeoutLimit;
-              if((typeof timeoutLimit !== "number") || (timeoutLimit < 0)) {
-                break Start_timeout_callback_to_fail_test;
-              }
-              const timeoutHandler = () => {
-                this.$handleTestTimeout(indexTest);
-              };
-              testTimeoutId = setTimeout(timeoutHandler.bind(this), timeoutLimit);
-            }
-            Wait_for_test: {
-              await testPromise;
-            }
-            Check_state_before_confirm_test_is_passed: {
-              clearTimeout(testTimeoutId);
-              const currentState = this.$state.tests.all[indexTest].currently;
-              const isStarted = currentState === this.constructor.STATES.STARTED;
-              if(!isStarted) {
-                throw new Error(`Test «${id}» was already considered «${currentState}» and cannot promote it to «passed» on «LswTester.run»`);
-              }
-            }
-            Change_state_to_passed: {
-              this.$state.tests.all[indexTest].finishedAt = this.constructor.formatDate();
-              this.$state.tests.all[indexTest].currently = this.constructor.STATES.PASSED;
-              this.$state.tests.all[indexTest].took = this.constructor.getTimeDifferenceBetweenDates(this.$state.tests.all[indexTest].startedAt, this.$state.tests.all[indexTest].finishedAt);
-            }
-            Trigger_success_handler: {
-              await this.$handleTestSuccess(lastStartedTest);
-            }
-          } catch (error) {
-            let errorFeedback = undefined;
-            Change_state_to_failed: {
-              this.$state.tests.all[indexTest].finishedAt = this.constructor.formatDate();
-              this.$state.tests.all[indexTest].currently = this.constructor.STATES.FAILED;
-              this.$state.tests.all[indexTest].took = this.constructor.getTimeDifferenceBetweenDates(this.$state.tests.all[indexTest].startedAt, this.$state.tests.all[indexTest].finishedAt);
-              this.$state.tests.all[indexTest].failureReason = error instanceof Error ? `${error.name}: ${error.message}` : error;
-              console.log(error);
-            }
-            Trigger_error_handler: {
-              errorFeedback = await this.$handleTestError(error, lastStartedTest);
-            }
-            Interrupt_tests_if_handler_returns_0: {
-              if(errorFeedback === false) {
-                break Executing_tests;
-              }
-            }
-          }
+        if(!skipLoad) {
+          await this.load();
         }
+        await this.innerRun();
+        this.$isExecuted = true;
       } catch (error) {
-        this.$handleRunError(error);
+        console.error("[!] Failed «LswTester» on «run» phase with:", error);
+        throw error;
       } finally {
-        this.$state.finishedAt = this.constructor.formatDate();
-        if(typeof this.$options.finishHandler === "function") {
-          this.$options.finishHandler(this.getReport(), this);
-        }
         return this;
       }
     }
 
-    getReport() {
-      this.$trace("getReport");
-      let testResult = "passed";
-      for(let index=0; index<this.$state.tests.all.length; index++) {
-        const testObject = this.$state.tests.all[index];
-        const isOk = ["passed", "defined"].indexOf(testObject.currently) !== -1;
-        if(!isOk) {
-          testResult = testObject.currently;
-        }
-      }
-      const tookMilliseconds = this.constructor.getTimeDifferenceBetweenDates(this.$state.startedAt, this.$state.finishedAt);
-      return {
-        result: testResult,
-        took: tookMilliseconds,
-        ...this.$state,
-      };
+    getStatus() {
+      this.$trace("LswTester.getStatus");
+      return this.$composition;
     }
-
-    getReportAsJson(compressed = false) {
-      this.$trace("getReportAsJson");
-      const report = this.getReport();
-      if(!compressed) {
-        return JSON.stringify(report, null, 2);
-      } else {
-        return JSON.stringify(report);
-      }
-    }
-
-    static collection = this.run;
 
   };
+
+  LswTester.global = LswTester.create();
   // @code.end: LswTester API
 
   return LswTester;
 
 });
 
-// @vuebundler[Lsw_framework_components][19]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-tester/lsw-test-registry.js
-(function (factory) {
-  const mod = factory();
-  if (typeof window !== 'undefined') {
-    window['LswTestRegistry'] = mod;
-  }
-  if (typeof global !== 'undefined') {
-    global['LswTestRegistry'] = mod;
-  }
-  if (typeof module !== 'undefined') {
-    module.exports = mod;
-  }
-})(function () {
-  
-  // @code.start: LswTestRegistry API | @$section: LswTestRegistry API » LswTestRegistry classes and functions
-  const LswTestRegistry = class {
-
-    static create(...args) {
-      return new this(...args);
-    }
-
-    constructor() {
-      this.$tests = {};
-    }
-
-    define(id, callback) {
-      this.mustMiss(id);
-      this.$tests[id] = callback;
-    }
-
-    mustHave(id) {
-      if(typeof id !== "string") {
-        throw new Error(`Required parameter 1 «id=${id}» to be string in «$tests» on «LswTestRegistry.mustHave»`);
-      }
-      if(!(id in this.$tests)) {
-        throw new Error(`Required parameter 1 «id=${id}» to be an identifier in «$tests» on «LswTestRegistry.mustHave»`);
-      }
-    }
-
-    mustMiss(id) {
-      if(typeof id !== "string") {
-        throw new Error(`Required parameter 1 «id=${id}» to be string in «$tests» on «LswTestRegistry.mustMiss»`);
-      }
-      if(id in this.$tests) {
-        throw new Error(`Required parameter 1 «id=${id}» to NOT be an identifier in «$tests» on «LswTestRegistry.mustMiss»`);
-      }
-    }
-
-    pick(id) {
-      this.mustHave(id);
-      return this.$tests[id];
-    }
-
-    run(id) {
-      this.mustHave(id);
-      return this.$tests[id].call();
-    }
-
-    all() {
-      const allKeys = Object.keys(this.$tests);
-      const output = [];
-      for(let index=0; index<allKeys.length; index++) {
-        const key = allKeys[index];
-        const testCallback = this.$tests[key];
-        testCallback.$lswTestId = key;
-        output.push(testCallback);
-      }
-      return Object.values(this.$tests);
-    }
-
-    collect(id, testCallback) {
-      this.mustMiss(id);
-      const testSource = testCallback.toString();
-      const testFunction = new Function(`return LswTester.collection(${JSON.stringify(id)}, ${testSource});`)
-      this.$tests[id] = testFunction;
-      return {
-        [id]: testFunction.toString().length + " chars",
-      };
-    }
-
-  };
-
-  LswTestRegistry.defaultInstance = LswTestRegistry.create();
-
-  return LswTestRegistry.defaultInstance;
-  // @code.end: LswTestRegistry API
-
-});
-
-// @vuebundler[Lsw_framework_components][20]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-tester/lsw-tests.js
-(function (factory) {
-  const mod = factory();
-  if (typeof window !== 'undefined') {
-    window['LswTests'] = mod;
-  }
-  if (typeof global !== 'undefined') {
-    global['LswTests'] = mod;
-  }
-  if (typeof module !== 'undefined') {
-    module.exports = mod;
-  }
-})(function () {
-
-  // @code.start: LswTests API | @$section: LswTests API » LswTests classes and functions
-  
-  // Example of usage:
-  /* 
-  LswTestRegistry.collect("Lsw Fifth Test", async function (test) {
-    test("can wait 1 second", async function () {
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve();
-        }, 1000);
-      });
-    });
-  });
-  //*/
-
-  return LswTestRegistry;
-  // @code.end: LswTests API
-
-});
-
-// @vuebundler[Lsw_framework_components][21]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-dom/lsw-dom.js
+// @vuebundler[Lsw_framework_components][19]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-dom/lsw-dom.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -15405,8 +23509,8 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
       return matched.length ? matched[0] : null;
     }
 
-    static findVue(selector, matchingText = false) {
-      const all = document.querySelectorAll(selector);
+    static findVue(selector, matchingText = false, base = document) {
+      const all = base.querySelectorAll(selector);
       const matched = Array.from(all).filter(element => {
         if(!matchingText) {
           return true;
@@ -15475,7 +23579,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 
 });
 
-// @vuebundler[Lsw_framework_components][22]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-dom/lsw-dom-irruptor.js
+// @vuebundler[Lsw_framework_components][20]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-dom/lsw-dom-irruptor.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -15509,28 +23613,40 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
     }
     static async reportesDeCalendario() {
       LswDom.querySelectorFirst(".home_mobile_off_panel > .mobile_off_panel_cell", "📅").click();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button.nowrap", "📊").click();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button", "🔮 Iniciar conductometría").click();
       
     }
     static async abrirNavegacionRapida() {
-      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
+      LswDom.querySelectorFirst(".main_topbar_button", "📟").click();
     }
     static async abrirBinarios() {
-      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
-      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst(".main_topbar_button", "📟").click();
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst(".lista_apps div", "💣 Binarios").click();
     }
     static async abrirBaseDeDatos() {
-      LswDom.querySelectorFirst("div.mobile_off_panel_button", "📟").click();
-      await LswDom.waitForMilliseconds(100);
+      LswDom.querySelectorFirst(".main_topbar_button", "📟").click();
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("div", "📦 Base de datos").click();
+    }
+    static async abrirBaseDeDatosPorTabla(tabla) {
+      LswDom.querySelectorFirst(".main_topbar_button", "📟").click();
+      await LswDom.waitForMilliseconds(200);
+      LswDom.querySelectorFirst("div", "📦 Base de datos").click();
+      await LswDom.waitForMilliseconds(200);
+      LswDom.querySelectorFirst("span.table_name", tabla).click();
+    }
+    static async abrirBaseDeDatosPorNuevoDatoDeTabla(tabla) {
+      this.abrirBaseDeDatosPorTabla(tabla);
+      await LswDom.waitForMilliseconds(500);
+      LswDom.querySelectorFirst("button", "➕").click();
     }
     static async abrirAccionesVirtuales() {
       await this.abrirBaseDeDatos();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button", "Accion_virtual").click();
     }
     static async abrirTareasPosterioresDeNavegacionRapida() {
@@ -15543,17 +23659,17 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
     }
     static async configuraciones() {
       LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
     }
     static async abrirConfiguraciones() {
       LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button.main_tab_topbar_button", "🔧").click();
     }
     static async abrirFicheros() {
       LswDom.querySelectorFirst("#windows_pivot_button", "🔵").click();
-      await LswDom.waitForMilliseconds(100);
+      await LswDom.waitForMilliseconds(200);
       LswDom.querySelectorFirst("button.main_tab_topbar_button", "📂").click();
     }
     static async abrirWiki() {
@@ -15563,7 +23679,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
       await this.abrirWiki();
       await LswDom.waitForMilliseconds();
       Abrir_articulos: {
-        await LswDom.waitForMilliseconds(100);
+        await LswDom.waitForMilliseconds(200);
         LswDom.querySelectorFirst(".lsw_wiki button.supermini", "🔬").click();
         return;
       }
@@ -15572,7 +23688,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
       await this.abrirWiki();
       await LswDom.waitForMilliseconds();
       Abrir_libros: {
-        await LswDom.waitForMilliseconds(100);
+        await LswDom.waitForMilliseconds(200);
         LswDom.querySelectorFirst(".lsw_wiki button.supermini", "📚").click();
       }
     }
@@ -15603,14 +23719,14 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
       await this.abrirHomepage();
       Abrir_inspector: {
         await LswDom.waitForMilliseconds(1000);
-        LswDom.querySelectorFirst("div", "🪲 JS Inspector").click();
+        LswDom.querySelectorFirst("div", "🪲 Inspector de JS").click();
       }
     }
 
     static async abrirTestsDeAplicacion() {
       await this.abrirHomepage();
       Abrir_tests: {
-        await LswDom.waitForMilliseconds(100);
+        await LswDom.waitForMilliseconds(200);
         LswDom.querySelectorFirst("div", "✅ Tests de aplicación").click();
       }
     }
@@ -15618,7 +23734,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
     static async arrancarTestsDeAplicacion() {
       await this.abrirTestsDeAplicacion();
       Abrir_tests: {
-        await LswDom.waitForMilliseconds(100);
+        await LswDom.waitForMilliseconds(200);
         LswDom.querySelectorFirst("button", "▶️").click();
       }
     }
@@ -15686,65 +23802,801 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 
 });
 
-// @vuebundler[Lsw_framework_components][23]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-dom/lsw-vue2.js
-(function (factory) {
-  const mod = factory();
-  if (typeof window !== 'undefined') {
-    window['LswVue2'] = mod;
-  }
-  if (typeof global !== 'undefined') {
-    global['LswVue2'] = mod;
-  }
-  if (typeof module !== 'undefined') {
-    module.exports = mod;
-  }
-})(function () {
-
-  /**
-   * 
-   * 
-   * @$section: Lsw Vue2 API » LswVue2 class
-   * @type: class
-   * @extends: Object
-   * @vendor: lsw
-   * @namespace: LswVue2
-   * @source code: La clase está definida así:
-   * 
-   */
-  // @code.start: LswVue2 class | @section: Lsw Vue2 API » LswVue2 class
-  const LswVue2 = class {
-
-    static getClosestParent(component, filterCallback) {
-      $ensure(component).type("object");
-      $ensure(filterCallback).type("function");
-      let parentOf = component;
-      do {
-        parentOf = parentOf.$parent;
-        const isValid = filterCallback(parentOf);
-        if (isValid) {
-          return parentOf;
+// @vuebundler[Lsw_framework_components][21]=/home/carlos/Escritorio/lsw-one/src-instrumented/lsw-framework/src/apis/lsw-dom/lsw-vue2.instr.js
+function cov_2gk0e7d2ep() {
+    var path = "/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-dom/lsw-vue2.js";
+    var hash = "ac2cc2946cf46004d61805ec9cc560964c59a48c";
+    var global = new Function("return this")();
+    var gcv = "__coverage__";
+    var coverageData = {
+        path: "/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-dom/lsw-vue2.js",
+        statementMap: {
+            "0": {
+                start: {
+                    line: 1,
+                    column: 0
+                },
+                end: {
+                    line: 56,
+                    column: 3
+                }
+            },
+            "1": {
+                start: {
+                    line: 2,
+                    column: 14
+                },
+                end: {
+                    line: 2,
+                    column: 23
+                }
+            },
+            "2": {
+                start: {
+                    line: 3,
+                    column: 2
+                },
+                end: {
+                    line: 5,
+                    column: 3
+                }
+            },
+            "3": {
+                start: {
+                    line: 4,
+                    column: 4
+                },
+                end: {
+                    line: 4,
+                    column: 28
+                }
+            },
+            "4": {
+                start: {
+                    line: 6,
+                    column: 2
+                },
+                end: {
+                    line: 8,
+                    column: 3
+                }
+            },
+            "5": {
+                start: {
+                    line: 7,
+                    column: 4
+                },
+                end: {
+                    line: 7,
+                    column: 28
+                }
+            },
+            "6": {
+                start: {
+                    line: 9,
+                    column: 2
+                },
+                end: {
+                    line: 11,
+                    column: 3
+                }
+            },
+            "7": {
+                start: {
+                    line: 10,
+                    column: 4
+                },
+                end: {
+                    line: 10,
+                    column: 25
+                }
+            },
+            "8": {
+                start: {
+                    line: 26,
+                    column: 18
+                },
+                end: {
+                    line: 51,
+                    column: 3
+                }
+            },
+            "9": {
+                start: {
+                    line: 29,
+                    column: 6
+                },
+                end: {
+                    line: 29,
+                    column: 40
+                }
+            },
+            "10": {
+                start: {
+                    line: 30,
+                    column: 6
+                },
+                end: {
+                    line: 30,
+                    column: 47
+                }
+            },
+            "11": {
+                start: {
+                    line: 31,
+                    column: 21
+                },
+                end: {
+                    line: 31,
+                    column: 30
+                }
+            },
+            "12": {
+                start: {
+                    line: 32,
+                    column: 6
+                },
+                end: {
+                    line: 38,
+                    column: 48
+                }
+            },
+            "13": {
+                start: {
+                    line: 33,
+                    column: 8
+                },
+                end: {
+                    line: 33,
+                    column: 36
+                }
+            },
+            "14": {
+                start: {
+                    line: 34,
+                    column: 24
+                },
+                end: {
+                    line: 34,
+                    column: 48
+                }
+            },
+            "15": {
+                start: {
+                    line: 35,
+                    column: 8
+                },
+                end: {
+                    line: 37,
+                    column: 9
+                }
+            },
+            "16": {
+                start: {
+                    line: 36,
+                    column: 10
+                },
+                end: {
+                    line: 36,
+                    column: 26
+                }
+            },
+            "17": {
+                start: {
+                    line: 39,
+                    column: 6
+                },
+                end: {
+                    line: 39,
+                    column: 23
+                }
+            },
+            "18": {
+                start: {
+                    line: 43,
+                    column: 32
+                },
+                end: {
+                    line: 43,
+                    column: 64
+                }
+            },
+            "19": {
+                start: {
+                    line: 44,
+                    column: 6
+                },
+                end: {
+                    line: 44,
+                    column: 77
+                }
+            },
+            "20": {
+                start: {
+                    line: 45,
+                    column: 6
+                },
+                end: {
+                    line: 45,
+                    column: 81
+                }
+            },
+            "21": {
+                start: {
+                    line: 46,
+                    column: 6
+                },
+                end: {
+                    line: 46,
+                    column: 77
+                }
+            },
+            "22": {
+                start: {
+                    line: 47,
+                    column: 6
+                },
+                end: {
+                    line: 47,
+                    column: 83
+                }
+            },
+            "23": {
+                start: {
+                    line: 48,
+                    column: 6
+                },
+                end: {
+                    line: 48,
+                    column: 31
+                }
+            },
+            "24": {
+                start: {
+                    line: 54,
+                    column: 2
+                },
+                end: {
+                    line: 54,
+                    column: 17
+                }
+            }
+        },
+        fnMap: {
+            "0": {
+                name: "(anonymous_0)",
+                decl: {
+                    start: {
+                        line: 1,
+                        column: 1
+                    },
+                    end: {
+                        line: 1,
+                        column: 2
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 1,
+                        column: 20
+                    },
+                    end: {
+                        line: 12,
+                        column: 1
+                    }
+                },
+                line: 1
+            },
+            "1": {
+                name: "(anonymous_1)",
+                decl: {
+                    start: {
+                        line: 12,
+                        column: 3
+                    },
+                    end: {
+                        line: 12,
+                        column: 4
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 12,
+                        column: 15
+                    },
+                    end: {
+                        line: 56,
+                        column: 1
+                    }
+                },
+                line: 12
+            },
+            "2": {
+                name: "(anonymous_2)",
+                decl: {
+                    start: {
+                        line: 28,
+                        column: 4
+                    },
+                    end: {
+                        line: 28,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 28,
+                        column: 55
+                    },
+                    end: {
+                        line: 40,
+                        column: 5
+                    }
+                },
+                line: 28
+            },
+            "3": {
+                name: "(anonymous_3)",
+                decl: {
+                    start: {
+                        line: 42,
+                        column: 4
+                    },
+                    end: {
+                        line: 42,
+                        column: 5
+                    }
+                },
+                loc: {
+                    start: {
+                        line: 42,
+                        column: 47
+                    },
+                    end: {
+                        line: 49,
+                        column: 5
+                    }
+                },
+                line: 42
+            }
+        },
+        branchMap: {
+            "0": {
+                loc: {
+                    start: {
+                        line: 3,
+                        column: 2
+                    },
+                    end: {
+                        line: 5,
+                        column: 3
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 3,
+                        column: 2
+                    },
+                    end: {
+                        line: 5,
+                        column: 3
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 3
+            },
+            "1": {
+                loc: {
+                    start: {
+                        line: 6,
+                        column: 2
+                    },
+                    end: {
+                        line: 8,
+                        column: 3
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 6,
+                        column: 2
+                    },
+                    end: {
+                        line: 8,
+                        column: 3
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 6
+            },
+            "2": {
+                loc: {
+                    start: {
+                        line: 9,
+                        column: 2
+                    },
+                    end: {
+                        line: 11,
+                        column: 3
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 9,
+                        column: 2
+                    },
+                    end: {
+                        line: 11,
+                        column: 3
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 9
+            },
+            "3": {
+                loc: {
+                    start: {
+                        line: 35,
+                        column: 8
+                    },
+                    end: {
+                        line: 37,
+                        column: 9
+                    }
+                },
+                type: "if",
+                locations: [{
+                    start: {
+                        line: 35,
+                        column: 8
+                    },
+                    end: {
+                        line: 37,
+                        column: 9
+                    }
+                }, {
+                    start: {
+                        line: undefined,
+                        column: undefined
+                    },
+                    end: {
+                        line: undefined,
+                        column: undefined
+                    }
+                }],
+                line: 35
+            },
+            "4": {
+                loc: {
+                    start: {
+                        line: 42,
+                        column: 27
+                    },
+                    end: {
+                        line: 42,
+                        column: 45
+                    }
+                },
+                type: "default-arg",
+                locations: [{
+                    start: {
+                        line: 42,
+                        column: 43
+                    },
+                    end: {
+                        line: 42,
+                        column: 45
+                    }
+                }],
+                line: 42
+            },
+            "5": {
+                loc: {
+                    start: {
+                        line: 44,
+                        column: 50
+                    },
+                    end: {
+                        line: 44,
+                        column: 75
+                    }
+                },
+                type: "binary-expr",
+                locations: [{
+                    start: {
+                        line: 44,
+                        column: 50
+                    },
+                    end: {
+                        line: 44,
+                        column: 69
+                    }
+                }, {
+                    start: {
+                        line: 44,
+                        column: 73
+                    },
+                    end: {
+                        line: 44,
+                        column: 75
+                    }
+                }],
+                line: 44
+            },
+            "6": {
+                loc: {
+                    start: {
+                        line: 45,
+                        column: 52
+                    },
+                    end: {
+                        line: 45,
+                        column: 79
+                    }
+                },
+                type: "binary-expr",
+                locations: [{
+                    start: {
+                        line: 45,
+                        column: 52
+                    },
+                    end: {
+                        line: 45,
+                        column: 73
+                    }
+                }, {
+                    start: {
+                        line: 45,
+                        column: 77
+                    },
+                    end: {
+                        line: 45,
+                        column: 79
+                    }
+                }],
+                line: 45
+            },
+            "7": {
+                loc: {
+                    start: {
+                        line: 46,
+                        column: 50
+                    },
+                    end: {
+                        line: 46,
+                        column: 75
+                    }
+                },
+                type: "binary-expr",
+                locations: [{
+                    start: {
+                        line: 46,
+                        column: 50
+                    },
+                    end: {
+                        line: 46,
+                        column: 69
+                    }
+                }, {
+                    start: {
+                        line: 46,
+                        column: 73
+                    },
+                    end: {
+                        line: 46,
+                        column: 75
+                    }
+                }],
+                line: 46
+            },
+            "8": {
+                loc: {
+                    start: {
+                        line: 47,
+                        column: 53
+                    },
+                    end: {
+                        line: 47,
+                        column: 81
+                    }
+                },
+                type: "binary-expr",
+                locations: [{
+                    start: {
+                        line: 47,
+                        column: 53
+                    },
+                    end: {
+                        line: 47,
+                        column: 75
+                    }
+                }, {
+                    start: {
+                        line: 47,
+                        column: 79
+                    },
+                    end: {
+                        line: 47,
+                        column: 81
+                    }
+                }],
+                line: 47
+            }
+        },
+        s: {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "5": 0,
+            "6": 0,
+            "7": 0,
+            "8": 0,
+            "9": 0,
+            "10": 0,
+            "11": 0,
+            "12": 0,
+            "13": 0,
+            "14": 0,
+            "15": 0,
+            "16": 0,
+            "17": 0,
+            "18": 0,
+            "19": 0,
+            "20": 0,
+            "21": 0,
+            "22": 0,
+            "23": 0,
+            "24": 0
+        },
+        f: {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0
+        },
+        b: {
+            "0": [0, 0],
+            "1": [0, 0],
+            "2": [0, 0],
+            "3": [0, 0],
+            "4": [0],
+            "5": [0, 0],
+            "6": [0, 0],
+            "7": [0, 0],
+            "8": [0, 0]
+        },
+        _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+        hash: "ac2cc2946cf46004d61805ec9cc560964c59a48c"
+    };
+    var coverage = global[gcv] || (global[gcv] = {});
+    if (!coverage[path] || coverage[path].hash !== hash) {
+        coverage[path] = coverageData;
+    }
+    var actualCoverage = coverage[path];
+    { // @ts-ignore
+        cov_2gk0e7d2ep = function() {
+            return actualCoverage;
+        };
+    }
+    return actualCoverage;
+}
+cov_2gk0e7d2ep();
+cov_2gk0e7d2ep().s[0]++;
+(function(factory) {
+    cov_2gk0e7d2ep().f[0]++;
+    const mod = (cov_2gk0e7d2ep().s[1]++, factory());
+    cov_2gk0e7d2ep().s[2]++;
+    if (typeof window !== 'undefined') {
+        cov_2gk0e7d2ep().b[0][0]++;
+        cov_2gk0e7d2ep().s[3]++;
+        window['LswVue2'] = mod;
+    } else {
+        cov_2gk0e7d2ep().b[0][1]++;
+    }
+    cov_2gk0e7d2ep().s[4]++;
+    if (typeof global !== 'undefined') {
+        cov_2gk0e7d2ep().b[1][0]++;
+        cov_2gk0e7d2ep().s[5]++;
+        global['LswVue2'] = mod;
+    } else {
+        cov_2gk0e7d2ep().b[1][1]++;
+    }
+    cov_2gk0e7d2ep().s[6]++;
+    if (typeof module !== 'undefined') {
+        cov_2gk0e7d2ep().b[2][0]++;
+        cov_2gk0e7d2ep().s[7]++;
+        module.exports = mod;
+    } else {
+        cov_2gk0e7d2ep().b[2][1]++;
+    }
+})(function() {
+    cov_2gk0e7d2ep().f[1]++;
+    cov_2gk0e7d2ep().s[8]++;
+    /**
+     * 
+     * 
+     * @$section: Lsw Vue2 API » LswVue2 class
+     * @type: class
+     * @extends: Object
+     * @vendor: lsw
+     * @namespace: LswVue2
+     * @source code: La clase está definida así:
+     * 
+     */ // @code.start: LswVue2 class | @section: Lsw Vue2 API » LswVue2 class
+    const LswVue2 = class {
+        static getClosestParent(component, filterCallback) {
+            cov_2gk0e7d2ep().f[2]++;
+            cov_2gk0e7d2ep().s[9]++;
+            $ensure(component).type("object");
+            cov_2gk0e7d2ep().s[10]++;
+            $ensure(filterCallback).type("function");
+            let parentOf = (cov_2gk0e7d2ep().s[11]++, component);
+            cov_2gk0e7d2ep().s[12]++;
+            do {
+                cov_2gk0e7d2ep().s[13]++;
+                parentOf = parentOf.$parent;
+                const isValid = (cov_2gk0e7d2ep().s[14]++, filterCallback(parentOf));
+                cov_2gk0e7d2ep().s[15]++;
+                if (isValid) {
+                    cov_2gk0e7d2ep().b[3][0]++;
+                    cov_2gk0e7d2ep().s[16]++;
+                    return parentOf;
+                } else {
+                    cov_2gk0e7d2ep().b[3][1]++;
+                }
+            } while (typeof parentOf !== "undefined");
+            cov_2gk0e7d2ep().s[17]++;
+            return undefined;
         }
-      } while (typeof parentOf !== "undefined");
-      return undefined;
-    }
-
-    static extendComponent(baseComponent = {}) {
-      const extendedComponent = Object.assign({}, baseComponent);
-      extendedComponent.props = Object.assign({}, baseComponent.props || {});
-      extendedComponent.methods = Object.assign({}, baseComponent.methods || {});
-      extendedComponent.watch = Object.assign({}, baseComponent.watch || {});
-      extendedComponent.computed = Object.assign({}, baseComponent.computed || {});
-      return extendedComponent;
-    }
-
-  }
-  // @code.end: LswVue2 class
-
-  return LswVue2;
-
+        static extendComponent(baseComponent = (cov_2gk0e7d2ep().b[4][0]++, {})) {
+            cov_2gk0e7d2ep().f[3]++;
+            const extendedComponent = (cov_2gk0e7d2ep().s[18]++, Object.assign({}, baseComponent));
+            cov_2gk0e7d2ep().s[19]++;
+            extendedComponent.props = Object.assign({}, (cov_2gk0e7d2ep().b[5][0]++, baseComponent.props) || (cov_2gk0e7d2ep().b[5][1]++, {}));
+            cov_2gk0e7d2ep().s[20]++;
+            extendedComponent.methods = Object.assign({}, (cov_2gk0e7d2ep().b[6][0]++, baseComponent.methods) || (cov_2gk0e7d2ep().b[6][1]++, {}));
+            cov_2gk0e7d2ep().s[21]++;
+            extendedComponent.watch = Object.assign({}, (cov_2gk0e7d2ep().b[7][0]++, baseComponent.watch) || (cov_2gk0e7d2ep().b[7][1]++, {}));
+            cov_2gk0e7d2ep().s[22]++;
+            extendedComponent.computed = Object.assign({}, (cov_2gk0e7d2ep().b[8][0]++, baseComponent.computed) || (cov_2gk0e7d2ep().b[8][1]++, {}));
+            cov_2gk0e7d2ep().s[23]++;
+            return extendedComponent;
+        }
+    }; // @code.end: LswVue2 class
+    cov_2gk0e7d2ep().s[24]++;
+    return LswVue2;
 });
 
-// @vuebundler[Lsw_framework_components][24]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxifier/proxifier.unbundled.js
+// @vuebundler[Lsw_framework_components][22]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxifier/proxifier.unbundled.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -15990,7 +24842,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 
 });
 
-// @vuebundler[Lsw_framework_components][25]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-randomizer/lsw-randomizer.js
+// @vuebundler[Lsw_framework_components][23]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-randomizer/lsw-randomizer.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -16071,7 +24923,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 
 });
 
-// @vuebundler[Lsw_framework_components][26]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-agenda-randomizer/lsw-agenda-randomizer.js
+// @vuebundler[Lsw_framework_components][24]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-agenda-randomizer/lsw-agenda-randomizer.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -16305,7 +25157,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 
 });
 
-// @vuebundler[Lsw_framework_components][27]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-agenda-randomizer/lsw-agenda-randomizer-reglas.js
+// @vuebundler[Lsw_framework_components][25]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-agenda-randomizer/lsw-agenda-randomizer-reglas.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -16356,7 +25208,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 
 });
 
-// @vuebundler[Lsw_framework_components][28]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-circuiter/async-circuit.js
+// @vuebundler[Lsw_framework_components][26]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-circuiter/async-circuit.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -16468,7 +25320,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 });
 
 
-// @vuebundler[Lsw_framework_components][29]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-commander/url-command.js
+// @vuebundler[Lsw_framework_components][27]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-commander/url-command.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -16611,7 +25463,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 
 
 
-// @vuebundler[Lsw_framework_components][30]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-trigger/triggers-class.js
+// @vuebundler[Lsw_framework_components][28]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-trigger/triggers-class.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -16718,7 +25570,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 
 });
 
-// @vuebundler[Lsw_framework_components][31]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-database/browsie.unbundled.js
+// @vuebundler[Lsw_framework_components][29]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-database/browsie.unbundled.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -17899,7 +26751,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 
 });
 
-// @vuebundler[Lsw_framework_components][32]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-database-query-language/browsie-script.js
+// @vuebundler[Lsw_framework_components][30]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-database-query-language/browsie-script.js
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -21291,7 +30143,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 })(typeof window !== 'undefined' ? window : global);
 
 
-// @vuebundler[Lsw_framework_components][33]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-database-query-language/lsw-database-query-language.js
+// @vuebundler[Lsw_framework_components][31]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-database-query-language/lsw-database-query-language.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -21331,7 +30183,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 
 });
 
-// @vuebundler[Lsw_framework_components][34]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-logger/superlogger.unbundled.js
+// @vuebundler[Lsw_framework_components][32]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-logger/superlogger.unbundled.js
 (function (factory) {
   const mod = factory();
   /* istanbul ignore next */
@@ -21564,7 +30416,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
   return Superlogger;
 });
 
-// @vuebundler[Lsw_framework_components][35]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-returner/controlled-function.js
+// @vuebundler[Lsw_framework_components][33]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-returner/controlled-function.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -21714,7 +30566,7 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 });
 
 
-// @vuebundler[Lsw_framework_components][36]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-store/dist/store.unbundled.js
+// @vuebundler[Lsw_framework_components][34]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-store/dist/store.unbundled.js
 (function (factory) {
 
   const mod = factory();
@@ -21940,7 +30792,7 @@ return Store;
 });
 
 
-// @vuebundler[Lsw_framework_components][37]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-timer/lsw-timer.bundled.js
+// @vuebundler[Lsw_framework_components][35]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-timer/lsw-timer.bundled.js
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -23271,7 +32123,7 @@ return Store;
     return `${hora}:${minuto}`;
   };
 
-  LswTimer.utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false, setOnlyHour = false) {
+  LswTimer.utils.formatDatestringFromDate = function (dateObject, setUntilDay = false, setMeridian = false, setSeconds = false, setOnlyHour = false, setMilliseconds = false) {
     if (typeof dateObject === "undefined") {
       return undefined;
     }
@@ -23284,7 +32136,11 @@ return Store;
     const hora = ("" + (dateObject.getHours() ?? 0)).padStart(2, '0');
     const minuto = ("" + (dateObject.getMinutes() ?? 0)).padStart(2, '0');
     const segundo = setSeconds ? ("" + (dateObject.getSeconds() ?? 0)).padStart(2, '0') : false;
-    const laHora = `${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
+    let milisegundo = false;
+    if(setMilliseconds) {
+      milisegundo = dateObject.getMilliseconds();
+    }
+    const laHora = `${hora}:${minuto}${typeof segundo !== "boolean" ? (':' + segundo) : ''}${milisegundo ? '.' + milisegundo : ''}${setMeridian ? hora >= 12 ? 'pm' : 'am' : ''}`;
     if (setOnlyHour) {
       return laHora;
     }
@@ -23565,9 +32421,6 @@ return Store;
   };
 
   LswTimer.utils.fromMillisecondsToDurationstring = function (ms) {
-    if(ms === 0) {
-      return "0min";
-    }
     const units = {
       y: 1000 * 60 * 60 * 24 * 365,
       mon: 1000 * 60 * 60 * 24 * 30,
@@ -23603,7 +32456,50 @@ return Store;
 });
 
 
-// @vuebundler[Lsw_framework_components][38]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-intruder/lsw-intruder.js
+// @vuebundler[Lsw_framework_components][36]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-temporizer/lsw-temporizer.js
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswTemporizer'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswTemporizer'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+  
+  const LswTemporizer = class {
+
+    static create(...args) {
+      return new this(...args);
+    }
+
+    constructor(startTime = new Date()) {
+      this.started = startTime;
+    }
+
+    start() {
+      this.started = new Date();
+      return this;
+    }
+
+    getTime(inMilliseconds = false) {
+      const timeDiff = (new Date()) - this.started;
+      if(inMilliseconds) {
+        return timeDiff;
+      }
+      return timeDiff / 1000;
+    }
+
+  }
+
+  return LswTemporizer;
+
+});
+
+// @vuebundler[Lsw_framework_components][37]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-intruder/lsw-intruder.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -23708,7 +32604,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][39]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-cycler/lsw-cycler.js
+// @vuebundler[Lsw_framework_components][38]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-cycler/lsw-cycler.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -23814,7 +32710,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][40]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-lifecycle/lsw-lifecycle.js
+// @vuebundler[Lsw_framework_components][39]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-lifecycle/lsw-lifecycle.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -24111,7 +33007,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][41]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-compromiser/lsw-compromiser.js
+// @vuebundler[Lsw_framework_components][40]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-compromiser/lsw-compromiser.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -24231,7 +33127,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][42]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-utils/lsw-utils.js
+// @vuebundler[Lsw_framework_components][41]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-utils/lsw-utils.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -24890,7 +33786,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][43]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-filesystem/ufs-v1.0.2.js
+// @vuebundler[Lsw_framework_components][42]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-filesystem/ufs-v1.0.2.js
 /*
   @artifact:     Independent artifact
   @feature:      node and browser
@@ -25625,7 +34521,7 @@ return Store;
 });
 
 
-// @vuebundler[Lsw_framework_components][44]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-filesystem/lsw-filesystem.unbundled.js
+// @vuebundler[Lsw_framework_components][43]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-filesystem/lsw-filesystem.unbundled.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -25895,7 +34791,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][45]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-schema/lsw-schema.js
+// @vuebundler[Lsw_framework_components][44]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-schema/lsw-schema.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -26218,7 +35114,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][46]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-class-register/lsw-class-register.js
+// @vuebundler[Lsw_framework_components][45]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-class-register/lsw-class-register.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -26294,7 +35190,7 @@ return Store;
   return LswClassRegister;
 });
 
-// @vuebundler[Lsw_framework_components][47]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-database-virtualizer/lsw-database-virtualizer.js
+// @vuebundler[Lsw_framework_components][46]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-database-virtualizer/lsw-database-virtualizer.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -26506,7 +35402,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][48]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-depender/lsw-depender.js
+// @vuebundler[Lsw_framework_components][47]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-depender/lsw-depender.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -26662,7 +35558,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][49]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-error-handler/lsw-error-handler.js
+// @vuebundler[Lsw_framework_components][48]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-error-handler/lsw-error-handler.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -26719,7 +35615,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][50]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-backuper/lsw-backuper.js
+// @vuebundler[Lsw_framework_components][49]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-backuper/lsw-backuper.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -26784,7 +35680,7 @@ return Store;
 
 });
 
-// @vuebundler[Lsw_framework_components][51]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-typer/lsw-typer.js
+// @vuebundler[Lsw_framework_components][50]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-typer/lsw-typer.js
 (function(factory) {
   const mod = factory();
   if(typeof window !== 'undefined') {
@@ -28439,7 +37335,7 @@ $lswTyper.define("org.allnulled.lsw/type/moment.js", function(input) {
 });
 
 
-// @vuebundler[Lsw_framework_components][52]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-microdata-bank/lsw-microdata-bank.js
+// @vuebundler[Lsw_framework_components][51]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-microdata-bank/lsw-microdata-bank.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -28673,6 +37569,120 @@ $lswTyper.define("org.allnulled.lsw/type/moment.js", function(input) {
   };
 
   return LswMicrodataBank;
+
+});
+
+// @vuebundler[Lsw_framework_components][52]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-books/lsw-books.js
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswBooks'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswBooks'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+
+  const PickableCommon = class {
+    
+    static for(...args) {
+      return new this(...args);
+    }
+
+    constructor(table) {
+      this.$table = table;
+    }
+
+    static normalizeStrangeSymbols(txt, onlyLowers = true) {
+      if(onlyLowers) {
+        return txt
+          .toLowerCase()
+          .trim()
+          .replaceAll("á", "a")
+          .replaceAll("é", "e")
+          .replaceAll("i", "i")
+          .replaceAll("ó", "o")
+          .replaceAll("ú", "u");
+      }
+      return txt
+        .toLowerCase()
+        .trim()
+        .replaceAll("Á", "A")
+        .replaceAll("É", "E")
+        .replaceAll("Í", "I")
+        .replaceAll("Ó", "O")
+        .replaceAll("Ú", "U")
+        .replaceAll("á", "a")
+        .replaceAll("é", "e")
+        .replaceAll("i", "i")
+        .replaceAll("ó", "o")
+        .replaceAll("ú", "u");
+    }
+
+  };
+
+  const PickableSingular = class extends PickableCommon {
+
+    byName(name) {
+      return Vue.prototype.$lsw.database.selectFirst(this.$table, it => it.tiene_titulo === name);
+    }
+
+    byId(id) {
+      return Vue.prototype.$lsw.database.selectFirst(this.$table, it => it.id === id);
+    }
+
+  };
+
+  const PickablePlural = class extends PickableCommon {
+
+    all() {
+      return Vue.prototype.$lsw.database.selectMany(this.$table);
+    }
+
+    where(callback) {
+      return Vue.prototype.$lsw.database.selectMany(this.$table, callback);
+    }
+
+    byCategory(category) {
+      const categoryNormalized = this.constructor.normalizeStrangeSymbols(category);
+      return Vue.prototype.$lsw.database.selectMany(this.$table, it => it.tiene_categorias.split(";").reduce((out, itsCategory) => {
+        const itsCategoryNormalized = this.constructor.normalizeStrangeSymbols(itsCategory);
+        return out = out || (itsCategoryNormalized === categoryNormalized);
+      }, false));
+    }
+
+  };
+
+  const LswBooks = class {
+
+    static pick = {
+      note: PickableSingular.for("Nota"),
+      notes: PickablePlural.for("Nota"),
+      article: PickableSingular.for("Articulo"),
+      articles: PickablePlural.for("Articulo"),
+    };
+
+    static toMarkdown(listOrItem, prop = "tiene_contenido") {
+      if(Array.isArray(listOrItem)) {
+        const output = [];
+        for(let index=0; index<listOrItem.length; index++) {
+          const item = listOrItem[index];
+          const markableText = this.toMarkdown(item, prop);
+          output.push(markableText);
+        }
+        return output.join("\n");
+      } else if(typeof listOrItem === "object") {
+        return marked.parse(listOrItem[prop]);
+      }
+      throw new Error("Required parameter 1 «listOrItem» to be an array or an object on «LswBooks.toMarkdown»");
+    }
+
+  };
+
+  return LswBooks;
 
 });
 
@@ -29618,9 +38628,579 @@ Vue.component("LswSourceable", {
 
 // @vuebundler[Lsw_framework_components][58]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-sourceable/lsw-sourceable.css
 
-// @vuebundler[Lsw_framework_components][59]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-calendario/lsw-calendario.html
+// @vuebundler[Lsw_framework_components][59]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-debugger/lsw-debugger.api.js
+(function (factory) {
+  const mod = factory();
+  if (typeof window !== 'undefined') {
+    window['LswDebugger'] = mod;
+  }
+  if (typeof global !== 'undefined') {
+    global['LswDebugger'] = mod;
+  }
+  if (typeof module !== 'undefined') {
+    module.exports = mod;
+  }
+})(function () {
+  
+  const LswDebugger = class {
 
-// @vuebundler[Lsw_framework_components][59]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-calendario/lsw-calendario.js
+    static create(...args) {
+      return new this(...args);
+    }
+
+    constructor(component) {
+      this.$component = component;
+    }
+
+    debug(...args) {
+      return this.$component.debug(...args);
+    }
+
+  };
+
+  return LswDebugger;
+
+});
+
+// @vuebundler[Lsw_framework_components][60]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-debugger/lsw-debugger.html
+
+// @vuebundler[Lsw_framework_components][60]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-debugger/lsw-debugger.js
+// @code.start: LswDebugger API | @$section: Vue.js (v2) Components » LswDebugger component
+Vue.component("LswDebugger", {
+  template: `<div class="lsw_debugger">
+    <div class="lsw_debugger_container"
+        v-if="currentMessages.length">
+        <div class="lsw_debugger_content pad_2 position_relative">
+            <div class="dialog_window process_manager_window"
+                style="z-index: 501;">
+                <div class="dialog_topbar">
+                    <div class="dialog_title">
+                        <div>Live debugger</div>
+                    </div>
+                    <div class="dialog_topbar_buttons">
+                        <button class="mini"
+                            v-on:click="clearMessages">❌</button>
+                    </div>
+                </div>
+                <div class="dialog_body">
+                    <div class="lsw_debugger_message"
+                        v-for="data, dataIndex in currentMessages"
+                        v-bind:key="'debugger_data_' + dataIndex">
+                        <div class=""
+                            v-if="data.title">{{ data.title }}</div>
+                        <div class="pad_bottom_1">
+                            <div class="pad_top_1 pad_horizontal_1">
+                                <span class="smallest_font"> [{{ data.created_at }}] </span>
+                                <span class=""> ({{ typeof data.data }}) </span>
+                                <span class="smallest_font"> [for {{ (data.timeout/1000).toFixed(3) }}s]: </span>
+                            </div>
+                            <div class="pad_top_1 pad_horizontal_1">
+                                <span class="font_weight_bold"> {{ data.data }} </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dialog_footer">
+                    <button class="mini"
+                        v-on:click="clearMessages">❌ Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`,
+  props: {
+    
+  },
+  data() {
+    this.$trace("lsw-error-box.data");
+    return {
+      currentMessages: [],
+    };
+  },
+  methods: {
+    debug(data, options = {}) {
+      this.$trace("lsw-debugger.methods.debug");
+      const id = options.id || LswRandomizer.getRandomString(10);
+      const timeout = options.timeout || 3000;
+      const timeoutId = setTimeout(() => {
+        const pos = this.currentMessages.findIndex(it => it.id === id);
+        if(pos === -1) return;
+        this.currentMessages.splice(pos, 1);
+        this.$forceUpdate(true);
+      }, timeout);
+      this.currentMessages.unshift({
+        id,
+        data: data,
+        options,
+        timeout,
+        timeoutId,
+        created_at: LswTimer.utils.fromDateToDatestring(new Date(), 0, 0, 1, 0, 1),
+      });
+    },
+    clearMessages() {
+      this.$trace("lsw-debugger.methods.clearMessages");
+      this.currentMessages = [];
+    }
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-error-box.mounted");
+      LswDebugger.global = LswDebugger.create(this);
+      this.$debugger = LswDebugger.global;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswDebugger API
+
+// @vuebundler[Lsw_framework_components][60]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-debugger/lsw-debugger.css
+
+// @vuebundler[Lsw_framework_components][61]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-coverage-viewer/lsw-coverage-viewer.html
+
+// @vuebundler[Lsw_framework_components][61]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-coverage-viewer/lsw-coverage-viewer.js
+Vue.component("LswCoverageViewer", {
+  template: `<div class="coverage-report">
+
+    <table class="width_100">
+        <tbody>
+            <tr class="nowrap">
+                <td class="width_100"></td>
+                <td>🥊S</td>
+                <td>🌲B</td>
+                <td>💈F</td>
+                <td>📏L</td>
+            </tr>
+        </tbody>
+        <tbody>
+            <template v-for="(coverageItem, file) in coverageData">
+                <tr class=""
+                    style="color: black;"
+                    v-bind:key="'row_overview_file_' + file">
+                    <td class="" style="color: white;">
+                        📜 <span class="small_font like_link" v-on:click="() => selectFile(file)">{{ getPathRelativeToProject(file) }}</span>
+                    </td>
+                    <td class="small_font coverage_report_status_box" :class="coverageClass(calcPercent(coverageItem.s, coverageItem.statementMap))">
+                        {{ calcPercent(coverageItem.s, coverageItem.statementMap) }}%
+                    </td>
+                    <td class="small_font coverage_report_status_box" :class="coverageClass(calcPercent(coverageItem.b, coverageItem.branchMap))">
+                        {{ calcPercent(coverageItem.b, coverageItem.branchMap) }}%
+                    </td>
+                    <td class="small_font coverage_report_status_box" :class="coverageClass(calcPercent(coverageItem.f, coverageItem.fnMap))">
+                        {{ calcPercent(coverageItem.f, coverageItem.fnMap) }}%
+                    </td>
+                    <td class="small_font coverage_report_status_box" :class="coverageClass(calcLineCoverage(coverageItem))">
+                        {{ calcLineCoverage(coverageItem) }}%
+                    </td>
+                </tr>
+                <tr class=""
+                    style="color: black;"
+                    v-bind:key="'row_sourcecode_file_' + file"
+                    v-if="selectedFiles.indexOf(file) !== -1">
+                    <td colspan="100" v-if="typeof sourceCodeOf[file] === 'string'">
+                        <lsw-js-file-coverage-viewer :source="sourceCodeOf[file]" :coverage="coverageItem" />
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+
+</div>`,
+  data() {
+    return {
+      COVERAGE_TARGET_DIR: "/home/carlos/Escritorio/lsw-one/src/",
+      coverageData: null,
+      sourceCodeOf: {},
+      selectedFiles: [],
+    };
+  },
+  methods: {
+    async selectFile(fileBrute) {
+      const pos = this.selectedFiles.indexOf(fileBrute);
+      const fileRelative = this.getPathRelativeToProject(fileBrute);
+      if(pos === -1) {
+        const contenido = await importer.text("assets/coverage/" + fileRelative);
+        this.selectedFiles.push(fileBrute);
+        this.sourceCodeOf[fileBrute] = contenido;
+      } else {
+        this.selectedFiles.splice(pos, 1);
+      }
+    },
+    calcPercent(counts, map) {
+      this.$trace("lsw-coverage-viewer.methods.calcPercent");
+      const total = Object.keys(map).length;
+      const covered = Object.values(counts).filter(c => {
+        if (Array.isArray(c)) return c.every(x => x > 0); // for branches
+        return c > 0;
+      }).length;
+      return this.cleanDecimals(total > 0 ? ((covered / total) * 100).toFixed(1) : '0.0');
+    },
+    calcLineCoverage(data) {
+      this.$trace("lsw-coverage-viewer.methods.calcLineCoverage");
+      // basic estimation using statementMap line numbers
+      const lines = new Set();
+      for (let key in data.statementMap) {
+        lines.add(data.statementMap[key].start.line);
+      }
+      const covered = new Set();
+      for (let key in data.s) {
+        if (data.s[key] > 0) {
+          covered.add(data.statementMap[key].start.line);
+        }
+      }
+      return this.cleanDecimals(lines.size > 0 ? ((covered.size / lines.size) * 100).toFixed(1) : '0.0');
+    },
+    cleanDecimals(input) {
+      this.$trace("lsw-coverage-viewer.methods.cleanDecimals");
+      return (input + "").replace(/0+$/g, "").replace(/\.$/g, "");
+    },
+    coverageClass(percentStr) {
+      this.$trace("lsw-coverage-viewer.methods.coverageClass");
+      const percent = parseFloat(percentStr);
+      if (percent >= 85) return 'high';
+      if (percent >= 40) return 'medium';
+      return 'low';
+    },
+    getPathRelativeToProject(file) {
+      this.$trace("lsw-coverage-viewer.methods.getPathRelativeToProject");
+      return file.replace(this.COVERAGE_TARGET_DIR, "");
+    },
+    async openFile(file) {
+      this.$trace("lsw-coverage-viewer.methods.openFile");
+      const relativeFile = this.getPathRelativeToProject(file);
+      console.log(relativeFile);
+      
+    }
+  },
+  mounted() {
+    this.$trace("lsw-coverage-viewer.mounted");
+    if (typeof window.__coverage__ !== 'undefined') {
+      this.coverageData = window.__coverage__;
+    }
+    window.$cov = this;
+  },
+});
+
+// @vuebundler[Lsw_framework_components][61]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-coverage-viewer/lsw-coverage-viewer.css
+
+// @vuebundler[Lsw_framework_components][62]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-file-coverage-viewer/lsw-js-file-coverage-viewer.html
+
+// @vuebundler[Lsw_framework_components][62]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-file-coverage-viewer/lsw-js-file-coverage-viewer.js
+/*
+// @code.start: LswJsFileCoverageViewer API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswJsFileCoverageViewer component
+Vue.component("LswJsFileCoverageViewer", {
+  template: $ template,
+  props: {
+    source: {
+      type: String,
+      required: true,
+    },
+    coverage: {
+      type: [Object, Boolean],
+      default: () => false,
+    },
+  },
+  data() {
+    this.$trace("lsw-js-file-coverage-viewer.data");
+    return {
+      isLoaded: false,
+      isExpanded: false,
+      beautifiedSource: false,
+    };
+  },
+  methods: {
+    toggleExpansion() {
+      this.$trace("lsw-js-file-coverage-viewer.methods.toggleExpansion");
+      this.isExpanded = !this.isExpanded;
+    },
+    async load() {
+      this.$trace("lsw-js-file-coverage-viewer.methods.load");
+      await LswLazyLoads.loadHighlightJs();
+      await LswLazyLoads.loadBeautifier();
+      try {
+        this.beautifiedSource = beautifier.js(this.source);
+      } catch (error) {
+        // @BADLUCK!
+        this.beautifiedSource = this.source;
+      } finally {
+        this.isLoaded = true;
+      }
+      this.$nextTick(() => {
+        hljs.highlightElement(this.$refs.sourceTag);
+      });
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-js-file-coverage-viewer.mounted");
+      await this.load();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswJsFileCoverageViewer API
+//*/
+
+Vue.component("LswJsFileCoverageViewer", {
+  template: `<div class="lsw_js_file_coverage_viewer">
+    <!--
+    <div class="position_relative">
+        <div class="position_absolute_fixed"
+            style="left: auto; right: 7px; top: 7px;">
+            <button class="supermini"
+                :class="{activated:isExpanded}"
+                v-on:click="toggleExpansion">
+                ↕️
+            </button>
+        </div>
+        <div v-if="isLoaded"
+            class="js_viewer_tag hljs"
+            :class="isExpanded ? 'expanded' : ''"
+            ref="sourceTag"
+            v-on:dblclick="toggleExpansion">{{ beautifiedSource || source }}</div>
+        <div class="pad_1"
+            v-else>
+            Cargando...
+        </div>
+    </div>
+    <div>{{ coverage }}</div>
+-->
+    <div class="coverage-table">
+        <div class="container_to_view">
+            <div class="typical_title_1">{{ ast.path }}</div>
+            <table>
+                <tbody>
+                    <tr v-for="(lineContent, index) in lines"
+                        :key="index"
+                        class="line-row">
+                        <td class="line-number">
+                            <span :class="{ hit: isLineHit(index), miss: !isLineHit(index) }">
+                                <button class="supermini for_line_coverage"
+                                    v-on:click="() => showLineInfo(index)">{{ index }}</button>
+                            </span>
+                        </td>
+                        <td class="line-code">
+                            <!-- Aquí se colocarían decoradores por statement, branch o function -->
+                            <span v-html="decorateLine(index + 1, lineContent)"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>`,
+  props: {
+    source: String,
+    coverage: Object,
+  },
+  data() {
+    return {
+      ast: this.coverage,
+      lines: this.source.split("\n"),
+    };
+  },
+  computed: {
+    statementHits() {
+      const hits = {};
+      for (const [id, stmt] of Object.entries(this.ast.statementMap)) {
+        const line = stmt.start.line;
+        hits[line] = hits[line] || [];
+        hits[line].push({
+          type: "statement",
+          hit: this.ast.s[id] > 0,
+          loc: stmt,
+          id,
+        });
+      }
+      return hits;
+    },
+    functionHits() {
+      const hits = {};
+      for (const [id, fn] of Object.entries(this.ast.fnMap)) {
+        const line = fn.decl.start.line;
+        hits[line] = hits[line] || [];
+        hits[line].push({
+          type: "function",
+          hit: this.ast.f[id] > 0,
+          name: fn.name,
+          id,
+        });
+      }
+      return hits;
+    },
+    branchHits() {
+      const hits = {};
+      for (const [id, branch] of Object.entries(this.ast.branchMap)) {
+        branch.locations.forEach((loc, i) => {
+          const line = loc.start.line;
+          hits[line] = hits[line] || [];
+          hits[line].push({
+            type: "branch",
+            hit: this.ast.b[id][i] > 0,
+            kind: branch.type,
+            id,
+            index: i,
+          });
+        });
+      }
+      return hits;
+    },
+  },
+  methods: {
+    isLineHit(line) {
+      // Consideramos línea cubierta si tiene algún statement/function/branch cubierto
+      const s = this.statementHits[line] || [];
+      const f = this.functionHits[line] || [];
+      const b = this.branchHits[line] || [];
+
+      return [...s, ...f, ...b].some(item => item.hit);
+    },
+    decorateLine(line, content) {
+      const hits = [
+        ...(this.statementHits[line] || []),
+        ...(this.functionHits[line] || []),
+        ...(this.branchHits[line] || []),
+      ];
+
+      if (hits.length === 0) {
+        return this.escapeHtml(content);
+      }
+
+      // Para cada tipo, envolvemos el texto con spans con clases específicas y tooltips
+      let decorated = this.escapeHtml(content);
+      hits.forEach(hit => {
+        const className = `${hit.type}-marker ${hit.hit ? 'hit' : 'miss'}`;
+        const tooltip = this.getTooltipText(hit);
+        // Marcador simple con tooltip - tú luego aplicarás el estilo
+        decorated = `<span class="${className}" title="${tooltip}">${decorated}</span>`;
+      });
+
+      return decorated;
+    },
+    getTooltipText(hit) {
+      if (hit.type === 'statement') {
+        return `Statement ${hit.id}: ${hit.hit ? 'Ejecutado' : 'No ejecutado'}`;
+      } else if (hit.type === 'function') {
+        return `Función ${hit.name || hit.id}: ${hit.hit ? 'Ejecutada' : 'No ejecutada'}`;
+      } else if (hit.type === 'branch') {
+        return `Branch ${hit.id}[${hit.index}] (${hit.kind}): ${hit.hit ? 'Tomado' : 'No tomado'}`;
+      }
+      return '';
+    },
+    escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    },
+    showLineInfo(line) {
+      this.$lsw.toasts.send({
+        title: `Usos de línea ${line}`,
+        text: this.getCoverageByLine(line, this.ast, true),
+      });
+      this.$lsw.toasts.collapse(this.getCoverageByLine(line, this.ast, false), 5000);
+    },
+    getCoverageByLine(line, ast, summarized = false) {
+      const statements = [];
+      const functions = [];
+      const branches = [];
+      const statementRows = Object.entries(ast.statementMap);
+      for(let statementIndex=0; statementIndex<statementRows.length; statementIndex++) {
+        const row = statementRows[statementIndex];
+        const [id, loc] = row;
+        if(loc.start.line === (line + 1)) {
+          statements.push({
+            id,
+            loc,
+            hits: ast.s[id],
+          });
+        }
+      }
+      const functionRows = Object.entries(ast.fnMap);
+      for(let functionIndex=0; functionIndex<functionRows.length; functionIndex++) {
+        const row = functionRows[functionIndex];
+        const [id, fn] = row;
+        if(fn.decl.start.line === (line + 1)) {
+          functions.push({
+            id,
+            name: fn.name,
+            hits: ast.f[id],
+          });
+        }
+      }
+      const branchRows = Object.entries(ast.branchMap);
+      for(let branchIndex=0; branchIndex<branchRows.length; branchIndex++) {
+        const row = branchRows[branchIndex];
+        const [id, branch] = row;
+        branch.locations.forEach((loc, indexLoc) => {
+          if(loc.start.line === (line + 1)) {
+            branches.push({
+              id,
+              loc,
+              hits: ast.b[id],
+              index: indexLoc,
+              kind: branch.type,
+              loc,
+            });
+          }
+        })
+      }
+      const stats = { statements, functions, branches };
+      if(!summarized) {
+        return stats;
+      }
+      let S = 0, F = 0, B = 0;
+      stats.statements.forEach(st => {
+        if(typeof st.hits === "number") {
+          S += st.hits;
+        } else if(Array.isArray(st.hits)) {
+          st.hits.forEach(subst => {
+            if(typeof subst === "number") {
+              S += subst;
+            }
+          });
+        }
+      });
+      stats.functions.forEach(st => {
+        if(typeof st.hits === "number") {
+          F += st.hits;
+        } else if(Array.isArray(st.hits)) {
+          st.hits.forEach(subst => {
+            if(typeof subst === "number") {
+              F += subst;
+            }
+          });
+        }
+      });
+      stats.branches.forEach(st => {
+        if(typeof st.hits === "number") {
+          B += st.hits;
+        } else if(Array.isArray(st.hits)) {
+          st.hits.forEach(subst => {
+            if(typeof subst === "number") {
+              B += subst;
+            }
+          });
+        }
+      });
+      const summary = {
+        Sentencias: S,
+        Funciones: F,
+        Brancas: B
+      };
+      return summary;
+    }
+  },
+});
+
+// @vuebundler[Lsw_framework_components][62]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-file-coverage-viewer/lsw-js-file-coverage-viewer.css
+
+// @vuebundler[Lsw_framework_components][63]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-calendario/lsw-calendario.html
+
+// @vuebundler[Lsw_framework_components][63]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-calendario/lsw-calendario.js
 // @code.start: LswCalendario API | @$section: Vue.js (v2) Components » LswCalendario API » LswCalendario component
 Vue.component("LswCalendario", {
   template: `<div class="Component LswCalendario">
@@ -30371,11 +39951,11 @@ Vue.component("LswCalendario", {
 });
 // @code.end: LswCalendario API
 
-// @vuebundler[Lsw_framework_components][59]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-calendario/lsw-calendario.css
+// @vuebundler[Lsw_framework_components][63]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-calendario/lsw-calendario.css
 
-// @vuebundler[Lsw_framework_components][60]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table/lsw-table.html
+// @vuebundler[Lsw_framework_components][64]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table/lsw-table.html
 
-// @vuebundler[Lsw_framework_components][60]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table/lsw-table.js
+// @vuebundler[Lsw_framework_components][64]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table/lsw-table.js
 // @code.start: LswTable API | @$section: Vue.js (v2) Components » Lsw Table API » LswTable component
 Vue.component("LswTable", {
   template: `<div class="lsw_table pad_top_1">
@@ -31199,11 +40779,11 @@ Vue.component("LswTable", {
 });
 // @code.end: LswTable API
 
-// @vuebundler[Lsw_framework_components][60]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table/lsw-table.css
+// @vuebundler[Lsw_framework_components][64]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table/lsw-table.css
 
-// @vuebundler[Lsw_framework_components][61]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table-transformers/lsw-table-transformers.html
+// @vuebundler[Lsw_framework_components][65]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table-transformers/lsw-table-transformers.html
 
-// @vuebundler[Lsw_framework_components][61]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table-transformers/lsw-table-transformers.js
+// @vuebundler[Lsw_framework_components][65]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table-transformers/lsw-table-transformers.js
 Vue.component("LswTableTransformers", {
   template: `<div class="lsw_table_transformers">
     Transformers here.
@@ -31240,11 +40820,11 @@ Vue.component("LswTableTransformers", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][61]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table-transformers/lsw-table-transformers.css
+// @vuebundler[Lsw_framework_components][65]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-table/lsw-table-transformers/lsw-table-transformers.css
 
-// @vuebundler[Lsw_framework_components][62]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-code-viewer/lsw-code-viewer.html
+// @vuebundler[Lsw_framework_components][66]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-code-viewer/lsw-code-viewer.html
 
-// @vuebundler[Lsw_framework_components][62]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-code-viewer/lsw-code-viewer.js
+// @vuebundler[Lsw_framework_components][66]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-code-viewer/lsw-code-viewer.js
 // @code.start: LswCodeViewer API | @$section: Vue.js (v2) Components » Lsw Windows API » LswCodeViewer component
 Vue.component("LswCodeViewer", {
   template: `<div class="lsw_code_viewer">
@@ -31297,11 +40877,11 @@ Vue.component("LswCodeViewer", {
 });
 // @code.end: LswCodeViewer API
 
-// @vuebundler[Lsw_framework_components][62]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-code-viewer/lsw-code-viewer.css
+// @vuebundler[Lsw_framework_components][66]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-code-viewer/lsw-code-viewer.css
 
-// @vuebundler[Lsw_framework_components][63]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-explorer/lsw-data-explorer.html
+// @vuebundler[Lsw_framework_components][67]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-explorer/lsw-data-explorer.html
 
-// @vuebundler[Lsw_framework_components][63]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-explorer/lsw-data-explorer.js
+// @vuebundler[Lsw_framework_components][67]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-explorer/lsw-data-explorer.js
 // @code.start: LswDataExplorer API | @$section: Vue.js (v2) Components » LswDataExplorer API » LswDataExplorer API
 Vue.component('LswDataExplorer', {
   template: `<div class="data-explorer">
@@ -31464,11 +41044,11 @@ Vue.component('LswDataExplorer', {
 });
 // @code.end: LswDataExplorer API
 
-// @vuebundler[Lsw_framework_components][63]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-explorer/lsw-data-explorer.css
+// @vuebundler[Lsw_framework_components][67]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-explorer/lsw-data-explorer.css
 
-// @vuebundler[Lsw_framework_components][64]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-implorer/lsw-data-implorer.html
+// @vuebundler[Lsw_framework_components][68]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-implorer/lsw-data-implorer.html
 
-// @vuebundler[Lsw_framework_components][64]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-implorer/lsw-data-implorer.js
+// @vuebundler[Lsw_framework_components][68]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-implorer/lsw-data-implorer.js
 // @code.start: LswDataImplorer API | @$section: Vue.js (v2) Components » LswDataImplorer API » LswDataImplorer API
 Vue.component('LswDataImplorer', {
   template: `<div class="lsw_data_implorer" :class="{ paginated: isPaginated || isRoot }">
@@ -31616,11 +41196,11 @@ Vue.component('LswDataImplorer', {
 });
 // @code.end: LswDataImplorer API
 
-// @vuebundler[Lsw_framework_components][64]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-implorer/lsw-data-implorer.css
+// @vuebundler[Lsw_framework_components][68]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-explorer/lsw-data-implorer/lsw-data-implorer.css
 
-// @vuebundler[Lsw_framework_components][65]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-button/lsw-data-printer-button.html
+// @vuebundler[Lsw_framework_components][69]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-button/lsw-data-printer-button.html
 
-// @vuebundler[Lsw_framework_components][65]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-button/lsw-data-printer-button.js
+// @vuebundler[Lsw_framework_components][69]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-button/lsw-data-printer-button.js
 // @code.start: LswDataPrinterButton API | @$section: Vue.js (v2) Components » LswDataPrinterButton component
 Vue.component("LswDataPrinterButton", {
   template: `<button class="lsw_data_printer_button" v-on:click="openViewer">
@@ -31668,11 +41248,11 @@ Vue.component("LswDataPrinterButton", {
 });
 // @code.end: LswDataPrinterButton API
 
-// @vuebundler[Lsw_framework_components][65]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-button/lsw-data-printer-button.css
+// @vuebundler[Lsw_framework_components][69]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-button/lsw-data-printer-button.css
 
-// @vuebundler[Lsw_framework_components][66]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-report/lsw-data-printer-report.html
+// @vuebundler[Lsw_framework_components][70]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-report/lsw-data-printer-report.html
 
-// @vuebundler[Lsw_framework_components][66]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-report/lsw-data-printer-report.js
+// @vuebundler[Lsw_framework_components][70]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-report/lsw-data-printer-report.js
 // @code.start: LswDataPrinterReport API | @$section: Vue.js (v2) Components » LswDataPrinterReport component
 Vue.component("LswDataPrinterReport", {
   template: `<div class="lsw_data_printer_report">
@@ -31892,11 +41472,11 @@ Vue.component("LswDataPrinterReport", {
 });
 // @code.end: LswDataPrinterReport API
 
-// @vuebundler[Lsw_framework_components][66]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-report/lsw-data-printer-report.css
+// @vuebundler[Lsw_framework_components][70]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-data-printer-report/lsw-data-printer-report.css
 
-// @vuebundler[Lsw_framework_components][67]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-dialogs/lsw-dialogs.html
+// @vuebundler[Lsw_framework_components][71]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-dialogs/lsw-dialogs.html
 
-// @vuebundler[Lsw_framework_components][67]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-dialogs/lsw-dialogs.js
+// @vuebundler[Lsw_framework_components][71]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-dialogs/lsw-dialogs.js
 (function () {
 
   // @code.start: LswDialogs API | @$section: Vue.js (v2) Components » LswDialogs API » LswDialogs classes and functions
@@ -32316,11 +41896,11 @@ Vue.component("LswDataPrinterReport", {
 
 })();
 
-// @vuebundler[Lsw_framework_components][67]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-dialogs/lsw-dialogs.css
+// @vuebundler[Lsw_framework_components][71]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-dialogs/lsw-dialogs.css
 
-// @vuebundler[Lsw_framework_components][68]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab.html
+// @vuebundler[Lsw_framework_components][72]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab.html
 
-// @vuebundler[Lsw_framework_components][68]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab.js
+// @vuebundler[Lsw_framework_components][72]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab.js
 // @code.start: LswWindowsMainTab API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsMainTab component
 // Change this component at your convenience:
 Vue.component("LswWindowsMainTab", {
@@ -32418,7 +41998,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "wiki-explorer-" + this.getRandomString(5),
         title: "Wiki explorer",
-        template: `<div class="pad_2"><lsw-wiki /></div>`,
+        template: `<div class="pad_1"><lsw-wiki /></div>`,
       });
     },
     openAgenda() {
@@ -32427,7 +42007,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "agenda-viewer-" + this.getRandomString(5),
         title: "Agenda viewer",
-        template: `<div class="pad_2"><lsw-agenda /></div>`,
+        template: `<div class="pad_1"><lsw-agenda /></div>`,
       });
     },
     openAutomessages() {
@@ -32440,7 +42020,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "notas-" + this.getRandomString(5),
         title: "Notas",
-        template: `<div class="pad_2"><lsw-spontaneous-table-nota /></div>`,
+        template: `<div class="pad_1"><lsw-spontaneous-table-nota /></div>`,
       });
     },
     openConfigurationsPage() {
@@ -32449,7 +42029,7 @@ Vue.component("LswWindowsMainTab", {
       this.$dialogs.open({
         id: "configurations-page-" + this.getRandomString(5),
         title: "Configuraciones",
-        template: `<div class="pad_2"><lsw-configurations-page /></div>`,
+        template: `<div class="pad_1"><lsw-configurations-page /></div>`,
       });
     },
     closeProcess(dialog) {
@@ -32463,11 +42043,11 @@ Vue.component("LswWindowsMainTab", {
 });
 // @code.end: LswWindowsMainTab API
 
-// @vuebundler[Lsw_framework_components][68]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab.css
+// @vuebundler[Lsw_framework_components][72]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab.css
 
-// @vuebundler[Lsw_framework_components][69]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer.html
+// @vuebundler[Lsw_framework_components][73]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer.html
 
-// @vuebundler[Lsw_framework_components][69]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer.js
+// @vuebundler[Lsw_framework_components][73]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer.js
 // @code.start: LswWindowsViewer API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsViewer classes and functions
 // Change this component at your convenience:
 Vue.component("LswWindowsViewer", {
@@ -32509,11 +42089,11 @@ Vue.component("LswWindowsViewer", {
 // @code.end: LswWindowsViewer API
 
 
-// @vuebundler[Lsw_framework_components][69]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer.css
+// @vuebundler[Lsw_framework_components][73]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer.css
 
-// @vuebundler[Lsw_framework_components][70]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-pivot-button/lsw-windows-pivot-button.html
+// @vuebundler[Lsw_framework_components][74]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-pivot-button/lsw-windows-pivot-button.html
 
-// @vuebundler[Lsw_framework_components][70]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-pivot-button/lsw-windows-pivot-button.js
+// @vuebundler[Lsw_framework_components][74]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-pivot-button/lsw-windows-pivot-button.js
 // @code.start: LswWindowsPivotButton API | @$section: Vue.js (v2) Components » Lsw Windows API » LswWindowsPivotButton component
 // Change this component at your convenience:
 Vue.component("LswWindowsPivotButton", {
@@ -32548,11 +42128,11 @@ Vue.component("LswWindowsPivotButton", {
 });
 // @code.end: LswWindowsPivotButton API
 
-// @vuebundler[Lsw_framework_components][70]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-pivot-button/lsw-windows-pivot-button.css
+// @vuebundler[Lsw_framework_components][74]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-windows/lsw-windows-pivot-button/lsw-windows-pivot-button.css
 
-// @vuebundler[Lsw_framework_components][71]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-toasts/lsw-toasts.html
+// @vuebundler[Lsw_framework_components][75]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-toasts/lsw-toasts.html
 
-// @vuebundler[Lsw_framework_components][71]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-toasts/lsw-toasts.js
+// @vuebundler[Lsw_framework_components][75]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-toasts/lsw-toasts.js
 // @code.start: LswToasts API | @$section: Vue.js (v2) Components » Lsw Toasts API » LswToasts component
 Vue.component("LswToasts", {
   template: `<div class="lsw_toasts">
@@ -32699,9 +42279,9 @@ Vue.component("LswToasts", {
 });
 // @code.end: LswToasts API
 
-// @vuebundler[Lsw_framework_components][71]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-toasts/lsw-toasts.css
+// @vuebundler[Lsw_framework_components][75]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-toasts/lsw-toasts.css
 
-// @vuebundler[Lsw_framework_components][72]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker-api.js
+// @vuebundler[Lsw_framework_components][76]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker-api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -32837,9 +42417,9 @@ Vue.component("LswToasts", {
 
 });
 
-// @vuebundler[Lsw_framework_components][73]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.html
+// @vuebundler[Lsw_framework_components][77]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.html
 
-// @vuebundler[Lsw_framework_components][73]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.js
+// @vuebundler[Lsw_framework_components][77]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.js
 // @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker component
 Vue.component("LswConsoleHooker", {
   template: `<div class="console-hooker">
@@ -32890,11 +42470,11 @@ Vue.component("LswConsoleHooker", {
 });
 // @code.end: LswConsoleHooker API
 
-// @vuebundler[Lsw_framework_components][73]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.css
+// @vuebundler[Lsw_framework_components][77]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.css
 
-// @vuebundler[Lsw_framework_components][74]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.html
+// @vuebundler[Lsw_framework_components][78]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.html
 
-// @vuebundler[Lsw_framework_components][74]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.js
+// @vuebundler[Lsw_framework_components][78]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.js
 // @code.start: LswDatabaseExplorer API | @$section: Vue.js (v2) Components » LswDatabaseExplorer API » LswDatabaseExplorer API
 Vue.component("LswDatabaseExplorer", {
   template: `<div class="lsw_database_ui database_explorer" :class="{hideBreadcrumb: !showBreadcrumb}">
@@ -32951,11 +42531,11 @@ Vue.component("LswDatabaseExplorer", {
 });
 // @code.end: LswDatabaseExplorer API
 
-// @vuebundler[Lsw_framework_components][74]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.css
+// @vuebundler[Lsw_framework_components][78]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.css
 
-// @vuebundler[Lsw_framework_components][75]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.html
+// @vuebundler[Lsw_framework_components][79]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.html
 
-// @vuebundler[Lsw_framework_components][75]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.js
+// @vuebundler[Lsw_framework_components][79]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.js
 // @code.start: LswDatabaseBreadcrumb API | @$section: Vue.js (v2) Components » LswDatabaseBreadcrumb API » LswDatabaseBreadcrumb API
 Vue.component("LswDatabaseBreadcrumb", {
   template: `<div class="database_breadcrumb">
@@ -32999,11 +42579,11 @@ Vue.component("LswDatabaseBreadcrumb", {
 });
 // @code.end: LswDatabaseBreadcrumb API
 
-// @vuebundler[Lsw_framework_components][75]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.css
+// @vuebundler[Lsw_framework_components][79]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.css
 
-// @vuebundler[Lsw_framework_components][76]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.html
+// @vuebundler[Lsw_framework_components][80]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.html
 
-// @vuebundler[Lsw_framework_components][76]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.js
+// @vuebundler[Lsw_framework_components][80]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.js
 // @code.start: LswPageDatabases API | @$section: Vue.js (v2) Components » LswPageDatabases API » LswPageDatabases API
 Vue.component("LswPageDatabases", {
   template: `<div>
@@ -33070,11 +42650,11 @@ Vue.component("LswPageDatabases", {
 });
 // @code.end: LswPageDatabases API
 
-// @vuebundler[Lsw_framework_components][76]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.css
+// @vuebundler[Lsw_framework_components][80]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.css
 
-// @vuebundler[Lsw_framework_components][77]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.html
+// @vuebundler[Lsw_framework_components][81]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.html
 
-// @vuebundler[Lsw_framework_components][77]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.js
+// @vuebundler[Lsw_framework_components][81]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.js
 // @code.start: LswPageRows API | @$section: Vue.js (v2) Components » LswPageRows API » LswPageRows API
 Vue.component("LswPageRows", {
   template: `<div>
@@ -33181,11 +42761,11 @@ Vue.component("LswPageRows", {
 });
 // @code.end: LswPageRows API
 
-// @vuebundler[Lsw_framework_components][77]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.css
+// @vuebundler[Lsw_framework_components][81]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.css
 
-// @vuebundler[Lsw_framework_components][78]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.html
+// @vuebundler[Lsw_framework_components][82]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.html
 
-// @vuebundler[Lsw_framework_components][78]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.js
+// @vuebundler[Lsw_framework_components][82]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.js
 // @code.start: LswPageRow API | @$section: Vue.js (v2) Components » LswPageRow API » LswPageRow API
 Vue.component("LswPageRow", {
   template: `<div>
@@ -33346,11 +42926,11 @@ Vue.component("LswPageRow", {
 });
 // @code.end: LswPageRow API
 
-// @vuebundler[Lsw_framework_components][78]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.css
+// @vuebundler[Lsw_framework_components][82]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.css
 
-// @vuebundler[Lsw_framework_components][79]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.html
+// @vuebundler[Lsw_framework_components][83]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.html
 
-// @vuebundler[Lsw_framework_components][79]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.js
+// @vuebundler[Lsw_framework_components][83]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.js
 // @code.start: LswPageSchema API | @$section: Vue.js (v2) Components » LswPageSchema API » LswPageSchema API
 Vue.component("LswPageSchema", {
   template: `<div></div>`,
@@ -33372,21 +42952,20 @@ Vue.component("LswPageSchema", {
 });
 // @code.end: LswPageSchema API
 
-// @vuebundler[Lsw_framework_components][79]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.css
+// @vuebundler[Lsw_framework_components][83]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.css
 
-// @vuebundler[Lsw_framework_components][80]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.html
+// @vuebundler[Lsw_framework_components][84]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.html
 
-// @vuebundler[Lsw_framework_components][80]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.js
+// @vuebundler[Lsw_framework_components][84]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.js
 // @code.start: LswPageTables API | @$section: Vue.js (v2) Components » LswPageTables API » LswPageTables API
 Vue.component("LswPageTables", {
   template: `<div class="page_tables page">
-    <div class="flex_row centered">
-        <div class="flex_1 centered">
-            <button v-on:click="\$noop"
-                disabled="true">✳️</button>
+    <div class="typical_title_1 flex_row centered">
+        <div class="flex_100">
+            <div class="display_inline_block nowrap">📦 Tablas de {{ args.database }}</div>
         </div>
-        <div class="flex_100 pad_left_1">
-            <h3 class="display_inline_block nowrap">📦 Tablas de {{ args.database }}</h3>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini visibility_hidden">ok</button>
         </div>
     </div>
     <lsw-database-breadcrumb :breadcrumb="breadcrumb"
@@ -33395,12 +42974,17 @@ Vue.component("LswPageTables", {
         <div class="pad_bottom_1">
             <div class="h4">Tablas disponibles:</div>
         </div>
-        <div class=""
-            style="padding-bottom:1px;"
-            v-for="tableData, tableIndex, tableCounter in tablesAsList"
-            v-bind:key="'table_id_' + tableData.id">
-            <button class="supermini width_100 text_align_left"
-                v-on:click="() => openTable(tableData.id)">{{ tableIndex + 1 }}. {{ tableData.id }}</button>
+        <div class="lista_de_tablas_disponibles">
+            <div class=""
+                style="padding-bottom:1px;"
+                v-for="tableData, tableIndex, tableCounter in tablesAsList"
+                v-bind:key="'table_id_' + tableData.id">
+                <button class="supermini width_100 text_align_left"
+                    v-on:click="() => openTable(tableData.id)">
+                    <span class="table_index">{{ tableIndex + 1 }}. </span>
+                    <span class="table_name">{{ tableData.id }}</span>
+                </button>
+            </div>
         </div>
     </div>
     <div v-if="tablesAsList && tablesAsList.length">
@@ -33413,11 +42997,11 @@ Vue.component("LswPageTables", {
         <div v-if="isShowingSchema">
             <lsw-table :initial-input="tablesAsList"
                 :initial-settings="{
-                title: 'Tablas de ' + args.database,
-                itemsPerPage: 50,
-                columnsAsList: ['indexes'],
-                columnsOrder: ['name', 'indexes', 'keyPath']
-            }"
+                    title: 'Tablas de ' + args.database,
+                    itemsPerPage: 50,
+                    columnsAsList: ['indexes'],
+                    columnsOrder: ['name', 'indexes', 'keyPath']
+                }"
                 :row-buttons="[{
                 header: '',
                 text: '↗️',
@@ -33502,15 +43086,23 @@ Vue.component("LswPageTables", {
 });
 // @code.end: LswPageTables API
 
-// @vuebundler[Lsw_framework_components][80]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.css
+// @vuebundler[Lsw_framework_components][84]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.css
 
-// @vuebundler[Lsw_framework_components][81]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.html
+// @vuebundler[Lsw_framework_components][85]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.html
 
-// @vuebundler[Lsw_framework_components][81]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.js
+// @vuebundler[Lsw_framework_components][85]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.js
 // @code.start: LswFilesystemExplorer API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemExplorer component
 Vue.component("LswFilesystemExplorer", {
   name: "LswFilesystemExplorer",
   template: `<div class="lsw_filesystem_explorer" :class="{absolute_version: absoluteLayout}">
+    <div :class=" absoluteLayout ? 'pad_vertical_1' : 'pad_1'">
+        <div class="typical_title_1 flex_row centered">
+            <div class="flex_100">📁 Sistema de ficheros:</div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini visibility_hidden">ok</button>
+            </div>
+        </div>
+    </div>
     <div class="current_node_box">
         <span class="previous_node_path" :class="current_node !== '/' ? '' : 'visibility_hidden'">
             <button class="previous_node_button" v-on:click="goUp"
@@ -34494,11 +44086,11 @@ Vue.component("LswFilesystemExplorer", {
 });
 // @code.end: LswFilesystemExplorer API
 
-// @vuebundler[Lsw_framework_components][81]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.css
+// @vuebundler[Lsw_framework_components][85]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.css
 
-// @vuebundler[Lsw_framework_components][82]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.html
+// @vuebundler[Lsw_framework_components][86]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.html
 
-// @vuebundler[Lsw_framework_components][82]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.js
+// @vuebundler[Lsw_framework_components][86]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.js
 // @code.start: LswFilesystemButtonsPanel API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemButtonsPanel component
 Vue.component("LswFilesystemButtonsPanel", {
   name: "LswFilesystemButtonsPanel",
@@ -34548,11 +44140,11 @@ Vue.component("LswFilesystemButtonsPanel", {
 });
 // @code.end: LswFilesystemButtonsPanel API
 
-// @vuebundler[Lsw_framework_components][82]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.css
+// @vuebundler[Lsw_framework_components][86]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.css
 
-// @vuebundler[Lsw_framework_components][83]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.html
+// @vuebundler[Lsw_framework_components][87]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.html
 
-// @vuebundler[Lsw_framework_components][83]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.js
+// @vuebundler[Lsw_framework_components][87]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.js
 // @code.start: LswFilesystemEditor API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemEditor component
 Vue.component("LswFilesystemEditor", {
   name: "LswFilesystemEditor",
@@ -34707,11 +44299,11 @@ Vue.component("LswFilesystemEditor", {
 });
 // @code.end: LswFilesystemEditor API
 
-// @vuebundler[Lsw_framework_components][83]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.css
+// @vuebundler[Lsw_framework_components][87]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.css
 
-// @vuebundler[Lsw_framework_components][84]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.html
+// @vuebundler[Lsw_framework_components][88]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.html
 
-// @vuebundler[Lsw_framework_components][84]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.js
+// @vuebundler[Lsw_framework_components][88]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.js
 // @code.start: LswFilesystemTreeviewer API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemTreeviewer component
 Vue.component("LswFilesystemTreeviewer", {
   name: "LswFilesystemTreeviewer",
@@ -34895,11 +44487,11 @@ Vue.component("LswFilesystemTreeviewer", {
 });
 // @code.end: LswFilesystemTreeviewer API
 
-// @vuebundler[Lsw_framework_components][84]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.css
+// @vuebundler[Lsw_framework_components][88]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.css
 
-// @vuebundler[Lsw_framework_components][85]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.html
+// @vuebundler[Lsw_framework_components][89]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.html
 
-// @vuebundler[Lsw_framework_components][85]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.js
+// @vuebundler[Lsw_framework_components][89]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.js
 // @code.start: LswWikiLibros API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiLibros component
 Vue.component("LswWikiLibros", {
   name: "LswWikiLibros",
@@ -35070,11 +44662,11 @@ Vue.component("LswWikiLibros", {
 });
 // @code.end: LswWikiLibros API
 
-// @vuebundler[Lsw_framework_components][85]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.css
+// @vuebundler[Lsw_framework_components][89]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.css
 
-// @vuebundler[Lsw_framework_components][86]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.html
+// @vuebundler[Lsw_framework_components][90]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.html
 
-// @vuebundler[Lsw_framework_components][86]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.js
+// @vuebundler[Lsw_framework_components][90]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.js
 // @code.start: LswWikiLibroViewer API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiLibroViewer component
 Vue.component("LswWikiLibroViewer", {
   name: "LswWikiLibroViewer",
@@ -35189,11 +44781,11 @@ Vue.component("LswWikiLibroViewer", {
 });
 // @code.end: LswWikiLibroViewer API
 
-// @vuebundler[Lsw_framework_components][86]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.css
+// @vuebundler[Lsw_framework_components][90]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.css
 
-// @vuebundler[Lsw_framework_components][87]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.html
+// @vuebundler[Lsw_framework_components][91]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.html
 
-// @vuebundler[Lsw_framework_components][87]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.js
+// @vuebundler[Lsw_framework_components][91]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.js
 // @code.start: LswWikiArticulos API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiArticulos component
 Vue.component("LswWikiArticulos", {
   name: "LswWikiArticulos",
@@ -35542,11 +45134,11 @@ Vue.component("LswWikiArticulos", {
 });
 // @code.end: LswWikiArticulos API
 
-// @vuebundler[Lsw_framework_components][87]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.css
+// @vuebundler[Lsw_framework_components][91]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.css
 
-// @vuebundler[Lsw_framework_components][88]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.html
+// @vuebundler[Lsw_framework_components][92]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.html
 
-// @vuebundler[Lsw_framework_components][88]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.js
+// @vuebundler[Lsw_framework_components][92]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.js
 // @code.start: LswWikiCategorias API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiCategorias component
 Vue.component("LswWikiCategorias", {
   name: "LswWikiCategorias",
@@ -35615,11 +45207,11 @@ Vue.component("LswWikiCategorias", {
 });
 // @code.end: LswWikiCategorias API
 
-// @vuebundler[Lsw_framework_components][88]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.css
+// @vuebundler[Lsw_framework_components][92]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.css
 
-// @vuebundler[Lsw_framework_components][89]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.html
+// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.html
 
-// @vuebundler[Lsw_framework_components][89]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.js
+// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.js
 // @code.start: LswWikiArticuloViewer API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiArticuloViewer component
 Vue.component("LswWikiArticuloViewer", {
   name: "LswWikiArticuloViewer",
@@ -35697,11 +45289,11 @@ Vue.component("LswWikiArticuloViewer", {
 });
 // @code.end: LswWikiArticuloViewer API
 
-// @vuebundler[Lsw_framework_components][89]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.css
+// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.css
 
-// @vuebundler[Lsw_framework_components][90]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.html
+// @vuebundler[Lsw_framework_components][94]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.html
 
-// @vuebundler[Lsw_framework_components][90]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.js
+// @vuebundler[Lsw_framework_components][94]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.js
 // @code.start: LswWikiRevistas API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiRevistas component
 Vue.component("LswWikiRevistas", {
   name: "LswWikiRevistas",
@@ -35735,11 +45327,11 @@ Vue.component("LswWikiRevistas", {
 });
 // @code.end: LswWikiRevistas API
 
-// @vuebundler[Lsw_framework_components][90]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.css
+// @vuebundler[Lsw_framework_components][94]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.css
 
-// @vuebundler[Lsw_framework_components][91]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.html
+// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.html
 
-// @vuebundler[Lsw_framework_components][91]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.js
+// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.js
 // @code.start: LswWikiTree API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiTree component
 Vue.component("LswWikiTree", {
   name: "LswWikiTree",
@@ -35801,11 +45393,11 @@ Vue.component("LswWikiTree", {
 });
 // @code.end: LswWikiTree API
 
-// @vuebundler[Lsw_framework_components][91]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.css
+// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.css
 
-// @vuebundler[Lsw_framework_components][92]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.html
+// @vuebundler[Lsw_framework_components][96]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.html
 
-// @vuebundler[Lsw_framework_components][92]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.js
+// @vuebundler[Lsw_framework_components][96]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.js
 // @code.start: LswWikiTreenode API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiTreenode component
 Vue.component("LswWikiTreenode", {
   name: "LswWikiTreenode",
@@ -35850,88 +45442,86 @@ Vue.component("LswWikiTreenode", {
 });
 // @code.end: LswWikiTreenode API
 
-// @vuebundler[Lsw_framework_components][92]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.css
+// @vuebundler[Lsw_framework_components][96]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.css
 
-// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.html
+// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.html
 
-// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.js
+// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.js
 // @code.start: LswWiki API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWiki component
 Vue.component("LswWiki", {
   name: "LswWiki",
   template: `<div class="lsw_wiki">
-    <h4 class="">
+    <div class="typical_title_1">
         <div class="flex_row centered">
             <div class="flex_100">🔬 Enciclopedia:</div>
-            <!--div class="flex_1">
-                <div class="pad_left_1"><button :class="{activated: selectedSection === 'libros'}" class="supermini" v-on:click="() => selectSection('libros')">📚</button></div>
-            </div-->
-            <!--div class="flex_1">
-                <div class="pad_left_1"><button :class="{activated: selectedSection === 'revistas'}" class="supermini" v-on:click="() => selectSection('revistas')">📰</button></div>
-            </div-->
             <div class="flex_1">
-                <div class="pad_left_1"><button class="supermini" v-on:click="() => goToAddArticulo()">➕</button></div>
+                <div class="pad_left_1">
+                    <button :class="{activated: selectedSection === 'libros'}"
+                        class="supermini"
+                        v-on:click="() => selectSection('libros')"> 📚</button>
+                </div>
             </div>
             <div class="flex_1">
-                <div class="pad_left_1"><button :class="{activated: selectedSection === 'categorias'}" class="supermini" v-on:click="() => selectSection('categorias')">🧲</button></div>
+                <div class="pad_left_1">
+                    <button :class="{activated: selectedSection === 'categorias'}"
+                        class="supermini"
+                        v-on:click="() => selectSection('categorias')">🧲</button>
+                </div>
             </div>
             <div class="flex_1">
-                <div class="pad_left_1"><button :class="{activated: selectedSection === 'articulos'}" class="supermini" v-on:click="() => selectSection('articulos')">🔎</button></div>
+                <div class="pad_left_1">
+                    <button :class="{activated: selectedSection === 'articulos'}"
+                        class="supermini"
+                        v-on:click="() => selectSection('articulos')">🔎</button>
+                </div>
+            </div>
+            <div class="flex_1">
+                <div class="pad_left_1">
+                    <button class="supermini"
+                        v-on:click="() => goToAddArticulo()">➕</button>
+                </div>
             </div>
         </div>
-    </h4>
+    </div>
     <hr />
-    <div class="wiki_libros" v-if="selectedSection === 'libros'">
-        <div class="flex_row centered">
-            <h4 class="margin_bottom_1 width_100">
-                <div class="flex_row centered">
-                    <div class="flex_100">
-                        📚 Libros
-                    </div>
-                    <div class="flex_1 pad_right_1">
-                        <button class="supermini" v-on:click="refreshLibros">🛜</button>
-                    </div>
-                    <div class="flex_1">
-                        <button class="supermini" v-on:click="openLibrosFolder">↗️</button>
-                    </div>
+    <div class="wiki_libros"
+        v-if="selectedSection === 'libros'">
+        <lsw-book-factory />
+    </div>
+    <div class="wiki_categorias"
+        v-else-if="selectedSection === 'categorias'">
+        <div class="typical_title_1">
+            <div class="flex_row centered">
+                <div class="flex_100">🧲 Categorías</div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini"
+                        v-on:click="refreshCategorias">🛜</button>
                 </div>
-            </h4>
-        </div>
-        <lsw-wiki-libros v-if="isLoadedLibros" />
-    </div>
-    <div class="wiki_revistas pad_top_1" v-else-if="selectedSection === 'revistas'">
-        <div class="flex_row centered">
-            <h4 class="margin_bottom_1">📰 Revistas</h4>
-        </div>
-        <lsw-wiki-revistas />
-    </div>
-    <div class="wiki_categorias" v-else-if="selectedSection === 'categorias'">
-        <div class="flex_row centered">
-            <h4 class="margin_bottom_1 width_100">
-                <div class="flex_row centered">
-                    <div class="flex_100">
-                        🧲 Categorías
-                    </div>
-                    <div class="flex_1 pad_right_1">
-                        <button class="supermini" v-on:click="refreshCategorias">🛜</button>
-                    </div>
-                    <div class="flex_1">
-                        <button class="supermini" v-on:click="openCategoriasFile">↗️</button>
-                    </div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini"
+                        v-on:click="openCategoriasFile">↗️</button>
                 </div>
-            </h4>
+            </div>
         </div>
-        <lsw-wiki-categorias v-if="isLoadedCategorias" />
-    </div>
-    <div class="wiki_buscador pad_top_1" v-else-if="selectedSection === 'buscador'">
-        <div class="flex_row centered">
-            <h4 class="margin_bottom_1">🔎 Buscador</h4>
+        <div class="pad_top_1">
+            <lsw-wiki-categorias v-if="isLoadedCategorias" />
         </div>
     </div>
-    <div class="wiki_articulos pad_top_1"
+    <div class="wiki_articulos"
         :class="{esta_buscando:isSearching}"
         v-else-if="selectedSection === 'articulos'">
-        <h4 class="margin_bottom_1">📃 Artículos</h4>
-        <lsw-wiki-articulos />
+        <div class="typical_title_1">
+            <div class="flex_row centered">
+                <div class="flex_100">📃 Artículos</div>
+                <div class="flex_1">
+                    <button class="supermini visibility_hidden"
+                        v-on:click="refreshArticulos">🛜</button>
+                </div>
+            </div>
+        </div>
+        <div class="pad_top_1">
+            <lsw-wiki-articulos />
+        </div>
     </div>
 </div>`,
   props: {},
@@ -35999,6 +45589,15 @@ Vue.component("LswWiki", {
         this.isLoadedCategorias = true;
       }, 100);
     },
+    refreshRevistas() {
+      this.$trace("lsw-wiki.methods.refreshRevistas");
+    },
+    refreshBuscador() {
+      this.$trace("lsw-wiki.methods.refreshBuscador");
+    },
+    refreshArticulos() {
+      this.$trace("lsw-wiki.methods.refreshArticulos");
+    },
     goToAddArticulo() {
       this.$trace("lsw-wiki.methods.goToAddArticulo");
       this.$lsw.dialogs.open({
@@ -36028,9 +45627,9 @@ Vue.component("LswWiki", {
 });
 // @code.end: LswWiki API
 
-// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.css
+// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.css
 
-// @vuebundler[Lsw_framework_components][94]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-utils/lsw-wiki-utils.js
+// @vuebundler[Lsw_framework_components][98]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-utils/lsw-wiki-utils.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -36082,9 +45681,253 @@ Vue.component("LswWiki", {
 
 });
 
-// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.html
+// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-factory/lsw-book-factory.html
 
-// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.js
+// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-factory/lsw-book-factory.js
+// @code.start: LswBookFactory API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswBookFactory component
+Vue.component("LswBookFactory", {
+  template: `<div class="lsw_book_factory">
+    <div class="typical_title_1">
+        <div class="flex_row centered">
+            <div class="flex_100">
+                📚 Libros disponibles:
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="loadTitles">
+                    🛜
+                </button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="openLibrosDirectory">
+                    ↗️
+                </button>
+            </div>
+        </div>
+    </div>
+    <table class="width_100"
+        v-if="titles && titles.length">
+        <tbody>
+            <tr class=""
+                v-for="title, titleIndex in titles"
+                v-bind:key="'title_' + titleIndex">
+                <td>
+                    <button class="supermini"
+                        v-on:click="() => openLibro(title)">
+                        ▶️
+                    </button>
+                </td>
+                <td>
+                    <button class="supermini"
+                        v-on:click="() => editLibro(title)">
+                        ↗️
+                    </button>
+                </td>
+                <td>{{ titleIndex + 1 }}.</td>
+                <td class="width_100">{{ title }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="" v-else>
+        No hay libros disponibles actualmente.
+    </div>
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-book-factory.data");
+    return {
+      titles: [],
+    };
+  },
+  methods: {
+    async loadTitles() {
+      this.$trace("lsw-book-factory.methods.loadTitles");
+      const librosMap = await this.$lsw.fs.read_directory("/kernel/wiki/libros");
+      this.titles = Object.keys(librosMap);
+      // await LswLazyLoads.loadEjs();
+    },
+    openLibrosDirectory() {
+      this.$trace("lsw-book-factory.methods.openLibrosDirectory");
+      this.$lsw.dialogs.open({
+        title: "Directorio de libros",
+        template: `<lsw-filesystem-explorer opened-by="/kernel/wiki/libros" />`,
+      });
+    },
+    editLibro(title) {
+      this.$trace("lsw-book-factory.methods.editLibro");
+      this.$lsw.dialogs.open({
+        title: "Editar libro",
+        template: `<lsw-filesystem-explorer :opened-by="'/kernel/wiki/libros/' + title" />`,
+        factory: {
+          data: {
+            title,
+          }
+        }
+      });
+    },
+    async openLibro(title) {
+      this.$trace("lsw-book-factory.methods.openLibro");
+      const originalSource = await this.$lsw.fs.read_file(`/kernel/wiki/libros/${title}`);
+      const source = originalSource;
+      this.$lsw.dialogs.open({
+        title: "Leer libro",
+        template: `
+          <div class="pad_1">
+            <lsw-markdown-viewer :source="source" :activate-ejs="true" />
+          </div>
+        `,
+        factory: {
+          data: {
+            source,
+          }
+        }
+      });
+    },
+  },
+  async mounted() {
+    this.$trace("lsw-book-factory.mounted");
+    await this.loadTitles();
+  },
+  unmount() {
+    this.$trace("lsw-book-factory.unmount");
+  }
+});
+// @code.end: LswBookFactory API
+
+// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-factory/lsw-book-factory.css
+
+// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-library/lsw-book-library.html
+
+// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-library/lsw-book-library.js
+// @code.start: LswBookLibrary API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswBookLibrary component
+Vue.component("LswBookLibrary", {
+  template: `<div class="lsw_book_library">
+    lsw-book-library
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-book-library.data");
+    return {};
+  },
+  methods: {},
+  mounted() {
+    this.$trace("lsw-book-library.mounted");
+  },
+  unmount() {
+    this.$trace("lsw-book-library.unmount");
+  }
+});
+// @code.end: LswBookLibrary API
+
+// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-library/lsw-book-library.css
+
+// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer.html
+
+// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer.js
+// @code.start: LswMarkdownViewer API | @$section: Vue.js (v2) Components » LswMarkdownViewer component
+Vue.component("LswMarkdownViewer", {
+  template: `<div class="lsw_markdown_viewer">
+    <div class="">
+        <lsw-error-box v-if="parsingEjsError" :error="parsingEjsError" context="Error parseando EJS" />
+        <lsw-error-box v-if="parsingMarkdownError" :error="parsingMarkdownError" context="Error parseando Markdown" />
+        <div v-if="output">
+            <lsw-sourceable :source="'<div>' + output + '</div>'" />
+        </div>
+    </div>
+</div>`,
+  props: {
+    source: {
+      type: String,
+      required: true,
+    },
+    activateEjs: {
+      type: Boolean,
+      default: () => false,
+    },
+  },
+  data() {
+    this.$trace("lsw-markdown-viewer.data");
+    return {
+      parsingEjsError: false,
+      parsingMarkdownError: false,
+      output: false,
+    };
+  },
+  methods: {
+    async buildSource() {
+      this.$trace("lsw-markdown-viewer.methods.buildSource");
+      await LswLazyLoads.loadEjs();
+      let sourceTransformed = this.source;
+      Render_ejs: {
+        if (this.activateEjs) {
+          try {
+            sourceTransformed = await ejs.render(sourceTransformed, {
+              component: this
+            }, {
+              async: true,
+            });
+          } catch (error) {
+            console.log(error);
+            this.parsingEjsError = error;
+            throw error;
+          }
+        }
+      }
+      Render_markdown: {
+          try {
+            sourceTransformed = await marked.parse(sourceTransformed);
+          } catch (error) {
+            console.log(error);
+            this.parsingMarkdownError = error;
+            throw error;
+          }
+      }
+      this.output = sourceTransformed;
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-markdown-viewer.mounted");
+      await this.buildSource();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswMarkdownViewer API
+
+// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer.css
+
+// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer.html
+
+// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer.js
+// @code.start: LswMicrodataExplorer API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswMicrodataExplorer component
+Vue.component("LswMicrodataExplorer", {
+  template: `<div class="lsw_microdata_explorer">
+    lsw-microdata-explorer
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-microdata-explorer.data");
+    return {};
+  },
+  methods: {},
+  mounted() {
+    this.$trace("lsw-microdata-explorer.mounted");
+  },
+  unmount() {
+    this.$trace("lsw-microdata-explorer.unmount");
+  }
+});
+// @code.end: LswMicrodataExplorer API
+
+// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer.css
+
+// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.html
+
+// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.js
 // @code.start: LswClockwatcher API | @$section: Vue.js (v2) Components » Lsw Windows API » LswClockwatcher component
 // Change this component at your convenience:
 Vue.component("LswClockwatcher", {
@@ -36149,9 +45992,9 @@ Vue.component("LswClockwatcher", {
 });
 // @code.end: LswClockwatcher API
 
-// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.css
+// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.css
 
-// @vuebundler[Lsw_framework_components][96]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-api.js
+// @vuebundler[Lsw_framework_components][104]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -36557,9 +46400,9 @@ Vue.component("LswClockwatcher", {
 
 });
 
-// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.html
+// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.html
 
-// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.js
+// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.js
 // @code.start: LswGoalsViewer API | @$section: Vue.js (v2) Components » LswGoalsViewer component
 Vue.component("LswGoalsViewer", {
   template: `<div class="lsw_goals_viewer">
@@ -37071,11 +46914,11 @@ Vue.component("LswGoalsViewer", {
 });
 // @code.end: LswGoalsViewer API
 
-// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.css
+// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.css
 
-// @vuebundler[Lsw_framework_components][98]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.html
+// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.html
 
-// @vuebundler[Lsw_framework_components][98]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.js
+// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.js
 // @code.start: LswGoalsRecordsViewer API | @$section: Vue.js (v2) Components » LswGoalsRecordsViewer component
 Vue.component("LswGoalsRecordsViewer", {
   template: `<div class="lsw_goals_records_viewer">
@@ -37271,11 +47114,11 @@ Vue.component("LswGoalsRecordsViewer", {
 });
 // @code.end: LswGoalsRecordsViewer API
 
-// @vuebundler[Lsw_framework_components][98]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.css
+// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.css
 
-// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.html
+// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.html
 
-// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.js
+// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.js
 // @code.start: LswBinDirectory API | @$section: Vue.js (v2) Components » LswBinDirectory component
 Vue.component("LswBinDirectory", {
   template: `<div class="lsw_bin_directory">
@@ -37295,7 +47138,7 @@ Vue.component("LswBinDirectory", {
     <template v-if="!isLoaded">
         Un momento, se están cargando...
     </template>
-    <lsw-error-viewer :error="hasError"
+    <lsw-error-box :error="hasError"
         v-else-if="hasError" />
     <div class="binaries_list"
         :class="{is_searching: isAboutSearching}"
@@ -37455,17 +47298,17 @@ Vue.component("LswBinDirectory", {
 });
 // @code.end: LswBinDirectory API
 
-// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.css
+// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.css
 
-// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.html
+// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.html
 
-// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.js
+// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.js
 // @code.start: LswEventTracker API | @$section: Vue.js (v2) Components » LswEventTracker component
 Vue.component("LswEventTracker", {
   template: `<div class="lsw_event_tracker">
-    <h4>
+    <div class="typical_title_1">
         <div class="flex_row centered">
-            <div class="flex_100">📹 Trackeables</div>
+            <div class="flex_100">📹 Trackeables:</div>
             <div class="flex_1 pad_right_1">
                 <button class="supermini"
                     v-on:click="loadTrackables">🛜</button>
@@ -37475,7 +47318,7 @@ Vue.component("LswEventTracker", {
                     v-on:click="editTrackables">📄↗️</button>
             </div>
         </div>
-    </h4>
+    </div>
     <template v-if="!isLoaded">
         Cargando componente. Por favor, aguarde...
     </template>
@@ -37765,11 +47608,11 @@ Vue.component("LswEventTracker", {
 });
 // @code.end: LswEventTracker API
 
-// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.css
+// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.css
 
-// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.html
+// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.html
 
-// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.js
+// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.js
 // @code.start: LswSearchReplacer API | @$section: Vue.js (v2) Components » LswSearchReplacer component
 Vue.component("LswSearchReplacer", {
   template: `<div class="lsw_search_replacer">
@@ -37915,263 +47758,44 @@ Vue.component("LswSearchReplacer", {
 });
 // @code.end: LswSearchReplacer API
 
-// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.css
+// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.css
 
-// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.html
+// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.html
 
-// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.js
+// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.js
 // @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
 Vue.component("LswAgenda", {
   name: "LswAgenda",
   template: `<div class="lsw_agenda">
-    <div v-descriptor="'agenda.calendar.buttons_panel_1'"
-        class="flex_1 flex_row"
+
+    <div class="agenda_topbar flex_1 flex_row"
         style="gap: 4px;">
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="() => selectHiddenMenu('add')"
-                :class="{activated: selectedHiddenMenu === 'add'}">+</button>
-            <div class="hidden_menu"
-                v-if="selectedHiddenMenu === 'add'">
-                <div class="hidden_menu_fixed_layer"
-                    v-on:click="() => selectHiddenMenu('none')"></div>
-                <div class="hidden_menu_box"
-                    style="min-width: 160px;">
-                    <div class="hidden_menu_items">
-                        <div class="title">
-                            <div class="flex_100 pad_right_2 pad_left_2">
-                                Insertar info
-                            </div>
-                            <div class="flex_1">
-                                <button class="mini"
-                                    v-on:click="() => selectHiddenMenu('none')">❌</button>
-                            </div>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('accion.add', { initialValues: { tiene_inicio: selectedDate } })">Crear
-                                acción</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('concepto.add')">Crear concepto</button>
-                        </div>
-                        <!--div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('limitador.add')">Crear limitador</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('impresion.add')">Crear impresión</button>
-                        </div-->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="() => selectHiddenMenu('search')"
-                :class="{activated: selectedHiddenMenu === 'search'}">🔎</button>
-            <div class="hidden_menu"
-                v-if="selectedHiddenMenu === 'search'">
-                <div class="hidden_menu_fixed_layer"
-                    v-on:click="() => selectHiddenMenu('none')"></div>
-                <div class="hidden_menu_box"
-                    style="min-width: 160px;">
-                    <div class="hidden_menu_items">
-                        <div class="title">
-                            <div class="flex_100 pad_left_2 pad_right_2">
-                                Buscar info
-                            </div>
-                            <div class="flex_1">
-                                <button class="mini"
-                                    v-on:click="() => selectHiddenMenu('none')">❌</button>
-                            </div>
-                        </div>
-                        <!--div class="separator">
-                            <div class="flex_100 pad_left_1 pad_right_1">Tablas físicas:</div>
-                        </div-->
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('accion.search')">Buscar por acción</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('concepto.search')">Buscar por concepto</button>
-                        </div>
-                        <!--
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('propagador.search')">Buscar por propagador</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('limitador.search')">Buscar por límite</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('impresion.search')">Buscar por impresión</button>
-                        </div>
-                        <div class="separator">
-                            <div class="flex_100"
-                                style="padding-left: 4px;">Tablas virtuales:</div>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('propagacion.search')">Buscar por propagación</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('infraccion.search')">Buscar por infracción</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('postimpresion.search')">Buscar por postimpresión</button>
-                        </div>
-                        <div class="button_cell">
-                            <button class="mini"
-                                v-on:click="() => selectContext('evento.search')">Buscar por evento</button>
-                        </div>
-                        -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="() => selectContext('conductometria')"
-                :class="{activated: selectedContext === 'conductometria'}">📊</button>
-        </div>
+        <div class="flex_100"></div>
         <template v-if="typeof \$window.cordova !== 'undefined'">
             <div class="flex_1">
-                <button class="width_100 nowrap"
+                <button class="width_100 nowrap supermini"
                     v-on:click="synchronizeAlarms">🔔</button>
             </div>
             <div class="flex_1">
-                <button class="width_100 nowrap"
+                <button class="width_100 nowrap supermini"
                     v-on:click="unsynchronizeAlarms">🔕</button>
             </div>
         </template>
-        <div class="flex_100"></div>
-        <div class="flex_1">
-            <button class="width_100 nowrap"
-                v-on:click="toggleCalendario"
-                :class="{activated: selectedAction === 'calendario'}">📅</button>
-        </div>
     </div>
 
-    <div class="calendar_main_panel">
-        <div v-if="selectedContext === 'accion.add'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Añadir acción'}]" />
-            </div>
-            <lsw-agenda-accion-add :initial-data="selectedContextParameters.values" />
-        </div>
-        <div v-else-if="selectedContext === 'accion.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar acción'}]" />
-            </div>
-            <lsw-agenda-accion-search />
-        </div>
-        <div v-else-if="selectedContext === 'concepto.add'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Añadir concepto'}]" />
-            </div>
-            <lsw-agenda-concepto-add />
-        </div>
-        <div v-else-if="selectedContext === 'concepto.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar concepto'}]" />
-            </div>
-            <lsw-agenda-concepto-search />
-        </div>
-        <div v-else-if="selectedContext === 'limitador.add'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Añadir límite'}]" />
-            </div>
-            <lsw-agenda-limitador-add />
-        </div>
-        <div v-else-if="selectedContext === 'limitador.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar límite'}]" />
-            </div>
-            <lsw-agenda-limitador-search />
-        </div>
-        <div v-else-if="selectedContext === 'impresion.add'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Añadir impresión'}]" />
-            </div>
-            <lsw-agenda-impresion-add />
-        </div>
-        <div v-else-if="selectedContext === 'impresion.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar impresión'}]" />
-            </div>
-            <lsw-agenda-impresion-search />
-        </div>
-        <div v-else-if="selectedContext === 'propagacion.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar propagación'}]" />
-            </div>
-            <lsw-agenda-propagacion-search />
-        </div>
-        <div v-else-if="selectedContext === 'postimpresion.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar postimpresión'}]" />
-            </div>
-            <lsw-agenda-postimpresion-search />
-        </div>
-        <div v-else-if="selectedContext === 'infraccion.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar infracción'}]" />
-            </div>
-            <lsw-agenda-infraccion-search />
-        </div>
-        <div v-else-if="selectedContext === 'evento.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar evento'}]" />
-            </div>
-            <lsw-agenda-evento-search />
-        </div>
-        <div v-else-if="selectedContext === 'propagador.search'">
-            <div class="breadcrumb_box pad_top_1">
-                <lsw-agenda-breadcrumb :agenda="this"
-                    :path-items="[{label:'Buscar propagador'}]" />
-            </div>
-            <lsw-agenda-propagador-search />
-        </div>
+    <div v-if="selectedContext === 'conductometria'" class="pad_top_1">
+        <lsw-conductometria />
     </div>
-
-    <div class="calendar_viewer pad_bottom_1"
+    
+    <div class="calendar_viewer pad_top_1"
         v-show="(selectedContext === 'agenda') && (selectedAction === 'calendario')">
         <lsw-calendario ref="calendario"
             modo="date"
             :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
             :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)" />
-    </div>
-    
-    <div class=""
-        v-if="selectedContext === 'agenda'">
-        <div class="limitador_viewer">
-            <lsw-agenda-limitador-viewer :agenda="this" />
+        <div class="pad_top_1">
+            <lsw-agenda-acciones-viewer :initial-date="selectedDate" ref="agenda_acciones_viewer" />
         </div>
-        <lsw-agenda-acciones-viewer :initial-date="selectedDate"
-            ref="agenda_acciones_viewer" />
-    </div>
-    <div v-else-if="selectedContext === 'conductometria'">
-        <lsw-conductometria />
     </div>
 
 </div>`,
@@ -38230,6 +47854,16 @@ Vue.component("LswAgenda", {
         return;
       }
       this.selectAction(finalState);
+    },
+    selectCalendario() {
+      this.$trace("lsw-agenda.methods.selectCalendario");
+      this.selectContext("agenda");
+      this.selectAction("calendario");
+    },
+    selectConductometria() {
+      this.$trace("lsw-agenda.methods.selectCondutometria");
+      this.selectContext("conductometria");
+      // this.selectAction("calendario");
     },
     togglePsicodelia() {
       this.$trace("lsw-agenda.methods.togglePsicodelia");
@@ -38483,11 +48117,11 @@ Vue.component("LswAgenda", {
 // @code.end: LswAgenda API
 
 
-// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.css
+// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.css
 
-// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.html
+// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.html
 
-// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.js
+// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.js
 // @code.start: LswAgendaAccionAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaAccionAdd API » LswAgendaAccionAdd component
 Vue.component("LswAgendaAccionAdd", {
   template: `<div class="LswAgendaAccionAdd" style="padding-top: 4px;">
@@ -38527,11 +48161,11 @@ Vue.component("LswAgendaAccionAdd", {
 });
 // @code.end: LswAgendaAccionAdd API
 
-// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.css
+// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.css
 
-// @vuebundler[Lsw_framework_components][104]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.html
+// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.html
 
-// @vuebundler[Lsw_framework_components][104]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.js
+// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.js
 // @code.start: LswAgendaAccionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaAccionSearch API » LswAgendaAccionSearch component
 Vue.component("LswAgendaAccionSearch", {
   template: `<div class="LswAgendaAccionSearch pad_top_1">
@@ -38570,11 +48204,11 @@ Vue.component("LswAgendaAccionSearch", {
 });
 // @code.end: LswAgendaAccionSearch API
 
-// @vuebundler[Lsw_framework_components][104]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.css
+// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.css
 
-// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.html
+// @vuebundler[Lsw_framework_components][113]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.html
 
-// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.js
+// @vuebundler[Lsw_framework_components][113]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.js
 // @code.start: LswAgendaAccionesViewer API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaAccionesViewer API » LswAgendaAccionesViewer component
 Vue.component("LswAgendaAccionesViewer", {
   name: "LswAgendaAccionesViewer",
@@ -39350,11 +48984,11 @@ Vue.component("LswAgendaAccionesViewer", {
 });
 // @code.end: LswAgendaAccionesViewer API
 
-// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.css
+// @vuebundler[Lsw_framework_components][113]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.css
 
-// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.html
+// @vuebundler[Lsw_framework_components][114]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.html
 
-// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.js
+// @vuebundler[Lsw_framework_components][114]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.js
 // @code.start: LswAgendaBreadcrumb API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaBreadcrumb API » LswAgendaBreadcrumb component
 Vue.component("LswAgendaBreadcrumb", {
   name: "LswAgendaBreadcrumb",
@@ -39425,11 +49059,11 @@ Vue.component("LswAgendaBreadcrumb", {
 });
 // @code.end: LswAgendaBreadcrumb API
 
-// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.css
+// @vuebundler[Lsw_framework_components][114]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.css
 
-// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.html
+// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.html
 
-// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.js
+// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.js
 // @code.start: LswAgendaConceptoAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaConceptoAdd API » LswAgendaConceptoAdd component
 Vue.component("LswAgendaConceptoAdd", {
   template: `<div class="LswAgendaConceptoAdd">
@@ -39469,11 +49103,11 @@ Vue.component("LswAgendaConceptoAdd", {
 });
 // @code.end: LswAgendaConceptoAdd API
 
-// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.css
+// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.css
 
-// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.html
+// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.html
 
-// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.js
+// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.js
 // @code.start: LswAgendaConceptoSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaConceptoSearch API » LswAgendaConceptoSearch component
 Vue.component("LswAgendaConceptoSearch", {
   template: `<div class="LswAgendaConceptoSearch pad_top_1">
@@ -39512,11 +49146,11 @@ Vue.component("LswAgendaConceptoSearch", {
 });
 // @code.end: LswAgendaConceptoSearch API
 
-// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.css
+// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.css
 
-// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.html
+// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.html
 
-// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.js
+// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.js
 // @code.start: LswAgendaEventoSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaEventoSearch API » LswAgendaEventoSearch component
 Vue.component("LswAgendaEventoSearch", {
   template: `<div class="LswAgendaEventoSearch">
@@ -39539,11 +49173,11 @@ Vue.component("LswAgendaEventoSearch", {
 });
 // @code.end: LswAgendaEventoSearch API
 
-// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.css
+// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.css
 
-// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.html
+// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.html
 
-// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.js
+// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.js
 // @code.start: LswAgendaForm API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaForm API » LswAgendaForm component
 Vue.component("LswAgendaForm", {
   template: `<div>
@@ -39603,11 +49237,11 @@ Vue.component("LswAgendaForm", {
 });
 // @code.end: LswAgendaForm API
 
-// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.css
+// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.css
 
-// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.html
+// @vuebundler[Lsw_framework_components][119]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.html
 
-// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.js
+// @vuebundler[Lsw_framework_components][119]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.js
 // @code.start: LswAgendaImpresionAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaImpresionAdd API » LswAgendaImpresionAdd component
 Vue.component("LswAgendaImpresionAdd", {
   template: `<div class="LswAgendaImpresionAdd">
@@ -39630,11 +49264,11 @@ Vue.component("LswAgendaImpresionAdd", {
 });
 // @code.end: LswAgendaImpresionAdd API
 
-// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.css
+// @vuebundler[Lsw_framework_components][119]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.css
 
-// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.html
+// @vuebundler[Lsw_framework_components][120]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.html
 
-// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.js
+// @vuebundler[Lsw_framework_components][120]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.js
 // @code.start: LswAgendaImpresionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaImpresionSearch API » LswAgendaImpresionSearch component
 Vue.component("LswAgendaImpresionSearch", {
   template: `<div class="LswAgendaImpresionSearch">
@@ -39657,11 +49291,11 @@ Vue.component("LswAgendaImpresionSearch", {
 });
 // @code.end: LswAgendaImpresionSearch API
 
-// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.css
+// @vuebundler[Lsw_framework_components][120]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.css
 
-// @vuebundler[Lsw_framework_components][113]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.html
+// @vuebundler[Lsw_framework_components][121]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.html
 
-// @vuebundler[Lsw_framework_components][113]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.js
+// @vuebundler[Lsw_framework_components][121]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.js
 // @code.start: LswAgendaInfraccionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaInfraccionSearch API » LswAgendaInfraccionSearch component
 Vue.component("LswAgendaInfraccionSearch", {
   template: `<div class="LswAgendaInfraccionSearch">
@@ -39684,11 +49318,11 @@ Vue.component("LswAgendaInfraccionSearch", {
 });
 // @code.end: LswAgendaInfraccionSearch API
 
-// @vuebundler[Lsw_framework_components][113]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.css
+// @vuebundler[Lsw_framework_components][121]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.css
 
-// @vuebundler[Lsw_framework_components][114]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.html
+// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.html
 
-// @vuebundler[Lsw_framework_components][114]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.js
+// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.js
 // @code.start: LswAgendaLimitadorAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorAdd API » LswAgendaLimitadorAdd component
 Vue.component("LswAgendaLimitadorAdd", {
   template: `<div class="LswAgendaLimitadorAdd">
@@ -39728,11 +49362,11 @@ Vue.component("LswAgendaLimitadorAdd", {
 });
 // @code.end: LswAgendaLimitadorAdd API
 
-// @vuebundler[Lsw_framework_components][114]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.css
+// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.css
 
-// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.html
+// @vuebundler[Lsw_framework_components][123]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.html
 
-// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.js
+// @vuebundler[Lsw_framework_components][123]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.js
 // @code.start: LswAgendaLimitadorSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorSearch API » LswAgendaLimitadorSearch component
 Vue.component("LswAgendaLimitadorSearch", {
   template: `<div class="LswAgendaLimitadorSearch">
@@ -39765,11 +49399,11 @@ Vue.component("LswAgendaLimitadorSearch", {
 });
 // @code.end: LswAgendaLimitadorSearch API
 
-// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.css
+// @vuebundler[Lsw_framework_components][123]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.css
 
-// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.html
+// @vuebundler[Lsw_framework_components][124]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.html
 
-// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.js
+// @vuebundler[Lsw_framework_components][124]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.js
 // @code.start: LswAgendaLimitadorViewer API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorViewer API » LswAgendaLimitadorViewer component
 Vue.component("LswAgendaLimitadorViewer", {
   template: `<div class="LswAgendaLimitadorViewer">
@@ -39835,11 +49469,11 @@ Vue.component("LswAgendaLimitadorViewer", {
 });
 // @code.end: LswAgendaLimitadorViewer API
 
-// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.css
+// @vuebundler[Lsw_framework_components][124]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.css
 
-// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.html
+// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.html
 
-// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.js
+// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.js
 // @code.start: LswAgendaPostimpresionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaPostimpresionSearch API » LswAgendaPostimpresionSearch component
 Vue.component("LswAgendaPostimpresionSearch", {
   template: `<div class="LswAgendaPostimpresionSearch">
@@ -39862,11 +49496,11 @@ Vue.component("LswAgendaPostimpresionSearch", {
 });
 // @code.end: LswAgendaPostimpresionSearch API
 
-// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.css
+// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.css
 
-// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.html
+// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.html
 
-// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.js
+// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.js
 // @code.start: LswAgendaPropagacionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaPropagacionSearch API » LswAgendaPropagacionSearch component
 Vue.component("LswAgendaPropagacionSearch", {
   template: `<div class="LswAgendaPropagacionSearch">
@@ -39889,11 +49523,11 @@ Vue.component("LswAgendaPropagacionSearch", {
 });
 // @code.end: LswAgendaPropagacionSearch API
 
-// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.css
+// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.css
 
-// @vuebundler[Lsw_framework_components][119]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.html
+// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.html
 
-// @vuebundler[Lsw_framework_components][119]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.js
+// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.js
 // @code.start: LswAgendaPropagadorSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaPropagadorSearch API » LswAgendaPropagadorSearch component
 Vue.component("LswAgendaPropagadorSearch", {
   template: `<div class="LswAgendaPropagadorSearch">
@@ -39916,11 +49550,11 @@ Vue.component("LswAgendaPropagadorSearch", {
 });
 // @code.end: LswAgendaPropagadorSearch API
 
-// @vuebundler[Lsw_framework_components][119]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.css
+// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.css
 
-// @vuebundler[Lsw_framework_components][120]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.html
+// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.html
 
-// @vuebundler[Lsw_framework_components][120]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.js
+// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.js
 // @code.start: LswConductometria API | @$section: Vue.js (v2) Components » LswAgenda API » LswConductometria API » LswConductometria component
 Vue.component("LswConductometria", {
   template: `<div class="LswConductometria">
@@ -40054,9 +49688,9 @@ Vue.component("LswConductometria", {
 });
 // @code.end: LswConductometria API
 
-// @vuebundler[Lsw_framework_components][120]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.css
+// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.css
 
-// @vuebundler[Lsw_framework_components][121]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.api.js
+// @vuebundler[Lsw_framework_components][129]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -40562,9 +50196,9 @@ Vue.component("LswConductometria", {
 
 });
 
-// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.html
+// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.html
 
-// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.js
+// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.js
 // @code.start: LswConductometriaReport API | @$section: Vue.js (v2) Components » LswConductometriaReport API » LswConductometriaReport API » LswConductometriaReport component
 Vue.component("LswConductometriaReport", {
   name: "LswConductometriaReport",
@@ -40697,9 +50331,9 @@ Vue.component("LswConductometriaReport", {
 // @code.end: LswConductometriaReport API
 
 
-// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.css
+// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.css
 
-// @vuebundler[Lsw_framework_components][123]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.api.js
+// @vuebundler[Lsw_framework_components][131]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -40758,7 +50392,7 @@ Vue.component("LswConductometriaReport", {
 
 });
 
-// @vuebundler[Lsw_framework_components][124]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/api/api.js
+// @vuebundler[Lsw_framework_components][132]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/api/api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -40835,9 +50469,9 @@ Vue.component("LswConductometriaReport", {
 
 });
 
-// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.html
+// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.html
 
-// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.js
+// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.js
 // @code.start: LswFormBuilder API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswFormBuilder component
 Vue.component("LswFormBuilder", {
   template: `<div class="lsw-form-builder">
@@ -41027,11 +50661,11 @@ Vue.component("LswFormBuilder", {
 });
 // @code.end: LswFormBuilder API
 
-// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.css
+// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.css
 
-// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.html
+// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.html
 
-// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.js
+// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.js
 Vue.component("LswFormtype", {
   template: `<div class="lsw-formtype">
     <component
@@ -41079,11 +50713,11 @@ Vue.component("LswFormtype", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.css
+// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.css
 
-// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.html
+// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.html
 
-// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.js
+// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.js
 // @code.start: LswControlLabel API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswControlLabel component
 Vue.component("LswControlLabel", {
   template: `<div class="lsw_control_label">
@@ -41193,11 +50827,11 @@ Vue.component("LswControlLabel", {
 });
 // @code.end: LswControlLabel API
 
-// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.css
+// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.css
 
-// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.html
+// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.html
 
-// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.js
+// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.js
 // @code.start: LswControlError API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswControlError component
 Vue.component("LswControlError", {
   template: `<div class="lsw_control_error">
@@ -41240,80 +50874,11 @@ Vue.component("LswControlError", {
 });
 // @code.end: LswControlError API
 
-// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.css
+// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.css
 
-// @vuebundler[Lsw_framework_components][129]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-error-viewer/lsw-error-viewer.html
+// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.html
 
-// @vuebundler[Lsw_framework_components][129]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-error-viewer/lsw-error-viewer.js
-// @code.start: LswErrorViewer API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswErrorViewer component
-Vue.component("LswErrorViewer", {
-  template: `<div class="lsw_error_viewer">
-    <div class="box_error_container error_is_affecting_field position_relative" v-if="currentError">
-        <div class="position_absolute top_0" style="right: 20px;">
-            <div class="pad_1">
-                <button v-on:click="() => setError()">❎</button>
-            </div>
-        </div>
-        <div class="box_error_content">
-            <div class="errorMessage">
-                <template v-if="currentError.location">
-                    <span>{{ currentError.name }}</span>
-                    <span>{{ currentError.location.start.offset }}-{{ currentError.location.end.offset }}</span>
-                    <span> | </span>
-                    <span></span>
-                    <span>{{ currentError.location.start.line }}:{{ currentError.location.start.column }}-{{ currentError.location.end.line }}:{{ currentError.location.end.column }}</span>
-                    <span>{{ currentError.found }}</span>
-                    <span>{{ currentError.message }}</span>
-                    <pre style="font-size:10px;">  - {{ currentError.expected.map(it => JSON.stringify(it.text)).join("\n  - ") }}</pre>
-                </template>
-                <template v-else>
-                    {{ currentError.name }}: {{ currentError.message }}
-                </template>
-            </div>
-        </div>
-    </div>
-</div>`,
-  props: {
-    error: {
-      type: [Object, Boolean],
-      default: () => false
-    },
-    onClearError: {
-      type: Function,
-      default: () => {}
-    }
-  },
-  data() {
-    this.$trace("lsw-error-viewer.data");
-    return {
-      currentError: this.error,
-    };
-  },
-  methods: {
-    setError(error = undefined) {
-      this.$trace("lsw-error-viewer.methods.setError");
-      this.currentError = error;
-      if(typeof error === "undefined") {
-        this.onClearError();
-      }
-    },
-  },
-  watch: {},
-  mounted() {
-    try {
-      this.$trace("lsw-error-viewer.mounted");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-});
-// @code.end: LswErrorViewer API
-
-// @vuebundler[Lsw_framework_components][129]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-error-viewer/lsw-error-viewer.css
-
-// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.html
-
-// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.js
+// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.js
 // @code.start: LswTextControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswTextControl component
 Vue.component("LswTextControl", {
   template: `<div class="lsw_text_control lsw_formtype lsw_form_control">
@@ -41402,11 +50967,11 @@ Vue.component("LswTextControl", {
 });
 // @code.end: LswTextControl API
 
-// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.css
+// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.css
 
-// @vuebundler[Lsw_framework_components][131]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.html
+// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.html
 
-// @vuebundler[Lsw_framework_components][131]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.js
+// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.js
 // @code.start: LswLongTextControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswLongTextControl component
 Vue.component("LswLongTextControl", {
   template: `<div class="lsw_long_text_control lsw_formtype lsw_form_control">
@@ -41476,11 +51041,11 @@ Vue.component("LswLongTextControl", {
 });
 // @code.end: LswLongTextControl API
 
-// @vuebundler[Lsw_framework_components][131]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.css
+// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.css
 
-// @vuebundler[Lsw_framework_components][132]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.html
+// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.html
 
-// @vuebundler[Lsw_framework_components][132]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.js
+// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.js
 // @code.start: LswDateControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswDateControl component
 Vue.component("LswDateControl", {
   template: `<div class="lsw_date_control lsw_formtype lsw_form_control">
@@ -41591,11 +51156,11 @@ Vue.component("LswDateControl", {
 });
 // @code.end: LswDateControl API
 
-// @vuebundler[Lsw_framework_components][132]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.css
+// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.css
 
-// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.html
+// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.html
 
-// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.js
+// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.js
 // @code.start: LswDurationControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswDurationControl component
 Vue.component("LswDurationControl", {
   template: `<div class="lsw_duration_control lsw_formtype lsw_form_control">
@@ -41603,8 +51168,8 @@ Vue.component("LswDurationControl", {
         :parent-formtype="this"
         v-if="skipLabel === false"
     />
-    <lsw-error-viewer v-if="validateError" :error="validateError" />
-    <lsw-error-viewer v-if="submitError" :error="submitError" />
+    <lsw-error-box v-if="validateError" :error="validateError" />
+    <lsw-error-box v-if="submitError" :error="submitError" />
     <div v-show="isEditable" v-else>
         <div ref="controller"
             v-xform.control="{
@@ -41717,11 +51282,11 @@ Vue.component("LswDurationControl", {
 });
 // @code.end: LswDurationControl API
 
-// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.css
+// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.css
 
-// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.html
+// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.html
 
-// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.js
+// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.js
 // @code.start: LswNumberControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswNumberControl component
 Vue.component("LswNumberControl", {
   template: `<div class="lsw_number_control">
@@ -41749,11 +51314,11 @@ Vue.component("LswNumberControl", {
 });
 // @code.end: LswNumberControl API
 
-// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.css
+// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.css
 
-// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.html
+// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.html
 
-// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.js
+// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.js
 // @code.start: LswOptionsControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswOptionsControl component
 Vue.component("LswOptionsControl", {
   template: `<div class="lsw_options_control lsw_formtype lsw_form_control" keep-alive="true">
@@ -41823,11 +51388,11 @@ Vue.component("LswOptionsControl", {
 });
 // @code.end: LswOptionsControl API
 
-// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.css
+// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.css
 
-// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.html
+// @vuebundler[Lsw_framework_components][143]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.html
 
-// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.js
+// @vuebundler[Lsw_framework_components][143]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.js
 // @code.start: LswSourceCodeControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswSourceCodeControl component
 Vue.component("LswSourceCodeControl", {
   template: `<div class="lsw_source_code_control lsw_formtype lsw_form_control">
@@ -41934,11 +51499,11 @@ Vue.component("LswSourceCodeControl", {
 });
 // @code.end: LswSourceCodeControl API
 
-// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.css
+// @vuebundler[Lsw_framework_components][143]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.css
 
-// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.html
+// @vuebundler[Lsw_framework_components][144]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.html
 
-// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.js
+// @vuebundler[Lsw_framework_components][144]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.js
 // @code.start: LswRefObjectControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefObjectControl component
 Vue.component("LswRefObjectControl", {
   template: `<div class="lsw_ref_object_control lsw_formtype lsw_form_control">
@@ -41975,7 +51540,7 @@ Vue.component("LswRefObjectControl", {
                 <div class="" style="white-space: pre; font-size:12px; border: 1px solid white; background-color: white; color: black;">{{ \$lsw.utils.stringify(settings) }}</div>
             </div>
             <div class=""
-                v-if="isShownSelector">
+                v-if="isShownSelector && isLoaded">
                 <lsw-table
                     :initial-input="rows"
                     :initial-settings="{title: \`Un ítem de «\${settings.column.refersTo.table}.\${settings.column.refersTo.property}»:\`, itemsPerPage: 50 }"
@@ -41993,6 +51558,10 @@ Vue.component("LswRefObjectControl", {
       type: Object,
       default: () => ({})
     },
+    labelField: {
+      type: String,
+      required: true,
+    }
   },
   data() {
     this.$trace("lsw-ref-object-control.data");
@@ -42000,11 +51569,12 @@ Vue.component("LswRefObjectControl", {
     return {
       uuid: LswRandomizer.getRandomString(5),
       value: this.settings.initialValue || [],
+      isLoaded: false,
       isValueLoaded: false,
       isEditable: true,
-      isShownSelector: false,
+      isShownSelector: true,
       isShownInfo: false,
-      rows: []
+      rows: [],
     };
   },
   methods: {
@@ -42033,12 +51603,17 @@ Vue.component("LswRefObjectControl", {
       this.$trace("lsw-page-rows.methods.loadRows", arguments);
       const selection = await this.$lsw.database.select(this.settings.column.refersTo.table, it => true);
       this.rows = selection;
+      this.isLoaded = true;
       return selection;
     },
     async loadValue() {
       this.$trace("lsw-ref-object-control.methods.loadValue");
       const selection = await this.$lsw.database.select(this.settings.tableId, it => true);
     },
+    selectRow(row) {
+      this.$trace("lsw-ref-object-control.methods.selectRow");
+      this.value = row;
+    }
   },
   watch: {},
   async mounted() {
@@ -42052,11 +51627,138 @@ Vue.component("LswRefObjectControl", {
 });
 // @code.end: LswRefObjectControl API
 
-// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.css
+// @vuebundler[Lsw_framework_components][144]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.css
 
-// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.html
+// @vuebundler[Lsw_framework_components][145]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-by-label-control/lsw-ref-object-by-label-control.html
 
-// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.js
+// @vuebundler[Lsw_framework_components][145]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-by-label-control/lsw-ref-object-by-label-control.js
+// @code.start: LswRefObjectByLabelControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefObjectByLabelControl component
+Vue.component("LswRefObjectByLabelControl", {
+  template: `<div class="lsw_ref_object_by_label_control lsw_formtype lsw_form_control">
+    <lsw-control-label :settings="settings"
+        :parent-formtype="this" />
+    <div v-show="isEditable">
+        <div ref="controller"
+            v-xform.control="{
+                name: settings.name,
+                onValidate: settings.column.hasValidator || \$noop,
+                onSetError: () => {
+                    isEditable = true;
+                }
+            }">
+            <div class="flex_row">
+                <div class="flex_1 pad_right_1">
+                    <button
+                        class="has_light_bg"
+                        :class="{activated: isShownSelector}"
+                        v-on:click="toggleSelector">🔎</button>
+                </div>
+                <input class="flex_100"
+                    type="text"
+                    v-model="value"
+                    v-xform.input="{name: '*',onValidate: settings.input?.onValidate || \$noop}"
+                    :disabled="settings.column.refersTo.constraint"
+                    ref="textInput" />
+                <div class="flex_1 pad_left_1" v-if="\$window.process.env.NODE_ENV === 'test' && false">
+                    <button :class="{activated: isShownInfo}"
+                        v-on:click="toggleInfo">ℹ️</button>
+                </div>
+            </div>
+            <div class="pad_top_1" v-if="isShownInfo">
+                <div class="" style="white-space: pre; font-size:12px; border: 1px solid white; background-color: white; color: black;">{{ \$lsw.utils.stringify(settings) }}</div>
+            </div>
+            <div class=""
+                v-if="isShownSelector && isLoaded">
+                
+                <lsw-inline-tags-picker
+                    :from="rows"
+                    :field="settings.column.refersTo.property"
+                    :on-choose="v => value = v[settings.column.refersTo.property]"
+                />
+                
+                <!--lsw-table
+                    :initial-input="rows"
+                    :initial-settings="{title: \`Un ítem de «\${settings.column.refersTo.table}.\${settings.column.refersTo.property}»:\`, itemsPerPage: 50 }"
+                    selectable="one"
+                    :on-choose-row="v => value = \$window.console.log('valueee', v) || v"
+                    :initial-choosen-value="value"
+                    choosable-id="tiene_nombre"></lsw-table-->
+            </div>
+            <lsw-control-error />
+        </div>
+    </div>
+</div>`,
+  props: {
+    settings: {
+      type: Object,
+      default: () => ({})
+    },
+  },
+  data() {
+    this.$trace("lsw-ref-object-by-label-control.data");
+    this.validateSettings();
+    return {
+      uuid: LswRandomizer.getRandomString(5),
+      value: this.settings.initialValue || [],
+      isLoaded: false,
+      isValueLoaded: false,
+      isEditable: true,
+      isShownSelector: true,
+      isShownInfo: false,
+      rows: []
+    };
+  },
+  methods: {
+    toggleSelector() {
+      this.$trace("lsw-ref-object-by-label-control.methods.toggleSelector");
+      this.isShownSelector = !this.isShownSelector;
+    },
+    toggleInfo() {
+      this.$trace("lsw-ref-object-by-label-control.methods.toggleInfo");
+      this.isShownInfo = !this.isShownInfo;
+    },
+    async submit() {
+      this.$trace("lsw-ref-object-by-label-control.methods.submit");
+      return LswFormtypes.utils.submitControl.call(this);
+      
+    },
+    validate() {
+      this.$trace("lsw-ref-object-by-label-control.methods.validateSettings");
+      return LswFormtypes.utils.validateControl.call(this);
+    },
+    validateSettings() {
+      this.$trace("lsw-ref-object-by-label-control.methods.validateSettings");
+      return LswFormtypes.utils.validateSettings.call(this);
+    },
+    async loadRows() {
+      this.$trace("lsw-page-rows.methods.loadRows", arguments);
+      const selection = await this.$lsw.database.select(this.settings.column.refersTo.table, it => true);
+      this.rows = selection;
+      this.isLoaded = true;
+      return selection;
+    },
+    async loadValue() {
+      this.$trace("lsw-ref-object-by-label-control.methods.loadValue");
+      const selection = await this.$lsw.database.select(this.settings.tableId, it => true);
+    },
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-ref-object-by-label-control.mounted");
+      await this.loadRows();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswRefObjectByLabelControl API
+
+// @vuebundler[Lsw_framework_components][145]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-by-label-control/lsw-ref-object-by-label-control.css
+
+// @vuebundler[Lsw_framework_components][146]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.html
+
+// @vuebundler[Lsw_framework_components][146]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.js
 // @code.start: LswRefListControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefListControl component
 Vue.component("LswRefListControl", {
   template: `<div class="lsw_ref_list_control lsw_formtype lsw_form_control">
@@ -42171,11 +51873,11 @@ Vue.component("LswRefListControl", {
 });
 // @code.end: LswRefListControl API
 
-// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.css
+// @vuebundler[Lsw_framework_components][146]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.css
 
-// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.html
+// @vuebundler[Lsw_framework_components][147]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.html
 
-// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.js
+// @vuebundler[Lsw_framework_components][147]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.js
 // @code.start: LswRefRelationControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefRelationControl component
 Vue.component("LswRefRelationControl", {
   template: `<div class="lsw_ref_relation_control">
@@ -42222,11 +51924,11 @@ Vue.component("LswRefRelationControl", {
 });
 // @code.end: LswRefRelationControl API
 
-// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.css
+// @vuebundler[Lsw_framework_components][147]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.css
 
-// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.html
+// @vuebundler[Lsw_framework_components][148]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.html
 
-// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.js
+// @vuebundler[Lsw_framework_components][148]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.js
 // @code.start: LswSchemaBasedForm API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswSchemaBasedForm component
 Vue.component("LswSchemaBasedForm", {
   template: `<div class="lsw_schema_form">
@@ -42365,14 +52067,14 @@ Vue.component("LswSchemaBasedForm", {
                                         <!--src/lsw-framework/components/lsw-formtype/type/lsw-*-control/lsw-*-control.{html,css,js}-->
                                         <template v-if="externalColumn.isType === 'ref-list'">
                                             <lsw-ref-list-control :settings="{
-                                            name: externalColumnId,
-                                            database: model.databaseId,
-                                            table: model.tableId,
-                                            entity: model.entityId,
-                                            column: externalColumn,
-                                            parentSchemaForm: own,
-                                            label: (externalColumnCounter+1) + '. ' + (externalColumn.hasLabel || ('Campo «' + externalColumnId + '»')),
-                                        }" />
+                                                name: externalColumnId,
+                                                database: model.databaseId,
+                                                table: model.tableId,
+                                                entity: model.entityId,
+                                                column: externalColumn,
+                                                parentSchemaForm: own,
+                                                label: (externalColumnCounter+1) + '. ' + (externalColumn.hasLabel || ('Campo «' + externalColumnId + '»')),
+                                            }" />
                                         </template>
                                         <!--component :is="column.hasFormtypeSettings.id"
                                         v-bind="{}"
@@ -42443,6 +52145,7 @@ Vue.component("LswSchemaBasedForm", {
         "date",
         "duration",
         "ref-object",
+        "ref-object-by-label",
         "ref-list",
         "ref-relation",
         "source-code",
@@ -42692,11 +52395,11 @@ Vue.component("LswSchemaBasedForm", {
 });
 // @code.end: LswSchemaBasedForm API
 
-// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.css
+// @vuebundler[Lsw_framework_components][148]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.css
 
-// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.html
+// @vuebundler[Lsw_framework_components][149]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.html
 
-// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.js
+// @vuebundler[Lsw_framework_components][149]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.js
 // @code.start: LswBarsGraphBar API | @$section: Vue.js (v2) Components » LswBarsGraphBar component
 Vue.component("LswBarsGraphBar", {
   template: `<div class="lsw_bars_graph_bar">
@@ -42750,11 +52453,11 @@ Vue.component("LswBarsGraphBar", {
 });
 // @code.end: LswBarsGraphBar API
 
-// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.css
+// @vuebundler[Lsw_framework_components][149]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.css
 
-// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.html
+// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.html
 
-// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.js
+// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.js
 // @code.start: LswBarsGraph API | @$section: Vue.js (v2) Components » LswBarsGraph component
 Vue.component("LswBarsGraph", {
   template: `<div class="lsw_bars_graph">
@@ -42880,9 +52583,9 @@ Vue.component("LswBarsGraph", {
 });
 // @code.end: LswBarsGraph API
 
-// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.css
+// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.css
 
-// @vuebundler[Lsw_framework_components][143]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.api.js
+// @vuebundler[Lsw_framework_components][151]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -42931,9 +52634,9 @@ Vue.component("LswBarsGraph", {
 
 });
 
-// @vuebundler[Lsw_framework_components][144]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.html
+// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.html
 
-// @vuebundler[Lsw_framework_components][144]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.js
+// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.js
 // @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component
 Vue.component("LswNotes", {
   template: `<div class="lsw_notes pad_0 pad_top_0">
@@ -43049,15 +52752,23 @@ Vue.component("LswNotes", {
 });
 // @code.end: LswNotes API
 
-// @vuebundler[Lsw_framework_components][144]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.css
+// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.css
 
-// @vuebundler[Lsw_framework_components][145]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.html
+// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.html
 
-// @vuebundler[Lsw_framework_components][145]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.js
+// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.js
 // @code.start: LswConfigurationsPage API | @$section: Vue.js (v2) Components » LswConfigurationsPage component
 // Change this component at your convenience:
 Vue.component("LswConfigurationsPage", {
   template: `<div class="configurations_page">
+    <div class="pad_bottom_1">
+        <div class="typical_title_1 flex_row centered">
+            <div class="flex_100">🔧 Configuraciones:</div>
+            <div class="flex_1">
+                <button class="visibility_hidden supermini">ok</button>
+            </div>
+        </div>
+    </div>
     <div class="flex_row centered">
         <div class="flex_1 nowrap pad_right_2">📌 Sección: </div>
         <select class="flex_100" v-model="selectedSection">
@@ -43618,11 +53329,11 @@ Vue.component("LswConfigurationsPage", {
 });
 // @code.end: LswConfigurationsPage API
 
-// @vuebundler[Lsw_framework_components][145]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.css
+// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.css
 
-// @vuebundler[Lsw_framework_components][146]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.html
+// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.html
 
-// @vuebundler[Lsw_framework_components][146]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.js
+// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.js
 // @code.start: LswAutomensajesViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAutomensajesViewer API » LswAutomensajesViewer component
 Vue.component("LswAutomensajesViewer", {
   template: `<div class="lsw_automensajes_viewer">
@@ -43751,11 +53462,11 @@ Vue.component("LswAutomensajesViewer", {
 });
 // @code.end: LswAutomensajesViewer API
 
-// @vuebundler[Lsw_framework_components][146]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.css
+// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.css
 
-// @vuebundler[Lsw_framework_components][147]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.html
+// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.html
 
-// @vuebundler[Lsw_framework_components][147]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.js
+// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.js
 // @code.start: LswAppsViewerButton API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAppsViewerButton API » LswAppsViewerButton component
 Vue.component("LswAppsViewerButton", {
   template: `<div class="lsw_apps_viewer_button">
@@ -43822,11 +53533,11 @@ Vue.component("LswAppsViewerButton", {
 });
 // @code.end: LswAppsViewerButton API
 
-// @vuebundler[Lsw_framework_components][147]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.css
+// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.css
 
-// @vuebundler[Lsw_framework_components][148]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.html
+// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.html
 
-// @vuebundler[Lsw_framework_components][148]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.js
+// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.js
 // @code.start: LswAppsViewerPanel API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAppsViewer API » LswAppsViewerPanel component
 Vue.component("LswAppsViewerPanel", {
   template: `<div class="lsw_apps_viewer_panel">
@@ -43837,8 +53548,8 @@ Vue.component("LswAppsViewerPanel", {
                 <div class="pad_1"
                     v-if="selectedApplication === 'antes'"
                     v-bind:key="'app_acciones_anteriores'">
-                    <h4 class="pad_bottom_1">
-                        <div class="flex_row centered">
+                    <div class="pad_bottom_1">
+                        <div class="typical_title_1 flex_row centered">
                             <div class="flex_100">⬅️ 🕓 Antes de las {{ horaActual }}:</div>
                             <div class="flex_1">
                                 <button class="supermini"
@@ -43849,7 +53560,7 @@ Vue.component("LswAppsViewerPanel", {
                                     v-on:click="() => selectApplication('despues')">🕓➡️</button>
                             </div>
                         </div>
-                    </h4>
+                    </div>
                     <lsw-agenda-acciones-viewer :initial-date="new Date()"
                         sorter-strategy="antes" />
                     <div v-else
@@ -43858,8 +53569,8 @@ Vue.component("LswAppsViewerPanel", {
                 <div class="pad_1"
                     v-if="selectedApplication === 'despues'"
                     v-bind:key="'app_acciones_posteriores'">
-                    <h4 class="pad_bottom_1">
-                        <div class="flex_row centered">
+                    <div class="pad_bottom_1">
+                        <div class="typical_title_1 flex_row centered">
                             <div class="flex_100">🕓 ➡️ Después de las {{ horaActual }}:</div>
                             <div class="flex_1">
                                 <button class="supermini"
@@ -43870,7 +53581,7 @@ Vue.component("LswAppsViewerPanel", {
                                     v-on:click="() => selectApplication('antes')">⬅️🕓</button>
                             </div>
                         </div>
-                    </h4>
+                    </div>
                     <lsw-agenda-acciones-viewer :initial-date="new Date()"
                         sorter-strategy="despues" />
                 </div>
@@ -43878,11 +53589,19 @@ Vue.component("LswAppsViewerPanel", {
                 <div class="pad_1"
                     v-if="selectedApplication === 'calendario'"
                     v-bind:key="'app_calendario'">
-                    <div class="pad_top_0 pad_bottom_0">
-                        <h4 class="margin_bottom_1">
+                    <div class="pad_top_0 pad_bottom_1">
+                        <div class="typical_title_1">
                             <div class="flex_row centered">
                                 <div class="flex_100">📅 Calendario:</div>
-                                <div class="flex_1">
+                                <div class="flex_1 pad_left_1">
+                                    <button class="supermini"
+                                        v-on:click="() => \$refs.agenda.selectConductometria()">🔮</button>
+                                </div>
+                                <div class="flex_1 pad_left_1">
+                                    <button class="supermini"
+                                        v-on:click="() => \$refs.agenda.selectCalendario()">📆</button>
+                                </div>
+                                <div class="flex_1 pad_left_1">
                                     <button class="supermini"
                                         v-on:click="() => selectApplication('antes')">⬅️🕓</button>
                                 </div>
@@ -43891,8 +53610,8 @@ Vue.component("LswAppsViewerPanel", {
                                         v-on:click="() => selectApplication('despues')">🕓➡️</button>
                                 </div>
                             </div>
-                        </h4>
-                        <lsw-agenda />
+                        </div>
+                        <lsw-agenda ref="agenda" />
                     </div>
                 </div>
 
@@ -44210,9 +53929,9 @@ Vue.component("LswAppsViewerPanel", {
 });
 // @code.end: LswAppsViewerPanel API
 
-// @vuebundler[Lsw_framework_components][148]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.css
+// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.css
 
-// @vuebundler[Lsw_framework_components][149]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/protolang/protolang.js
+// @vuebundler[Lsw_framework_components][157]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/protolang/protolang.js
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -46122,9 +55841,9 @@ Vue.component("LswAppsViewerPanel", {
   };
 })(globalThis);
 
-// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.html
+// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.html
 
-// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.js
+// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.js
 // @code.start: LswProtolangEditor API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswProtolangEditor API » LswProtolangEditor component
 Vue.component("LswProtolangEditor", {
   template: `<div class="lsw_protolang_editor">
@@ -46142,7 +55861,7 @@ Vue.component("LswProtolangEditor", {
             <textarea class="nowrap" v-model="contents" :placeholder="placeholder" style="height: 380px;" spellcheck="false" />
         </div>
         <template v-if="error">
-            <lsw-error-viewer :error="error" :on-clear-error="() => error = false" />
+            <lsw-syntax-error-viewer :error="error" :on-clear-error="() => error = false" />
         </template>
         <pre v-if="result" style="font-size:10px;">{{ result }}</pre>
     </div>
@@ -46210,11 +55929,11 @@ Vue.component("LswProtolangEditor", {
 });
 // @code.end: LswProtolangEditor API
 
-// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.css
+// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.css
 
-// @vuebundler[Lsw_framework_components][151]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.html
+// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.html
 
-// @vuebundler[Lsw_framework_components][151]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.js
+// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.js
 // @code.start: LswSpontaneousFormAccion API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormAccion API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormAccion", {
   template: `<div class="lsw_spontaneos_form_accion">
@@ -46238,11 +55957,11 @@ Vue.component("LswSpontaneousFormAccion", {
 });
 // @code.end: LswSpontaneousFormAccion API
 
-// @vuebundler[Lsw_framework_components][151]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.css
+// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.css
 
-// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.html
+// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.html
 
-// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.js
+// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.js
 // @code.start: LswSpontaneousFormArticulo API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormArticulo API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormArticulo", {
   template: `<div class="lsw_spontaneos_form_nota pad_1">
@@ -46251,9 +55970,9 @@ Vue.component("LswSpontaneousFormArticulo", {
         <div class="flex_100">
             <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
             <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de artículo" v-model="tiene_titulo" />
-            <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de artículo." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido"></textarea>
-            <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias"></textarea>
-            <textarea class="width_100 margin_bottom_0 margin_top_1" placeholder="tag 1; tag 2; tag 3;" v-model="tiene_tags"></textarea>
+            <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de artículo." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido" spellcheck="false"></textarea>
+            <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias" spellcheck="false"></textarea>
+            <textarea class="width_100 margin_bottom_0 margin_top_1" placeholder="tag 1; tag 2; tag 3;" v-model="tiene_tags" spellcheck="false"></textarea>
             <div class="flex_row centered">
                 <div class="flex_1">
                     Garantía: 
@@ -46333,11 +56052,11 @@ Vue.component("LswSpontaneousFormArticulo", {
 });
 // @code.end: LswSpontaneousFormArticulo API
 
-// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.css
+// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.css
 
-// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.html
+// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.html
 
-// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.js
+// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.js
 // @code.start: LswSpontaneousFormLista API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormLista API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormLista", {
   template: `<div class="lsw_spontaneos_form_lista">
@@ -46361,11 +56080,11 @@ Vue.component("LswSpontaneousFormLista", {
 });
 // @code.end: LswSpontaneousFormLista API
 
-// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.css
+// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.css
 
-// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.html
+// @vuebundler[Lsw_framework_components][162]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.html
 
-// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.js
+// @vuebundler[Lsw_framework_components][162]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.js
 // @code.start: LswSpontaneousFormNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormNota API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormNota", {
   template: `<div class="lsw_spontaneos_form_nota pad_1">
@@ -46375,7 +56094,7 @@ Vue.component("LswSpontaneousFormNota", {
             <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
             <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de nota" v-model="tiene_titulo" />
             <textarea class="width_100 margin_top_0 margin_bottom_1px" placeholder="Contenido de nota." style="min-height: 230px;" v-model="tiene_contenido" spellcheck="false" ref="tiene_contenido"></textarea>
-            <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias"></textarea>
+            <textarea class="width_100 margin_bottom_0 margin_top_0" placeholder="categoría 1; categoria 2" v-model="tiene_categorias" spellcheck="false"></textarea>
         </div>
         <div class="flex_1 pad_left_1">
             <button class="mini" style="height: 100%; min-width: 30px;" v-on:click="addNota">🟢</button>
@@ -46440,11 +56159,11 @@ Vue.component("LswSpontaneousFormNota", {
 });
 // @code.end: LswSpontaneousFormNota API
 
-// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.css
+// @vuebundler[Lsw_framework_components][162]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.css
 
-// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.html
+// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.html
 
-// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.js
+// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.js
 // @code.start: LswSpontaneousFormRecordatorio API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormRecordatorio API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormRecordatorio", {
   template: `<div class="lsw_spontaneos_form_recordatorio">
@@ -46468,11 +56187,11 @@ Vue.component("LswSpontaneousFormRecordatorio", {
 });
 // @code.end: LswSpontaneousFormRecordatorio API
 
-// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.css
+// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.css
 
-// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.html
+// @vuebundler[Lsw_framework_components][164]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.html
 
-// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.js
+// @vuebundler[Lsw_framework_components][164]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.js
 // @code.start: LswSpontaneousTableAccion API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableAccion API » LswSpontaneousTableAccion component
 Vue.component("LswSpontaneousTableAccion", {
   template: `<div class="lsw_spontaneos_table_accion">
@@ -46496,11 +56215,11 @@ Vue.component("LswSpontaneousTableAccion", {
 });
 // @code.end: LswSpontaneousTableAccion API
 
-// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.css
+// @vuebundler[Lsw_framework_components][164]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.css
 
-// @vuebundler[Lsw_framework_components][157]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.html
+// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.html
 
-// @vuebundler[Lsw_framework_components][157]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.js
+// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.js
 // @code.start: LswSpontaneousTableArticulo API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableArticulo API » LswSpontaneousTableArticulo component
 Vue.component("LswSpontaneousTableArticulo", {
   template: `<div class="lsw_spontaneos_table_articulo">
@@ -46524,11 +56243,11 @@ Vue.component("LswSpontaneousTableArticulo", {
 });
 // @code.end: LswSpontaneousTableArticulo API
 
-// @vuebundler[Lsw_framework_components][157]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.css
+// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.css
 
-// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.html
+// @vuebundler[Lsw_framework_components][166]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.html
 
-// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.js
+// @vuebundler[Lsw_framework_components][166]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.js
 // @code.start: LswSpontaneousTableLista API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableLista API » LswSpontaneousTableLista component
 Vue.component("LswSpontaneousTableLista", {
   template: `<div class="lsw_spontaneos_table_lista">
@@ -46552,21 +56271,23 @@ Vue.component("LswSpontaneousTableLista", {
 });
 // @code.end: LswSpontaneousTableLista API
 
-// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.css
+// @vuebundler[Lsw_framework_components][166]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.css
 
-// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.html
+// @vuebundler[Lsw_framework_components][167]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.html
 
-// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.js
+// @vuebundler[Lsw_framework_components][167]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.js
 // @code.start: LswSpontaneousTableNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableNota API » LswSpontaneousTableNota component
 Vue.component("LswSpontaneousTableNota", {
   template: `<div class="lsw_spontaneos_table_nota">
-    <div class="flex_row centered">
-        <div class="flex_100">
-            <h4>📒 Últimas notas:</h4>
-        </div>
-        <div class="flex_1 pad_left_1">
-            <button class="supermini"
-                v-on:click="goToAddNota">➕</button>
+    <div class="typical_title_1">
+        <div class="flex_row centered">
+            <div class="flex_100">
+                📒 Últimas notas:
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini"
+                    v-on:click="goToAddNota">➕</button>
+            </div>
         </div>
     </div>
     <div class="pad_top_1">
@@ -46922,11 +56643,11 @@ Vue.component("LswSpontaneousTableNota", {
 });
 // @code.end: LswSpontaneousTableNota API
 
-// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.css
+// @vuebundler[Lsw_framework_components][167]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.css
 
-// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.html
+// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.html
 
-// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.js
+// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.js
 // @code.start: LswSpontaneousTableRecordatorio API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableRecordatorio API » LswSpontaneousTableRecordatorio component
 Vue.component("LswSpontaneousTableRecordatorio", {
   template: `<div class="lsw_spontaneos_table_recordatorio">
@@ -46950,11 +56671,11 @@ Vue.component("LswSpontaneousTableRecordatorio", {
 });
 // @code.end: LswSpontaneousTableRecordatorio API
 
-// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.css
+// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.css
 
-// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.html
+// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.html
 
-// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.js
+// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.js
 // @code.start: LswFastDateControl API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswFastDateControl API » LswFastDateControl component
 Vue.component("LswFastDatetimeControl", {
   template: `<div class="lsw_fast_datetime_control">
@@ -47038,9 +56759,92 @@ Vue.component("LswFastDatetimeControl", {
 });
 // @code.end: LswFastDateControl API
 
-// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.css
+// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.css
 
-// @vuebundler[Lsw_framework_components][162]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.api.js
+// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-inline-tags-picker/lsw-inline-tags-picker.html
+
+// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-inline-tags-picker/lsw-inline-tags-picker.js
+// @code.start: LswInlineTagsPicker API | @$section: Vue.js (v2) Components » LswInlineTagsPicker component
+Vue.component("LswInlineTagsPicker", {
+  template: `<div class="lsw_inline_tags_picker">
+    <div class="flex_row centered pad_top_1">
+        <div class="flex_100">
+            <input class="width_100" type="text" v-model="searchText"
+                spellcheck="false"
+                placeholder="Busca aquí"
+                v-on:keyup.enter="digestSearch" />
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class=""
+                v-on:click="digestSearch">🔎</button>
+        </div>
+    </div>
+    <template v-for="row, rowIndex in fromData">
+        <div class="display_inline_block pad_top_1 pad_right_1"
+            v-bind:key="'row_' + rowIndex">
+            <button class="supermini"
+                v-on:click="() => selectRow(row)">
+                {{ row[field] }}
+            </button>
+        </div>
+    </template>
+</div>`,
+  props: {
+    from: {
+      type: Object,
+      default: () => []
+    },
+    field: {
+      type: String,
+      required: true,
+    },
+    onChoose: {
+      type: [Function, Boolean],
+      default: () => false,
+    }
+  },
+  data() {
+    this.$trace("lsw-inline-tags-picker.data");
+    return {
+      fromData: this.from,
+      digestedData: [],
+      searchText: "",
+      selectedRow: false,
+    };
+  },
+  methods: {
+    digestSearch() {
+      this.$trace("lsw-inline-tags-picker.methods.digestSearch");
+      if (this.searchText.trim() === "") {
+        this.digestedData = this.fromData;
+        return;
+      }
+      this.digestedData = this.fromData.filter(row => {
+        return JSON.stringify(row).toLowerCase().indexOf(this.searchText.toLowerCase()) !== -1;
+      });
+    },
+    selectRow(row) {
+      this.$trace("lsw-inline-tags-picker.methods.selectRow");
+      this.selectedRow = row;
+      if (typeof this.onChoose === "function") {
+        this.onChoose(row, this);
+      }
+    }
+  },
+  watch: {},
+  async mounted() {
+    try {
+      this.$trace("lsw-inline-tags-picker.mounted");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswInlineTagsPicker API
+
+// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-inline-tags-picker/lsw-inline-tags-picker.css
+
+// @vuebundler[Lsw_framework_components][171]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -47190,9 +56994,9 @@ Vue.component("LswFastDatetimeControl", {
 
 });
 
-// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.html
+// @vuebundler[Lsw_framework_components][172]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.html
 
-// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.js
+// @vuebundler[Lsw_framework_components][172]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.js
 // @code.start: LswJsInspector API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswJsInspector component
 (() => {
   const emptyOutput = {};
@@ -47201,7 +57005,7 @@ Vue.component("LswFastDatetimeControl", {
       this.inspector = inspector;
       this.uid = LswRandomizer.getRandomString(5);
       this.id = inspector.tabs.length;
-      this.inputSource = "Vue.options.components.LswCalendario.options.template";
+      // this.inputSource = "Vue.options.components.LswCalendario.options.template";
       this.inputSource = "Vue";
       this.pathSource = '';
       this.transformerSource = '';
@@ -47211,10 +57015,11 @@ Vue.component("LswFastDatetimeControl", {
   }
   Vue.component("LswJsInspector", {
     template: `<div class="lsw_js_inspector">
-    <div class="flex_row pad_1">
+    <div class="flex_row centered">
         <div class="flex_100">🪲 JS inspector</div>
         <div class="flex_1">
-
+            <button class="supermini"
+                v-on:click="openConsole">💻</button>
         </div>
     </div>
     <div class="flex_row centered pad_top_1">
@@ -47228,6 +57033,12 @@ Vue.component("LswFastDatetimeControl", {
                     {{ tab.id }} ({{ tab.uid }})
                 </option>
             </select>
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="supermini"
+                v-on:click="cloneTab">
+                🐑🐑
+            </button>
         </div>
         <div class="flex_1 pad_left_1">
             <button class="supermini"
@@ -47254,6 +57065,10 @@ Vue.component("LswFastDatetimeControl", {
                                                 v-model="tab.id"
                                                 v-on:keypress.enter="digestInput" />
                                         </div>
+                                        <div class="flex_1 pad_left_1">
+                                            <button class="supermini"
+                                                v-on:click="() => resetTabId(tabIndex)">❎</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -47272,8 +57087,12 @@ Vue.component("LswFastDatetimeControl", {
                                             v-model="tab.inputSource"
                                             v-on:keypress.enter="digestInput" />
                                     </div>
+                                    <div class="flex_1 pad_left_1">
+                                        <button class="supermini"
+                                            v-on:click="() => resetTabInput(tabIndex)">❎</button>
+                                    </div>
                                 </div>
-                                <lsw-error-viewer v-if="errorGettingInput"
+                                <lsw-error-box v-if="errorGettingInput"
                                     :error="errorGettingInput"
                                     :on-clear-error="() => errorGettingInput = false" />
                             </div>
@@ -47290,14 +57109,18 @@ Vue.component("LswFastDatetimeControl", {
                                                 placeholder="Jmespath, ej: list.*.property"
                                                 v-on:keypress.enter="digestInput" />
                                         </div>
+                                        <div class="flex_1 pad_left_1">
+                                            <button class="supermini"
+                                                v-on:click="() => resetTabPath(tabIndex)">❎</button>
+                                        </div>
                                     </div>
                                     <template v-if="errorPathingInput">
-                                        <lsw-error-viewer :error="errorPathingInput"
+                                        <lsw-error-box :error="errorPathingInput"
                                             :on-clear-error="() => errorPathingInput = false" />
                                     </template>
                                 </div>
                                 <div>
-                                    <div class="flex_row centered pad_top_1">
+                                    <div class="flex_row pad_top_1">
                                         <div class="flex_1 pad_right_1 align_self_start pad_top_1">
                                             💉:
                                         </div>
@@ -47308,8 +57131,12 @@ Vue.component("LswFastDatetimeControl", {
                                                 placeholder="Js transformer, ej: return it.map(row => row.field)"
                                                 v-on:keypress.ctrl.enter="digestInput" />
                                         </div>
+                                        <div class="flex_1 pad_left_1 align_self_stretch">
+                                            <button class="supermini height_100"
+                                                v-on:click="() => resetTabTransformer(tabIndex)">❎</button>
+                                        </div>
                                     </div>
-                                    <lsw-error-viewer v-if="errorTransformingInput"
+                                    <lsw-error-box v-if="errorTransformingInput"
                                         :error="errorTransformingInput"
                                         :on-clear-error="() => errorTransformingInput = false" />
                                 </div>
@@ -47326,8 +57153,12 @@ Vue.component("LswFastDatetimeControl", {
                                                 v-on:input="(e) => updateSearchWithDelay(tab, e.target.value)"
                                                 v-on:keypress.enter="digestInput" />
                                         </div>
+                                        <div class="flex_1 pad_left_1">
+                                            <button class="supermini"
+                                                v-on:click="() => resetTabSearch(tabIndex)">❎</button>
+                                        </div>
                                     </div>
-                                    <lsw-error-viewer v-if="errorTransformingInput"
+                                    <lsw-error-box v-if="errorTransformingInput"
                                         :error="errorTransformingInput"
                                         :on-clear-error="() => errorTransformingInput = false" />
                                 </div>
@@ -47434,10 +57265,23 @@ Vue.component("LswFastDatetimeControl", {
         this.selectedTab = anotherTab.uid;
         return anotherTab;
       },
+      cloneTab() {
+        const specifications = {
+          input: this.inputSource,
+          path: this.pathSource,
+          transformer: this.transformerSource,
+          search: this.searchSource,
+        };
+        const anotherTab = new InspectorTab(specifications, this);
+        this.tabs.push(anotherTab);
+        this.selectedTab = anotherTab.uid;
+        return anotherTab;
+      },
       async digestInput() {
         try {
           this.$trace("lsw-js-inspector.methods.digestInput");
           this.isDigesting = true;
+          clearTimeout(this.digestTimeoutId);
           const currentTab = this.tabs.filter(tab => tab.uid === this.selectedTab)[0];
           let transformedInput = undefined;
           Getting_input: {
@@ -47507,53 +57351,82 @@ Vue.component("LswFastDatetimeControl", {
           tab.inputSource = newPath;
         }
         this.digestInput();
-    },
-    openProperty(tabIndex, propId) {
-      this.$trace("lsw-js-inspector.methods.openProperty");
-      const tab = this.tabs[tabIndex];
-      const propRegex = /^[A-Za-z$_][A-Za-z0-9$_]*$/g;
-      const byString = !propRegex.test(propId);
-      const appendment = byString ? `[${JSON.stringify(propId)}]` : `.${propId}`;
-      tab.inputSource += appendment;
-      this.digestInput();
-    },
-    updateSearchWithDelay(tab, searchSource) {
-      this.$trace("lsw-js-inspector.methods.updateSearchWithDelay");
-      clearTimeout(this.digestTimeoutId);
-      this.digestTimeoutId = setTimeout(() => {
-        tab.searchSource = searchSource;
+      },
+      openProperty(tabIndex, propId) {
+        this.$trace("lsw-js-inspector.methods.openProperty");
+        const tab = this.tabs[tabIndex];
+        const propRegex = /^[A-Za-z$_][A-Za-z0-9$_]*$/g;
+        const byString = !propRegex.test(propId);
+        const appendment = byString ? `[${JSON.stringify(propId)}]` : `.${propId}`;
+        tab.inputSource += appendment;
         this.digestInput();
-      }, this.digestTimeoutMilliseconds);
-    }
-  },
+      },
+      updateSearchWithDelay(tab, searchSource) {
+        this.$trace("lsw-js-inspector.methods.updateSearchWithDelay");
+        clearTimeout(this.digestTimeoutId);
+        this.digestTimeoutId = setTimeout(() => {
+          tab.searchSource = searchSource;
+          this.digestInput();
+        }, this.digestTimeoutMilliseconds);
+      },
+      resetTabId(tabIndex) {
+        this.$trace("lsw-js-inspector.methods.resetTabId");
+        this.tabs[tabIndex].idSource = '';
+        this.digestInput();
+      },
+      resetTabInput(tabIndex) {
+        this.$trace("lsw-js-inspector.methods.resetTabInput");
+        this.tabs[tabIndex].inputSource = '';
+        this.digestInput();
+      },
+      resetTabPath(tabIndex) {
+        this.$trace("lsw-js-inspector.methods.resetTabPath");
+        this.tabs[tabIndex].pathSource = '';
+        this.digestInput();
+      },
+      resetTabTransformer(tabIndex) {
+        this.$trace("lsw-js-inspector.methods.resetTabTransformer");
+        this.tabs[tabIndex].transformerSource = '';
+        this.digestInput();
+      },
+      resetTabSearch(tabIndex) {
+        this.$trace("lsw-js-inspector.methods.resetTabSearch");
+        this.tabs[tabIndex].searchSource = '';
+        this.digestInput();
+      },
+      openConsole() {
+        this.$trace("lsw-js-inspector.methods.openConsole");
+        this.$consoleHooker.toggleConsole();
+      },
+    },
     watch: {
       selectedTab() {
         this.digestInput();
       }
     },
     async mounted() {
-    try {
-      this.$trace("lsw-js-inspector.mounted");
-      await LswLazyLoads.loadBeautifier();
-      await LswLazyLoads.loadJmespath();
-      await LswJsInspector.initializeFully();
-      if(this.tabs.length === 0) {
-    this.selectedTab = this.addTab({
-      id: "Principal",
-    }).uid;
-  }
-  await this.digestInput();
-} catch (error) {
-  console.log(error);
-}
+      try {
+        this.$trace("lsw-js-inspector.mounted");
+        await LswLazyLoads.loadBeautifier();
+        await LswLazyLoads.loadJmespath();
+        await LswJsInspector.initializeFully();
+        if (this.tabs.length === 0) {
+          this.selectedTab = this.addTab({
+            id: "Principal",
+          }).uid;
+        }
+        await this.digestInput();
+      } catch (error) {
+        console.log(error);
+      }
     }
   });
-}) ();
+})();
 // @code.end: LswJsInspector API
 
-// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.css
+// @vuebundler[Lsw_framework_components][172]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.css
 
-// @vuebundler[Lsw_framework_components][164]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/weeklang/weeklang.bundled.js
+// @vuebundler[Lsw_framework_components][173]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/weeklang/weeklang.bundled.js
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -49699,9 +59572,9 @@ Vue.component("LswFastDatetimeControl", {
 
 });
 
-// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.html
+// @vuebundler[Lsw_framework_components][174]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.html
 
-// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.js
+// @vuebundler[Lsw_framework_components][174]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.js
 // @code.start: LswWeekPlanner API | @$section: Vue.js (v2) Components » Lsw Week Planner API » LswWeekPlanner component
 Vue.component("LswWeekPlanner", {
   template: `<div class="lsw_week_planner">
@@ -49736,9 +59609,9 @@ Vue.component("LswWeekPlanner", {
 });
 // @code.end: LswWeekPlanner API
 
-// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.css
+// @vuebundler[Lsw_framework_components][174]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.css
 
-// @vuebundler[Lsw_framework_components][166]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/mermoid/mermoid.bundled.js
+// @vuebundler[Lsw_framework_components][175]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/mermoid/mermoid.bundled.js
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -51294,9 +61167,9 @@ Vue.component("LswWeekPlanner", {
 
 
 
-// @vuebundler[Lsw_framework_components][167]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.html
+// @vuebundler[Lsw_framework_components][176]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.html
 
-// @vuebundler[Lsw_framework_components][167]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.js
+// @vuebundler[Lsw_framework_components][176]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.js
 // @code.start: LswMermoidViewer API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswMermoidViewer component
 Vue.component("LswMermoidViewer", {
   template: `<div class="lsw_mermoid_viewer">
@@ -51334,11 +61207,11 @@ Vue.component("LswMermoidViewer", {
 });
 // @code.end: LswMermoidViewer API
 
-// @vuebundler[Lsw_framework_components][167]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.css
+// @vuebundler[Lsw_framework_components][176]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.css
 
-// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.html
+// @vuebundler[Lsw_framework_components][177]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.html
 
-// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.js
+// @vuebundler[Lsw_framework_components][177]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.js
 // @code.start: LswPegjsTester API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswPegjsTester component
 Vue.component("LswPegjsTester", {
   template: `<div class="lsw_pegjs_tester">
@@ -51357,7 +61230,7 @@ Vue.component("LswPegjsTester", {
                 ➡️
             </button>
         </div>
-        <lsw-error-viewer
+        <lsw-syntax-error-viewer
             ref="parserErrorViewer"
             :error="false" />
     </div>
@@ -51390,7 +61263,7 @@ Vue.component("LswPegjsTester", {
             <div class="">Salida:</div>
             <pre class="codeblock">{{ currentAst }}</pre>
         </div>
-        <lsw-error-viewer
+        <lsw-syntax-error-viewer
             ref="snippetErrorViewer"
             :error="false" />
     </div>
@@ -51481,16 +61354,19 @@ Vue.component("LswPegjsTester", {
 });
 // @code.end: LswPegjsTester API
 
-// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.css
+// @vuebundler[Lsw_framework_components][177]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.css
 
-// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.html
+// @vuebundler[Lsw_framework_components][178]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.html
 
-// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.js
+// @vuebundler[Lsw_framework_components][178]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.js
 // @code.start: LswNuevaFeature API | @$section: Vue.js (v2) Components » LswNuevaFeature component
 Vue.component("LswNuevaFeature", {
   template: `<div class="lsw_nueva_feature">
     <!--lsw-pegjs-tester /-->
-    🚸 Esta sección está reservada para el desarrollo
+    <div>🚸 Esta sección está reservada para el desarrollo</div>
+    <lsw-book-factory />
+    <lsw-book-library />
+    <lsw-microdata-explorer />
 </div>`,
   props: {},
   data() {
@@ -51501,12 +61377,28 @@ Vue.component("LswNuevaFeature", {
     };
   },
   methods: {
-    
+    async load() {
+
+
+
+      const output = await LswTester.create().define({
+        id: "lsw.test.api.intro",
+        fromCallback: function() {
+          console.log("lsw.test.api.into");
+        }
+      }).run();
+
+      console.log(output);
+
+
+
+    }
   },
   watch: {},
   async mounted() {
     try {
       this.$trace("lsw-nueva-feature.mounted");
+      this.load();
     } catch (error) {
       console.log(error);
     }
@@ -51514,118 +61406,213 @@ Vue.component("LswNuevaFeature", {
 });
 // @code.end: LswNuevaFeature API
 
-// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.css
+// @vuebundler[Lsw_framework_components][178]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.css
 
-// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.html
+// @vuebundler[Lsw_framework_components][179]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-error-box/lsw-error-box.html
 
-// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.js
+// @vuebundler[Lsw_framework_components][179]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-error-box/lsw-error-box.js
+// @code.start: LswErrorBox API | @$section: Vue.js (v2) Components » LswErrorBox component
+Vue.component("LswErrorBox", {
+  template: `<div class="">
+    <div class="lsw_error_box_container">
+        <div class="lsw_error_box">
+            <div class="position_absolute_fixed"
+                style="bottom: auto; left: auto; top: 0px; right: 0px;">
+                <div class="flex_row centered pad_1">
+                    <div class="flex_1">
+                        <button class="supermini"
+                            v-on:click="toggleTrace">
+                            <span>{{ isShowingTrace ? '➖' : '➕' }}</span>
+                        </button>
+                    </div>
+                    <div class="flex_1 pad_left_1"
+                        v-if="typeof onClearError === 'function'">
+                        <button class="supermini"
+                            v-on:click="clearError">❎</button>
+                    </div>
+                </div>
+            </div>
+            <div v-if="typeof error === 'object'">
+                <div v-if="typeof error.location !== 'undefined'">
+                    <lsw-syntax-error-viewer :error="error" />
+                </div>
+                <div v-else-if="error instanceof Error">
+                    <div class="error_clue">
+                        <div class="error_topbar">
+                            <button class="supermini"
+                                v-on:click="toggleTrace">
+                                <span>⚠️</span>
+                            </button>
+                            <span v-if="context"> 🔩 {{context}}.</span>
+                        </div>
+                        <div class="error_main_block">
+                            <span class="error_name">{{ error.name }}: </span>
+                            <span class="error_message">
+                                {{ error.message }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="error_stack"
+                        v-if="isShowingTrace">
+                        <div v-for="line, lineIndex in error.summarized().stack"
+                            v-bind:key="'error_line_' + lineIndex">
+                            <div>
+                                <div>{{ line[1] }} @ {{ line[0] }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else>
+                    <pre class="codeblock">Error (non-error) of type {{ typeof error }}: {{ error }}</pre>
+                </div>
+            </div>
+            <div v-else>
+                <pre class="codeblock">Error (non-object) of type {{ typeof error }}: {{ error }}</pre>
+            </div>
+        </div>
+    </div>
+</div>`,
+  props: {
+    error: {
+      type: [Object, Boolean],
+      default: () => false,
+    },
+    onClearError: {
+      type: [Function, Boolean],
+      default: () => false,
+    },
+    context: {
+      type: String,
+      default: () => {},
+    }
+  },
+  data() {
+    this.$trace("lsw-error-box.data");
+    return {
+      isShowingTrace: false,
+    };
+  },
+  methods: {
+    toggleTrace() {
+      this.$trace("lsw-error-box.methods.toggleTrace");
+      this.isShowingTrace = !this.isShowingTrace;
+    },
+    clearError() {
+      this.$trace("lsw-error-box.methods.clearError");
+      this.onClearError();
+    }
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-error-box.mounted");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswErrorBox API
+
+// @vuebundler[Lsw_framework_components][179]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-error-box/lsw-error-box.css
+
+// @vuebundler[Lsw_framework_components][180]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-syntax-error-viewer/lsw-syntax-error-viewer.html
+
+// @vuebundler[Lsw_framework_components][180]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-syntax-error-viewer/lsw-syntax-error-viewer.js
+// @code.start: LswSyntaxErrorViewer API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswSyntaxErrorViewer component
+Vue.component("LswSyntaxErrorViewer", {
+  template: `<div class="lsw_error_viewer">
+    <div class="position_relative">
+        <div class="position_absolute top_0" style="right: 20px;">
+            <div class="pad_1">
+                <button v-on:click="() => setError()">❎</button>
+            </div>
+        </div>
+        <div class="">
+            <div class="errorMessage">
+                <div v-if="typeof currentError.location !== 'undefined'">
+                    <span>{{ currentError.name }}</span>
+                    <span>{{ currentError.location.start.offset }}-{{ currentError.location.end.offset }}</span>
+                    <span> | </span>
+                    <span></span>
+                    <span>{{ currentError.location.start.line }}:{{ currentError.location.start.column }}-{{ currentError.location.end.line }}:{{ currentError.location.end.column }}</span>
+                    <span>{{ currentError.found }}</span>
+                    <span>{{ currentError.message }}</span>
+                    <pre style="font-size:10px;">  - {{ currentError.expected.map(it => JSON.stringify(it.text)).join("\n  - ") }}</pre>
+                </div>
+                <div v-else>
+                    <div>{{ currentError }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`,
+  props: {
+    error: {
+      type: [Object, Boolean],
+      default: () => false
+    },
+    onClearError: {
+      type: Function,
+      default: () => {}
+    }
+  },
+  data() {
+    this.$trace("lsw-syntax-error-viewer.data");
+    return {
+      currentError: this.error,
+    };
+  },
+  methods: {
+    setError(error = undefined) {
+      this.$trace("lsw-syntax-error-viewer.methods.setError");
+      this.currentError = error;
+      if(typeof error === "undefined") {
+        this.onClearError();
+      }
+    },
+  },
+  watch: {},
+  mounted() {
+    try {
+      this.$trace("lsw-syntax-error-viewer.mounted");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+// @code.end: LswSyntaxErrorViewer API
+
+// @vuebundler[Lsw_framework_components][180]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-syntax-error-viewer/lsw-syntax-error-viewer.css
+
+// @vuebundler[Lsw_framework_components][181]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.html
+
+// @vuebundler[Lsw_framework_components][181]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.js
 // @code.start: LswTestsPage API | @$section: Vue.js (v2) Components » Lsw Unit Test Page » LswTestsPage component
 Vue.component("LswTestsPage", {
   template: `<div class="lsw_tests_page">
-    <div v-if="section === 'available'">
-        <div class="flex_row centered typical_title_1">
-            <div class="flex_100">🩺 Tests disponibles</div>
-            <div class="flex_1 pad_left_1">
-                <button class="supermini"
-                    v-on:click="selectAllTests">*</button>
-            </div>
-            <div class="flex_1 pad_left_1">
-                <button class="supermini"
-                    v-on:click="() => goToSection('downloadable')">
-                    ➡️
-                </button>
-            </div>
-        </div>
-        <div class="pad_bottom_1">
-            <div class="pad_top_1"
-                v-for="test, testIndex in available"
-                v-bind:key="'available_test_' + testIndex">
-                <div class="flex_row centered cursor_pointer"
-                    v-on:click="() => selectTest(test)">
-                    <button class="supermini"
-                        v-if="selected.indexOf(test) !== -1">✅</button>
-                    <button class="supermini"
-                        v-else>🔘</button>
-                    <div class="pad_left_1 smallest_font">
-                        Test: <b class="resource_path">{{ shortSubpath(test) }}</b>
-                    </div>
+    <div class="" v-if="initializationError">
+        <lsw-error-box :error="initializationError" />
+    </div>
+    <div v-if="selectedSection === 'coverage'">
+        <div class="typical_title_1">
+            <div class="flex_row centered">
+                <div class="flex_100">🪖 Cobertura de código</div>
+                <div class="flex_1">
+                    <button class="supermini" v-on:click="() => selectedSection = 'tests'">🧪</button>
                 </div>
             </div>
-        </div>
-        <div>
-            <button class="supermini width_100"
-                v-on:click="() => goToSection('downloadable')">
-                ➡️ Continuar a orden de carga
-            </button>
         </div>
     </div>
-    <div v-if="section === 'downloadable'">
-        <div class="flex_row centered typical_title_1">
-            <div class="flex_100">🩺 Tests seleccionados</div>
-            <div class="flex_1 pad_left_1">
-                <button class="supermini"
-                    v-on:click="resetSelectedTests">🔄</button>
-            </div>
-            <div class="flex_1 pad_left_1">
-                <button class="supermini"
-                    v-on:click="() => goToSection('available')">⬅️</button>
-            </div>
-            <div class="flex_1 pad_left_1">
-                <button class="supermini"
-                    v-on:click="runTests">▶️</button>
-            </div>
-        </div>
-        <div class="pad_bottom_1">
-            <draggable tag="div"
-                handle=".handle"
-                :list="selected">
-                <div class=""
-                    v-for="test, testIndex in selected"
-                    v-bind:key="'selected_test_' + testIndex">
-                    <div class="flex_row centered">
-                        <div class="flex_1 pad_top_1">
-                            <button class="supermini handle"
-                                style="cursor: grab;">☰</button>
-                        </div>
-                        <div class="flex_100 pad_left_2">{{ testIndex+1 }}. <b class="resource_path">{{ shortSubpath(test) }}</b></div>
-                        <div class="flex_1"></div>
-                    </div>
-
-                </div>
-            </draggable>
-        </div>
-        <div>
-            <button class="supermini width_100"
-                v-if="!isRunning"
-                v-on:click="runTests">
-                ➡️ Iniciar tests
-            </button>
-        </div>
+    <div v-show="selectedSection === 'tests'">
+        <template v-if="choosenTester">
+            <lsw-tester-viewer :tester="choosenTester" :tests-page="this" />
+        </template>
+        <template v-else>
+            ⏳ Un momento: el realizador de pruebas está en curso... ⏳
+        </template>
     </div>
-    <div class=""
-        v-if="section === 'running'">
-        <div class="flex_row centered typical_title_1">
-            <div class="flex_100">🩺 Tests corriendo</div>
-            <div class="flex_1 pad_left_1"
-                v-if="isRunning">
-                <button class="supermini"
-                    v-on:click="interruptTests">◼️</button>
-            </div>
-            <template v-else>
-                <div class="flex_1 pad_left_1">
-                    <button class="supermini"
-                    v-on:click="() => goToSection('downloadable')">⬅️</button>
-                </div>
-                <div class="flex_1 pad_left_1">
-                    <button class="supermini"
-                        v-on:click="runTests">▶️</button>
-                </div>
-            </template>
-        </div>
-        <div>⚠️Sección en construcción</div>
-        <div class="pad_top_1">
-          <pre class="codeblock">{{ downloaded }}</pre>
-        </div>
+    <div v-show="selectedSection === 'coverage'">
+        <lsw-coverage-viewer />
     </div>
 </div>`,
   props: {
@@ -51633,124 +61620,548 @@ Vue.component("LswTestsPage", {
   },
   data() {
     return {
-      isLoaded: false,
-      isRunning: false,
-      isDownloaded: false,
-      isCompleted: false,
-      section: "available",
-      baseUrl: "assets/tests/cases/",
-      available: [],
-      selected: [],
-      downloaded: [],
+      selectedSection: "coverage",
+      initializationError: false,
+      choosenTester: false,
     };
   },
   methods: {
-    goToSection(section) {
-      this.$trace("lsw-tests-page.methods.goToSection");
-      this.section = section;
+    selectSection(subsection) {
+      this.$trace("lsw-tests-page.methods.selectSection");
+      this.selectedSection = subsection;
     },
-    backToTests() {
-      this.$trace("lsw-tests-page.methods.backToTests");
-      this.resetState();
-    },
-    resetState() {
-      this.$trace("lsw-tests-page.methods.resetState");
-      this.isLoaded = false;
-      this.isRunning = false;
-      this.isDownloaded = false;
-    },
-    selectTest(test) {
-      const pos = this.selected.indexOf(test);
-      if(pos !== -1) {
-        this.selected.splice(pos, 1);
-      } else {
-        this.selected.push(test);
-      }
-    },
-    resetSelectedTests() {
-      this.$trace("lsw-tests-page.methods.resetSelectedTests");
-      this.selected = [].concat(this.available);
-    },
-    async loadTests() {
-      this.$trace("lsw-tests-page.methods.loadTests");
+    async initializeTester() {
+      this.$trace("lsw-tests-page.methods.initializeTester");
       try {
-        this.available = await importer.json("assets/tests/testcases.json");
-        this.selected = [].concat(this.available);
-        this.isLoaded = true;
-      } catch (error) {
-        this.$lsw.toasts.showError(error);
-      }
-    },
-    async downloadTests() {
-      this.$trace("lsw-tests-page.methods.downloadTests");
-      try {
-        const allDownloads = [];
-        for (let index = 0; index < this.selected.length; index++) {
-          const selectedTest = this.selected[index];
-          const testCallbackPromise = importer.scriptAsync(selectedTest);
-          allDownloads.push(testCallbackPromise)
-        }
-        const testsResult = await Promise.all(allDownloads);
-        const testsFormatted = LswUtils.flattenObjects(testsResult, {
-          keyMapper(key, totalKeys, indexKey) {
-            return `[T${('' + (totalKeys + 1)).padStart(4, '0')}] ${key}`;
+        this.choosenTester = LswTester.create().define({
+          id: "lsw.test.main",
+          fromCollection: [{
+            id: "lsw.test.main.intro",
+            fromCallback: async function (context) {
+              const { assert } = context;
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              throw new Error("algo pasó aquí")
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              console.log("lsw.test.main.intro");
+            },
+          }, {
+            id: "lsw.test.main.body",
+            fromCollection: [{
+              id: "lsw.test.main.body.check-globals",
+              fromCallback: async function (context) {
+                const { assert } = context;
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                console.log("lsw.test.main.body.check-globals");
+              }
+            }, {
+              id: "lsw.test.main.body.check-vue",
+              fromCallback: async function (context) {
+                const { assert } = context;
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                assert.as("some assertion").that(true);
+                await LswDom.waitForMilliseconds(500);
+                console.log("lsw.test.main.body.check-vue");
+              }
+            }],
+          }, {
+            id: "lsw.test.main.end",
+            fromCallback: async function (context) {
+              const { assert } = context;
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              assert.as("some assertion").that(true);
+              await LswDom.waitForMilliseconds(500);
+              console.log("lsw.test.main.end");
+            },
+          }]
+        }).options({
+          onAnything(event) {
+            console.log("eventuated:", event);
           }
         });
-        this.downloaded = testsFormatted;
-        this.isDownloaded = true;
       } catch (error) {
+        this.initializationError = error;
         this.$lsw.toasts.showError(error);
-      }
-    },
-    selectAllTests() {
-      this.$trace("lsw-tests-page.methods.selectAllTests");
-      if(this.available.length === this.selected.length ) {
-        this.selected = [];
-      } else {
-        this.selected = [].concat(this.available);
-      }
-      this.$forceUpdate(true);
-    },
-    shortSubpath(subpath) {
-      return subpath.replace(this.baseUrl, "");
-    },
-    async runTests() {
-      this.$trace("lsw-tests-page.methods.runTests");
-      try {
-        this.isRunning = true;
-        this.goToSection("running");
-        // @TODO: continue running tests:
-      } catch (error) {
-        this.showError(error);
-      }
-    },
-    interruptTests() {
-      this.$trace("lsw-tests-page.methods.interruptTests");
-      this.isRunning = false;
-    },
-    async start() {
-      this.$trace("lsw-tests-page.methods.start");
-      try {
-        await this.downloadTests();
-        await this.runTests();
-      } catch (error) {
-        this.showError(error);
+        console.log(error);
+        throw error;
       }
     }
   },
   watch: {},
   async mounted() {
     this.$trace("lsw-tests-page.mounted");
-    await this.loadTests();
+    await this.initializeTester();
   }
 });
 // @code.end: LswTestsPage API
 
-// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.css
+// @vuebundler[Lsw_framework_components][181]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.css
 
-// @vuebundler[Lsw_framework_components][171]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.html
+// @vuebundler[Lsw_framework_components][182]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer.html
 
-// @vuebundler[Lsw_framework_components][171]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.js
+// @vuebundler[Lsw_framework_components][182]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer.js
+// @code.start: LswTesterViewer API | @$section: Vue.js (v2) Components » Lsw Unit Test Page » LswTesterViewer component
+const LswTesterViewerUtils = {};
+LswTesterViewerUtils.getEventSourceId = function(eventData) {
+  return eventData?.value?.id || "tester";
+};
+LswTesterViewerUtils.initModule = function(component, id) {
+  if(!(id in component.states)) {
+    component.states[id] = "not started";
+  }
+};
+LswTesterViewerUtils.registerEvent = function(component, eventType, id, eventData) {
+  LswTesterViewerUtils.initModule(component, id);
+  Notify_new_state_to_tester: {
+    if(eventType === "onStartModule") {
+      component.states[id] = "started";
+    } else if(eventType === "onSuccessModule") {
+      component.states[id] = "passed";
+      Notify_to_submodule: {
+        const selector = `[data-test-module=${JSON.stringify(id)}]`;
+        const moduleComponent = LswDom.findVue(selector, false, component.$refs.esquema_de_tests);
+        if(!moduleComponent) {
+          break Notify_new_state_to_tester;
+        }
+        moduleComponent.changeState("passed");
+      }
+    } else if(eventType === "onErrorModule") {
+      component.states[id] = "failed";
+      Notify_to_submodule: {
+        const selector = `[data-test-module=${JSON.stringify(id)}]`;
+        const moduleComponent = LswDom.findVue(selector, false, component.$refs.esquema_de_tests);
+        if(!moduleComponent) {
+          break Notify_new_state_to_tester;
+        }
+        moduleComponent.changeState("failed");
+      }
+    }
+  }
+  Append_assertion: {
+    if((eventType === "onSuccessAssertion") || (eventType === "onErrorAssertion")) {
+      const selector = `[data-test-module=${JSON.stringify(id)}]`;
+      const moduleComponent = LswDom.findVue(selector, false, component.$refs.esquema_de_tests);
+      if(!moduleComponent) {
+        break Append_assertion;
+      }
+      moduleComponent.addAssertion({
+        text: eventData.assertionText,
+        result: eventData.assertionResult,
+      });
+    }
+  }
+};
+Vue.component("LswTesterViewer", {
+  template: `<div class="lsw_tester_viewer">
+    <div class="typical_title_1 margin_bottom_1">
+        <div class="flex_row centered">
+            <div class="flex_100">🧪 Tests de <b><u>{{ tester.\$composition.id }}</u></b></div>
+            <div class="flex_1 pad_left_1" v-if="loadingError || runningError || isRun">
+                <button class="supermini" v-on:click="resetTester">🔄</button>
+            </div>
+            <div class="flex_1 pad_left_1" v-if="isCompleted && isSuccessfullyCompleted">
+                <button class="supermini" disabled="true">🧪 ✅</button>
+            </div>
+            <div class="flex_1 pad_left_1" v-else-if="isCompleted && (!isSuccessfullyCompleted)">
+                <button class="supermini" disabled="true">🧪 ❗️</button>
+            </div>
+            <div class="flex_1 pad_left_1" v-if="loadingError || runningError">
+                <button class="supermini" disabled="true">💥 Crashing</button>
+            </div>
+            <div class="flex_1 pad_left_1" v-if="(!isRun) && (!isStarted)">
+                <button class="supermini" v-on:click="runTester">🧪 ▶️</button>
+            </div>
+            <div class="flex_1 pad_left_1" v-if="(!isRun) && (isStarted)">
+                <button class="supermini" v-on:click="runTester" disabled="true">🧪 💤</button>
+            </div>
+            <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="goToCoverage">🪖</button>
+            </div>
+        </div>
+    </div>
+    <div v-if="isLoaded">
+        <table class="width_100">
+            <tbody>
+                <tr>
+                    <td class="nowrap" style="min-width: 114px;">#️⃣ Identificador: </td>
+                    <td class="width_100">{{ tester.\$composition.id }}</td>
+                </tr>
+                <tr>
+                    <td class="nowrap">🎁 Tipo: </td>
+                    <td>{{ tester.\$composition.fromType }}</td>
+                </tr>
+                <tr>
+                    <td class="nowrap">🔋 Cargado: </td>
+                    <td>{{ tester.\$isLoaded ? "sí" : "no" }}</td>
+                </tr>
+                <tr>
+                    <td class="nowrap">▶️ Corrido: </td>
+                    <td>{{ tester.\$isExecuted ? "sí" : "no" }}</td>
+                </tr>
+                <tr>
+                    <td class="nowrap">🚨 En errores: </td>
+                    <td>{{ tester.\$options.continueOnErrors ? 'continuará reportando errores' : 'interrumpirá el test' }}</td>
+                </tr>
+                <tr>
+                    <td class="nowrap" style="vertical-align: top;">🧩 Submódulos: </td>
+                    <td class="">
+                        {{ Object.keys(tester.\$definitions).length }} submódulos
+                        <span class="like_link dark"
+                            :class="{activated:isShowingSubmodules}"
+                            v-on:click="toggleSubmodules">(ver)</span>
+                    </td>
+                </tr>
+                <tr v-show="isShowingSubmodules">
+                    <td class="small_font" colspan="100">
+                        <ul class="list_style_0">
+                            <li v-for="definition, definitionId in Object.keys(tester.\$definitions)"
+                                v-bind:key="'test_definition_id_' + definitionId">
+                                🔹 "{{ definition }}"
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                <template>
+                    <tr class="pad_top_1">
+                        <td class="nowrap">
+                            <div class="pad_bottom_1">⚜️ Eventos del test: 
+                        </td>
+                        <td>
+                            <span class="like_link dark"
+                                :class="{activated:isShowingEventsConsole}"
+                                v-on:click="toggleEventsConsole">(ver)</span>
+                        </td>
+                    </tr>
+                    <tr class="pad_top_1" v-show="isShowingEventsConsole">
+                        <td class="width_100" colspan="2">
+                            <pre class="consola_de_eventos_de_test codeblock pad_1" style="max-height: 75px;" ref="eventsConsole">[Consola de eventos de tester]</pre>
+                        </td>
+                    </tr>
+                </template>
+                <tr class="pad_top_1">
+                    <td class="nowrap">
+                        <span>❗️ Fallos acumulados:</span>
+                    </td>
+                    <td>
+                        <span>{{ currentErrors.length }}</span>
+                        <span class="like_link dark"
+                            :class="{activated:isShowingErrors}"
+                            v-on:click="toggleErrors">(ver)</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pad_left_1">
+            <div class="pad_top_1" v-if="isShowingErrors">
+                <div class="pad_left_2 pad_bottom_2" v-if="!currentErrors.length">
+                    No hay errores acumulados.
+                </div>
+                <div class="errors_box" v-else>
+                    <div v-for="event, eventIndex in currentErrors"
+                        v-bind:key="'tester_error_' + eventIndex"
+                        class="pad_top_1">
+                        <template v-if="(typeof event.error === 'object') && event.error.name && event.error.message && event.error.stack">
+                            <lsw-error-box
+                                :error="event.error"
+                                :context="'Error ' + (eventIndex+1) + ' en: ' + event.value.id + ''"
+                            />
+                        </template>
+                        <template v-else>
+                            {{ eventIndex }}. ({{ typeof event }}) {{ event }}
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pad_left_1">
+            <div class="pad_top_1">📡 Estado de tests: {{ currentState }}</div>
+            <div class="esquema_de_tests" ref="esquema_de_tests">
+                <lsw-tester-module-viewer
+                    :test="tester.\$composition"
+                    :tester="this"
+                    :data-test-module="tester.\$composition.id"
+                />
+            </div>
+        </div>
+    </div>
+    <div v-else>
+        <div>⏳ El tester está siendo cargado. Un momento, por favor... ⏳</div>
+    </div>
+    <lsw-error-box
+        v-if="loadingError"
+        :error="loadingError"
+        context="Fase de carga de tests"
+        :on-clear-error="() => loadingError = false"
+    />
+    <lsw-error-box
+        v-if="runningError"
+        :error="runningError"
+        context="Fase de ejecución de tests"
+        :on-clear-error="() => runningError = false"
+    />
+    <div v-if="isRun">
+        <div v-if="isCompleted && isSuccessfullyCompleted">
+            <button class="supermini width_100" disabled="true">🎉 Tests correctos 🎉</button>
+        </div>
+        <div v-else-if="isCompleted && (!isSuccessfullyCompleted)">
+            <button class="supermini width_100" disabled="true"> 💥 Tests fallando 💥</button>
+        </div>
+    </div>
+</div>`,
+  props: {
+    tester: {
+      type: Object,
+      required: true,
+    },
+    testsPage: {
+      type: Object,
+      default: () => false
+    }
+  },
+  data() {
+    return this.getInitialState();
+  },
+  methods: {
+    getInitialState() {
+      this.$trace("lsw-tests-page.methods.getInitialState");
+      return {
+        isRun: false,
+        isStarted: false,
+        isLoaded: false,
+        isShowingSubmodules: false,
+        isShowingErrors: false,
+        isShowingEventsConsole: false,
+        isSuccessfullyCompleted: false,
+        currentErrors: [],
+        loadingError: false,
+        runningError: false,
+        temporizer: LswTemporizer.create(),
+        states: {},
+      };
+    },
+    goToCoverage() {
+      this.$trace("lsw-tests-page.methods.goToCoverage");
+      if(this.testsPage) {
+        this.testsPage.selectSection("coverage");
+      }
+    },
+    addEvent(event, eventData) {
+      this.$trace("lsw-tests-page.methods.addEvent");
+      if(event.eventType === "onStartTester") {
+        this.temporizer.start();
+      } else if(event.eventType === "onEndTester") {
+        this.isSuccessfullyCompleted = this.currentErrors.length === 0;
+      } else if((event.eventType === "onErrorModule") || (event.eventType === "onErrorAssertion")) {
+        this.currentErrors.push({
+          errorType: event.eventType,
+          ...eventData
+        });
+      }
+      const id = LswTesterViewerUtils.getEventSourceId(eventData);
+      The_magic_should_happen_mostly_here: {
+        eventData.timeoff = this.temporizer.getTime();
+        LswTesterViewerUtils.registerEvent(this, event.eventType, id, eventData);
+      }
+      this.$refs.eventsConsole.textContent = `>> ${id} > ${ event.eventType } @${eventData.timeoff}\n${ this.$refs.eventsConsole.textContent }`;
+    },
+    toggleEventsConsole() {
+      this.$trace("lsw-tests-page.methods.toggleEventsConsole");
+      this.isShowingEventsConsole = !this.isShowingEventsConsole;
+    },
+    toggleErrors() {
+      this.$trace("lsw-tests-page.methods.toggleErrors");
+      this.isShowingErrors = !this.isShowingErrors;
+    },
+    toggleSubmodules() {
+      this.$trace("lsw-tests-page.methods.toggleSubmodules");
+      this.isShowingSubmodules = !this.isShowingSubmodules;
+    },
+    validateTester() {
+      this.$trace("lsw-tests-page.methods.validateTester");
+      $ensure(this.tester).to.be.instanceOf(LswTester);
+    },
+    async loadTester() {
+      this.$trace("lsw-tests-page.methods.loadTester");
+      try {
+        this.validateTester();
+        await this.tester.options({}).load();
+      } catch (error) {
+        this.loadingError = error;
+        this.$lsw.toasts.showError(error);
+        console.log(error);
+      } finally {
+        this.isLoaded = true;
+      }
+    },
+    async runTester() {
+      this.$trace("lsw-tests-page.methods.runTester");
+      try {
+        this.isStarted = true;
+        const viewer = this;
+        await this.tester.options({
+          trace: true,
+          onAnything(event, ...args) {
+            console.log("Notify to widget event:", event, args);
+            viewer.addEvent(event, ...args);
+          }
+        }).run(1);
+      } catch (error) {
+        this.runningError = error;
+        this.$lsw.toasts.showError(error);
+        console.log(error);
+      } finally {
+        this.isRun = true;
+      }
+    },
+    resetTester() {
+      this.$trace("lsw-tests-page.methods.resetTester");
+      LswDomIrruptor.abrirTestsDeAplicacion();
+    }
+  },
+  watch: {},
+  computed: {
+    isSuccessfullyCompleted() {
+
+    },
+    isCompleted() {
+      return this.tester.$isExecuted;
+    },
+    currentState() {
+      return !this.isLoaded ? "to be loaded" :
+        !this.isStarted ? "loaded" :
+        !this.isRun ? "running" : "finished";
+    }
+  },
+  async mounted() {
+    this.$trace("lsw-tests-page.mounted");
+    this.loadTester();
+    window.testerviewer = this;
+  }
+});
+// @code.end: LswTesterViewer API
+
+// @vuebundler[Lsw_framework_components][182]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer.css
+
+// @vuebundler[Lsw_framework_components][183]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer.html
+
+// @vuebundler[Lsw_framework_components][183]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer.js
+// @code.start: LswTesterModuleViewer API | @$section: Vue.js (v2) Components » Lsw Unit Test Page » LswTesterModuleViewer component
+window.asserters = [];
+Vue.component("LswTesterModuleViewer", {
+  template: `<div class="lsw_tester_module_viewer" keep-alive>
+    <div class="flex_row centered">
+        <div class="flex_1 pad_right_1">
+            <div v-if="tester.states[test.id] === 'not started'">⬜️</div>
+            <div v-else-if="tester.states[test.id] === 'started'">🟨</div>
+            <div v-else-if="tester.states[test.id] === 'ignored'">🟦</div>
+            <div v-else-if="tester.states[test.id] === 'passed'">🟩</div>
+            <div v-else-if="tester.states[test.id] === 'failed'">🟥</div>
+            <div v-else>⚫️</div>
+        </div>
+        <div class="flex_100">
+            {{ test.id }} <span class="smallest_font">[{{ test.fromType }}]</span>
+        </div>
+    </div>
+    <ul class="list_style_1">
+        <li v-for="assertion, assertionIndex in assertions"
+            v-bind:key="'assertion_' + assertionIndex">
+            <div class="">{{ assertion.result ? "🟢" : "🔴" }}: {{ assertion.text }} {{ assertion.timeoff }}</div>
+        </li>
+    </ul>
+    <div v-if="test.fromType === 'collection'">
+        <div v-for="submodule, submoduleIndex in test.fromCollection"
+            v-bind:key="'test_module_' + submoduleIndex">
+            <lsw-tester-module-viewer
+                :test="submodule"
+                :tester="tester"
+                :data-test-module="submodule.id"
+            />
+        </div>
+    </div>
+    <div v-else-if="test.fromType === 'callback'">
+        <!--div>Function test</div-->
+    </div>
+    <div v-else-if="test.fromType === 'url'">
+        <!--div>URL test: {{ test.fromUrl }}</div-->
+    </div>
+    <div v-else-if="test.fromType === 'file'">
+        <!--div>File test: {{ test.fromFile }}</div-->
+    </div>
+    <div v-else style="white-space: pre-wrap;">
+        {{ test }}
+    </div>
+</div>`,
+  props: {
+    tester: {
+      type: Object,
+      required: true,
+    },
+    test: {
+      type: Object,
+      required: true,
+    }
+  },
+  data() {
+    return {
+      state: "not started", // "started", "ignored", "passed" or "failed"
+      assertions: [],
+    };
+  },
+  methods: {
+    addAssertion(assertionData) {
+      this.$trace("lsw-tester-module-viewer.methods.addAssertion");
+      this.assertions = [].concat(this.assertions).concat([assertionData]);
+      this.$forceUpdate(true);
+    },
+    changeState(newState) {
+      this.$trace("lsw-tester-module-viewer.methods.changeState");
+      this.state = newState;
+      this.$forceUpdate(true);
+    }
+  },
+  watch: {},
+  async mounted() {
+    this.$trace("lsw-tests-page.mounted");
+    asserters.push(this);
+  }
+});
+// @code.end: LswTesterModuleViewer API
+
+// @vuebundler[Lsw_framework_components][183]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer.css
+
+// @vuebundler[Lsw_framework_components][184]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.html
+
+// @vuebundler[Lsw_framework_components][184]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.js
 // @code.start: LswJsViewer API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswJsViewer component
 Vue.component("LswJsViewer", {
   template: `<div class="lsw_js_viewer">
@@ -51776,7 +62187,7 @@ Vue.component("LswJsViewer", {
     source: {
       type: String,
       required: true,
-    }
+    },
   },
   data() {
     this.$trace("lsw-js-viewer.data");
@@ -51818,9 +62229,9 @@ Vue.component("LswJsViewer", {
 });
 // @code.end: LswJsViewer API
 
-// @vuebundler[Lsw_framework_components][171]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.css
+// @vuebundler[Lsw_framework_components][184]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.css
 
-// @vuebundler[Lsw_framework_components][172]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-android/lsw-android.js
+// @vuebundler[Lsw_framework_components][185]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-android/lsw-android.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -51881,7 +62292,7 @@ Vue.component("LswJsViewer", {
 
 });
 
-// @vuebundler[Lsw_framework_components][173]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Accion.js
+// @vuebundler[Lsw_framework_components][186]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Accion.js
 $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -51911,8 +62322,8 @@ $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
             property: "tiene_nombre",
             constraint: false,
           },
-          isType: "ref-object",
-          isFormType: "ref-object",
+          isType: "ref-object-by-label",
+          isFormType: "ref-object-by-label",
           isIndexed: true,
           hasFormtypeParameters: {},
           hasValidator(v) {
@@ -52040,7 +62451,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][174]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Banco_de_datos_principal.js
+// @vuebundler[Lsw_framework_components][187]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Banco_de_datos_principal.js
 $proxifier.define("org.allnulled.lsw-conductometria.Banco_de_datos_principal", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -52095,7 +62506,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Banco_de_datos_principal", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][175]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Accion_virtual.js
+// @vuebundler[Lsw_framework_components][188]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Accion_virtual.js
 $proxifier.define("org.allnulled.lsw-conductometria.Accion_virtual", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -52254,7 +62665,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Accion_virtual", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][176]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Concepto.js
+// @vuebundler[Lsw_framework_components][189]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Concepto.js
 $proxifier.define("org.allnulled.lsw-conductometria.Concepto", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -52339,7 +62750,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Concepto", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][177]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Categoria_de_concepto.js
+// @vuebundler[Lsw_framework_components][190]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Categoria_de_concepto.js
 $proxifier.define("org.allnulled.lsw-conductometria.Categoria_de_concepto", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -52409,7 +62820,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Categoria_de_concepto", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][178]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Propagador_prototipo.js
+// @vuebundler[Lsw_framework_components][191]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Propagador_prototipo.js
 $proxifier.define("org.allnulled.lsw-conductometria.Propagador_prototipo", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -52492,7 +62903,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_prototipo", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][179]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Propagador_de_concepto.js
+// @vuebundler[Lsw_framework_components][192]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Propagador_de_concepto.js
 $proxifier.define("org.allnulled.lsw-conductometria.Propagador_de_concepto", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -52633,7 +63044,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Propagador_de_concepto", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][180]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Limitador.js
+// @vuebundler[Lsw_framework_components][193]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Limitador.js
 $proxifier.define("org.allnulled.lsw-conductometria.Limitador", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -52708,7 +63119,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Limitador", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][181]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Impresion.js
+// @vuebundler[Lsw_framework_components][194]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Impresion.js
 $proxifier.define("org.allnulled.lsw-conductometria.Impresion_de_concepto", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -52783,7 +63194,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Impresion_de_concepto", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][182]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Nota.js
+// @vuebundler[Lsw_framework_components][195]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Nota.js
 $proxifier.define("org.allnulled.lsw-conductometria.Nota", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -52902,7 +63313,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Nota", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][183]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Automensaje.js
+// @vuebundler[Lsw_framework_components][196]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Automensaje.js
 $proxifier.define("org.allnulled.lsw-conductometria.Automensaje", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -52958,7 +63369,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Automensaje", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][184]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Lista.js
+// @vuebundler[Lsw_framework_components][197]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Lista.js
 $proxifier.define("org.allnulled.lsw-conductometria.Lista", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -53077,7 +63488,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Lista", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][185]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Recordatorio.js
+// @vuebundler[Lsw_framework_components][198]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Recordatorio.js
 $proxifier.define("org.allnulled.lsw-conductometria.Recordatorio", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -53177,7 +63588,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Recordatorio", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][186]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Articulo.js
+// @vuebundler[Lsw_framework_components][199]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Articulo.js
 $proxifier.define("org.allnulled.lsw-conductometria.Articulo", {
   Item: class extends $proxifier.AbstractItem {
 
@@ -53318,12 +63729,12 @@ $proxifier.define("org.allnulled.lsw-conductometria.Articulo", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][187]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/lsw-api.js
+// @vuebundler[Lsw_framework_components][200]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/lsw-api.js
 
 
-// @vuebundler[Lsw_framework_components][188]=/home/carlos/Escritorio/lsw-one/src/modules/app/app.html
+// @vuebundler[Lsw_framework_components][201]=/home/carlos/Escritorio/lsw-one/src/modules/app/app.html
 
-// @vuebundler[Lsw_framework_components][188]=/home/carlos/Escritorio/lsw-one/src/modules/app/app.js
+// @vuebundler[Lsw_framework_components][201]=/home/carlos/Escritorio/lsw-one/src/modules/app/app.js
 (() => {
   let isFirstTime = true;
   const initialCode = `
@@ -53361,6 +63772,7 @@ rel correr
     </div>
     <lsw-console-hooker />
     <lsw-windows-viewer />
+    <lsw-debugger />
     <lsw-toasts />
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
@@ -53510,7 +63922,7 @@ rel correr
         await this.$lsw.fs.ensureFile("/kernel/settings/automessages.env", LswConstants.global.pick("automessages.env"));
         await this.$lsw.fs.ensureFile("/kernel/settings/user.env", LswConstants.global.pick("user.env"));
         await this.$lsw.fs.ensureFile("/kernel/settings/trackables.env", LswConstants.global.pick("/kernel/settings/trackables.env"));
-        await this.$lsw.fs.ensureFile("/kernel/wiki/libros/Boot.tri", LswConstants.global.pick("Boot.tri"));
+        await this.$lsw.fs.ensureDirectory("/kernel/wiki/libros");
         await this.$lsw.fs.ensureFile("/kernel/wiki/categorias.tri", LswConstants.global.pick("categorias.tri"));
         await this.$lsw.fs.ensureFile("/kernel/agenda/report/inicio.js", LswConstants.global.pick("report/inicio.js"));
         await this.$lsw.fs.ensureFile("/kernel/agenda/proto/boot.proto", LswConstants.global.pick("boot.proto"));
@@ -53553,5 +63965,5 @@ rel correr
   });
 })(); 
 
-// @vuebundler[Lsw_framework_components][188]=/home/carlos/Escritorio/lsw-one/src/modules/app/app.css
+// @vuebundler[Lsw_framework_components][201]=/home/carlos/Escritorio/lsw-one/src/modules/app/app.css
 });

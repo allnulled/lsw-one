@@ -235,21 +235,26 @@
       return;
     }
 
-    async scriptAsync(url, context = {}) {
+    async scriptAsync(url, context = {}, fetchOptions = { cache: "reload" }) {
       this.$trace("scriptAsync", arguments);
       console.log(`[OK][Importer] Loading «${url}» as «script.async» ${this.$getMillisecondsOfLife()}`);
-      const response = await fetch(url);
+      const response = await fetch(url, fetchOptions);
       if (!response.ok) throw new Error(`Failed to fetch script: ${url}`);
       const scriptText = await response.text();
       const AsyncFunction = (async function () { }).constructor;
       let scriptCode = scriptText;
+      let scriptParameters = false;
+      let functionParameters = false;
       try {
-        const asyncFunction = new AsyncFunction(...Object.keys(context), scriptText);
+        scriptParameters = Object.keys(context);
+        const asyncFunction = new AsyncFunction(...scriptParameters, scriptText);
         scriptCode = asyncFunction.toString();
-        const result = await asyncFunction(...Object.values(context));
+        functionParameters = Object.values(context);
+        const result = await asyncFunction(...functionParameters);
         return result;
       } catch (error) {
-        this.$error(error, `Error evaluating «script.async» from «${url}» in code «\n${this.$breakLines(scriptCode)}\n»`);
+        console.log(error);
+        this.$error(error, `Error evaluating «script.async» from «${url}» in code «\n${this.$breakLines(scriptCode)}\n» passing parameters «${scriptParameters}»`);
         throw error;
       } finally {
         this.$increaseLoadedModules("script.async", url);

@@ -20,10 +20,12 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/others/vue.draggable/vue.draggable.js`,
   // SOCKET.IO:
   `${basepath}/lsw-framework/src/others/socket.io-client/socket.io-client.js`,
-  // IMPORTER:
-  `${basepath}/lsw-framework/src/apis/lsw-importer/importer.js`,
+  // MARKED.JS:
+  `${basepath}/assets/lib/marked/marked.js`,
   // LSW INITIALIZATION
   `${basepath}/bootloader/initialization.js`,
+  // IMPORTER:
+  `${basepath}/lsw-framework/src/apis/lsw-importer/importer.js`,
   // LSW ERROR MANAGER:
   `${basepath}/lsw-framework/src/apis/lsw-error-manager/lsw-error-manager.js`,
   // LSW RELOADER:
@@ -125,6 +127,8 @@ module.exports = Instrumenter.instrumentSet([
   // LSW DEBUGGER:
   `${basepath}/lsw-framework/src/components/lsw-debugger/lsw-debugger.api.js`,
   `${basepath}/lsw-framework/src/components/lsw-debugger/lsw-debugger`,
+  // LSW SQLITE CONSOLE:
+  `${basepath}/lsw-framework/src/components/lsw-sqlite-console/lsw-sqlite-console`,
   // COVERAGE:
   `${basepath}/lsw-framework/src/components/lsw-coverage-viewer/lsw-coverage-viewer`,
   `${basepath}/lsw-framework/src/components/lsw-js-file-coverage-viewer/lsw-js-file-coverage-viewer`,
@@ -309,6 +313,10 @@ module.exports = Instrumenter.instrumentSet([
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // APPLICATION:
   `${basepath}/modules/app/app`,
+  // El boot:
+  `${basepath}/bootloader/boot.js`,
+  // El payload:
+  `${basepath}/bootloader/framework-payload.js`,
 ], {
   instrumentedFiles,
   fileFilter: function (file) {

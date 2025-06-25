@@ -41,6 +41,7 @@ Vue.component("LswDebugger", {
       this.$trace("lsw-error-box.mounted");
       LswDebugger.global = LswDebugger.create(this);
       this.$debugger = LswDebugger.global;
+      this.$lsw.debugger = LswDebugger.global;
     } catch (error) {
       console.log(error);
     }

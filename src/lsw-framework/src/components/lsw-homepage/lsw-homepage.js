@@ -41,7 +41,7 @@ const homepage_apps_events = {
 Vue.component("LswHomepage", {
   template: $template,
   props: {
-    appsViewer: {
+    appsThrower: {
       type: Object,
       required: true,
     }
@@ -90,6 +90,9 @@ Vue.component("LswHomepage", {
       }, {
         label: "💻 Consola de JS",
         event: () => this.abrirApp("js consola"),
+      }, {
+        label: "💻 Consola de SQL",
+        event: () => this.abrirApp("sqlite-console"),
       }, {
         label: "✅ Tests de aplicación",
         event: () => this.abrirApp("app tests"),
@@ -181,7 +184,7 @@ Vue.component("LswHomepage", {
       this.$lsw.toasts.send({
         title: "Yendo a: " + appId,
       });
-      this.appsViewer.selectApplication(appId);
+      this.appsThrower.selectApplication(appId);
     }
   },
   watch: {},

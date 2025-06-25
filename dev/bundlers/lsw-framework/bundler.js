@@ -5,6 +5,7 @@ require(__dirname + "/../core/vuebundler.js").bundle({
   id: "Lsw_framework_components",
   output: __dirname + "/../../../src/lsw-framework/lsw-framework.js",
   ignore: [],
+  packMode: "plain",
 });
 
 // 2. Copy instrumented code to assets/coverage:

@@ -13,6 +13,8 @@
 
   // @code.start: LswLazyLoader class | @section: Lsw LazyLoader API » LswLazyLoader class
 
+  const $defaultScope = {};
+
   const UnsolvedLazyLoadModule = class {
 
     static create(...args) {
@@ -36,7 +38,7 @@
       const url = options.url;
       this.$loads[url] = Object.assign({}, {
         alias: false,
-        scope: Vue.prototype.$lsw,
+        scope: $defaultScope,
         getter: options.getter || Vue.prototype.$noop,
         confirmer: options.confirmer || Vue.prototype.$noop,
         confirmation: true,
@@ -111,7 +113,7 @@
       }
       this.$softRegister(url, {});
       const options = this.$loads[url];
-      const _scope = options.scope || Vue.prototype.$lsw;
+      const _scope = options.scope || $defaultScope;
       return importer.scriptAsync(url, _scope);
     }
 
@@ -122,7 +124,7 @@
       }
       this.$softRegister(url, {});
       const options = this.$loads[url];
-      const _scope = options.scope || Vue.prototype.$lsw;
+      const _scope = options.scope || $defaultScope;
       return importer.scriptSrc(url, _scope);
     }
 
@@ -133,7 +135,7 @@
       }
       this.$softRegister(url, {});
       const options = this.$loads[url];
-      const _scope = options.scope || Vue.prototype.$lsw;
+      const _scope = options.scope || $defaultScope;
       return importer.scriptSrcModule(url, _scope);
     }
 
@@ -144,7 +146,7 @@
       }
       this.$softRegister(url, {});
       const options = this.$loads[url];
-      const _scope = options.scope || Vue.prototype.$lsw;
+      const _scope = options.scope || $defaultScope;
       return importer.linkStylesheet(url);
     }
 
@@ -156,7 +158,7 @@
       }
       this.$softRegister(url, {});
       const options = this.$loads[url];
-      const _scope = options.scope || Vue.prototype.$lsw;
+      const _scope = options.scope || $defaultScope;
       const _type = options.type || "scriptSrc";
       if (!(_type in importer)) {
         throw new Error(`Required «type» from «${url}» options to be a known method for $importer on «LswLazyLoader.load»`);

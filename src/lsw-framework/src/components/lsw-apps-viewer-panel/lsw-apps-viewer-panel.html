@@ -82,6 +82,14 @@
                 </div>
 
                 <div class="pad_1"
+                    v-if="selectedApplication === 'sqlite-console'"
+                    v-bind:key="'app_sqlite_console'">
+                    <div class="pad_top_0 pad_bottom_0">
+                        <lsw-sqlite-console />
+                    </div>
+                </div>
+
+                <div class="pad_1"
                     v-if="selectedApplication === 'enciclopedia'"
                     v-bind:key="'enciclopedia'">
                     <div class="pad_top_0 pad_bottom_0">
@@ -190,7 +198,7 @@
                     v-if="selectedApplication === 'homepage'"
                     v-bind:key="'homepage'">
                     <div class="position_relative pad_top_0 pad_bottom_0">
-                        <lsw-homepage :apps-viewer="this" />
+                        <lsw-homepage :apps-thrower="this" />
                     </div>
                 </div>
 

@@ -11,20 +11,7 @@ Vue.component("LswNuevaFeature", {
   },
   methods: {
     async load() {
-
-
-
-      const output = await LswTester.create().define({
-        id: "lsw.test.api.intro",
-        fromCallback: function() {
-          console.log("lsw.test.api.into");
-        }
-      }).run();
-
-      console.log(output);
-
-
-
+      
     }
   },
   watch: {},

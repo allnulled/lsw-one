@@ -107,6 +107,22 @@
     confirmer: () => typeof ejs !== "undefined",
   });
 
+  LswLazyLoader.global.register({
+    alias: "sqlite3",
+    url: "assets/lib/sqlite/sqlite3.js",
+    type: "scriptSrc",
+    once: true,
+    confirmer: () => typeof sqlite3InitModule !== "undefined",
+  });
+
+  LswLazyLoader.global.register({
+    alias: "lsw-sqlite",
+    url: "assets/lib/lsw-sqlite/lsw-sqlite.js",
+    type: "scriptAsync",
+    once: true,
+    confirmer: () => typeof LswSqlite !== "undefined",
+  });
+
   class LswLazyLoads {
 
     static loadHighlightJs() {
@@ -157,6 +173,20 @@
 
     static loadEjs() {
       return LswLazyLoader.global.load("ejs");
+    }
+
+    static async loadSqlite() {
+      if(!("sqlite3" in window)) {
+        await LswLazyLoader.global.load("sqlite3");
+        const sqlite3 = await sqlite3InitModule();
+        Export_globally_sqlite3: {
+          window.sqlite3 = sqlite3;
+        }
+      }
+      if(!("LswSqlite" in window)) {
+        await LswLazyLoader.global.load("lsw-sqlite");
+      }
+      return LswSqlite;
     }
 
   };

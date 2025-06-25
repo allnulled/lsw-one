@@ -24,6 +24,7 @@ try {
       Vue.prototype.$lsw.lazyLoads = LswLazyLoads;
       Vue.prototype.$lsw.proxifier = $proxifier;
       Vue.prototype.$lsw.wiki = null;
+      Vue.prototype.$lsw.debugger = null;
       Vue.prototype.$lsw.agenda = null;
       // GLOBALLY AVAILABLE PARSERS:
       Vue.prototype.$lsw.parsers = {
@@ -62,6 +63,7 @@ try {
       Vue.prototype.$lsw.classes.ClassRegister = LswClassRegister;
       Vue.prototype.$lsw.classes.Backuper = LswBackuper;
       Vue.prototype.$lsw.classes.Intruder = LswIntruder;
+      Vue.prototype.$lsw.classes.LswDebugger = LswDebugger;
       // Vue.prototype.$lsw.classes.Dialogs = LswDialogs;
       // Vue.prototype.$lsw.classes.Windows = LswWindows;
       // Vue.prototype.$lsw.classes.Toasts = LswToasts;
@@ -71,6 +73,7 @@ try {
   Step_2_remove_intersitial: {
     importer.$removeIntersitial();
   }
+  
 } catch (error) {
   console.error(error);
   console.log("[!] Boot failed");

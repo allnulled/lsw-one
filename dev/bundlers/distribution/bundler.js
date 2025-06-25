@@ -5,6 +5,7 @@ require(__dirname + "/../core/vuebundler.js").bundle({
   id: "Litestarter_app",
   output: __dirname + "/../../../src/assets/distribution.js",
   ignore: [],
+  packMode: "async-function",
 });
 
 // 2. Export assets, index and dist files to dist folder:

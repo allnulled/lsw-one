@@ -10,5 +10,6 @@ src/lsw-framework/src/styles
 src/lsw-framework/src/directives
 src/bootloader
 src/assets/tests/cases
+src/assets/lib/lsw-sqlite
 devfiles.txt
 ping.txt

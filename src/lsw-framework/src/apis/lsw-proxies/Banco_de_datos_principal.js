@@ -20,7 +20,7 @@ $proxifier.define("org.allnulled.lsw-conductometria.Banco_de_datos_principal", {
     }
     static getProperties() {
       return {
-        datatype: {
+        tiene_nombre: {
           isType: "text",
           isFormType: "text",
           isIndexed: true,
@@ -28,9 +28,22 @@ $proxifier.define("org.allnulled.lsw-conductometria.Banco_de_datos_principal", {
             // Ok.
           },
           hasFormatter: false,
-          hasLabel: "Tipo de dato:",
-          hasDescription: "El tipo de dato asociado al concepto",
-          hasPlaceholder: "Ej: persona, empresa, país, idioma, idea, categoría abstracta (lo que quieras)",
+          hasLabel: "Nombre del centro de datos:",
+          hasDescription: "El nombre del centro de datos en cuestión que se está guardando en este registro de la base de datos.",
+          hasPlaceholder: "Mi_base_de_datos_1",
+          hasExtraAttributes: {},
+        },
+        tiene_datos: {
+          isType: "text",
+          isFormType: "text",
+          isIndexed: true,
+          hasValidator(v) {
+            // Ok.
+          },
+          hasFormatter: false,
+          hasLabel: "Datos del centro de datos:",
+          hasDescription: "Los datos en sí de esta base de datos concreta.",
+          hasPlaceholder: "Mi_base_de_datos_1",
           hasExtraAttributes: {},
         }
       }

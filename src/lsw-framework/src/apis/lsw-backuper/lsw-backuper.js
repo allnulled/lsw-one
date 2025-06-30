@@ -20,7 +20,7 @@
     static get defaultOptions() {
       return {
         storageId: "lsw_default_database_backup_1",
-        trace: true,
+        trace: Vue.prototype.$lsw.logger.$options.active,
       };
     }
 

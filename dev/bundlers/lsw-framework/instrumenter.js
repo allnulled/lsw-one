@@ -26,8 +26,11 @@ const Instrumenter = class {
 
   static $regexForjsFiles = /\.js$/g;
 
-  static instrumentalizeFile(fileBrute) {
+  static instrumentalizeFile(fileBrute, deactivate = false) {
     console.log("[instrumenter][trace] Instrumenter.instrumentalizeFile");
+    if(deactivate) {
+      return fileBrute;
+    }
     const originalFile = path.resolve(fileBrute);
     if (!originalFile.endsWith(".js")) {
       return false;

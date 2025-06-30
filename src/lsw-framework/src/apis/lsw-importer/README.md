@@ -148,7 +148,7 @@ const importer = Importer.create({
     id_trace: "#intersitial_modules_trace",
     id_loader: "#intersitial_loader",
     id_loader_bar: "#intersitial_loader_bar",
-    trace: false,
+    trace: (Vue?.prototype?.$lsw?.logger?.$options?.active ),
     update_ui: false, // This option is only set to true on global: window.importer
     update_ui_minimum_milliseconds: 1200, // Minimum milliseconds the importer
     // must live before clearing the graphical counterpart

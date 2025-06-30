@@ -184,7 +184,8 @@ input[type="text"] {
 }
 
 select.supermini,
-input[type="text"].supermini {
+input[type="text"].supermini,
+input[type="number"].supermini {
     min-height: 25px;
 }
 
@@ -864,6 +865,31 @@ pre.codeblock {
     top: 0px;
     bottom: 0px;
     left: 0px;
+    right: 0px;
+}
+
+.corner_top_left {
+    top: 0px;
+    bottom: auto;
+    left: 0px;
+    right: auto;
+}
+.corner_top_right {
+    top: 0px;
+    bottom: auto;
+    left: auto;
+    right: 0px;
+}
+.corner_bottom_left {
+    top: auto;
+    bottom: 0px;
+    left: 0px;
+    right: auto;
+}
+.corner_bottom_right {
+    top: auto;
+    bottom: 0px;
+    left: auto;
     right: 0px;
 }
 

@@ -23,7 +23,7 @@
 
     static DEFAULT_OPTIONS() {
       return {
-        trace: false,
+        trace: (Vue?.prototype?.$lsw?.logger?.$options?.active ),
       };
     }
 

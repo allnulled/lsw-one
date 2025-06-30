@@ -84,7 +84,7 @@
 
     static getDefaultOptions(overrider = {}) {
       return Object.assign({}, {
-        trace: true,
+        trace: (Vue?.prototype?.$lsw?.logger?.$options?.active ),
         successHandler: false,
         errorHandler: false,
         failureHandler: false,

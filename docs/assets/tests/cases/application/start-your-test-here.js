@@ -1,1 +1,1 @@
-return 500
+asserts.as("assertion 1").that(true);

@@ -363,7 +363,7 @@
       Vue.prototype.$dialogs = this;
       Vue.prototype.$lsw.dialogs = this;
       window.LswDialogs = this;
-      console.log("[*] LswDialogs mounted.");
+      // console.log("[*] LswDialogs mounted.");
     }
   });
   // @code.end: LswDialogs API

@@ -1,0 +1,27 @@
+.lsw_keyboard_1_text {
+    font-family: monospace;
+    display: table;
+}
+.lsw_keyboard_1_text .line {
+    display: table-row;
+    min-width: 8px;
+    min-height: 16px;
+}
+.lsw_keyboard_1_text .cursor {
+    text-shadow: 0 0 4px black;
+    position: absolute;
+    left: -4px;
+}
+.lsw_keyboard_1_text .character {
+    display: table-cell;
+    position: relative;
+    user-select: none;
+    white-space: default;
+    min-width: 8px;
+    min-height: 16px;
+}
+
+.lsw_keyboard_1_text .character.selected {
+    background-color: yellow;
+    color: black;
+}

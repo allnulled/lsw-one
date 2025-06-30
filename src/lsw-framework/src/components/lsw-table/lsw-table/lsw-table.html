@@ -1,7 +1,8 @@
 <div class="lsw_table pad_top_1">
     <div>
-        <div class="lsw_table_top_panel pad_horizontal_1">
-            <div class="lsw_table_top_panel_1 flex_row centered pad_top_1 pad_bottom_1">
+        <div class="lsw_table_top_panel">
+            <div class="lsw_table_top_panel_1 flex_row centered pad_top_1 pad_bottom_1"
+                v-if="title">
                 <div class="flex_1 pad_right_1">
                     *️⃣
                 </div>
@@ -9,7 +10,7 @@
                 <div class="flex_1 pad_left_1"
                     v-for="topButton, topButtonIndex in attachedTopButtons"
                     v-bind:key="'table-button-' + topButtonIndex">
-                    <button class=""
+                    <button class="supermini"
                         v-on:click="topButton.event">
                         {{ topButton.text }}
                     </button>
@@ -23,7 +24,7 @@
                         v-on:click="digestOutput">🛜</button>
                 </div>
             </div>
-            <div class="lsw_table_top_panel_2 flex_row centered pad_bottom_1">
+            <div class="lsw_table_top_panel_2 flex_row centered">
                 <div class="flex_100">
                     <div class="flex_row">
                         <div class="flex_100">
@@ -35,6 +36,16 @@
                                 v-on:keypress.enter="digestOutput"
                                 :placeholder="placeholderForBuscador" />
                         </div>
+                        <template v-if="!title">
+                            <div class="flex_1 pad_left_1">
+                                <lsw-data-printer-button class="cursor_pointer"
+                                    :input="() => output" />
+                            </div>
+                            <div class="flex_1 pad_left_1">
+                                <button class="cursor_pointer"
+                                    v-on:click="digestOutput">🛜</button>
+                            </div>
+                        </template>
                         <div class="flex_1 pad_left_1">
                             <button class="width_100"
                                 v-on:click="toggleMenu"
@@ -47,117 +58,132 @@
                 </div>
             </div>
             <div v-if="isShowingMenu">
-                <div class="">
+                <div class="pad_top_1">
                     <div class="table_navigation_menu_cell"
                         colspan="1000">
                         <div class="table_navigation_menu">
                             <div class="flex_row centered">
                                 <div class="flex_1 nowrap">🔸 Estás en: </div>
                                 <div class="flex_100 left_padded_1">
-                                    <select class="width_100 text_align_right"
+                                    <select class="width_100 text_align_right supermini"
                                         v-model="isShowingSubpanel">
                                         <option value="Buscador">Buscador {{ searcher.length ? `(con: ${searcher.length}B)` : '' }}</option>
                                         <option value="Paginador">Paginador (en: {{ itemsPerPage }})</option>
-                                        <option value="Columnas">Columnas {{ columnsOrder.length ? `(con: ${columnsOrder.length}B)` : '' }}</option>
+                                        <option value="Columnas">Columnas {{ columnsOrder.length ? `(con: ${columnsOrder.length}B)` : '' }}
+                                        </option>
                                         <option value="Extensor">Extensor {{ extender.length ? `(con: ${extender.length}B)` : '' }}</option>
                                         <option value="Filtro">Filtro {{ filter.length ? `(con: ${filter.length}B)` : '' }}</option>
                                         <option value="Ordenador">Orden {{ sorter.length ? `(con: ${sorter.length}B)` : '' }}</option>
                                         <option value="Todo">Todo a la vez</option>
                                     </select>
                                 </div>
-                                <div class="flex_1 pad_left_1" v-if="storageId">
-                                    <button class="" v-on:click="saveState">💾</button>
+                                <div class="flex_1 pad_left_1"
+                                    v-if="storageId">
+                                    <button class="supermini"
+                                        v-on:click="saveState">💾</button>
                                 </div>
                             </div>
                             <hr />
                             <div class="lsw_table_config_panel">
-                                <div class="config_panel" v-if="(isShowingSubpanel === 'Buscador') || (isShowingSubpanel === 'Todo')">
+                                <div class="config_panel"
+                                    v-if="(isShowingSubpanel === 'Buscador') || (isShowingSubpanel === 'Todo')">
                                     <h5>Buscador por texto</h5>
                                     <input spellcheck="false"
-                                        class="width_100"
+                                        class="width_100 supermini"
                                         type="text"
                                         v-model="searcher"
                                         v-on:keypress.enter="digestOutput"
                                         :placeholder="placeholderForBuscador" />
                                 </div>
-                                <div class="config_panel" v-if="(isShowingSubpanel === 'Filtro') || (isShowingSubpanel === 'Todo')">
+                                <div class="config_panel"
+                                    v-if="(isShowingSubpanel === 'Filtro') || (isShowingSubpanel === 'Todo')">
                                     <h5>Filtro de filas</h5>
                                     <textarea spellcheck="false"
                                         v-model="filter"
                                         :placeholder="placeholderForFiltro"></textarea>
                                 </div>
-                                <div class="config_panel" v-if="(isShowingSubpanel === 'Extensor') || (isShowingSubpanel === 'Todo')">
+                                <div class="config_panel"
+                                    v-if="(isShowingSubpanel === 'Extensor') || (isShowingSubpanel === 'Todo')">
                                     <h5>Extensor de propiedades</h5>
                                     <textarea spellcheck="false"
                                         v-model="extender"
                                         :placeholder="placeholderForExtensor"></textarea>
                                 </div>
-                                <div class="config_panel" v-if="(isShowingSubpanel === 'Ordenador') || (isShowingSubpanel === 'Todo')">
+                                <div class="config_panel"
+                                    v-if="(isShowingSubpanel === 'Ordenador') || (isShowingSubpanel === 'Todo')">
                                     <h5>Ordenador de filas</h5>
                                     <textarea spellcheck="false"
                                         v-model="sorter"
                                         :placeholder="placeholderForOrdenador"></textarea>
                                 </div>
-                                <div class="config_panel" v-if="(isShowingSubpanel === 'Columnas') || (isShowingSubpanel === 'Todo')">
+                                <div class="config_panel"
+                                    v-if="(isShowingSubpanel === 'Columnas') || (isShowingSubpanel === 'Todo')">
                                     <h5>Ordenador de columnas</h5>
                                     <div class="flex_row centered">
                                         <div class="flex_100">
                                             <input type="text"
-                                                class="width_100"
+                                                class="width_100 supermini"
                                                 v-model="columnsOrderInput"
                                                 v-on:keypress.enter="updateColumnsOrderFromInput"
                                                 placeholder="Ej: age, name, id" />
                                         </div>
                                         <div class="flex_1 pad_left_1">
-                                            <button class=""
+                                            <button class="supermini"
                                                 v-on:click="updateColumnsOrderFromInput">↩️</button>
                                         </div>
                                     </div>
-                                    <ol>
+                                    <ol v-if="columnsOrder && columnsOrder.length">
                                         <li v-for="columnRule, columnIndex in columnsOrder"
                                             v-bind:key="'column_order_' + columnIndex">
                                             <b>Columna {{ columnIndex+1 }}.</b> {{ columnRule }}
                                         </li>
                                     </ol>
                                 </div>
-                                <div class="config_panel" v-if="(isShowingSubpanel === 'Paginador') || (isShowingSubpanel === 'Todo')">
+                                <div class="config_panel"
+                                    v-if="(isShowingSubpanel === 'Paginador') || (isShowingSubpanel === 'Todo')">
                                     <h5>Página de resultados</h5>
                                     <div class="flex_row">
                                         <div class="flex_1 pad_right_1">
-                                            <button class="" v-on:click="decreasePage">-</button>
+                                            <button class="supermini"
+                                                v-on:click="decreasePage">-</button>
                                         </div>
                                         <div class="flex_100">
                                             <input spellcheck="false"
-                                                class="width_100 text_align_center"
+                                                class="width_100 text_align_center supermini"
                                                 type="number"
                                                 v-model="currentPageOnForm"
                                                 v-on:keypress.enter="digestOutput"
                                                 :placeholder="placeholderForPaginador" />
                                         </div>
                                         <div class="flex_1 pad_left_1">
-                                            <button class="" v-on:click="increasePage">+</button>
+                                            <button class="supermini"
+                                                v-on:click="increasePage">+</button>
                                         </div>
                                     </div>
                                     <h5 class="margin_top_1">Items por página</h5>
                                     <div class="flex_row">
                                         <div class="flex_1 pad_right_1">
-                                            <button class="" v-on:click="decreaseItemsPerPage">-</button>
+                                            <button class="supermini"
+                                                v-on:click="decreaseItemsPerPage">-</button>
                                         </div>
                                         <div class="flex_100">
                                             <input spellcheck="false"
-                                                class="width_100 text_align_center"
+                                                class="width_100 text_align_center supermini"
                                                 type="number"
                                                 v-model="itemsPerPageOnForm"
                                                 v-on:keypress.enter="digestOutput"
                                                 :placeholder="placeholderForPaginador" />
                                         </div>
                                         <div class="flex_1 pad_left_1">
-                                            <button class="" v-on:click="increaseItemsPerPage">+</button>
+                                            <button class="supermini"
+                                                v-on:click="increaseItemsPerPage">+</button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="pad_bottom_0" v-if="isShowingSubpanel === 'Todo'">
-                                    <button class="width_100" v-on:click="digestOutput">🛜</button>
+                                <div class="pad_bottom_0"
+                                    v-if="isShowingSubpanel === 'Todo'">
+                                    <button class="width_100 supermini"
+                                        v-on:click="digestOutput">🛜</button>
                                 </div>
                             </div>
                         </div>
@@ -167,9 +193,9 @@
         </div>
     </div>
     <div class="paginator_widget this_code_is_duplicated_always">
-        <div>
+        <div class="pad_top_1">
             <div>
-                <div class="flex_row centered">
+                <div class="flex_row centered pagination_bar">
                     <div class="flex_1 pagination_button_box first_box">
                         <div class="pagination_button first_button"
                             v-on:click="goToFirstPage"
@@ -323,7 +349,7 @@
     <div class="paginator_widget this_code_is_duplicated_always">
         <div>
             <div>
-                <div class="flex_row centered">
+                <div class="flex_row centered pagination_bar">
                     <div class="flex_1 pagination_button_box first_box">
                         <div class="pagination_button first_button"
                             v-on:click="goToFirstPage"

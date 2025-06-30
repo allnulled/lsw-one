@@ -7,16 +7,16 @@
             </div>
         </div>
     </div>
-    <div class="current_node_box">
+    <div class="current_node_box pad_vertical_1">
         <span class="previous_node_path" :class="current_node !== '/' ? '' : 'visibility_hidden'">
-            <button class="previous_node_button" v-on:click="goUp"
+            <button class="previous_node_button supermini" v-on:click="goUp"
             style="transform: rotate(180deg); margin: 1px;">➜</button>
         </span>
         <span class="current_node_path">{{ current_node_basedir }}</span>
         <span class="current_node_filename">{{ current_node_basename }}</span>
     </div>
     <div class="filesystem_ui">
-        <div class="leftside">
+        <div class="leftside" v-if="false">
             <lsw-filesystem-buttons-panel :explorer="this" ref="panelLeft" orientation="column" />
         </div>
         <div class="middleside">

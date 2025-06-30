@@ -13,21 +13,45 @@
 
   // @code.start: LswTriggers API | @$section: LswTriggers API » LswTriggers classes and functions
   // exported to TriggersClass
+
+  class TriggerConcept {
+    constructor(anyzin) {
+      Object.assign(this, anyzin);
+    }
+  };
+
+  class TriggerParameters extends TriggerConcept {};
+  
+  class TriggerEvent extends TriggerConcept {};
+
   class TriggersClass {
 
-    static globMatch(patterns, list) {
+    static Concept = TriggerConcept;
+
+    static Event = TriggerEvent;
+    
+    static Parameters = TriggerParameters;
+
+    static globMatch(patterns, list, wantsPatterns = false) {
       const matches = new Set();
 
       const regexes = patterns.map(pattern => {
         let regexPattern = pattern
           .replace(/[-/\\^$+?.()|[\]{}]/g, "\\$&") // Escapa caracteres especiales
-          .replace(/\\\*/g, ".*")                 // '*' => cualquier cosa
-        return new RegExp(`^${regexPattern}$`);
+          .replace(/\*/g, ".*")                 // '*' => cualquier cosa
+        return {
+          original: pattern,
+          expr: new RegExp(`^${regexPattern}$`),
+        };
       });
       for (const item of list) {
         for (const regex of regexes) {
-          if (regex.test(item)) {
-            matches.add(item);
+          if (regex.expr.test(item)) {
+            if(!wantsPatterns) {
+              matches.add(item);
+            } else {
+              matches.add(regex.original);
+            }
             break;
           }
         }
@@ -60,15 +84,15 @@
     }
 
     async emit(triggerName, parameters = {}) {
-      const matchedTriggers = [];
+      let matchedTriggers = [];
       const allPatterns = Object.keys(this.all);
 
       // Encuentra patrones que coincidan con el nombre del evento
-      const matchedPatterns = this.constructor.globMatch(allPatterns, [triggerName]);
+      const matchedPatterns = this.constructor.globMatch(allPatterns, [triggerName], true);
 
       // Agrega todos los eventos coincidentes a la lista de disparos
       for (const pattern of matchedPatterns) {
-        matchedTriggers.push(...this.all[pattern]);
+        matchedTriggers = matchedTriggers.concat(this.all[pattern] || []);
       }
 
       // Ordena por prioridad descendente
@@ -77,7 +101,9 @@
       // Ejecuta los callbacks en orden
       const output = [];
       for (const trigger of matchedTriggers) {
-        const result = await trigger.callback(parameters);
+        const eventObject = new TriggerEvent({ event: triggerName })
+        const parametersObject = new TriggerParameters(parameters);
+        const result = await trigger.callback(eventObject, parametersObject);
         output.push(result);
       }
 
@@ -93,6 +119,10 @@
           delete this.all[pattern]; // Limpia patrones vacíos
         }
       }
+    }
+
+    reset() {
+      this.all = {};
     }
 
   }

@@ -212,7 +212,7 @@
         return;
       }
       if (typeof value === "object") {
-        if(value === null) {
+        if (value === null) {
           return null;
         }
         if (value.$el) {
@@ -521,66 +521,108 @@
         out[propId] = base[propId];
       }
     }
-    for(let index=0; index<voidedProps.length; index++) {
+    for (let index = 0; index < voidedProps.length; index++) {
       const propId = voidedProps[index];
       delete out[propId];
     }
     return Object.assign(out, overridings);
   };
 
-  LswUtils.dehydrateFunction = function(f) {
+  LswUtils.getUniqueItemsFromLists = function (...lists) {
+    const uniqueKeys = [];
+    for (let index = 0; index < lists.length; index++) {
+      const keys = lists[index];
+      for (let indexKey = 0; indexKey < keys.length; indexKey++) {
+        const key = keys[indexKey];
+        if (uniqueKeys.indexOf(key) === -1) {
+          uniqueKeys.push(key);
+        }
+      }
+    }
+    return uniqueKeys;
+  };
+
+  LswUtils.sortListByProperties = function (lista, props) {
+    return lista.sort((a, b) => {
+      for (let prop of props) {
+        let orden = 1;
+
+        if (prop.startsWith("!")) {
+          orden = -1;
+          prop = prop.slice(1);
+        }
+
+        const valA = a[prop];
+        const valB = b[prop];
+
+        if (valA < valB) return -1 * orden;
+        if (valA > valB) return 1 * orden;
+      }
+      return 0;
+    });
+  };
+
+  LswUtils.parseAsJsonOrReturn = function(data, defaultValue = undefined) {
+    try {
+      return JSON.parse(data);
+    } catch (error) {
+      return defaultValue;
+    }
+  };
+
+  LswUtils.dehydrateFunction = function (f) {
     return f.toString();
   };
 
-  LswUtils.hydrateFunction = function(fSource) {
+  LswUtils.hydrateFunction = function (fSource) {
     return new Function(fSource);
   };
 
-  LswUtils.zeroIfNegative = function(numero) {
-    if(numero < 0) {
+  LswUtils.zeroIfNegative = function (numero) {
+    if (numero < 0) {
       return 0;
     }
     return numero;
   };
 
-  LswUtils.filterObject = function(obj, filterer) {
+  LswUtils.filterObject = function (obj, filterer) {
     return Object.keys(obj).reduce((output, key, index) => {
       const val = obj[key];
       console.log(key, val, index, output);
       const result = filterer(key, val, index, output);
-      if(result) {
+      if (result) {
         output[key] = val;
       }
       return output;
     }, {});
   };
 
-  LswUtils.mapObject = function(obj, mapper, deleterValue = undefined) {
+  LswUtils.mapObject = function (obj, mapper, deleterValue = undefined) {
     return Object.keys(obj).reduce((output, key, index) => {
       const val = obj[key];
       const result = mapper(key, val, index, output);
-      if(result !== deleterValue) {
+      if (result !== deleterValue) {
         output[key] = result;
       }
       return output;
     }, {});
   };
 
-  LswUtils.reduceObject = function(obj, reducer) {
+  LswUtils.reduceObject = function (obj, reducer) {
     return Object.keys(obj).reduce((output, key, index) => {
       const val = obj[key];
       return reducer(key, val, index, output);
     }, {});
   };
 
-  LswUtils.askForFileText = async function() {
+  LswUtils.askForFileText = async function () {
     return new Promise((resolve, reject) => {
       const inputHtml = document.createElement("input");
       inputHtml.type = "file";
       inputHtml.style.display = "none";
-      inputHtml.onchange = function() {
+      inputHtml.onchange = function () {
         const file = event.target.files[0];
-        if(file) {
+        if (file) {
           resolve(file);
         } else {
           reject(new Error("No file selected finally"));
@@ -600,11 +642,11 @@
     });
   };
 
-  LswUtils.padStart = function(txt, ...args) {
+  LswUtils.padStart = function (txt, ...args) {
     return ("" + txt).padStart(...args);
   };
 
-  LswUtils.flattenObjects = function(list, options = {}) {
+  LswUtils.flattenObjects = function (list, options = {}) {
     const {
       keyMapper = false, // can be function or false
       valueMapper = false, // can be function or false
@@ -613,28 +655,28 @@
     } = options;
     const output = {};
     let totalKeys = 0;
-    for(let index=0; index<list.length; index++) {
+    for (let index = 0; index < list.length; index++) {
       const item = list[index];
       const isFlattenable = (typeof item === "object") && (item !== null);
-      if(isFlattenable) {
+      if (isFlattenable) {
         const allKeys = Object.keys(item);
-        for(let indexKey=0; indexKey<allKeys.length; indexKey++) {
+        for (let indexKey = 0; indexKey < allKeys.length; indexKey++) {
           const key = allKeys[indexKey];
           const isDuplicated = key in output;
-          if((!isDuplicated) || (duplicatedsStrategy === 'override')) {
+          if ((!isDuplicated) || (duplicatedsStrategy === 'override')) {
             const finalKey = typeof keyMapper === 'function' ? keyMapper(key, totalKeys, indexKey, item, index, list) : key;
             const finalValue = typeof valueMapper === 'function' ? valueMapper(item[key], totalKeys, indexKey, item, index, list) : item[key];
             totalKeys++;
             output[finalKey] = finalValue;
-          } else if(duplicatedsStrategy === 'error') {
+          } else if (duplicatedsStrategy === 'error') {
             throw new Error(`Required item on index «${index}» key «${key}» to not be duplicated on «LswUtils.flattenObjects»`);
           } else {
             throw new Error(`Unknown strategy for duplicateds «${duplicatedsStrategy}» on «LswUtils.flattenObjects»`);
           }
         }
-      } else if(nonFlattenablesStrategy === 'ignore') {
+      } else if (nonFlattenablesStrategy === 'ignore') {
         // @OK.
-      } else if(nonFlattenablesStrategy === 'error') {
+      } else if (nonFlattenablesStrategy === 'error') {
         throw new Error(`Required item on index «${index}=${typeof item}» to be flattenable on «LswUtils.flattenObjects»`);
       } else {
         throw new Error(`Unknown strategy for non-flattenables «${nonFlattenablesStrategy}» on «LswUtils.flattenObjects»`);

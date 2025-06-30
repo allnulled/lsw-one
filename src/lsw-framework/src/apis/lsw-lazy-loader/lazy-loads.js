@@ -117,7 +117,7 @@
 
   LswLazyLoader.global.register({
     alias: "lsw-sqlite",
-    url: "assets/lib/lsw-sqlite/lsw-sqlite.js",
+    url: "assets/lib/lsw-sqlite/lsw-sqlite.dist.js",
     type: "scriptAsync",
     once: true,
     confirmer: () => typeof LswSqlite !== "undefined",

@@ -1,9 +1,4 @@
 // @code.start: LswSqliteConsole API | @$section: Vue.js (v2) Components » LswSqliteConsole component
-const defaultScript = `
-
-SELECT * FROM sqlite_master;
-
-`;
 Vue.component("LswSqliteConsole", {
   template: $template,
   props: {
@@ -13,7 +8,11 @@ Vue.component("LswSqliteConsole", {
     this.$trace("lsw-sqlite-console.data");
     return {
       selectedSection: "js", // "js", "sql", "data"
-      code: defaultScript.trim(),
+      code: `
+
+SELECT * FROM sqlite_master;
+
+`.trim(),
       output: "",
       executionError: false,
       isSqliteLoaded: false,
@@ -35,17 +34,12 @@ Vue.component("LswSqliteConsole", {
         console.error(error);
       }
     },
-    async developmentPayload() {
-      //const schema = await LswSqlite.getSchemaFromDatabase();
-      //this.$lsw.debugger.debug(schema);
-    }
   },
   watch: {},
   async mounted() {
     try {
       this.$trace("lsw-sqlite-console.mounted");
       await this.loadEnvironment();
-      await this.developmentPayload();
     } catch (error) {
       console.log(error);
     }

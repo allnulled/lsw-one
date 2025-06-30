@@ -8,8 +8,8 @@
       if(window.location.href.startsWith("https://")) {
         Vue.prototype.$lsw.logger.deactivate();
       } else {
-        Vue.prototype.$lsw.logger.deactivate();
         Vue.prototype.$lsw.logger.activate();
+        Vue.prototype.$lsw.logger.deactivate();
       }
     }
   
@@ -22,7 +22,10 @@
           if(typeof cordova === "undefined") {
             break Inject_kernel_android_bootjs;
           }
-          await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/android/boot.js");
+          await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile(`/kernel/volatile-database/${LswVolatileDatabase.global.$storageId}/triggers.js`);
+        }
+        Start_most_concurred_toolkits: {
+          await LswVolatileDatabase.global.loadDatabase();
         }
         Inject_development_point: {
           if(window.location.href.startsWith("http://")) {
@@ -33,15 +36,17 @@
             // await LswDomIrruptor.abrirAcciones();
             // await LswDomIrruptor.abrirFicheros();
             // await LswDomIrruptor.abrirJsInspector();
-            // await LswDomIrruptor.abrirNuevaFeature();
             // await LswDomIrruptor.abrirHomepage();
-            // await LswDomIrruptor.arrancarTestsDeAplicacion();
             // await LswDomIrruptor.abrirConfiguraciones();
             // await LswDomIrruptor.abrirTestsDeAplicacion();
             // await LswDomIrruptor.abrirBaseDeDatos();
             // await LswDomIrruptor.abrirBaseDeDatosPorTabla("Accion");
             // await LswDomIrruptor.abrirBaseDeDatosPorNuevoDatoDeTabla("Accion");
             // await LswDomIrruptor.abrirNuevaFeature();
+            /*
+            await LswDomIrruptor.arrancarTestsDeAplicacion();
+            //*/
+            await LswDomIrruptor.abrirNuevaFeature();
           }
         }
       } catch (error) {

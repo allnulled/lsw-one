@@ -142,9 +142,8 @@ Vue.component("LswTesterViewer", {
         this.isStarted = true;
         const viewer = this;
         await this.tester.options({
-          trace: true,
+          trace: (Vue?.prototype?.$lsw?.logger?.$options?.active ),
           onAnything(event, ...args) {
-            console.log("Notify to widget event:", event, args);
             viewer.addEvent(event, ...args);
           }
         }).run(1);

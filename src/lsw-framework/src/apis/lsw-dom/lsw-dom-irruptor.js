@@ -153,7 +153,9 @@
       await this.abrirTestsDeAplicacion();
       Abrir_tests: {
         await LswDom.waitForMilliseconds(200);
-        LswDom.querySelectorFirst("button", "▶️").click();
+        LswDom.querySelectorFirst("button", "🧪").click();
+        await LswDom.waitForMilliseconds(200);
+        LswDom.querySelectorFirst("button", "🧪 ▶️").click();
       }
     }
 

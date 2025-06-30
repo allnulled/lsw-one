@@ -58,7 +58,7 @@
         id_trace: "#intersitial_modules_trace",
         id_loader: "#intersitial_loader",
         id_loader_bar: "#intersitial_loader_bar",
-        trace: false,
+        trace: (Vue?.prototype?.$lsw?.logger?.$options?.active ),
         update_ui: false,
         update_ui_minimum_milliseconds: 1200,
       }, options_input);
@@ -140,7 +140,7 @@
           throw new Error("Repeated module load: " + moduleId);
         }
         this.modules_loaded_ids.push(moduleId);
-        console.log(`[OK][Importer] Loaded module «${this.modules_loaded}» named «${moduleId}» as «${moduleType}» ${this.$getMillisecondsOfLife()}`);
+        // console.log(`[OK][Importer] Loaded module «${this.modules_loaded}» named «${moduleId}» as «${moduleType}» ${this.$getMillisecondsOfLife()}`);
         if (!this.options.update_ui) {
           return;
         }
@@ -208,7 +208,7 @@
 
     async scriptSrc(src) {
       this.$trace("scriptSrc", arguments);
-      console.log(`[OK][Importer] Loading «${src}» as «script.src» ${this.$getMillisecondsOfLife()}`);
+      // console.log(`[OK][Importer] Loading «${src}» as «script.src» ${this.$getMillisecondsOfLife()}`);
       await new Promise((resolve, reject) => {
         const script = document.createElement("script");
         script.src = src;
@@ -222,7 +222,7 @@
 
     async scriptSrcModule(src) {
       this.$trace("scriptSrcModule", arguments);
-      console.log(`[OK][Importer] Loading «${src}» as «script.src.module» ${this.$getMillisecondsOfLife()}`);
+      // console.log(`[OK][Importer] Loading «${src}» as «script.src.module» ${this.$getMillisecondsOfLife()}`);
       await new Promise((resolve, reject) => {
         const script = document.createElement("script");
         script.src = src;
@@ -237,7 +237,7 @@
 
     async scriptAsync(url, context = {}, fetchOptions = { cache: "reload" }) {
       this.$trace("scriptAsync", arguments);
-      console.log(`[OK][Importer] Loading «${url}» as «script.async» ${this.$getMillisecondsOfLife()}`);
+      // console.log(`[OK][Importer] Loading «${url}» as «script.async» ${this.$getMillisecondsOfLife()}`);
       const response = await fetch(url, fetchOptions);
       if (!response.ok) throw new Error(`Failed to fetch script: ${url}`);
       const scriptText = await response.text();
@@ -302,7 +302,7 @@
 
     async linkStylesheet(href) {
       this.$trace("linkStylesheet", arguments);
-      console.log(`[OK][Importer] Loading «${href}» as «link.stylesheet.css» ${this.$getMillisecondsOfLife()}`);
+      // console.log(`[OK][Importer] Loading «${href}» as «link.stylesheet.css» ${this.$getMillisecondsOfLife()}`);
       await new Promise((resolve, reject) => {
         const link = document.createElement("link");
         link.rel = "stylesheet";
@@ -318,7 +318,7 @@
 
     async text(url) {
       this.$trace("text", arguments);
-      console.log(`[OK][Importer] Loading «${url}» as «text» ${this.$getMillisecondsOfLife()}`);
+      // console.log(`[OK][Importer] Loading «${url}» as «text» ${this.$getMillisecondsOfLife()}`);
       const response = await fetch(url);
       this.$increaseLoadedModules("text", url);
       if (!response.ok) throw new Error(`Failed to fetch text: ${url}`);
@@ -327,7 +327,7 @@
 
     async json(url) {
       this.$trace("json", arguments);
-      console.log(`[OK][Importer] Loading «${url}» as «json» ${this.$getMillisecondsOfLife()}`);
+      // console.log(`[OK][Importer] Loading «${url}» as «json» ${this.$getMillisecondsOfLife()}`);
       const response = await fetch(url);
       this.$increaseLoadedModules("json", url);
       if (!response.ok) throw new Error(`Failed to fetch json: ${url}`);

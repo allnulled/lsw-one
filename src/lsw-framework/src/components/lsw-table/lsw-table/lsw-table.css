@@ -7,13 +7,13 @@
 .lsw_table_itself {}
 
 .lsw_table_viewer {
-    border: 1px solid #88888888;
-    padding: 4px;
+    border-right: 1px solid #88888888;
+    padding: 0px;
     overflow: scroll;
     min-height: 180px;
-    margin-top: 3px;
-    margin-bottom: 3px;
-    margin-left: 40px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
     margin-right: 40px;
     height: 320px;
     resize: vertical;
@@ -21,8 +21,8 @@
 
 table.lsw_table_itself>thead>tr>th {
     text-align: left;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 table.lsw_table_itself .max_row_height {
@@ -60,7 +60,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .table_navigation_menu_cell {
     padding: 0px;
     padding-top: 0px;
-    padding-bottom: 4px;
+    padding-bottom: 0px;
 }
 
 .table_navigation_menu {
@@ -152,9 +152,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
 }
 
 .lsw_table_top_panel {
-    background-color: #cecece30;
-    border: 1px solid #88888888;
-    margin-bottom: 4px;
+    margin-bottom: 0px;
 }
 .lsw_table_top_panel_1 button,
 .lsw_table_top_panel_2 button {
@@ -162,6 +160,7 @@ table.lsw_table_itself>thead>tr>th.button_header {
     padding: 0px;
     height: auto;
     min-height: 22px;
+    min-width: 35px;
     border: 1px solid #88888888;
     padding-top: 2px;
     padding-bottom: 2px;
@@ -176,4 +175,13 @@ table.lsw_table_itself>thead>tr>th.button_header {
 .config_panel > h5 {
     
     border-bottom: 1px solid black;
+}
+.pagination_bar {
+    background-color: #070225d9;
+    color: white;
+    border-radius: 4pt;
+}
+
+.paginator_widget {
+    font-size: 10px;
 }

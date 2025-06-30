@@ -150,16 +150,6 @@
     innerHandleCallback(val, path, parent, parentIndex, accumulated) {
       this.$trace("LswTester.innerHandleCallback");
       return val.fromCallback.call(this, {
-        tester: this,
-        test: val,
-        testPath: path,
-        assert: createAssert(this, val),
-      });
-    }
-
-    innerHandleUrl(val, path, parent, parentIndex, accumulated) {
-      this.$trace("LswTester.innerHandleUrl");
-      return importer.scriptAsync(val.fromUrl, {
         $tester: this,
         $test: val,
         $testPath: path,
@@ -168,6 +158,22 @@
         $accumulated: accumulated,
         assert: createAssert(this, val),
       });
+    }
+
+    async innerHandleUrl(val, path, parent, parentIndex, accumulated) {
+      this.$trace("LswTester.innerHandleUrl");
+      const testSource = await importer.text(val.fromUrl);
+      const testParameters = {
+        $tester: this,
+        $test: val,
+        $testPath: path,
+        $testParent: parent,
+        $testParentPath: parentIndex,
+        $accumulated: accumulated,
+        assert: createAssert(this, val),
+      };
+      const testCallback = LswUtils.createAsyncFunction(testSource, Object.keys(testParameters));
+      return await testCallback.call(this, ...Object.values(testParameters));
     }
 
     innerHandleFile(val, path, parent, parentIndex, accumulated) {
@@ -183,23 +189,23 @@
         try {
           Manage_bad_inputs: {
             if (typeof val !== "object") {
-              throw new Error(`[ERROR: LswTester complain x004006] Required type of test «${typeof val}» on index «${path.join(".")}» to be an object on «LswTester.innerRunTests» in order to process module as test by «LswTester» instance`);
+              throw new Error(`[ERROR: LswTester complain x004006] Required type of test «${typeof val}» on index «${path.join(".")}» to be an object in order to process module as test by «LswTester» instance on «LswTester.innerRunTests»`);
             }
             if (val === null) {
               break RunningTest;
             }
             if (!val.id) {
-              throw new Error(`[ERROR: LswTester complain x004001] Required test «${typeof val}» on index «${path.join(".")}» to have property «id» on «LswTester.innerRunTests» in order to process module as test by «LswTester» instance`);
+              throw new Error(`[ERROR: LswTester complain x004001] Required test «${typeof val}» on index «${path.join(".")}» to have property «id» in order to process module as test by «LswTester» instance on «LswTester.innerRunTests»`);
             }
             if (typeof val.id !== "string") {
-              throw new Error(`[ERROR: LswTester complain x004002] Required test «${typeof val}» on index «${path.join(".")}» to have a string on property «id» on «LswTester.innerRunTests» in order to process module as test by «LswTester» instance`);
+              throw new Error(`[ERROR: LswTester complain x004002] Required test «${typeof val}» on index «${path.join(".")}» to have a string on property «id» in order to process module as test by «LswTester» instance on «LswTester.innerRunTests»`);
             }
             if (typeof val.fromType !== "string") {
-              throw new Error(`[ERROR: LswTester complain x004003] Required test «${typeof val}» on index «${path.join(".")}» to have a string on property «fromType» on «LswTester.innerRunTests» in order to process module as test by «LswTester» instance. This indicates that the previous step «LswTester.innerLoad» DID NOT (while it SHOULD, or SHOULD HAVE arised an error otherwise) mark this test module as a known type`);
+              throw new Error(`[ERROR: LswTester complain x004003] Required test «${typeof val}» on index «${path.join(".")}» to have a string on property «fromType» in order to process module as test by «LswTester» instance. This indicates that the previous step «LswTester.innerLoad» DID NOT (while it SHOULD, or SHOULD HAVE arised an error otherwise) mark this test module as a known type on «LswTester.innerRunTests»`);
             }
             const validTypes = ["url", "file", "collection", "callback"];
             if (validTypes.indexOf(val.fromType) === -1) {
-              throw new Error(`[ERROR: LswTester complain x004008] Required test «${typeof val}» on index «${path.join(".")}» to have property «fromType» with a valid type instead of «${val.fromType}» on «LswTester.innerRunTests» in order to process module as test by «LswTester» instance. This indicates that the previous step «LswTester.innerLoad» DID NOT (while it SHOULD, or SHOULD HAVE arised an error otherwise) mark this test module as a known type`);
+              throw new Error(`[ERROR: LswTester complain x004008] Required test «${typeof val}» on index «${path.join(".")}» to have property «fromType» with a valid type instead of «${val.fromType}» in order to process module as test by «LswTester» instance. This indicates that the previous step «LswTester.innerLoad» DID NOT (while it SHOULD, or SHOULD HAVE arised an error otherwise) mark this test module as a known type on «LswTester.innerRunTests»`);
             }
           }
           if (val.fromType === "url") {
@@ -259,13 +265,12 @@
     }
 
     $trace(method) {
-      if (this.$options.trace) {
+      if (Vue?.prototype.$lsw?.logger?.$options.active) {
         console.log(`[trace][lsw-tester][${method}]`);
       }
     }
 
     static defaultOptions = {
-      trace: false,
       continueOnErrors: false,
       printErrors: true,
       onAnything: false,
@@ -309,11 +314,17 @@
       return this.$options[callbackId].call(this, uniqueParameter);
     }
 
+    validateComposition(composition) {
+      this.$trace("LswTester.validateComposition");
+      $ensure(composition).type("object");
+    }
+
     define(composition = {}) {
       this.$trace("LswTester.define");
       if (typeof this.$composition !== "undefined") {
         throw new Error("Required property «$composition» to not be defined before on «LswTester.define»");
       }
+      this.validateComposition(composition);
       this.$composition = composition;
       return this;
     }

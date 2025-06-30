@@ -1,3 +1,7 @@
+// 0. Settings section:
+const settings = require(__dirname + "/bundlesettings.js");
+
+// 1. Includes:
 const path = require("path");
 const basepath = path.resolve(__dirname + "/../../../src");
 const Instrumenter = require(__dirname + "/instrumenter.js");
@@ -7,6 +11,7 @@ const instrumentedFiles = [
   `${basepath}/lsw-framework/src/apis/lsw-ensurer/ensure.js`,
 ];
 
+// 2. Files to bundle:
 module.exports = Instrumenter.instrumentSet([
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // FRAMEWORK:
@@ -124,11 +129,17 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-homepage/lsw-homepage`,
   // SOURCEABLE:
   `${basepath}/lsw-framework/src/components/lsw-sourceable/lsw-sourceable`,
+  // TYPICAL TITLE:
+  `${basepath}/lsw-framework/src/components/lsw-typical-title/lsw-typical-title`,
+  // KEYBOARDS:
+  `${basepath}/lsw-framework/src/components/lsw-keyboard-1/lsw-keyboard-1`,
+  `${basepath}/lsw-framework/src/components/lsw-keyboard-1/lsw-keyboard-1-text/lsw-keyboard-1-text`,
   // LSW DEBUGGER:
   `${basepath}/lsw-framework/src/components/lsw-debugger/lsw-debugger.api.js`,
   `${basepath}/lsw-framework/src/components/lsw-debugger/lsw-debugger`,
   // LSW SQLITE CONSOLE:
   `${basepath}/lsw-framework/src/components/lsw-sqlite-console/lsw-sqlite-console`,
+  `${basepath}/lsw-framework/src/components/lsw-sqlite-explorer/lsw-sqlite-explorer`,
   // COVERAGE:
   `${basepath}/lsw-framework/src/components/lsw-coverage-viewer/lsw-coverage-viewer`,
   `${basepath}/lsw-framework/src/components/lsw-js-file-coverage-viewer/lsw-js-file-coverage-viewer`,
@@ -147,6 +158,9 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-data-printer-report/lsw-data-printer-report`,
   // DIALOGS:
   `${basepath}/lsw-framework/src/components/lsw-dialogs/lsw-dialogs`,
+  // LSW VOLATILE DATABASE:
+  `${basepath}/lsw-framework/src/components/lsw-volatile-database-visualizer/lsw-volatile-database.api.js`,
+  `${basepath}/lsw-framework/src/components/lsw-volatile-database-visualizer/lsw-volatile-database-visualizer`,
   // WINDOWS AND PROCESSES:
   `${basepath}/lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab`,
   `${basepath}/lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer`,
@@ -330,4 +344,4 @@ module.exports = Instrumenter.instrumentSet([
     }
     return isAccepted && (!isIgnored);
   }
-});
+}, !settings.isInstrumenting);

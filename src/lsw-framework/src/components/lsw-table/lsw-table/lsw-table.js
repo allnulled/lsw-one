@@ -435,10 +435,10 @@ Vue.component("LswTable", {
       if (this.itemsPerPageOnForm !== this.itemsPerPage) {
         return true;
       }
-      if(this.columnsOrderInput !== "id") {
+      if(["id", ""].indexOf(this.columnsOrderInput) === -1 ) {
         return true;
       }
-      if(this.columnsOrder.length !== 1) {
+      if([0, 1].indexOf(this.columnsOrder.length) === 1) {
         return true;
       }
       return false;

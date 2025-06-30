@@ -268,3 +268,14 @@ lsw.fs.evaluateAsJavascriptFileOrReturn("/kernel/android/api/load.js");
 //*/
 
 `.trim());
+
+LswConstants.global.define("/kernel/volatile-database/lsw_volatile_default_database/triggers.js", `
+
+// Aquí deberías inyectar los triggers para que se queden en la próxima ejecución:
+
+LswVolatileDatabase.global.triggers.reset();
+LswVolatileDatabase.global.triggers.register("*", "hello in every hook of the database", function() {
+  console.log("Hello from general hook!");
+});
+
+`);

@@ -48,7 +48,7 @@
     ];
 
     $defaultConfigurations = {
-      trace: true,
+      trace: (Vue?.prototype?.$lsw?.logger?.$options?.active ),
     };
 
     $trace(method, args) {

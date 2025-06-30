@@ -8,7 +8,7 @@
     "serve": "npx http-server -c-1 docs -o index.html",
     "up": "bash up.sh",
     "dev": "npx nodemon --legacy-watch -x 'npm run build' --ignore '**/*.instr.js' --ext 'js,css,html,md,txt,json' $(cat devfiles.txt | xargs -n1 echo -w)",
-    "build": "npm run build:docs && node dev/bundlers/lsw-framework/bundler.js && node dev/bundlers/distribution/bundler.js",
+    "build": "bash crono.sh start && npm run build:docs && node dev/bundlers/lsw-framework/bundler.js && node dev/bundlers/distribution/bundler.js && bash crono.sh stop",
     "build:docs:off": "node dev/documentation/documentation.js",
     "build:docs": "echo 'nodocs now'",
     "build:framework": "node dev/bundlers/lsw-framework/bundler.js",

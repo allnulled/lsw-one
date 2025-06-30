@@ -1,3 +1,9 @@
+/**
+ * LSW-SQLITE is an implementation of ORM/Database Layer based on SQLite and targeting LSW applications.
+ * 
+ * 
+ */
+
 const LswSqlitePrototype_BasicInterface = class {
 
   static create(...args) {
@@ -6,7 +12,7 @@ const LswSqlitePrototype_BasicInterface = class {
 
   static defaultOptions = {
     openTypes: true,
-    trace: true,
+    trace: (Vue?.prototype?.$lsw?.logger?.$options?.active ),
   }
 
   $trace(method) {
@@ -18,7 +24,7 @@ const LswSqlitePrototype_BasicInterface = class {
   constructor(options = {}, databaseId = "sqlite_dataset_1") {
     this.$databaseId = databaseId;
     this.$sqlite3 = window.sqlite3;
-    this.$database = new sqlite3.oo1.DB();
+    this.$database = new sqlite3.oo1.JsStorageDb("local");
     this.$options = Object.assign({}, this.constructor.defaultOptions, options);
     this.$errorHandler = false;
   }
@@ -37,7 +43,7 @@ const LswSqlitePrototype_BasicInterface = class {
 
   resetDatabase() {
     this.$trace("resetDatabase");
-    this.$database = new sqlite3.oo1.DB();
+    this.$database = new sqlite3.oo1.JsStorageDb("local");
   }
 
   execute(sqlCode, silently = false) {
@@ -197,7 +203,72 @@ const LswSqlitePrototype_SchemaHandlerInterface = class extends LswSqlitePrototy
 
   getSchema() {
     this.$trace("getSchema");
-    return this.getSchemaFromDatabase();
+    const schema = {};
+    const databaseSchema = this.getSchemaFromDatabase();
+    const databaseMetaschema = this.getMetaschema();
+    const allTables = LswUtils.getUniqueItemsFromLists(Object.keys(databaseSchema), Object.keys(databaseMetaschema));
+    Iterating_tables:
+    for (let indexTable = 0; indexTable < allTables.length; indexTable++) {
+      const tableId = allTables[indexTable];
+      if (!(tableId in databaseSchema)) {
+        continue Iterating_tables;
+      }
+      const currentTableData = databaseSchema[tableId] || {};
+      const newTableData = databaseMetaschema[tableId] || {};
+      const allColumns = LswUtils.getUniqueItemsFromLists(Object.keys(currentTableData), Object.keys(newTableData));
+      schema[tableId] = {};
+      Iterating_columns:
+      for (let indexColumn = 0; indexColumn < allColumns.length; indexColumn++) {
+        const columnId = allColumns[indexColumn];
+        const currentColumnData = databaseSchema[tableId][columnId] || {};
+        const newColumnData = databaseSchema[tableId][columnId] || {};
+        const finalColumnData = Object.assign({}, currentColumnData, newColumnData);
+        schema[tableId][columnId] = finalColumnData;
+      }
+    }
+    return schema;
+  }
+
+  getMetaschema() {
+    this.$trace("getMetaschema");
+    const metaschema = {};
+    let metaschemaItems = [];
+    try {
+      metaschemaItems = LswSqlite.selectMany("database_properties", [
+        ["name", "like", "schema.definition%"]
+      ]);
+    } catch (error) {
+      // @BADLUCK @OK
+    }
+    const metaschemaItemsSorted = metaschemaItems.sort((a, b) => {
+      if (a.name === "schema.definition.column") {
+        return -1;
+      }
+      if (b.name === "schema.definition.column") {
+        return 1;
+      }
+      return 0;
+    });
+    for (let indexItem = 0; indexItem < metaschemaItemsSorted.length; indexItem++) {
+      const item = metaschemaItemsSorted[indexItem];
+      if (item.name === "schema.definition.column") {
+        Definir_columna_en_metaesquema: {
+          const columnData = LswUtils.parseAsJsonOrReturn(item.value, []);
+          const tableId = columnData.table;
+          const columnId = columnData.column;
+          if (!(tableId in metaschema)) {
+            metaschema[tableId] = {};
+          }
+          if (!(columnId in metaschema[tableId])) {
+            metaschema[tableId][columnId] = {};
+          }
+          delete columnData.table;
+          delete columnData.column;
+          metaschema[tableId][columnId] = Object.assign(metaschema[tableId][columnId], columnData);
+        }
+      }
+    }
+    return metaschema;
   }
 
   getSchemaFromDatabase() {
@@ -260,6 +331,7 @@ const LswSqlitePrototype_CrudInterface = class extends LswSqlitePrototype_Schema
       }
       const [subj, op, compl] = whereRule;
       sql += subj;
+      sql += " ";
       sql += this.translateSqlOperator(op);
       if (["is null", "is not null"].indexOf(op) !== -1) {
         // @OK
@@ -267,6 +339,12 @@ const LswSqlitePrototype_CrudInterface = class extends LswSqlitePrototype_Schema
         if (!Array.isArray(compl)) {
           throw new Error(`Invalid complement for sql operator ${op} because it must be an array (${typeof compl}) on «LswSqlite.translateSqlWhere»`);
         }
+        sql += " (";
+        sql += compl.map(it => this.sanitizeValue(it)).join(",");
+        sql += ")";
+      } else {
+        sql += " ";
+        sql += this.sanitizeValue(compl);
       }
     }
     return sql ?? "1 = 1";
@@ -353,6 +431,33 @@ const LswSqlitePrototype_CrudInterface = class extends LswSqlitePrototype_Schema
   }
 
   // CRUD methods:
+
+  selectAny(where = [], separingTypes = false) {
+    this.$trace("selectAny");
+    const allTypes = Object.keys(this.getSchema());
+    let allResults = !separingTypes ? [] : {};
+    for (let index = 0; index < allTypes.length; index++) {
+      const oneType = allTypes[index];
+      let sql = "";
+      sql += `SELECT`;
+      sql += `\n    *`;
+      sql += `\n  FROM ${this.sanitizeId(oneType)}`;
+      if (where && where.length) {
+        sql += `\n  WHERE ${this.translateSqlWhere(where)}`;
+      }
+      const oneResult = this.execute("\n\n" + sql);
+      const typedResult = oneResult.map(row => {
+        row.$table = oneType;
+        return row;
+      })
+      if (!separingTypes) {
+        allResults = allResults.concat(typedResult);
+      } else {
+        allResults[oneType] = oneResult;
+      }
+    }
+    return allResults;
+  }
 
   selectMany(table, where = [], order = ["id"], limit = false) {
     this.$trace("selectMany");
@@ -484,6 +589,295 @@ const LswSqlitePrototype_CrudInterface = class extends LswSqlitePrototype_Schema
 
 };
 
+(function() {
+
+
+
+const jQliteLoader = class {
+
+  constructor(jQlite) {
+    this.jQlite = jQlite;
+  }
+
+};
+
+const jQliteUtils = class {
+
+  constructor() {
+    
+  }
+
+};
+
+const jQliteFormatter = class {
+
+  constructor(jQlite) {
+    this.jQlite = jQlite;
+  }
+
+  json() {
+    return JSON.stringify(this.jQlite.$data);
+  }
+
+  data() {
+    return this.jQlite.$data;
+  }
+
+  sql(table) {
+    let sql = "";
+    sql += "INSERT INTO " + table;
+    return sql;
+  }
+
+};
+
+class ArrayProxy {
+  
+  constructor(initial = []) {
+      this.$data = Array.isArray(initial) ? initial.slice() : [];
+  }
+
+  get length() {
+      return this.$data.length;
+  }
+
+  set length(val) {
+      this.$data.length = val;
+  }
+
+  toArray() {
+      return this.$data.slice();
+  }
+
+  toString() {
+      return this.$data.toString();
+  }
+
+  toJSON() {
+      return this.toArray();
+  }
+
+};
+
+const mutables = [
+  "copyWithin", "fill", "pop", "push", "reverse", "shift",
+  "sort", "splice", "unshift"
+];
+
+const inmutables = [
+  "concat", "includes", "indexOf", "join", "lastIndexOf",
+  "slice", "toString", "toLocaleString", "entries",
+  "every", "filter", "find", "findIndex", "flat", "flatMap",
+  "forEach", "map", "reduce", "reduceRight", "some", "values", "keys", "at"
+];
+
+const new2023 = [
+  "toReversed", "toSorted", "toSpliced", "with"
+];
+
+// Métodos mutables (modifican this.$data)
+for (const method of mutables) {
+  ArrayProxy.prototype[method] = function (...args) {
+      return this.$data[method](...args);
+  };
+}
+
+// Métodos inmutables (devuelven nuevo array o valor)
+for (const method of inmutables.concat(new2023)) {
+  ArrayProxy.prototype[method] = function (...args) {
+      const resultado = this.$data[method](...args);
+      this.setData(resultado);
+      return this;
+  };
+}
+
+const jQlitePrototype = class extends ArrayProxy {
+
+  static create(...args) {
+    return new this(...args);
+  }
+
+  static from = this.create;
+
+  static defaultConfigurations = {
+    trace: false,
+  }
+
+  trace() {
+    if(this.$configurations.trace) {
+      console.log("[trace][jqlite] " + methodId + " ");
+    }
+  }
+
+  constructor(...args) {
+    super(...args);
+    this.$data = [];
+    this.$formatters = new jQliteFormatter(this);
+    this.$configurations = {};
+  }
+
+  getDatabase() {
+    this.trace("getDatabase");
+    return LswSqlite;
+  }
+
+  setData(data) {
+    this.trace("setData");
+    if(!(Array.isArray(data))) {
+      throw new Error(`Required parameter «data» to be an array on «jQlite.setData»`);
+    }
+    this.$data = data;
+    return this;
+  }
+
+  getData() {
+    return this.$data;
+  }
+
+  addConfigurations(configurations = {}) {
+    this.trace("addConfigurations");
+    Object.assign(this.$configurations, configurations);
+    return this;
+  }
+
+  addFormatter(id, callback) {
+    this.trace("addFormatter");
+    this.$formatters[id] = callback.bind(this);
+    return this;
+  }
+
+  removeFormatter(id) {
+    this.trace("removeFormatter");
+    delete this.$formatters[id];
+    return this;
+  }
+
+  action(actionData) {
+    this.trace("action");
+    if(!(actionData.op in this)) {
+      throw new Error("Method «${actionData.op}» was not found on «jQlite.action»");
+    }
+    return this[actionData.op](actionData);
+  }
+
+  schema() {
+    this.trace("schema");
+    return LswSqlite.getSchema();
+  }
+
+  get to() {
+    this.trace("to");
+    return this.$formatters;
+  }
+
+  omit(props = []) {
+    this.trace("omit");
+    for(let index=0; index<this.$data.length; index++) {
+      const row = this.$data[index];
+      for(let indexProp=0; indexProp<props.length; indexProp++) {
+        const propId = props[indexProp];
+        delete row[propId];
+      }
+    }
+    return this;
+  }
+
+  allow(props = [], defaultValue = undefined) {
+    this.trace("allow");
+    let output = [];
+    for(let index=0; index<this.$data.length; index++) {
+      const row = this.$data[index];
+      const newRow = {};
+      for(let indexProp=0; indexProp<props.length; indexProp++) {
+        const propId = props[indexProp];
+        newRow[propId] = row[propId] || defaultValue;
+      }
+      output.push(newRow);
+    }
+    this.$data = output;
+    return this;
+  }
+
+  extract(propId) {
+    this.trace("extract");
+    let output = [];
+    for(let index=0; index<this.$data.length; index++) {
+      const row = this.$data[index];
+      const newRow = row[propId];
+      output.push(newRow);
+    }
+    this.$data = output;
+    return this;
+  }
+
+  ids() {
+    this.trace("ids");
+    return this.extract("id");
+  }
+
+  select(actionData) {
+    this.trace("select");
+    // @TODO...
+    const { table, where, sort = ["!id"] } = actionData;
+    return LswSqlite.select(table, where, sort);
+  }
+
+  insert(actionData) {
+    this.trace("insert");
+    // @TODO...
+    const { table, value } = actionData;
+    return LswSqlite.insert(table, value);
+  }
+
+  update(actionData) {
+    this.trace("update");
+    // @TODO...
+    const { table, where, value } = actionData;
+    return LswSqlite.update(table, where, value);
+  }
+
+  delete(actionData) {
+    this.trace("delete");
+    // @TODO...
+    const { table, where } = actionData;
+    return LswSqlite.delete(table, where);
+  }
+
+  randomized(...args) {
+    this.trace("randomized");
+    let id = 0;
+    const output = LswRandomizer.getRandomObject(...args).map(row => {
+      return Object.assign(row, {
+        id: id++
+      });
+    });
+    return this.setData(output);
+  }
+
+  datify() {
+    return this.to.data();
+  }
+
+  jsonify() {
+    return this.to.json();
+  }
+
+  sqlize() {
+    return this.to.sql();
+  }
+
+};
+
+const jQliteFactory = function() {
+  return new jQlitePrototype();
+}
+
+window.jQlite = jQliteFactory();
+window.$ = window.jQlite;
+
+
+})();
+
 const LswSqlitePrototype = class extends LswSqlitePrototype_CrudInterface { };
 
 const LswSqlite = LswSqlitePrototype.create();
@@ -492,3 +886,4 @@ const LswSqlite = LswSqlitePrototype.create();
 await LswSqlite.initialize();
 
 window.LswSqlite = LswSqlite;
+

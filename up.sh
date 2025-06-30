@@ -1,6 +1,7 @@
 #!/bin/bash
 
 npm run build
+npm run build:docs:off
 
 # Pregunta por el mensaje de commit
 read -p "Enter your commit message: " commit_message

@@ -41249,10 +41249,10 @@ Vue.component("LswHomepage", {
       }, {
         label: "💻 Consola de JS",
         event: () => this.abrirApp("js consola"),
-      }, {
+      }/*, {
         label: "💻 Consola de SQL",
         event: () => this.abrirApp("sqlite-console"),
-      }, {
+      }*/, {
         label: "✅ Tests de aplicación",
         event: () => this.abrirApp("app tests"),
       }, {

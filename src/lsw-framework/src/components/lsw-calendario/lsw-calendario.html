@@ -1,284 +1,169 @@
 <div class="Component LswCalendario">
-  <div class="visor_de_calendario">
-    <table class="tabla_de_calendario" v-if="fecha_seleccionada">
-      <tbody>
-        <tr>
-          <td>
-            <button class="boton_de_mover_mes"
-              v-on:click="ir_a_mes_anterior"> ◀ </button>
-          </td>
-          <td colspan="5"
-            style="width:auto; vertical-align: middle;">
-            <div class="chivato_de_fecha">{{ obtener_fecha_formateada(fecha_seleccionada) }}</div>
-            <div class="chivato_de_fecha"
-              v-if="(!es_solo_fecha) && fecha_seleccionada">a las {{ obtener_expresion_de_hora(fecha_seleccionada) }}
-            </div>
-          </td>
-          <td>
-            <button class="boton_de_mover_mes"
-              v-on:click="ir_a_mes_siguiente"> ▶ </button>
-          </td>
-        </tr>
-      </tbody>
-      <tbody>
-        <tr class="fila_de_dias_de_semana">
-          <td><div class="">Lu</div></td>
-          <td><div class="">Ma</div></td>
-          <td><div class="">Mi</div></td>
-          <td><div class="">Ju</div></td>
-          <td><div class="">Vi</div></td>
-          <td><div class="">Sá</div></td>
-          <td><div class="">Do</div></td>
-        </tr>
-      </tbody>
-      <tbody class="dias_de_calendario">
-        <tr v-for="semana, semana_index in celdas_del_mes_actual"
-          v-bind:key="'semana-' + semana_index">
-          <td v-for="dia, dia_index in semana"
-            v-bind:key="'dia-' + dia_index">
-            <span v-if="dia && (dia instanceof Date)">
-              <button class="boton_de_calendario boton_de_dia_de_calendario position_relative"
-                :class="{
-                  active: dia.getDate() === fecha_seleccionada.getDate(),
-                  current: (dia_actual === dia.getDate())
-                    && (mes_actual === dia.getMonth())
-                    && (anio_actual === dia.getFullYear())
-                }"
-                v-on:click="() => seleccionar_dia(dia)">
-                <div class="dia_de_calendario_texto">{{ dia.getDate() }}</div>
-                <div v-if="dia.getDate() in marcadores_del_mes"
-                  class="total_de_tareas_de_dia">
-                  <div>
-                    {{ marcadores_del_mes[dia.getDate()].length }}
-                  </div>
-                </div>
-              </button>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="text_align_center" v-if="modo === 'datetime' || modo === 'time'">
 
-      <!--div class="panel_de_hora_de_calendario">{{ obtener_expresion_de_hora(fecha_seleccionada) }}</div-->
-
-      <hr class="dashed" />
-
-      <div class="pad_bottom_1 text_align_center">
-        <div class="flex_row centered">
-          <div class="flex_1">Selección: </div>
-          <div class="flex_100 text_align_right" v-if="fecha_seleccionada">
-            {{ LswTimer.utils.fromDateToHour(fecha_seleccionada) }}
-          </div>
-        </div>
-      </div>
-
-      <div class="pad_bottom_1">
-        <div class="flex_row centered">
-          <div class="flex_1">
-            <button class="supermini" v-on:click="() => setHora(0)">⏪</button>
-          </div>
-          <div class="flex_1 pad_horizontal_1">
-            <button class="supermini" v-on:click="() => increaseHora(-1)">➖</button>
-          </div>
-          <div class="flex_100">
-            {{ LswUtils.padStart(hora_actual, 2, '0') }}
-          </div>
-          <div class="flex_1">
-            <button class="supermini" v-on:click="() => askHora()">💉</button>
-          </div>
-          <div class="flex_1 pad_horizontal_1">
-            <button class="supermini" v-on:click="() => increaseHora(1)">➕</button>
-          </div>
-          <div class="flex_1">
-            <button class="supermini" v-on:click="() => setHora(23)">⏩</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="">
-        <div class="flex_row centered">
-          <div class="flex_1">
-            <button class="supermini" v-on:click="() => setMinuto(0)">⏪</button>
-          </div>
-          <div class="flex_1 pad_horizontal_1">
-            <button class="supermini" v-on:click="() => increaseMinuto(-1)">➖</button>
-          </div>
-          <div class="flex_100">
-            {{ LswUtils.padStart(minuto_actual, 2, '0') }}
-          </div>
-          <div class="flex_1">
-            <button class="supermini" v-on:click="() => askMinuto()">💉</button>
-          </div>
-          <div class="flex_1 pad_horizontal_1">
-            <button class="supermini" v-on:click="() => increaseMinuto(1)">➕</button>
-          </div>
-          <div class="flex_1">
-            <button class="supermini" v-on:click="() => setMinuto(59)">⏩</button>
-          </div>
-        </div>
-      </div>
-
-      <!--div class="duration_control_details_panel">
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(0)">00:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(1)">01:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(2)">02:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(3)">03:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(4)">04:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(5)">05:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(6)">06:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(7)">07:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(8)">08:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(9)">09:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(10)">10:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(11)">11:00:00</div>
-      </div>
-      
-      <hr class="dashed" />
-      
-      <div class="duration_control_details_panel">
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(12)">12:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(13)">13:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(14)">14:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(15)">15:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(16)">16:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(17)">17:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(18)">18:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(19)">19:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(20)">20:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(21)">21:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(22)">22:00:00</div>
-        <div class="duration_control_option" v-on:click="() => establecer_hora_directamente(23)">23:00:00</div>
-      </div>
-
-      <hr class="dashed" />
-
-      <div class="duration_control_details_panel">
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(0)">00min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(5)">05min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(10)">10min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(15)">15min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(20)">20min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(25)">25min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(30)">30min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(35)">35min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(40)">40min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(45)">45min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(50)">50min</div>
-        <div class="duration_control_option" v-on:click="() => establecer_minutos_directamente(55)">55min</div>
-      </div>
-
-      <hr class="dashed" />
-
-      <div class="duration_control_details_panel">
-        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(1)">+01min</div>
-        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(5)">+05min</div>
-        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(10)">+10min</div>
-        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(30)">+30min</div>
-      </div>
-
-      <hr class="dashed" />
-
-      <div class="duration_control_details_panel">
-        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-1)">-01min</div>
-        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-5)">-05min</div>
-        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-10)">-10min</div>
-        <div class="duration_control_option" v-on:click="() => aniadir_minutos_directamente(-30)">-30min</div>
-      </div-->
-
-    </div>
-    <!--table class="width_100 no_borders_table"
-      >
-      <tbody>
-        <tr class="fila_de_digito">
-          <td v-on:click="agregar_digito_de_hora(1)"><button class="boton_de_ajuste_de_hora">▲</button></td>
-          <td v-on:click="agregar_digito_de_hora(2)"><button class="boton_de_ajuste_de_hora">▲</button></td>
-          <td></td>
-          <td v-on:click="agregar_digito_de_hora(3)"><button class="boton_de_ajuste_de_hora">▲</button></td>
-          <td v-on:click="agregar_digito_de_hora(4)"><button class="boton_de_ajuste_de_hora">▲</button></td>
-          <td></td>
-          <td v-on:click="$noop"><button class="boton_de_ajuste_de_hora">▲</button></td>
-          <td v-on:click="$noop"><button class="boton_de_ajuste_de_hora">▲</button></td>
-        </tr>
-        <tr class="fila_de_digito"
+  <div class="flex_row align_self_start">
+    <div class="flex_1">
+      <div class="visor_de_calendario">
+        <table class="tabla_de_calendario"
           v-if="fecha_seleccionada">
-          <td>{{ obtener_digito_de_hora(1) }}</td>
-          <td>{{ obtener_digito_de_hora(2) }}</td>
-          <td>:</td>
-          <td>{{ obtener_digito_de_hora(3) }}</td>
-          <td>{{ obtener_digito_de_hora(4) }}</td>
-          <td>:</td>
-          <td>{{ obtener_digito_de_hora(5) }}</td>
-          <td>{{ obtener_digito_de_hora(6) }}</td>
-        </tr>
-        <tr class="fila_de_digito">
-          <td v-on:click="quitar_digito_de_hora(1)"><button class="boton_de_ajuste_de_hora">▼</button></td>
-          <td v-on:click="quitar_digito_de_hora(2)"><button class="boton_de_ajuste_de_hora">▼</button></td>
-          <td></td>
-          <td v-on:click="quitar_digito_de_hora(3)"><button class="boton_de_ajuste_de_hora">▼</button></td>
-          <td v-on:click="quitar_digito_de_hora(4)"><button class="boton_de_ajuste_de_hora">▼</button></td>
-          <td></td>
-          <td v-on:click="$noop"><button class="boton_de_ajuste_de_hora">▼</button></td>
-          <td v-on:click="$noop"><button class="boton_de_ajuste_de_hora">▼</button></td>
-        </tr>
-      </tbody>
-    </table-->
-    <!--table class="tabla_para_horas"
-      v-if="!es_solo_fecha">
-      <tr>
-        <td>
-          <button style="display: table-cell;"
-            class="boton_de_calendario"
-            v-on:click="agregar_hora"> ▲ </button>
-        </td>
-        <td>
-          <button style="display: table-cell;"
-            class="boton_de_calendario"
-            v-on:click="agregar_minuto"> ▲ </button>
-        </td>
-        <td>
-          <button style="display: table-cell;"
-            class="boton_de_calendario"
-            v-on:click="agregar_segundo"> ▲ </button>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <input style="display: table-cell;"
-            class="entrada_de_calendario"
-            type="text"
-            v-model="hora_seleccionada" />
-        </td>
-        <td>
-          <input style="display: table-cell;"
-            class="entrada_de_calendario"
-            type="text"
-            v-model="minuto_seleccionado" />
-        </td>
-        <td>
-          <input style="display: table-cell;"
-            class="entrada_de_calendario"
-            type="text"
-            v-model="segundo_seleccionado" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <button style="display: table-cell;"
-            class="boton_de_calendario"
-            v-on:click="quitar_hora"> ▼ </button>
-        </td>
-        <td>
-          <button style="display: table-cell;"
-            class="boton_de_calendario"
-            v-on:click="quitar_minuto"> ▼ </button>
-        </td>
-        <td>
-          <button style="display: table-cell;"
-            class="boton_de_calendario"
-            v-on:click="quitar_segundo"> ▼ </button>
-        </td>
-      </tr>
-    </table-->
+          <tbody>
+            <tr>
+              <td>
+                <button class="boton_de_mover_mes"
+                  v-on:click="ir_a_mes_anterior"> ◀ </button>
+              </td>
+              <td colspan="5"
+                style="width:auto; vertical-align: middle;">
+                <div class="chivato_de_fecha">{{ obtener_fecha_formateada(fecha_seleccionada) }}</div>
+                <div class="chivato_de_fecha"
+                  v-if="(!es_solo_fecha) && fecha_seleccionada">a las {{ obtener_expresion_de_hora(fecha_seleccionada) }}
+                </div>
+              </td>
+              <td>
+                <button class="boton_de_mover_mes"
+                  v-on:click="ir_a_mes_siguiente"> ▶ </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr class="fila_de_dias_de_semana">
+              <td>
+                <div class="">Lu</div>
+              </td>
+              <td>
+                <div class="">Ma</div>
+              </td>
+              <td>
+                <div class="">Mi</div>
+              </td>
+              <td>
+                <div class="">Ju</div>
+              </td>
+              <td>
+                <div class="">Vi</div>
+              </td>
+              <td>
+                <div class="">Sá</div>
+              </td>
+              <td>
+                <div class="">Do</div>
+              </td>
+            </tr>
+          </tbody>
+          <tbody class="dias_de_calendario">
+            <tr v-for="semana, semana_index in celdas_del_mes_actual"
+              v-bind:key="'semana-' + semana_index">
+              <td v-for="dia, dia_index in semana"
+                v-bind:key="'dia-' + dia_index">
+                <span v-if="dia && (dia instanceof Date)">
+                  <button class="boton_de_calendario boton_de_dia_de_calendario position_relative"
+                    :class="{
+                      active: dia.getDate() === fecha_seleccionada.getDate(),
+                      current: (dia_actual === dia.getDate())
+                        && (mes_actual === dia.getMonth())
+                        && (anio_actual === dia.getFullYear())
+                    }"
+                    v-on:click="() => seleccionar_dia(dia)">
+                    <div class="dia_de_calendario_texto">{{ dia.getDate() }}</div>
+                    <div v-if="dia.getDate() in marcadores_del_mes"
+                      class="total_de_tareas_de_dia">
+                      <div>
+                        {{ marcadores_del_mes[dia.getDate()].length }}
+                      </div>
+                    </div>
+                  </button>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text_align_center"
+          v-if="modo === 'datetime' || modo === 'time'">
+
+          <hr class="dashed" />
+
+          <div class="pad_bottom_1 text_align_center">
+            <div class="flex_row centered">
+              <div class="flex_1">Selección: </div>
+              <div class="flex_100 text_align_right"
+                v-if="fecha_seleccionada">
+                {{ LswTimer.utils.fromDateToHour(fecha_seleccionada) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="pad_bottom_1">
+            <div class="flex_row centered">
+              <div class="flex_1">
+                <button class="supermini"
+                  v-on:click="() => setHora(0)">⏪</button>
+              </div>
+              <div class="flex_1 pad_horizontal_1">
+                <button class="supermini"
+                  v-on:click="() => increaseHora(-1)">➖</button>
+              </div>
+              <div class="flex_100">
+                {{ LswUtils.padStart(hora_actual, 2, '0') }}
+              </div>
+              <div class="flex_1">
+                <button class="supermini"
+                  v-on:click="() => askHora()">💉</button>
+              </div>
+              <div class="flex_1 pad_horizontal_1">
+                <button class="supermini"
+                  v-on:click="() => increaseHora(1)">➕</button>
+              </div>
+              <div class="flex_1">
+                <button class="supermini"
+                  v-on:click="() => setHora(23)">⏩</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="">
+            <div class="flex_row centered">
+              <div class="flex_1">
+                <button class="supermini"
+                  v-on:click="() => setMinuto(0)">⏪</button>
+              </div>
+              <div class="flex_1 pad_horizontal_1">
+                <button class="supermini"
+                  v-on:click="() => increaseMinuto(-1)">➖</button>
+              </div>
+              <div class="flex_100">
+                {{ LswUtils.padStart(minuto_actual, 2, '0') }}
+              </div>
+              <div class="flex_1">
+                <button class="supermini"
+                  v-on:click="() => askMinuto()">💉</button>
+              </div>
+              <div class="flex_1 pad_horizontal_1">
+                <button class="supermini"
+                  v-on:click="() => increaseMinuto(1)">➕</button>
+              </div>
+              <div class="flex_1">
+                <button class="supermini"
+                  v-on:click="() => setMinuto(59)">⏩</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex_1">
+      <div class="pad_1 pad_top_0 pad_right_0">
+        <div
+          class="pad_bottom_1"
+          v-for="rightButton, rightButtonIndex in rightButtons"
+          v-bind:key="'right-button-' + rightButtonIndex">
+          <button
+            class="supermini width_100 boton_derecha_de_calendario"
+            v-on:click="rightButton.event">
+            {{ rightButton.text }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="flex_100"></div>
   </div>
+
 </div>

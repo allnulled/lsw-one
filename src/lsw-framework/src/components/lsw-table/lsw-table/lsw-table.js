@@ -24,7 +24,7 @@ Vue.component("LswTable", {
     },
     onChooseRow: {
       type: Function,
-      default: () => {}
+      default: () => { }
     },
     choosableId: {
       type: String,
@@ -48,6 +48,7 @@ Vue.component("LswTable", {
     const input = [].concat(this.initialInput);
     return {
       input,
+      self: this,
       title: this.initialSettings?.title || "",
       isShowingMenu: this.initialSettings?.isShowingMenu || false,
       isShowingSubpanel: this.initialSettings?.isShowingSubpanel || "Todo", // "Buscador", ...
@@ -57,10 +58,11 @@ Vue.component("LswTable", {
       extender: this.initialSettings?.extender || "",
       filter: this.initialSettings?.filter || "",
       sorter: this.initialSettings?.sorter || "",
+      autosorter: [],
       itemsPerPageOnForm: this.initialSettings?.itemsPerPage || 10,
       itemsPerPage: this.initialSettings?.itemsPerPage || 10,
       currentPage: this.initialSettings?.currentPage || 0,
-      currentPageOnForm: (this.initialSettings?.currentPage+1) || 1,
+      currentPageOnForm: (this.initialSettings?.currentPage + 1) || 1,
       columnsAsList: this.initialSettings?.columnsAsList || [],
       columnsOrder: this.initialSettings?.columnsOrder || [],
       columnsOrderInput: (this.initialSettings?.columnsOrder || []).join(", "),
@@ -104,16 +106,16 @@ Vue.component("LswTable", {
     },
     toggleChoosenRow(rowId) {
       this.$trace("lsw-table.methods.toggleChoosenRow");
-      if(this.selectable === 'many') {
+      if (this.selectable === 'many') {
         const pos = this.choosenRows.indexOf(rowId);
         if (pos === -1) {
           this.choosenRows.push(rowId);
         } else {
           this.choosenRows.splice(pos, 1);
         }
-      } else if(this.selectable === 'one') {
+      } else if (this.selectable === 'one') {
         const isSame = this.choosenRows === rowId;
-        if(isSame) {
+        if (isSame) {
           this.choosenRows = undefined;
         } else {
           this.choosenRows = rowId;
@@ -122,7 +124,7 @@ Vue.component("LswTable", {
     },
     toggleRow(rowIndex) {
       this.$trace("lsw-table.methods.toggleRow");
-      if(typeof rowIndex === "undefined") {
+      if (typeof rowIndex === "undefined") {
         return this.$lsw.toasts.send({
           title: "La row no se desplegará",
           text: "Añade «id» para que se puedan seleccionar las rows"
@@ -138,6 +140,49 @@ Vue.component("LswTable", {
     toggleMenu() {
       this.$trace("lsw-table.methods.toggleMenu");
       this.isShowingMenu = !this.isShowingMenu;
+    },
+    reloadInput(input) {
+      this.$trace("lsw-table.methods.reloadInput");
+      this.input = input;
+      this.digestOutput();
+    },
+    nextSortStateFor(header) {
+      this.$trace("lsw-table.methods.nextSortStateFor");
+      const posIncrease = this.autosorter.indexOf(header);
+      const posDecrease = this.autosorter.indexOf("!" + header);
+      if (posIncrease !== -1) {
+        this.autosorter.splice(posIncrease, 1, "!" + header);
+      } else if (posDecrease !== -1) {
+        this.autosorter.splice(posDecrease, 1);
+      } else {
+        this.autosorter.push(header);
+      }
+      this.digestOutput();
+    },
+    getAutoSorterCallback() {
+      this.$trace("lsw-table.methods.getAutoSorterCallback");
+      return (a, b) => {
+        for(let indexRow=0; indexRow<this.autosorter.length; indexRow++) {
+          const header = this.autosorter[indexRow];
+          const isReversed = header.startsWith("!");
+          const field = isReversed ? header.substr(1) : header.substr(0);
+          const va = a[field];
+          const vb = b[field];
+          if(typeof vb === "undefined") {
+            return isReversed ? 1 : -1;
+          } else if(typeof va === "undefined") {
+            return isReversed ? -1 : 1;
+          }
+          const van = LswUtils.toFloatOr(va, va);
+          const vbn = LswUtils.toFloatOr(vb, vb);
+          if(van < vbn) {
+            return isReversed ? 1 : -1;
+          } else if(van > vbn) {
+            return isReversed ? -1 : 1;
+          }
+        }
+        return 0;
+      };
     },
     digestOutput() {
       this.$trace("lsw-table.methods.digestOutput");
@@ -164,9 +209,9 @@ Vue.component("LswTable", {
         }
         let isValidFinally = true;
         Apply_searcher: {
-          if(this.searcher.trim() !== "") {
+          if (this.searcher.trim() !== "") {
             const hasMatch = JSON.stringify(extendedRow).toLowerCase().indexOf(this.searcher.toLowerCase()) !== -1;
-            if(!hasMatch) {
+            if (!hasMatch) {
               isValidFinally = isValidFinally && false;
             }
           }
@@ -182,7 +227,7 @@ Vue.component("LswTable", {
           }
         }
         Extract_row: {
-          if(isValidFinally) {
+          if (isValidFinally) {
             temp.push(extendedRow);
           }
         }
@@ -198,22 +243,27 @@ Vue.component("LswTable", {
       }
       Apply_sorter: {
         try {
-          temp = temp.sort(sorterFunction);
+          if(this.autosorter.length) {
+            const autosorter = this.getAutoSorterCallback();
+            temp = temp.sort(autosorter);
+          } else {
+            temp = temp.sort(sorterFunction);
+          }
         } catch (error) {
           // @OK.
         }
         Also_to_headers: {
-          if(Array.isArray(this.columnsOrder) && this.columnsOrder.length) {
+          if (Array.isArray(this.columnsOrder) && this.columnsOrder.length) {
             tempHeaders = [...tempHeaders].sort((h1, h2) => {
               const pos1 = this.columnsOrder.indexOf(h1);
               const pos2 = this.columnsOrder.indexOf(h2);
-              if(pos1 === -1 && pos2 === -1) {
+              if (pos1 === -1 && pos2 === -1) {
                 return -1;
-              } else if(pos1 === -1) {
+              } else if (pos1 === -1) {
                 return 1;
-              } else if(pos2 === -1) {
+              } else if (pos2 === -1) {
                 return -1;
-              } else if(pos1 > pos2) {
+              } else if (pos1 > pos2) {
                 return 1;
               }
               return -1;
@@ -241,7 +291,7 @@ Vue.component("LswTable", {
     },
     _adaptRowButtonsToHeaders(rowButtons) {
       const attachedHeaders = [];
-      for(let index=0; index<rowButtons.length; index++) {
+      for (let index = 0; index < rowButtons.length; index++) {
         const attachedButton = rowButtons[index];
         attachedHeaders.push({
           text: attachedButton.header || ""
@@ -251,7 +301,7 @@ Vue.component("LswTable", {
     },
     _adaptRowButtonsToColumns(rowButtons) {
       const attachedColumns = [];
-      for(let index=0; index<rowButtons.length; index++) {
+      for (let index = 0; index < rowButtons.length; index++) {
         const attachedButton = rowButtons[index];
         attachedColumns.push({
           text: attachedButton.text || "",
@@ -280,11 +330,11 @@ Vue.component("LswTable", {
     async loadState() {
       this.$trace("lsw-table.methods.loadState");
       Check_strategy_and_validation: {
-        if(this.storageStrategy !== "ufs/lsw") {
+        if (this.storageStrategy !== "ufs/lsw") {
           console.log(`[*] Could not load state on lsw-table because of: UnknownStorageStrategy (=${this.storageStrategy})`);
           return -1;
         }
-        if(!this.storageId) {
+        if (!this.storageId) {
           // console.log(`[*] Could not load state on lsw-table because of: NoStorageId (=${this.storageId})`);
           return -2;
         }
@@ -298,7 +348,7 @@ Vue.component("LswTable", {
           return undefined;
         }
       })();
-      if(typeof storageJson !== "string") {
+      if (typeof storageJson !== "string") {
         console.log(`[*] Could not load state on lsw-table because of: JsonStorageNotString (=${typeof storageJson})`);
         return -3;
       }
@@ -310,7 +360,7 @@ Vue.component("LswTable", {
         return -4;
       }
       Cargar_estado: {
-        if(typeof storageData !== "object") {
+        if (typeof storageData !== "object") {
           console.log(`[*] Could not load state on lsw-table because of: StorageDataNotObject (${typeof storageData})`);
           return -5;
         }
@@ -321,11 +371,11 @@ Vue.component("LswTable", {
     saveState() {
       this.$trace("lsw-table.methods.saveState");
       Check_strategy_and_validation: {
-        if(this.storageStrategy !== "ufs/lsw") {
+        if (this.storageStrategy !== "ufs/lsw") {
           console.log(`[*] Could not save state on lsw-table because of: UnknownStorageStrategy (=${this.storageStrategy})`);
           return -1;
         }
-        if(!this.storageId) {
+        if (!this.storageId) {
           // console.log(`[*] Could not save state on lsw-table because of: NoStorageId (=${this.storageId})`);
           return -2;
         }
@@ -411,6 +461,9 @@ Vue.component("LswTable", {
     hasFiltersApplying() {
       // @BUGGY: estos logs causan recursividad en el console-hooker
       // this.$trace("lsw-table.computed.hasFiltersApplying");
+      if (this.autosorter.length) {
+        return true;
+      }
       if (this.extender.length) {
         return true;
       }
@@ -426,7 +479,7 @@ Vue.component("LswTable", {
       if (this.currentPage !== 0) {
         return true;
       }
-      if ((this.currentPage+1) !== this.currentPageOnForm) {
+      if ((this.currentPage + 1) !== this.currentPageOnForm) {
         return true;
       }
       if (this.itemsPerPage < 10) {
@@ -435,10 +488,10 @@ Vue.component("LswTable", {
       if (this.itemsPerPageOnForm !== this.itemsPerPage) {
         return true;
       }
-      if(["id", ""].indexOf(this.columnsOrderInput) === -1 ) {
+      if (["id", ""].indexOf(this.columnsOrderInput) === -1) {
         return true;
       }
-      if([0, 1].indexOf(this.columnsOrder.length) === 1) {
+      if ([0, 1].indexOf(this.columnsOrder.length) === 1) {
         return true;
       }
       return false;

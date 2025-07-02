@@ -18,6 +18,10 @@ Vue.component("LswCalendario", {
       type: Function,
       default: () => { }
     },
+    accionesViewer: {
+      type: [Object, Boolean],
+      default: () => false
+    }
   },
   data() {
     try {
@@ -38,12 +42,16 @@ Vue.component("LswCalendario", {
         dia_actual: hoy.getDate(),
         mes_actual: hoy.getMonth(),
         anio_actual: hoy.getFullYear(),
-        /*
-        hora_seleccionada: "0",
-        minuto_seleccionado: "0",
-        segundo_seleccionado: "0",
-        milisegundo_seleccionado: "0",
-        //*/
+        rightButtons: [{
+          text: "🔎",
+          event: this.openTimeLocator
+        }].concat(!this.accionesViewer ? [] : [{
+          text: "➕",
+          event: this.openNewTaskDialog
+        }, {
+          text: "🎲",
+          event: this.openDayRandomizer
+        }])
       };
     } catch (error) {
       console.log(error);
@@ -54,6 +62,81 @@ Vue.component("LswCalendario", {
     getValue() {
       this.$trace("lsw-calendario.methods.getValue");
       return this.fecha_seleccionada;
+    },
+    async openNewTaskDialog() {
+      this.$trace("lsw-calendario.methods.openNewTaskDialog");
+      if (this.accionesViewer) {
+        this.accionesViewer.openNewRowDialog();
+      }
+    },
+    async openDayRandomizer() {
+      this.$trace("lsw-calendario.methods.openDayRandomizer");
+      if (this.accionesViewer) {
+        this.accionesViewer.randomizeDay();
+      }
+    },
+    async openTimeLocator() {
+      const localizacion = await this.$lsw.dialogs.open({
+        title: "Localizador del calendario",
+        template: `
+          <div class="pad_1">
+            <div class="pad_bottom_1">Señala el día al que ir con formato «año/mes/día»:</div>
+            <div class="flex_row centered pad_bottom_1">
+              <div class="flex_100">
+                <input class="supermini width_100" type="number" v-model="value.year" />
+              </div>
+              <div class="flex_1 pad_horizontal_1">/</div>
+              <div class="flex_100">
+                <input class="supermini width_100" type="number" v-model="value.month" />
+              </div>
+              <div class="flex_1 pad_horizontal_1">/</div>
+              <div class="flex_100">
+                <input class="supermini width_100" type="number" v-model="value.day" />
+              </div>
+            </div>
+            <div class="pad_bottom_1">
+              <pre class="small_font">{{ currentDateFormatted }}</pre>
+            </div>
+            <hr />
+            <div class="flex_row centered pad_bottom_1">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="accept">Ir a este día</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="supermini" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            value: {
+              year: this.fecha_seleccionada.getFullYear(),
+              month: this.fecha_seleccionada.getMonth(),
+              day: this.fecha_seleccionada.getDate(),
+            }
+          },
+          computed: {
+            currentDateFormatted() {
+              try {
+                const tempDate = new Date(`${this.value.year}/${this.value.month}/${this.value.day}`);
+                const result = tempDate.toDateString();
+                if (result === "Invalid Date") {
+                  throw new Error("La fecha formateada no es válida");
+                }
+                return LswTimer.utils.formatDateToSpanish(tempDate);
+              } catch (error) {
+                return null;
+              }
+            }
+          }
+        }
+      });
+      if (typeof localizacion !== "object") {
+        return;
+      }
+      this.fecha_seleccionada = new Date(`${localizacion.year}/${localizacion.month}/${localizacion.day}`);
     },
     adaptar_valor_inicial(valor) {
       this.$trace("lsw-calendario.methods.adaptar_valor_inicial");
@@ -116,25 +199,25 @@ Vue.component("LswCalendario", {
         let horas = this.espaciar_izquierda(this.fecha_seleccionada.getHours(), 2);
         horas = this.cambiar_posicion_en_texto(horas, 0, valor);
         const horasInt = parseInt(horas);
-        if(horasInt > 23) return;
+        if (horasInt > 23) return;
         fecha_clonada.setHours(horasInt);
       } else if (indice === 2) {
         let horas = this.espaciar_izquierda(this.fecha_seleccionada.getHours(), 2);
         horas = this.cambiar_posicion_en_texto(horas, 1, valor);
         const horasInt = parseInt(horas);
-        if(horasInt > 23) return;
+        if (horasInt > 23) return;
         fecha_clonada.setHours(horasInt);
       } else if (indice === 3) {
         let minutos = this.espaciar_izquierda(this.fecha_seleccionada.getMinutes(), 2);
         minutos = this.cambiar_posicion_en_texto(minutos, 0, valor);
         const minutosInt = parseInt(minutos);
-        if(minutosInt > 59) return;
+        if (minutosInt > 59) return;
         fecha_clonada.setMinutes(minutosInt);
       } else if (indice === 4) {
         let minutos = this.espaciar_izquierda(this.fecha_seleccionada.getMinutes(), 2);
         minutos = this.cambiar_posicion_en_texto(minutos, 1, valor);
         const minutosInt = parseInt(minutos);
-        if(minutosInt > 59) return;
+        if (minutosInt > 59) return;
         fecha_clonada.setMinutes(minutosInt);
       } else if (indice === 5) {
         // @OK
@@ -151,7 +234,7 @@ Vue.component("LswCalendario", {
       this.$trace("lsw-calendario.methods.ir_a_mes_anterior");
       try {
         const nueva_fecha = new Date(this.fecha_seleccionada);
-        this.fecha_seleccionada = new Date(nueva_fecha.getFullYear(), nueva_fecha.getMonth()-1, 1);
+        this.fecha_seleccionada = new Date(nueva_fecha.getFullYear(), nueva_fecha.getMonth() - 1, 1);
       } catch (error) {
         console.log(error);
         throw error;
@@ -162,7 +245,7 @@ Vue.component("LswCalendario", {
       this.$trace("lsw-calendario.methods.ir_a_mes_siguiente");
       try {
         const nueva_fecha = new Date(this.fecha_seleccionada);
-        this.fecha_seleccionada = new Date(nueva_fecha.getFullYear(), nueva_fecha.getMonth()+1, 1);
+        this.fecha_seleccionada = new Date(nueva_fecha.getFullYear(), nueva_fecha.getMonth() + 1, 1);
       } catch (error) {
         console.log(error);
         throw error;
@@ -369,7 +452,7 @@ Vue.component("LswCalendario", {
       this.$trace("lsw-calendario.methods.propagar_cambio");
       if (typeof this.alCambiarValor === "function") {
         // Si es carga inicial, no propagamos el evento:
-        if(this.es_carga_inicial) {
+        if (this.es_carga_inicial) {
           return;
         }
         this.alCambiarValor(this.fecha_seleccionada, this);
@@ -425,7 +508,7 @@ Vue.component("LswCalendario", {
     askHora() {
       this.$trace("lsw-calendario.methods.askHora");
       const hora = window.prompt("Qué hora quieres poner?", this.fecha_seleccionada.getHours());
-      if(typeof hora !== "string") return;
+      if (typeof hora !== "string") return;
       this.fecha_seleccionada.setHours(hora);
       this.fecha_seleccionada.setSeconds(0);
       this.fecha_seleccionada = new Date(this.fecha_seleccionada);
@@ -433,7 +516,7 @@ Vue.component("LswCalendario", {
     askMinuto() {
       this.$trace("lsw-calendario.methods.askMinuto");
       const minuto = window.prompt("Qué minuto quieres poner?", this.fecha_seleccionada.getMinutes());
-      if(typeof minuto !== "string") return;
+      if (typeof minuto !== "string") return;
       this.fecha_seleccionada.setMinutes(minuto);
       this.fecha_seleccionada.setSeconds(0);
       this.fecha_seleccionada = new Date(this.fecha_seleccionada);
@@ -454,7 +537,7 @@ Vue.component("LswCalendario", {
       this.$nextTick(() => {
         this.es_carga_inicial = false;
       });
-      if(this.alIniciar) {
+      if (this.alIniciar) {
         this.alIniciar(this.fecha_seleccionada, this);
       }
     } catch (error) {

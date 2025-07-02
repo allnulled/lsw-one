@@ -20,7 +20,8 @@ Vue.component("LswAutomensajesViewer", {
   methods: {
     procedureForPicas() {
       this.$trace("LswAutomensajesViewer.methods.procedureForPicas", []);
-      this.selectApplication("despues");
+      this.$lsw.dialogs.minimizeAll();
+      this.selectApplication("homepage");
     },
     async loadAutomensajes() {
       this.$trace("LswAutomensajesViewer.methods.loadAutomensajes", []);

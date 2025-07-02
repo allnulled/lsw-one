@@ -19,6 +19,44 @@
 
   const LswGoals = class {
 
+    static COLOR_GAMA_1 = {
+      SUSPENSO: "red",
+      INSUFICIENTE: "#e87489",
+      SUFICIENTE: "#5353bf",
+      NOTABLE: "orange",
+      EXCELENTE: "yellow",
+      SOBRESALIENTE: "lime",
+    };
+
+    static COLOR_GAMA_2 = {
+      SUSPENSO: "#D32F2F",
+      INSUFICIENTE: "#F57C00",
+      SUFICIENTE: "#FBC02D",
+      NOTABLE: "#C0CA33",
+      EXCELENTE: "#7CB342",
+      SOBRESALIENTE: "#388E3C",
+    };
+
+    static COLOR_GAMA_3 = {
+      SUSPENSO: "#c6282866",
+      INSUFICIENTE: "#ef6c0066",
+      SUFICIENTE: "#ffe30066",
+      NOTABLE: "#29b6f666",
+      EXCELENTE: "#00897b66",
+      SOBRESALIENTE: "#66bb6a66",
+    };
+
+    static COLOR = this.COLOR_GAMA_3;
+
+    static COLOR_MEANING = {
+      [this.COLOR.SUSPENSO]: "SUSPENSO",
+      [this.COLOR.INSUFICIENTE]: "INSUFICIENTE",
+      [this.COLOR.SUFICIENTE]: "SUFICIENTE",
+      [this.COLOR.NOTABLE]: "NOTABLE",
+      [this.COLOR.EXCELENTE]: "EXCELENTE",
+      [this.COLOR.SOBRESALIENTE]: "SOBRESALIENTE",
+    };
+
     static async getGoalsReport(someDate = new Date()) {
       Vue.prototype.$trace("lsw-goals-viewer.methods.getGoalsReport");
       let originalGoals = undefined;
@@ -83,7 +121,6 @@
             if(!isInRange) {
               continue Iterating_goals;
             }
-            console.log(originalGoal);
             const duration = originalGoal.duration || "1h";
             const hour = originalGoal.hour || "00";
             const minute = originalGoal.minute || "00";
@@ -279,44 +316,6 @@
         return conclusion;
       };
     }
-
-    static COLOR_GAMA_1 = {
-      SUSPENSO: "red",
-      INSUFICIENTE: "#e87489",
-      SUFICIENTE: "#5353bf",
-      NOTABLE: "orange",
-      EXCELENTE: "yellow",
-      SOBRESALIENTE: "lime",
-    };
-
-    static COLOR_GAMA_2 = {
-      SUSPENSO: "#D32F2F",
-      INSUFICIENTE: "#F57C00",
-      SUFICIENTE: "#FBC02D",
-      NOTABLE: "#C0CA33",
-      EXCELENTE: "#7CB342",
-      SOBRESALIENTE: "#388E3C",
-    };
-
-    static COLOR_GAMA_3 = {
-      SUSPENSO: "#c62828",
-      INSUFICIENTE: "#ef6c00",
-      SUFICIENTE: "#ffe300",
-      NOTABLE: "#29b6f6",
-      EXCELENTE: "#00897b",
-      SOBRESALIENTE: "#66bb6a",
-    };
-
-    static COLOR = this.COLOR_GAMA_3;
-
-    static COLOR_MEANING = {
-      [this.COLOR.SUSPENSO]: "SUSPENSO",
-      [this.COLOR.INSUFICIENTE]: "INSUFICIENTE",
-      [this.COLOR.SUFICIENTE]: "SUFICIENTE",
-      [this.COLOR.NOTABLE]: "NOTABLE",
-      [this.COLOR.EXCELENTE]: "EXCELENTE",
-      [this.COLOR.SOBRESALIENTE]: "SOBRESALIENTE",
-    };
 
     /*
     static COLOR_MEANING = {

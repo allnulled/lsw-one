@@ -10,7 +10,10 @@
     padding-left: 0px;
 }
 .item_app {
-    padding-top: 1px;
+    display: inline-block;
+    padding-bottom: 4px;
+    padding-right: 4px;
+    font-size: 11px;
 }
 .nombre_app {
     background-color: rgba(0,0,0,0.3);

@@ -851,6 +851,12 @@ pre.codeblock {
 .nowrap {
     white-space: nowrap;
 }
+.white_space_normal {
+    white-space: normal;
+}
+.white_space_pre {
+    white-space: pre;
+}
 
 .position_relative {
     position: relative;

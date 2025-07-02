@@ -2,7 +2,12 @@
 Vue.component("LswAgenda", {
   name: "LswAgenda",
   template: $template,
-  props: {},
+  props: {
+    context: {
+      type: String,
+      default: "agenda"
+    }
+  },
   data() {
     this.$trace("lsw-agenda.data");
     return {
@@ -88,7 +93,7 @@ Vue.component("LswAgenda", {
     async loadDateTasks(dateInput, calendario, isOnMounted = false) {
       this.$trace("lsw-agenda.methods.loadDateTasks");
       // this.isLoading = true;
-      const newDate = dateInput || new Date();
+      const newDate = dateInput || this.selectedDate || new Date();
       console.log("[*] Loading date tasks of: " + LswTimer.utils.fromDateToDatestring(newDate));
       try {
         this.selectedDate = newDate;

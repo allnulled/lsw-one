@@ -252,6 +252,16 @@
     });
   };
 
+  LswUtils.toIntegerOr = function(txt, defaultValue = undefined) {
+    const val = parseInt(txt);
+    return isNaN(val) ? defaultValue : val;
+  };
+
+  LswUtils.toFloatOr = function(txt, defaultValue = undefined) {
+    const val = parseFloat(txt);
+    return isNaN(val) ? defaultValue : val;
+  };
+
   LswUtils.splitStringOnce = function (text, splitter) {
     if (typeof text !== "string") {
       throw new Error("Required parameter «text» to be a string on «LswUtils.splitStringOnce»");

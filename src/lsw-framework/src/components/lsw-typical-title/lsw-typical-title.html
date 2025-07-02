@@ -3,7 +3,12 @@
         <div class="flex_100">
             <slot></slot>
         </div>
-        <template v-if="Array.isArray(buttons) && buttons.length">
+        <div class="flex_1 pad_left_1" v-if="(!Array.isArray(buttons)) || (buttons.length === 0)">
+            <button class="supermini visibility_hidden">
+                !
+            </button>
+        </div>
+        <template>
             <div class="flex_1 pad_left_1"
                 v-for="button, buttonIndex in buttons"
                 v-bind:key="'title_button_' + buttonIndex">
@@ -12,10 +17,5 @@
                 </button>
             </div>
         </template>
-        <div class="flex_1 pad_left_1" v-else>
-            <button class="supermini visibility_hidden">
-                !
-            </button>
-        </div>
     </div>
 </div>

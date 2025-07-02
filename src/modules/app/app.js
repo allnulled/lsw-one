@@ -140,6 +140,9 @@ rel correr
         this.minimizeDialogs();
         this.$refs.desktop.selectApplication("event-tracker");
       },
+      goToVolatileDatabaseUi() {
+        this.$refs.desktop.selectApplication("volatile-db");
+      },
       async initializeFilesystemForLsw() {
         this.$trace("lsw-filesystem-explorer.methods.initializeFilesystemForLsw");
         await this.$lsw.fs.ensureFile("/kernel/settings/rutiner.md", LswConstants.global.pick("rutiner.md"));

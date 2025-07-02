@@ -117,6 +117,9 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/apis/lsw-books/lsw-books.js`,
   // LSW DATABASE-UI:
   `${basepath}/lsw-framework/src/components/lsw-database-ui/database-adapter/LswDatabaseAdapter.js`,
+  // LAUNCHER:
+  `${basepath}/lsw-framework/src/apis/lsw-launcher/lsw-launcher.js`,
+  `${basepath}/lsw-framework/src/apis/lsw-launcher/lsw-launchables.js`,
   // DIRECTIVE V-DESCRIPTOR:
   `${basepath}/lsw-framework/src/directives/v-descriptor/v-descriptor.js`,
   // DIRECTIVE V-FOCUS:
@@ -159,8 +162,10 @@ module.exports = Instrumenter.instrumentSet([
   // DIALOGS:
   `${basepath}/lsw-framework/src/components/lsw-dialogs/lsw-dialogs`,
   // LSW VOLATILE DATABASE:
+  `${basepath}/lsw-framework/src/components/lsw-volatile-database-visualizer/volatile-row.parser.js`,
   `${basepath}/lsw-framework/src/components/lsw-volatile-database-visualizer/lsw-volatile-database.api.js`,
   `${basepath}/lsw-framework/src/components/lsw-volatile-database-visualizer/lsw-volatile-database-visualizer`,
+  `${basepath}/lsw-framework/src/components/lsw-volatile-database-visualizer/lsw-volatile-database-row-editor/lsw-volatile-database-row-editor`,
   // WINDOWS AND PROCESSES:
   `${basepath}/lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab`,
   `${basepath}/lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer`,

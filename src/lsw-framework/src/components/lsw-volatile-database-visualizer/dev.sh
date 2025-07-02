@@ -1,0 +1,1 @@
+npx nodemon -w "volatile-row.parser.pegjs" -w "test-parser.js" -e "pegjs,js" -x "bash build-parser.sh"

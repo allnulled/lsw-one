@@ -5,7 +5,7 @@ Vue.component("LswAgendaAccionesViewer", {
   props: {
     initialDate: {
       type: Date,
-      required: true,
+      default: () => new Date(),
     },
     sorterStrategy: {
       type: String,
@@ -23,6 +23,8 @@ Vue.component("LswAgendaAccionesViewer", {
       selectedForm: false,
       selectedDateTasks: undefined,
       selectedDateTasksSorted: undefined,
+      selectedSorterStrategy: this.sorterStrategy,
+      selectedSorterMoment: false,
       hiddenDateHours: [],
       shownAcciones: [],
     };
@@ -35,6 +37,17 @@ Vue.component("LswAgendaAccionesViewer", {
     toggleRandomizer() {
       this.$trace("lsw-agenda-acciones-viewer.methods.toggleRandomizer");
       this.isShowingRandomizer = !this.isShowingRandomizer;
+    },
+    toggleSorterStrategy() {
+      this.$trace("lsw-agenda-acciones-viewer.methods.toggleSorterStrategy");
+      if (this.selectedSorterStrategy === "antes") {
+        this.selectedSorterStrategy = false;
+      } else if (this.selectedSorterStrategy === "despues") {
+        this.selectedSorterStrategy = "antes";
+      } else {
+        this.selectedSorterStrategy = "despues";
+      }
+      this.loadDateTasks();
     },
     openRandomizerFile() {
       this.$trace("lsw-agenda-acciones-viewer.methods.openRandomizerFile");
@@ -53,7 +66,7 @@ Vue.component("LswAgendaAccionesViewer", {
               tiene_comentarios: "",
             }
           });
-          for(let indexConcepto=0; indexConcepto<conceptos.length; indexConcepto++) {
+          for (let indexConcepto = 0; indexConcepto < conceptos.length; indexConcepto++) {
             const concepto = conceptos[indexConcepto];
             try {
               await this.$lsw.database.insert("Concepto", concepto);
@@ -94,7 +107,7 @@ Vue.component("LswAgendaAccionesViewer", {
     async toggleAutogeneration(tarea) {
       this.$trace("lsw-agenda-acciones-viewer.methods.toggleAutogeneration");
       const siguientesParametros = (() => {
-        if(tarea.tiene_parametros.startsWith("[*autogenerada]")) {
+        if (tarea.tiene_parametros.startsWith("[*autogenerada]")) {
           return tarea.tiene_parametros.replace(/^\[\*autogenerada\] */g, "");
         }
         return "[*autogenerada] " + tarea.tiene_parametros;
@@ -128,9 +141,18 @@ Vue.component("LswAgendaAccionesViewer", {
         this.shownAcciones.splice(pos, 1);
       }
     },
-    async loadDateTasks() {
+    async loadDateTasks(selectedDateInput = false) {
       this.isLoading = true;
-      const selectedDate = this.selectedDate;
+      const selectedDate = (() => {
+        if (selectedDateInput instanceof Date) {
+          this.selectedDate = selectedDateInput;
+        } else if (this.$refs.calendario) {
+          this.selectedDate = this.$refs.calendario.getValue();
+        }
+        console.log(this.selectedDate);
+        return this.selectedDate;
+      })();
+      console.log("Decidiendo selectedDate", selectedDate)
       const selectedDateTasks = await this.$lsw.database.selectMany("Accion", valueBrute => {
         try {
           const valueList = LswTimer.parser.parse(valueBrute.tiene_inicio);
@@ -145,7 +167,7 @@ Vue.component("LswAgendaAccionesViewer", {
         }
       });
       Constitute_date_tasks_as_required: {
-        if (this.sorterStrategy === false) {
+        if (this.selectedSorterStrategy === false) {
           this.selectedDateTasks = selectedDateTasks;
           this.selectedDateTasksSorted = selectedDateTasks.sort((accion1, accion2) => {
             let inicio1 = undefined;
@@ -168,16 +190,16 @@ Vue.component("LswAgendaAccionesViewer", {
               return -1;
             }
           });
-        } else if (this.sorterStrategy === "despues") {
+        } else if (this.selectedSorterStrategy === "despues") {
           this.selectedDateTasks = selectedDateTasks;
-          const momentoActual = new Date();
+          this.selectedSorterMoment = new Date();
           Mostramos_las_tareas_de_la_hora_actual_en_adelante: {
-            momentoActual.setMinutes(0);
+            this.selectedSorterMoment.setMinutes(0);
           }
           this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
             const dateInicio = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
             try {
-              return momentoActual <= dateInicio;
+              return this.selectedSorterMoment <= dateInicio;
             } catch (error) {
               console.log(error);
               return false;
@@ -203,13 +225,13 @@ Vue.component("LswAgendaAccionesViewer", {
               return -1;
             }
           });
-        } else if (this.sorterStrategy === "antes") {
+        } else if (this.selectedSorterStrategy === "antes") {
           this.selectedDateTasks = selectedDateTasks;
-          const momentoActual = new Date();
+          this.selectedSorterMoment = new Date();
           this.selectedDateTasksSorted = selectedDateTasks.filter(accion => {
             const dateInicio = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
             try {
-              return momentoActual >= dateInicio;
+              return this.selectedSorterMoment >= dateInicio;
             } catch (error) {
               console.log(error);
               return false;
@@ -236,8 +258,10 @@ Vue.component("LswAgendaAccionesViewer", {
             }
           });
         }
+        this.$nextTick(() => {
+          this.isLoading = false;
+        });
       }
-      this.isLoading = false;
     },
     showAllHours() {
       this.$trace("lsw-agenda-acciones-viewer.methods.showAllHours");
@@ -544,6 +568,40 @@ Vue.component("LswAgendaAccionesViewer", {
           }
         }
       });
+    },
+    getDateIcon(someDate) {
+      const theDate = someDate.getDate();
+      if (theDate === 30) return "🐶";
+      if (theDate === 29) return "🐱";
+      if (theDate === 28) return "🐭";
+      if (theDate === 27) return "🐹";
+      if (theDate === 26) return "🐰";
+      if (theDate === 25) return "🦊";
+      if (theDate === 24) return "🐻";
+      if (theDate === 23) return "🐼";
+      if (theDate === 22) return "🐻‍❄️";
+      if (theDate === 21) return "🐨";
+      if (theDate === 20) return "🐯";
+      if (theDate === 19) return "🦁";
+      if (theDate === 18) return "🐮";
+      if (theDate === 17) return "🐷";
+      if (theDate === 16) return "🐽";
+      if (theDate === 15) return "🐸";
+      if (theDate === 14) return "🐵";
+      if (theDate === 13) return "🙈";
+      if (theDate === 12) return "🙉";
+      if (theDate === 11) return "🙊";
+      if (theDate === 10) return "🐒";
+      if (theDate === 9) return "🐔";
+      if (theDate === 8) return "🐧";
+      if (theDate === 7) return "🐦";
+      if (theDate === 6) return "🐦‍⬛";
+      if (theDate === 5) return "🐤";
+      if (theDate === 4) return "🐣";
+      if (theDate === 3) return "🐥";
+      if (theDate === 2) return "🦆";
+      if (theDate === 1) return "🦅";
+      return "⭐️";
     },
   },
   watch: {

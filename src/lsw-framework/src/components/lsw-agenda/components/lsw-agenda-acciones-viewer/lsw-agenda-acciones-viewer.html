@@ -1,30 +1,43 @@
 <div class="lsw_agenda_acciones_viewer">
 
-    <template class=""
-        v-if="true || (sorterStrategy === 'despues')">
-        <template class=""
-            v-if="!isLoading">
-            <template class=""
-                v-if="isShowingGoals">
-                <lsw-goals-viewer ref="goalsViewer"
-                    :on-close="() => {isShowingGoals = false;}"
-                    :day-to-analize="selectedDate" />
-            </template>
-        </template>
-    </template>
-
-    <div class="tasks_viewer">
+    
+    <div class="tasks_viewer" v-if="!isLoading">
+        <div class="pad_bottom_1">
+            <div class="typical_title_1 flex_row centered">
+                <div class="flex_100">
+                    <span v-if="selectedDate">
+                        <span v-if="selectedSorterStrategy === 'antes'">⬅️🕓 Antes de las {{ LswTimer.utils.fromDateToHour(selectedDate) }}:</span>
+                        <span v-else-if="selectedSorterStrategy === 'despues'">🕓➡️ Después de las {{ LswTimer.utils.fromDateToHour(selectedDate) }}:</span>
+                        <span v-else>⬅️🕓➡️ En todo el día</span>
+                    </span>
+                </div>
+                <div class="flex_1 pad_left_1">
+                    <button class="supermini has_light_bg"
+                        v-on:click="toggleSorterStrategy">
+                        <span v-if="selectedSorterStrategy === 'antes'">⬅️🕓➡️</span>
+                        <span v-else-if="selectedSorterStrategy === 'despues'">⬅️🕓</span>
+                        <span v-else>🕓➡️</span>
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="selected_day_title"
             v-if="selectedDate">
             <div class="flex_row centered">
                 <div class="flex_1 margin_right_1">
-                    <button class="padded_vertically_1"
+                    <button class="supermini padded_vertically_1"
                         v-on:click="openNewRowDialog"
                         :class="{activated: selectedForm === 'new'}">➕</button>
                 </div>
-                <div class="flex_100">{{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }}</div>
-                <div class="flex_1 nowrap">
-                    <button :class="{activated:isShowingRandomizer}" v-on:click="toggleRandomizer">🎲</button>
+                <div class="flex_100 align_self_stretch selected_date_on_tasks_viewer">
+                    <div class="pad_1 text_align_center">
+                        {{ getDateIcon(selectedDate) }} {{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }} {{ getDateIcon(selectedDate) }}
+                    </div>
+                </div>
+                <div class="flex_1 pad_left_1 nowrap">
+                    <button class="supermini"
+                        :class="{activated:isShowingRandomizer}"
+                        v-on:click="toggleRandomizer">🎲</button>
                     <div class="hidden_menu"
                         v-if="isShowingRandomizer">
                         <div class="hidden_menu_fixed_layer"
@@ -206,9 +219,48 @@
                 </div>
             </template>
         </div>
-        <div class="no_tasks_message"
+        <div class="no_tasks_message small_font"
             v-else>
-            No hay tareas asignadas para este día.
+            <span>
+                <span>🌵 No hay tareas para </span>
+                <template v-if="selectedSorterMoment">
+                    <span v-if="selectedSorterStrategy === 'antes'">
+                        antes de <b>las {{ LswTimer.utils.fromDateToHour(selectedSorterMoment) }}</b> en
+                    </span>
+                    <span v-else-if="selectedSorterStrategy === 'despues'">
+                        después de <b>las {{ LswTimer.utils.fromDateToHour(selectedSorterMoment) }}</b> en
+                    </span>
+                </template>
+                <span>
+                    el <b>día {{ LswTimer.utils.fromDateToDatestring(selectedDate, true) }}</b>.
+                </span>
+                <span> 🌵</span>
+            </span>
         </div>
     </div>
+
+    <template v-if="true || (selectedSorterStrategy === 'despues')">
+        <template v-if="!isLoading">
+            <template v-if="isShowingGoals">
+                <div class="pad_vertical_1">
+                    <lsw-typical-title class="">📊 Métricas del día:</lsw-typical-title>
+                </div>
+                <lsw-goals-viewer ref="goalsViewer"
+                    :on-close="() => {isShowingGoals = false;}"
+                    :day-to-analize="selectedDate" />
+            </template>
+        </template>
+    </template>
+
+    <div class="">
+        <lsw-typical-title class="margin_bottom_1">📆 Calendario:</lsw-typical-title>
+        <lsw-calendario
+            ref="calendario"
+            modo="date"
+            :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
+            :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)"
+            :acciones-viewer="this"
+        />
+    </div>
+
 </div>

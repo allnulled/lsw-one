@@ -17,20 +17,31 @@ Vue.component("LswAppsViewerPanel", {
   methods: {
     selectApplication(section) {
       this.$trace("lsw-apps-viewer-panel.methods.selectApplication");
-      Gestiona_casos_excepcionales: {
-        if(section === "js consola") {
-          // Activamos eruda en lugar de cambiar de pestaña:
-          return LswConsoleHooker.toggleConsole();
+      this.isOpened = false;
+      this.selectedApplication = undefined;
+      try {
+        Gestiona_casos_excepcionales: {
+          if(section === "js consola") {
+            // Activamos eruda en lugar de cambiar de pestaña:
+            return LswConsoleHooker.toggleConsole();
+          }
         }
-      }
-      this.$lsw.dialogs.minimizeAll();
-      this.selectedApplication = section;
-      Cargas_segun_aplicacion: {
-        if (["antes", "despues"].indexOf(section) !== -1) {
-          this.loadAcciones();
-        } else {
-          this.$forceUpdate(true);
+        this.$lsw.dialogs.minimizeAll();
+        this.selectedApplication = section;
+        Cargas_segun_aplicacion: {
+          if (["antes", "despues"].indexOf(section) !== -1) {
+            this.loadAcciones();
+          } else {
+            this.$forceUpdate(true);
+          }
         }
+      } catch (error) {
+        console.error(error);
+        this.$lsw.toasts.showError(error);
+      } finally {
+        this.$nextTick(() => {
+          this.isOpened = true;
+        });
       }
     },
     getSimboloEstadoAccion(estado) {

@@ -1,6 +1,6 @@
 <div class="lsw_spontaneos_form_nota pad_1">
-    <h4 class="margin_bottom_1px">🔬 Añadir artículo:</h4>
-    <div class="flex_row">
+    <lsw-typical-title>🔬 Añadir artículo:</lsw-typical-title>
+    <div class="flex_row margin_top_1">
         <div class="flex_100">
             <lsw-fast-datetime-control class="margin_bottom_1px" mode="datetime" :on-change-date="v => tiene_fecha = LswTimer.utils.fromDateToDatestring(v, false)" :initial-value="new Date()"/>
             <input class="width_100 margin_bottom_1px margin_top_0" type="text" placeholder="Título de artículo" v-model="tiene_titulo" />

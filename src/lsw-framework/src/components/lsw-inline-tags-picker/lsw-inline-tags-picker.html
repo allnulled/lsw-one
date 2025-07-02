@@ -11,13 +11,15 @@
                 v-on:click="digestSearch">🔎</button>
         </div>
     </div>
-    <template v-for="row, rowIndex in fromData">
-        <div class="display_inline_block pad_top_1 pad_right_1"
-            v-bind:key="'row_' + rowIndex">
-            <button class="supermini"
-                v-on:click="() => selectRow(row)">
-                {{ row[field] }}
-            </button>
-        </div>
-    </template>
+    <div class="white_space_normal inline_tags_picker_selectables">
+        <template v-for="row, rowIndex in fromData">
+            <div class="display_inline_block pad_top_1 pad_right_1"
+                v-bind:key="'row_' + rowIndex">
+                <button class="supermini"
+                    v-on:click="() => selectRow(row)">
+                    {{ row[field] }}
+                </button>
+            </div>
+        </template>
+    </div>
 </div>

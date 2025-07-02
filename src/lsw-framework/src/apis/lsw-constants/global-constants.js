@@ -275,7 +275,7 @@ LswConstants.global.define("/kernel/volatile-database/lsw_volatile_default_datab
 
 LswVolatileDatabase.global.triggers.reset();
 LswVolatileDatabase.global.triggers.register("*", "hello in every hook of the database", function() {
-  console.log("Hello from general hook!");
+  // console.log("Hello from general hook!");
 });
 
 `);

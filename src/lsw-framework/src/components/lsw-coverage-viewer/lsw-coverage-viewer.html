@@ -15,7 +15,7 @@
                 <tr class=""
                     style="color: black;"
                     v-bind:key="'row_overview_file_' + file">
-                    <td class="" style="color: white;">
+                    <td class="">
                         📜 <span class="small_font like_link" v-on:click="() => selectFile(file)">{{ getPathRelativeToProject(file) }}</span>
                     </td>
                     <td class="small_font coverage_report_status_box" :class="coverageClass(calcPercent(coverageItem.s, coverageItem.statementMap))">
@@ -32,7 +32,6 @@
                     </td>
                 </tr>
                 <tr class=""
-                    style="color: black;"
                     v-bind:key="'row_sourcecode_file_' + file"
                     v-if="selectedFiles.indexOf(file) !== -1">
                     <td colspan="100" v-if="typeof sourceCodeOf[file] === 'string'">

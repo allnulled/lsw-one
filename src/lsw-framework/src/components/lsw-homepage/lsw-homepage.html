@@ -32,9 +32,9 @@
             v-for="app, appIndex in filteredApps"
             v-bind:key="'app_' + appIndex">
             <div class="nombre_app flex_row centered"
-                v-on:click="app.event">
+                v-on:click="() => app.event(app.launchable)">
                 <div class="flex_100">{{ app.label }}</div>
-                <div class="flex_1 nowrap">↗️</div>
+                <div class="flex_1 nowrap pad_left_1">↗️</div>
             </div>
         </div>
     </div>

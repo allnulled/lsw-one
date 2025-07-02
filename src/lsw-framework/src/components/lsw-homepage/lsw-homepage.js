@@ -1,41 +1,60 @@
-const homepage_apps_events = {
-  "base de datos": function () {
+const launchablesBefore = [{
+  label: "📦 Base de datos",
+  event: () => this.abrirApp("base de datos"),
+}, {
+  label: "📂 Sistema de ficheros",
+  event: () => this.abrirApp("sistema de ficheros"),
+}, {
+  label: "💣 Binarios",
+  event: () => this.abrirApp("binarios"),
+}, {
+  label: "📆 Calendario",
+  event: () => this.abrirApp("calendario"),
+}, {
+  label: "⬅️🕔 Tareas anteriores",
+  event: () => this.abrirApp("antes"),
+}, {
+  label: "🕔➡️ Tareas posteriores",
+  event: () => this.abrirApp("despues"),
+}, {
+  label: "💬 Notas",
+  event: () => this.abrirApp("notas"),
+}, {
+  label: "💬➕ Nueva nota",
+  event: () => this.abrirApp("nueva nota"),
+}, {
+  label: "🔬 Enciclopedia",
+  event: () => this.abrirApp("enciclopedia"),
+}, {
+  label: "🔬➕ Nuevo artículo",
+  event: () => this.abrirApp("nuevo articulo"),
+}, {
+  label: "🪲 Inspector de JS",
+  event: () => this.abrirApp("js inspector"),
+}, {
+  label: "💻 Consola de JS",
+  event: () => this.abrirApp("js consola"),
+}, {
+  label: "♨️ Datos volátiles",
+  event: () => this.abrirApp("volatile-db"),
+}, {
+  label: "✅ Tests de aplicación",
+  event: () => this.abrirApp("app tests"),
+}, {
+  label: "🔧 Configuraciones",
+  event: () => this.abrirApp("configuraciones"),
+}, {
+  label: "✨ Nueva feature",
+  event: () => this.abrirApp("nueva feature"),
+}];
 
-  },
-  "calendario": function () {
-
-  },
-  "sistema de ficheros": function () {
-
-  },
-  "configuraciones": function () {
-
-  },
-  "calendario": function () {
-
-  },
-  "tareas posteriores": function () {
-
-  },
-  "tareas anteriores": function () {
-
-  },
-  "conductometria": function () {
-
-  },
-  "notas": function () {
-
-  },
-  "nueva nota": function () {
-
-  },
-  "enciclopedia": function () {
-
-  },
-  "nuevo articulo": function () {
-
-  },
-};
+const launchables = Object.values(LswLauncher.global.programs).map(program => {
+  return {
+    label: program.name,
+    event: program.callback,
+    launchable: program,
+  };
+});
 
 // @code.start: LswHomepage API | @$section: Vue.js (v2) Components » LswHomepage component
 Vue.component("LswHomepage", {
@@ -54,55 +73,7 @@ Vue.component("LswHomepage", {
       lastAppliedFilter: false,
       filterSearchText: "",
       filteredApps: {},
-      systemApps: [{
-        label: "📦 Base de datos",
-        event: () => this.abrirApp("base de datos"),
-      }, {
-        label: "📂 Sistema de ficheros",
-        event: () => this.abrirApp("sistema de ficheros"),
-      }, {
-        label: "💣 Binarios",
-        event: () => this.abrirApp("binarios"),
-      }, {
-        label: "📆 Calendario",
-        event: () => this.abrirApp("calendario"),
-      }, {
-        label: "⬅️🕔 Tareas anteriores",
-        event: () => this.abrirApp("antes"),
-      }, {
-        label: "🕔➡️ Tareas posteriores",
-        event: () => this.abrirApp("despues"),
-      }, {
-        label: "💬 Notas",
-        event: () => this.abrirApp("notas"),
-      }, {
-        label: "💬➕ Nueva nota",
-        event: () => this.abrirApp("nueva nota"),
-      }, {
-        label: "🔬 Enciclopedia",
-        event: () => this.abrirApp("enciclopedia"),
-      }, {
-        label: "🔬➕ Nuevo artículo",
-        event: () => this.abrirApp("nuevo articulo"),
-      }, {
-        label: "🪲 Inspector de JS",
-        event: () => this.abrirApp("js inspector"),
-      }, {
-        label: "💻 Consola de JS",
-        event: () => this.abrirApp("js consola"),
-      }/*, {
-        label: "💻 Consola de SQL",
-        event: () => this.abrirApp("sqlite-console"),
-      }*/, {
-        label: "✅ Tests de aplicación",
-        event: () => this.abrirApp("app tests"),
-      }, {
-        label: "🔧 Configuraciones",
-        event: () => this.abrirApp("configuraciones"),
-      }, {
-        label: "✨ Nueva feature",
-        event: () => this.abrirApp("nueva feature"),
-      }]
+      systemApps: launchables,
     };
   },
   methods: {

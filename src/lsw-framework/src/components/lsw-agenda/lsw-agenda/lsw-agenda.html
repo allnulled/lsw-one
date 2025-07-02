@@ -21,12 +21,12 @@
     
     <div class="calendar_viewer pad_top_1"
         v-show="(selectedContext === 'agenda') && (selectedAction === 'calendario')">
-        <lsw-calendario ref="calendario"
-            modo="date"
-            :al-iniciar="(v, cal) => loadDateTasks(v, cal)"
-            :al-cambiar-valor="(v, cal) => loadDateTasks(v, cal)" />
         <div class="pad_top_1">
-            <lsw-agenda-acciones-viewer :initial-date="selectedDate" ref="agenda_acciones_viewer" />
+            <lsw-agenda-acciones-viewer
+                ref="calendario"
+                :agenda="this"
+                :initial-date="selectedDate" ref="agenda_acciones_viewer"
+            />
         </div>
     </div>
 

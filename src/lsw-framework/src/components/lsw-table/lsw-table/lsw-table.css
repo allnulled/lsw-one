@@ -7,6 +7,7 @@
 .lsw_table_itself {}
 
 .lsw_table_viewer {
+    flex: 100;
     border-right: 1px solid #88888888;
     padding: 0px;
     overflow: scroll;
@@ -14,15 +15,32 @@
     margin-top: 0px;
     margin-bottom: 0px;
     margin-left: 0px;
-    margin-right: 40px;
-    height: 320px;
+    margin-right: 0px;
+    height: 287px;
     resize: vertical;
+}
+
+.lsw_table_viewer_container {
+    display: flex;
+    align-self: center;
+}
+
+.lsw_table_viewer_right_space {
+    flex: 1;
+    padding: 4px;
 }
 
 table.lsw_table_itself>thead>tr>th {
     text-align: left;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding: 4px;
+}
+
+.table_header_button {
+    padding: 0px;
+    font-size: 11px;
+    text-align: left;
+    min-height: auto;
+    width: 100%;
 }
 
 table.lsw_table_itself .max_row_height {
@@ -155,15 +173,14 @@ table.lsw_table_itself>thead>tr>th.button_header {
     margin-bottom: 0px;
 }
 .lsw_table_top_panel_1 button,
-.lsw_table_top_panel_2 button {
+.lsw_table_top_panel_2 button,
+.lsw_table_top_panel_3 button {
     font-size: 16px;
     padding: 0px;
     height: auto;
-    min-height: 22px;
-    min-width: 35px;
+    min-height: 25px;
+    min-width: auto;
     border: 1px solid #88888888;
-    padding-top: 2px;
-    padding-bottom: 2px;
 }
 .lsw_table_top_button {
     margin-right: 2px;

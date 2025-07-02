@@ -32,7 +32,6 @@
             // await LswDomIrruptor.abrirBinarios();
             // await LswDomIrruptor.abrirTareasPosterioresDeNavegacionRapida();
             // await LswDomIrruptor.abrirRecords();
-            // await LswDomIrruptor.abrirWeekPlanner();
             // await LswDomIrruptor.abrirAcciones();
             // await LswDomIrruptor.abrirFicheros();
             // await LswDomIrruptor.abrirJsInspector();
@@ -46,7 +45,7 @@
             /*
             await LswDomIrruptor.arrancarTestsDeAplicacion();
             //*/
-            await LswDomIrruptor.abrirNuevaFeature();
+            await LswDomIrruptor.abrirWeekPlanner();
           }
         }
       } catch (error) {

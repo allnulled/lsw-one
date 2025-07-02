@@ -41,11 +41,11 @@
             // await LswDomIrruptor.abrirBaseDeDatos();
             // await LswDomIrruptor.abrirBaseDeDatosPorTabla("Accion");
             // await LswDomIrruptor.abrirBaseDeDatosPorNuevoDatoDeTabla("Accion");
-            // await LswDomIrruptor.abrirNuevaFeature();
             /*
             await LswDomIrruptor.arrancarTestsDeAplicacion();
             //*/
-            await LswDomIrruptor.abrirWeekPlanner();
+            // await LswDomIrruptor.abrirWeekPlanner();
+            await LswDomIrruptor.abrirNuevaFeature();
           }
         }
       } catch (error) {

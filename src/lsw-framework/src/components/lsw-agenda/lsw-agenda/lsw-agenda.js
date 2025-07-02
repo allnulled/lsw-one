@@ -10,6 +10,16 @@ Vue.component("LswAgenda", {
   },
   data() {
     this.$trace("lsw-agenda.data");
+    let allAgendaButtons = [];
+    if (typeof this.$window.cordova !== "undefined") {
+      allAgendaButtons = allAgendaButtons.concat([{
+        text: '🔔',
+        event: () => this.synchronizeAlarms(),
+      }, {
+        text: '🔕',
+        event: () => this.unsynchronizeAlarms(),
+      }]);
+    }
     return {
       counter: 0,
       isLoading: false,
@@ -24,6 +34,30 @@ Vue.component("LswAgenda", {
       selectedForm: undefined,
       hiddenDateHours: [],
       shownAcciones: [],
+      agendaButtons: allAgendaButtons,
+      possibleNotifiers: [
+        accion => `🔷 ¡Vamos con «${accion.en_concepto}» por «${accion.duracion}»!`,
+        accion => `🔶 Parece que se te requiere en «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🕥 Ahora tocaría «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🔶 ¿Qué tal un poco de «${accion.en_concepto}» por «${accion.duracion}»?`,
+        accion => `🕥 ¿Sabes que tendrías ahora que «${accion.en_concepto}» por «${accion.duracion}»?`,
+        accion => `🔶 ¿Te acuerdas que ahora viene «${accion.en_concepto}» por «${accion.duracion}»?`,
+        accion => `🕥 ¿Cómo lo llevas? Porque se viene «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🔶 ¿Te apetece un poco de «${accion.en_concepto}» por «${accion.duracion}»?`,
+        accion => `🕥 Bueno, y ahora «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🔶 ¿Estás bien? Porque vamos con «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🕥 ¿Y ahora? Ahora «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🔶 Tendríamos que «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🕥 Sin ponerse grave, habría que «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🔶 No sé si tienes algo, aparte de «${accion.en_concepto}» ahora por «${accion.duracion}»`,
+        accion => `🕥 Por «${accion.duracion}» tocaría «${accion.en_concepto}»`,
+        accion => `🔶 Durante «${accion.duracion}» vendría «${accion.en_concepto}»`,
+        accion => `🔷 Sin más dilación, «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🔷 ¡Vamos ahí ese «${accion.en_concepto}» por «${accion.duracion}»!`,
+        accion => `🕥 Estaríamos con «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🔷 Tiempo para «${accion.en_concepto}» por «${accion.duracion}»`,
+        accion => `🔷 ¡Atensiong! Viene «${accion.en_concepto}» por «${accion.duracion}»`,
+      ]
     };
   },
   methods: {
@@ -246,7 +280,7 @@ Vue.component("LswAgenda", {
     async synchronizeAlarms() {
       this.$trace("lsw-agenda.methods.synchronizeAlarms");
       Cordova_injection: {
-        if (typeof this.$window.cordova !== "undefined") {
+        if (typeof this.$window.cordova === "undefined") {
           const dateToday = new Date();
           const allAlarms = await this.$lsw.database.selectMany("Accion", accion => {
             const dateAccion = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
@@ -263,11 +297,13 @@ Vue.component("LswAgenda", {
             for (let index = 0; index < allAlarms.length; index++) {
               const accion = allAlarms[index];
               const id = index + 1;
+              const notificationCallback = LswRandomizer.getRandomItem(this.possibleNotifiers);
+              const text = notificationCallback(accion);
               this.$window.cordova.plugins.notification.local.cancel(id);
               this.$window.cordova.plugins.notification.local.schedule({
                 id,
-                title: "¡Requiéresete!",
-                text: `¡Vamos con «${accion.en_concepto}»!`,
+                title: `${accion.en_concepto} * ${accion.tiene_inicio} @${accion.tiene_inicio}`,
+                text: text,
                 trigger: {
                   at: LswTimer.utils.fromDatestringToDate(accion.tiene_inicio)
                 },

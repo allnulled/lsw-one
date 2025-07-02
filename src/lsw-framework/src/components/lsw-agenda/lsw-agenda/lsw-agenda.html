@@ -1,27 +1,15 @@
 <div class="lsw_agenda">
 
-    <div class="agenda_topbar flex_1 flex_row"
-        style="gap: 4px;">
-        <div class="flex_100"></div>
-        <template v-if="typeof $window.cordova !== 'undefined'">
-            <div class="flex_1">
-                <button class="width_100 nowrap supermini"
-                    v-on:click="synchronizeAlarms">🔔</button>
-            </div>
-            <div class="flex_1">
-                <button class="width_100 nowrap supermini"
-                    v-on:click="unsynchronizeAlarms">🔕</button>
-            </div>
-        </template>
-    </div>
+    <lsw-typical-title :buttons="agendaButtons">📒 Agenda</lsw-typical-title>
 
     <div v-if="selectedContext === 'conductometria'" class="pad_top_1">
         <lsw-conductometria />
     </div>
     
-    <div class="calendar_viewer pad_top_1"
+    <div class="calendar_viewer"
+        style="padding-top: 6px;"
         v-show="(selectedContext === 'agenda') && (selectedAction === 'calendario')">
-        <div class="pad_top_1">
+        <div class="">
             <lsw-agenda-acciones-viewer
                 ref="calendario"
                 :agenda="this"

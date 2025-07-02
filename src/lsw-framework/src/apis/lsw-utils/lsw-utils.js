@@ -252,12 +252,12 @@
     });
   };
 
-  LswUtils.toIntegerOr = function(txt, defaultValue = undefined) {
+  LswUtils.toIntegerOr = function (txt, defaultValue = undefined) {
     const val = parseInt(txt);
     return isNaN(val) ? defaultValue : val;
   };
 
-  LswUtils.toFloatOr = function(txt, defaultValue = undefined) {
+  LswUtils.toFloatOr = function (txt, defaultValue = undefined) {
     const val = parseFloat(txt);
     return isNaN(val) ? defaultValue : val;
   };
@@ -572,7 +572,7 @@
     });
   };
 
-  LswUtils.parseAsJsonOrReturn = function(data, defaultValue = undefined) {
+  LswUtils.parseAsJsonOrReturn = function (data, defaultValue = undefined) {
     try {
       return JSON.parse(data);
     } catch (error) {
@@ -693,7 +693,16 @@
       }
     }
     return output;
-  }
+  };
+
+  LswUtils.splitByUnicode = function (texto) {
+    const segmenter = new Intl.Segmenter('es', { granularity: 'grapheme' });
+    return Array.from(segmenter.segment(texto), s => s.segment);
+  };
+
+  LswUtils.copyToClipboard = function (texto) {
+    window.navigator.clipboard.writeText(texto);
+  };
 
 
   Global_injection: {

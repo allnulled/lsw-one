@@ -467,15 +467,11 @@
           if(["?"].indexOf(table) !== -1) {
             continue Iterating_rows;
           }
-          console.log(row);
           if(["new","+"].indexOf(id) !== -1) {
-            console.log("INSERTANDO VIA INSERT:", row);
-            
             const resultRow = this.insert(table, row);
             output.push(resultRow);
             continue Iterating_rows;
           }
-          console.log("INSERTANDO VIA UPSERT:", row);
           const resultRow = this.upsert(table, id, row);
           output.push(resultRow);
         }

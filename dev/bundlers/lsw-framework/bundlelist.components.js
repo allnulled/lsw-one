@@ -146,6 +146,8 @@ module.exports = Instrumenter.instrumentSet([
   // COVERAGE:
   `${basepath}/lsw-framework/src/components/lsw-coverage-viewer/lsw-coverage-viewer`,
   `${basepath}/lsw-framework/src/components/lsw-js-file-coverage-viewer/lsw-js-file-coverage-viewer`,
+  // EMOJIS PICKER:
+  `${basepath}/lsw-framework/src/components/lsw-emojis-picker/lsw-emojis-picker`,
   // CALENDARIO:
   `${basepath}/lsw-framework/src/components/lsw-calendario/lsw-calendario`,
   // TABLE:

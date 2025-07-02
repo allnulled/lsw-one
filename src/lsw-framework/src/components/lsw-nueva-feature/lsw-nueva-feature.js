@@ -14,10 +14,7 @@ Vue.component("LswNuevaFeature", {
       
     },
     async load() {
-      const db = LswVolatileDatabase.global;
-      db.bulk("docs_1", LswRandomizer.getRandomTypedList(100, ["name", "age", "city", "religion"]));
-      this.datos = db.find();
-      db.visualize();
+      
     }
   },
   watch: {},

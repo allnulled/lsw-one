@@ -1,11 +1,5 @@
 <div class="lsw_js_inspector">
-    <div class="flex_row centered">
-        <div class="flex_100">🪲 JS inspector</div>
-        <div class="flex_1">
-            <button class="supermini"
-                v-on:click="openConsole">💻</button>
-        </div>
-    </div>
+    <lsw-typical-title :buttons="[{text:'💻',event:() => openConsole()}]">🪲 JS inspector</lsw-typical-title>
     <div class="flex_row centered pad_top_1">
         <div class="flex_1">📋: </div>
         <div class="flex_100 pad_left_1">

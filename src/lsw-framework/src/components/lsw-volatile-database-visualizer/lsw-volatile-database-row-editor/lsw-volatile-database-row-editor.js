@@ -21,7 +21,7 @@ Vue.component("LswVolatileDatabaseRowEditor", {
       row: false,
       rowRepresentation: false,
       volatileDbTableButtons: [{
-        text: '⚡️🔙',
+        text: '⚡️↖️',
         event: () => {
           this.saveAndClose()
         },

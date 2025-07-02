@@ -11,6 +11,7 @@ LswLauncher.global.register("inspector-de-js", "🪲 Inspector de JS", (launchab
 LswLauncher.global.register("consola-de-js", "💻 Consola de JS", () => LswConsoleHooker.toggleConsole());
 LswLauncher.global.register("datos-volátiles", "♨️ Datos volátiles", (launchable) => LswLauncher.openDialog('<lsw-volatile-database-visualizer>', launchable.name));
 LswLauncher.global.register("tests-de-aplicación", "✅ Tests de aplicación", (launchable) => LswLauncher.openDialog('<lsw-tests-page />', launchable.name));
+LswLauncher.global.register("emojis-picker", "🐱 Emojis", (launchable) => LswLauncher.openDialog('<lsw-emojis-picker />', launchable.name));
 LswLauncher.global.register("configuraciones", "🔧 Configuraciones", (launchable) => LswLauncher.openDialog('<lsw-configurations-page />', launchable.name));
 LswLauncher.global.register("nueva-feature", "✨ Nueva feature", (launchable) => LswLauncher.openDialog('<lsw-nueva-feature />', launchable.name));
 LswLauncher.global.register("example-of-app", "🏅 Example of app", (launchable) => LswLauncher.openDialog('<lsw-example-of-app />', launchable.name));

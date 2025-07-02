@@ -9,11 +9,12 @@
                     <lsw-agenda-acciones-viewer :initial-date="new Date()"
                         sorter-strategy="despues" />
                 </div-->
-                <div class="pad_horizontal_1"
-                    v-if="selectedApplication === 'calendario'"
-                    v-bind:key="'app_calendario'">
-                    <lsw-agenda ref="agenda" />
-                </div>
+            </div>
+
+            <div class="pad_right_1"
+                v-if="selectedApplication === 'calendario'"
+                v-bind:key="'app_calendario'">
+                <lsw-agenda ref="agenda" />
             </div>
 
             <div class="pad_1"

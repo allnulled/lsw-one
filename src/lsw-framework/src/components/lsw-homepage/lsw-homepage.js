@@ -44,6 +44,9 @@ const launchablesBefore = [{
   label: "🔧 Configuraciones",
   event: () => this.abrirApp("configuraciones"),
 }, {
+  label: "🐱 Emojis",
+  event: () => this.abrirApp("emojis picker"),
+}, {
   label: "✨ Nueva feature",
   event: () => this.abrirApp("nueva feature"),
 }];

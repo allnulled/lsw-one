@@ -11,82 +11,54 @@
     };
 }
 
-NatyScript_block = ast:Bloque_naty? { return ast }
-
-Bloque_naty = _* ast:Sentencia_completa+ _* { return reduceBlock(ast.filter(filterSentences)) }
-
-Sentencia_completa = s:Sentencia_incompleta { return s }
-
-Sentencia_incompleta = 
-    s:(Sentencia_tipo_1
-    / Sentencia_tipo_2
-    / Sentencia_tipo_3
-    / Conjunto
-    / Conjuntivo
-    / Disjuntivo
-    / Negativo
-    / Fin_de_sentencia)
-        { return s }
-
-Sentencia_tipo_2 = Grupo_nominal
-
-Sentencia_tipo_3 = Predicado
-
-Conjunto "{...}" = _* "{" _* ast:Bloque_naty _* "}" { return ast }
-
-Conjuntivo "&..." = _* "&" _* compuesto:Bloque_naty { return { grupo: "conjuntivo", ...compuesto } }
-
-Disjuntivo "|..." = _* "|" _* compuesto:Bloque_naty { return { grupo: "disjuntivo", ...compuesto } }
-
-Negativo "¬..." = _* "¬" _* compuesto:Bloque_naty { return { grupo: "disjuntivo", ...compuesto } }
-
-Negacion "¬..." = _* "¬" _* { return true }
-
-Sentencia_tipo_1 = 
-    sujeto:Grupo_nominal
-    predicado:Predicado
-        { return { ...sujeto, predicado } }
-
-Grupo_nominal =
-    negado:Negacion?
-    texto:Token_texto
-    especificidades:Complementos_de_grupo?
-        { return Object.assign({ texto, negado: negado ?? undefined, especificidades: especificidades ?? undefined }) }
-
+Naty_script = _* ast:Bloque_nivel_1 _* { return ast }
+Bloque_nivel_1 = sentencias:Sentencia_completa+ { return sentencias }
+Bloque_nivel_2 = s:Sentencia_incompleta* { return s }
+Sentencia_completa = s:Sentencia_incompleta Token_eos { return s }
+Sentencia_incompleta = s:(Sentencia_svc / Sentencia_vc / Sentencia_sc / Sentencia_grupo) { return s }
+Sentencia_svc = sujeto:Sujeto predicado:Predicado { return { tipo0: "oración", sujeto, predicado } }
+Sentencia_sc = sujeto:Sujeto { return { tipo0: "conjunto nominal", ...sujeto } }
+Sentencia_vc = predicado:Predicado { return { tipo0: "conjunto verbal", ...predicado } }
+Sentencia_grupo = grupo:Complemento_spec { return { tipo0: "conjunto abierto", ...grupo } }
+Sujeto = 
+    nombre:(Texto / Complemento_spec)
+    complementos:Complementos_del_nombre?
+        { return { tipo1: "sujeto", nombre, complementos }}
 Predicado =
-    verbo:Verbo
-    complementos:Complementos_de_grupo? { return { verbo, complementos: complementos ?? undefined } }
-
-Verbo ">..." =
+    verbo:(Verbo / Complemento_spec)
+    complementos:Complementos_del_verbo?
+        { return { tipo1: "predicado", verbo, complementos }}
+Texto = ( !(Tokens_prohibidos) .)+ { return text().trim() }
+Verbo = 
     token1:(_* ">" _*)
-    verbo:Grupo_nominal
+    verbo:Texto
         { return verbo }
-
-Complementos_de_grupo = Complemento_de_grupo+
-
-Complemento_de_grupo =
-    Complemento_adjetivo
-    / Complemento_listativo
-    / Complemento_agrupativo
-
-Complemento_adjetivo = _* "@" adjetivo:Bloque_naty { return { complemento: "adjetivo", ...adjetivo } }
-Complemento_listativo = _* "[" _* colectivo:Bloque_naty _* "]" { return { complemento: "lista", ...colectivo } }
-Complemento_agrupativo = _* "{" _* especificativo:Bloque_naty _* "}" { return { complement: "aclarativo", especificativo } }
-
-Fin_de_sentencia = _* Token_eol _* { return null }
-
-Token_texto = (!(
-    Token_into_verb /
-    Token_into_spec /
-    Token_into_list /
-    Token_into_adj /
-    Token_into_conj /
-    Token_into_disj /
-    Token_into_neg /
-    Token_eol /
-    Token_eof
-) .)+ { return text().trim() }
-
+Complementos_del_nombre = Complemento_del_nombre+
+Complemento_del_nombre = Complemento_adj / Complemento_conj / Complemento_disj / Complemento_spec / Complemento_list
+Complementos_del_verbo = Complemento_del_nombre+
+Complemento_adj =
+    token1:(_* "@" _*)
+    complemento:Bloque_nivel_2
+        { return complemento }
+Complemento_conj =
+    token1:(_* "&" _*)
+    complemento:Bloque_nivel_2
+        { return complemento }
+Complemento_disj =
+    token1:(_* "|" _*)
+    complemento:Bloque_nivel_2
+        { return complemento }
+Complemento_spec = 
+    token1:(_* "{" _*)
+    complemento:Bloque_nivel_2
+    tokenZ:(_* "}" _*)
+        { return complemento }
+Complemento_list = 
+    token1:(_* "[" _*)
+    complemento:Bloque_nivel_2
+    tokenZ:(_* "]" _*)
+        { return complemento }
+Tokens_prohibidos = Token_into_verb / Token_into_spec / Token_into_list / Token_into_adj / Token_into_conj / Token_into_disj / Token_into_neg / Token_eol / Token_eof
 Token_into_verb = (_* ">")
 Token_into_spec = (_* "{") / (_* "}")
 Token_into_list = (_* "[") / (_* "]")
@@ -96,9 +68,10 @@ Token_into_disj = (_* "|")
 Token_into_neg = (_* "¬")
 Token_eol "." = "."
 Token_eof = !.
+Token_eos = Token_eol / Token_eof / ""
 
 Comentario "comment" = Comentario_unilinea / Comentario_multilinea
-Comentario_unilinea = "//" (!(Token_eol) .)* 
+Comentario_unilinea = "//" (!(___) .)* 
 Comentario_multilinea = "/*" (!("*/").)* "*/"
 
 _ "any space" = __ / ___ / Comentario

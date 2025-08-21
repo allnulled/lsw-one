@@ -1,0 +1,6 @@
+<div class="lsw_naty_script_editor">
+    <button class="supermini width_100" v-on:click="runTest">Compilar NatyScript</button>
+    <textarea class="width_100" style="min-height: 200px;" v-model="input" v-on:keydown.ctrl.enter="runTest" spellcheck="false"></textarea>
+    <pre class="" v-if="error" v-on:click="clearError">{{ error }}</pre>
+    <pre class="small_font" v-if="output">{{ output }}</pre>
+</div>

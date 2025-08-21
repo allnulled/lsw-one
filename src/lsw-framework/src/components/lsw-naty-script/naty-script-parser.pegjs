@@ -14,7 +14,7 @@
 Naty_script = _* ast:Bloque_nivel_1 _* { return ast }
 Bloque_nivel_1 = sentencias:Sentencia_completa+ { return sentencias }
 Bloque_nivel_2 = s:Sentencia_incompleta* { return s }
-Sentencia_completa = s:Sentencia_incompleta Token_eol { return s }
+Sentencia_completa = s:Sentencia_incompleta Token_eos { return s }
 Sentencia_incompleta = s:(Sentencia_svc / Sentencia_vc / Sentencia_sc / Sentencia_grupo) { return s }
 Sentencia_svc = sujeto:Sujeto predicado:Predicado { return { tipo0: "oración", sujeto, predicado } }
 Sentencia_sc = sujeto:Sujeto { return { tipo0: "conjunto nominal", ...sujeto } }
@@ -23,11 +23,11 @@ Sentencia_grupo = grupo:Complemento_spec { return { tipo0: "conjunto abierto", .
 Sujeto = 
     nombre:(Texto / Complemento_spec)
     complementos:Complementos_del_nombre?
-        { return { tipo1: "sujeto", nombre, complementos }}
+        { return { tipo1: "sujeto", nombre, complementos: complementos ?? undefined }}
 Predicado =
     verbo:(Verbo / Complemento_spec)
     complementos:Complementos_del_verbo?
-        { return { tipo1: "predicado", verbo, complementos }}
+        { return { tipo1: "predicado", verbo, complementos: complementos ?? undefined }}
 Texto = ( !(Tokens_prohibidos) .)+ { return text().trim() }
 Verbo = 
     token1:(_* ">" _*)
@@ -68,6 +68,7 @@ Token_into_disj = (_* "|")
 Token_into_neg = (_* "¬")
 Token_eol "." = "."
 Token_eof = !.
+Token_eos = Token_eol / Token_eof / ""
 
 Comentario "comment" = Comentario_unilinea / Comentario_multilinea
 Comentario_unilinea = "//" (!(___) .)* 

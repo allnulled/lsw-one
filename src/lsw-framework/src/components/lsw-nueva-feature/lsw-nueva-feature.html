@@ -1,10 +1,7 @@
 <div class="lsw_nueva_feature">
     <lsw-typical-title>✨ Nueva feature en construcción</lsw-typical-title>
     <div class="pad_vertical_2">🚸 Esta sección está reservada para el desarrollo</div>
-    <button class="supermini width_100" v-on:click="runTest">Compilar NatyScript</button>
-    <textarea class="width_100" style="min-height: 200px;" v-model="input" v-on:keydown.ctrl.enter="runTest" spellcheck="false"></textarea>
-    <pre class="" v-if="error" v-on:click="clearError">{{ error }}</pre>
-    <pre class="small_font" v-if="output">{{ output }}</pre>
+    <lsw-naty-script-editor />
     <!--lsw-volatile-database-visualizer
         v-if="datos"
         :initial-data="datos"
@@ -12,5 +9,4 @@
     <!--lsw-keyboard-1 initial-text="Esto es una frase\nEsto es otra\nY esto otra." /-->
     <!--lsw-sqlite-console /-->
     <!--lsw-sqlite-explorer /-->
-
 </div>

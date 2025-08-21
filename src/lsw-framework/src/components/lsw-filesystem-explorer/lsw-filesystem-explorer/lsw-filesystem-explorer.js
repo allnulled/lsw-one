@@ -335,7 +335,7 @@ Vue.component("LswFilesystemExplorer", {
           Button_to_execute_javascript: {
             if (this.current_node.endsWith(".js")) {
               rightButtonsOnFile.push({
-                text: "⚡️",
+                text: "⚡️ js",
                 classes: "danger_button",
                 click: () => this.processToExecuteFile(),
               });
@@ -344,7 +344,7 @@ Vue.component("LswFilesystemExplorer", {
           Button_to_compile_markdown_to_html: {
             if (this.current_node.endsWith(".md")) {
               rightButtonsOnFile.push({
-                text: "🔩",
+                text: "🔩 md",
                 classes: "",
                 click: () => this.processToCompileMarkdown(),
               });
@@ -353,9 +353,18 @@ Vue.component("LswFilesystemExplorer", {
           Button_to_compile_pegjs_to_js: {
             if (this.current_node.endsWith(".pegjs")) {
               rightButtonsOnFile.push({
-                text: "🔩",
+                text: "🔩 pegjs",
                 classes: "",
                 click: () => this.processToCompilePegjs(),
+              });
+            }
+          }
+          Button_to_compile_natyscript_to_json: {
+            if (this.current_node.endsWith(".nsc")) {
+              rightButtonsOnFile.push({
+                text: "🔩 nsc",
+                classes: "",
+                click: () => this.processToCompileNatyscript(),
               });
             }
           }
@@ -694,6 +703,15 @@ Vue.component("LswFilesystemExplorer", {
       } catch (error) {
         this.$lsw.toasts.showError(error, false, true);
       }
+    },
+    async processToCompileNatyscript() {
+      this.$trace("lsw-filesystem.explorer.methods.processToCompileNatyscript");
+      const currentFile = this.current_node;
+      const natyscriptContent = this.$refs.editor.getContents();
+      const jsonData = NatyScriptParser.parse(natyscriptContent);
+      const jsonContent = JSON.stringify(jsonData, null, 2);
+      const jsonFile = currentFile.replace(/\.nsc$/g, ".json")
+      this.$lsw.fs.write_file(jsonFile, jsonContent);
     },
     async processToCompilePegjs() {
       this.$trace("lsw-filesystem.explorer.methods.processToCompilePegjs");

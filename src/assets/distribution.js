@@ -40588,6 +40588,7 @@ LswLauncher.global.register("datos-volátiles", "♨️ Datos volátiles", (laun
 LswLauncher.global.register("tests-de-aplicación", "✅ Tests de aplicación", (launchable) => LswLauncher.openDialog('<lsw-tests-page />', launchable.name));
 LswLauncher.global.register("emojis-picker", "🐱 Emojis", (launchable) => LswLauncher.openDialog('<lsw-emojis-picker />', launchable.name));
 LswLauncher.global.register("configuraciones", "🔧 Configuraciones", (launchable) => LswLauncher.openDialog('<lsw-configurations-page />', launchable.name));
+LswLauncher.global.register("naty-script", "🧶 NatyScript editor", (launchable) => LswLauncher.openDialog('<lsw-naty-script-editor />', launchable.name));
 LswLauncher.global.register("nueva-feature", "✨ Nueva feature", (launchable) => LswLauncher.openDialog('<lsw-nueva-feature />', launchable.name));
 LswLauncher.global.register("example-of-app", "🏅 Example of app", (launchable) => LswLauncher.openDialog('<lsw-example-of-app />', launchable.name));
 
@@ -48628,8 +48629,8 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
         peg$c4 = function(sujeto) { return { tipo0: "conjunto nominal", ...sujeto } },
         peg$c5 = function(predicado) { return { tipo0: "conjunto verbal", ...predicado } },
         peg$c6 = function(grupo) { return { tipo0: "conjunto abierto", ...grupo } },
-        peg$c7 = function(nombre, complementos) { return { tipo1: "sujeto", nombre, complementos }},
-        peg$c8 = function(verbo, complementos) { return { tipo1: "predicado", verbo, complementos }},
+        peg$c7 = function(nombre, complementos) { return { tipo1: "sujeto", nombre, complementos: complementos ?? undefined }},
+        peg$c8 = function(verbo, complementos) { return { tipo1: "predicado", verbo, complementos: complementos ?? undefined }},
         peg$c9 = peg$anyExpectation(),
         peg$c10 = function() { return text().trim() },
         peg$c11 = ">",
@@ -48656,26 +48657,27 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
         peg$c32 = peg$otherExpectation("."),
         peg$c33 = ".",
         peg$c34 = peg$literalExpectation(".", false),
-        peg$c35 = peg$otherExpectation("comment"),
-        peg$c36 = "//",
-        peg$c37 = peg$literalExpectation("//", false),
-        peg$c38 = "/*",
-        peg$c39 = peg$literalExpectation("/*", false),
-        peg$c40 = "*/",
-        peg$c41 = peg$literalExpectation("*/", false),
-        peg$c42 = peg$otherExpectation("any space"),
-        peg$c43 = peg$otherExpectation("short space"),
-        peg$c44 = "\t",
-        peg$c45 = peg$literalExpectation("\t", false),
-        peg$c46 = " ",
-        peg$c47 = peg$literalExpectation(" ", false),
-        peg$c48 = peg$otherExpectation("long space"),
-        peg$c49 = "\r\n",
-        peg$c50 = peg$literalExpectation("\r\n", false),
-        peg$c51 = "\r",
-        peg$c52 = peg$literalExpectation("\r", false),
-        peg$c53 = "\n",
-        peg$c54 = peg$literalExpectation("\n", false),
+        peg$c35 = "",
+        peg$c36 = peg$otherExpectation("comment"),
+        peg$c37 = "//",
+        peg$c38 = peg$literalExpectation("//", false),
+        peg$c39 = "/*",
+        peg$c40 = peg$literalExpectation("/*", false),
+        peg$c41 = "*/",
+        peg$c42 = peg$literalExpectation("*/", false),
+        peg$c43 = peg$otherExpectation("any space"),
+        peg$c44 = peg$otherExpectation("short space"),
+        peg$c45 = "\t",
+        peg$c46 = peg$literalExpectation("\t", false),
+        peg$c47 = " ",
+        peg$c48 = peg$literalExpectation(" ", false),
+        peg$c49 = peg$otherExpectation("long space"),
+        peg$c50 = "\r\n",
+        peg$c51 = peg$literalExpectation("\r\n", false),
+        peg$c52 = "\r",
+        peg$c53 = peg$literalExpectation("\r", false),
+        peg$c54 = "\n",
+        peg$c55 = peg$literalExpectation("\n", false),
 
         peg$currPos          = 0,
         peg$savedPos         = 0,
@@ -48900,7 +48902,7 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
       s0 = peg$currPos;
       s1 = peg$parseSentencia_incompleta();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseToken_eol();
+        s2 = peg$parseToken_eos();
         if (s2 !== peg$FAILED) {
           peg$savedPos = s0;
           s1 = peg$c2(s1);
@@ -49998,6 +50000,20 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
       return s0;
     }
 
+    function peg$parseToken_eos() {
+      var s0;
+
+      s0 = peg$parseToken_eol();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseToken_eof();
+        if (s0 === peg$FAILED) {
+          s0 = peg$c35;
+        }
+      }
+
+      return s0;
+    }
+
     function peg$parseComentario() {
       var s0, s1;
 
@@ -50009,7 +50025,7 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c35); }
+        if (peg$silentFails === 0) { peg$fail(peg$c36); }
       }
 
       return s0;
@@ -50019,12 +50035,12 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
       var s0, s1, s2, s3, s4, s5;
 
       s0 = peg$currPos;
-      if (input.substr(peg$currPos, 2) === peg$c36) {
-        s1 = peg$c36;
+      if (input.substr(peg$currPos, 2) === peg$c37) {
+        s1 = peg$c37;
         peg$currPos += 2;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c37); }
+        if (peg$silentFails === 0) { peg$fail(peg$c38); }
       }
       if (s1 !== peg$FAILED) {
         s2 = [];
@@ -50110,24 +50126,24 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
       var s0, s1, s2, s3, s4, s5;
 
       s0 = peg$currPos;
-      if (input.substr(peg$currPos, 2) === peg$c38) {
-        s1 = peg$c38;
+      if (input.substr(peg$currPos, 2) === peg$c39) {
+        s1 = peg$c39;
         peg$currPos += 2;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c39); }
+        if (peg$silentFails === 0) { peg$fail(peg$c40); }
       }
       if (s1 !== peg$FAILED) {
         s2 = [];
         s3 = peg$currPos;
         s4 = peg$currPos;
         peg$silentFails++;
-        if (input.substr(peg$currPos, 2) === peg$c40) {
-          s5 = peg$c40;
+        if (input.substr(peg$currPos, 2) === peg$c41) {
+          s5 = peg$c41;
           peg$currPos += 2;
         } else {
           s5 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c41); }
+          if (peg$silentFails === 0) { peg$fail(peg$c42); }
         }
         peg$silentFails--;
         if (s5 === peg$FAILED) {
@@ -50160,12 +50176,12 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
           s3 = peg$currPos;
           s4 = peg$currPos;
           peg$silentFails++;
-          if (input.substr(peg$currPos, 2) === peg$c40) {
-            s5 = peg$c40;
+          if (input.substr(peg$currPos, 2) === peg$c41) {
+            s5 = peg$c41;
             peg$currPos += 2;
           } else {
             s5 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c41); }
+            if (peg$silentFails === 0) { peg$fail(peg$c42); }
           }
           peg$silentFails--;
           if (s5 === peg$FAILED) {
@@ -50195,12 +50211,12 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
           }
         }
         if (s2 !== peg$FAILED) {
-          if (input.substr(peg$currPos, 2) === peg$c40) {
-            s3 = peg$c40;
+          if (input.substr(peg$currPos, 2) === peg$c41) {
+            s3 = peg$c41;
             peg$currPos += 2;
           } else {
             s3 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c41); }
+            if (peg$silentFails === 0) { peg$fail(peg$c42); }
           }
           if (s3 !== peg$FAILED) {
             s1 = [s1, s2, s3];
@@ -50235,7 +50251,7 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c42); }
+        if (peg$silentFails === 0) { peg$fail(peg$c43); }
       }
 
       return s0;
@@ -50246,25 +50262,25 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
 
       peg$silentFails++;
       if (input.charCodeAt(peg$currPos) === 9) {
-        s0 = peg$c44;
+        s0 = peg$c45;
         peg$currPos++;
       } else {
         s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c45); }
+        if (peg$silentFails === 0) { peg$fail(peg$c46); }
       }
       if (s0 === peg$FAILED) {
         if (input.charCodeAt(peg$currPos) === 32) {
-          s0 = peg$c46;
+          s0 = peg$c47;
           peg$currPos++;
         } else {
           s0 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c47); }
+          if (peg$silentFails === 0) { peg$fail(peg$c48); }
         }
       }
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c43); }
+        if (peg$silentFails === 0) { peg$fail(peg$c44); }
       }
 
       return s0;
@@ -50274,35 +50290,35 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
       var s0, s1;
 
       peg$silentFails++;
-      if (input.substr(peg$currPos, 2) === peg$c49) {
-        s0 = peg$c49;
+      if (input.substr(peg$currPos, 2) === peg$c50) {
+        s0 = peg$c50;
         peg$currPos += 2;
       } else {
         s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c50); }
+        if (peg$silentFails === 0) { peg$fail(peg$c51); }
       }
       if (s0 === peg$FAILED) {
         if (input.charCodeAt(peg$currPos) === 13) {
-          s0 = peg$c51;
+          s0 = peg$c52;
           peg$currPos++;
         } else {
           s0 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c52); }
+          if (peg$silentFails === 0) { peg$fail(peg$c53); }
         }
         if (s0 === peg$FAILED) {
           if (input.charCodeAt(peg$currPos) === 10) {
-            s0 = peg$c53;
+            s0 = peg$c54;
             peg$currPos++;
           } else {
             s0 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c54); }
+            if (peg$silentFails === 0) { peg$fail(peg$c55); }
           }
         }
       }
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c48); }
+        if (peg$silentFails === 0) { peg$fail(peg$c49); }
       }
 
       return s0;
@@ -50347,10 +50363,7 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
 })(typeof window === 'undefined' ? global : window);
 
 
-// @vuebundler[Lsw_framework_components][91]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-naty-script/lsw-naty-script.js
-
-
-// @vuebundler[Lsw_framework_components][92]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker-api.js
+// @vuebundler[Lsw_framework_components][91]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker-api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -50486,9 +50499,9 @@ window.NatyScriptApi = new window.NatyScriptApiPrototype();
 
 });
 
-// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.html
+// @vuebundler[Lsw_framework_components][92]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.html
 
-// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.js
+// @vuebundler[Lsw_framework_components][92]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.js
 // @code.start: LswConsoleHooker API | @$section: Vue.js (v2) Components » LswConsoleHooker API » LswConsoleHooker component
 Vue.component("LswConsoleHooker", {
   template: `<div class="console-hooker">
@@ -50539,11 +50552,11 @@ Vue.component("LswConsoleHooker", {
 });
 // @code.end: LswConsoleHooker API
 
-// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.css
+// @vuebundler[Lsw_framework_components][92]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-console-hooker/console-hooker.css
 
-// @vuebundler[Lsw_framework_components][94]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.html
+// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.html
 
-// @vuebundler[Lsw_framework_components][94]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.js
+// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.js
 // @code.start: LswDatabaseExplorer API | @$section: Vue.js (v2) Components » LswDatabaseExplorer API » LswDatabaseExplorer API
 Vue.component("LswDatabaseExplorer", {
   template: `<div class="lsw_database_ui database_explorer" :class="{hideBreadcrumb: !showBreadcrumb}">
@@ -50600,11 +50613,11 @@ Vue.component("LswDatabaseExplorer", {
 });
 // @code.end: LswDatabaseExplorer API
 
-// @vuebundler[Lsw_framework_components][94]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.css
+// @vuebundler[Lsw_framework_components][93]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-explorer/database-explorer.css
 
-// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.html
+// @vuebundler[Lsw_framework_components][94]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.html
 
-// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.js
+// @vuebundler[Lsw_framework_components][94]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.js
 // @code.start: LswDatabaseBreadcrumb API | @$section: Vue.js (v2) Components » LswDatabaseBreadcrumb API » LswDatabaseBreadcrumb API
 Vue.component("LswDatabaseBreadcrumb", {
   template: `<div class="database_breadcrumb">
@@ -50648,11 +50661,11 @@ Vue.component("LswDatabaseBreadcrumb", {
 });
 // @code.end: LswDatabaseBreadcrumb API
 
-// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.css
+// @vuebundler[Lsw_framework_components][94]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/database-breadcrumb/database-breadcrumb.css
 
-// @vuebundler[Lsw_framework_components][96]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.html
+// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.html
 
-// @vuebundler[Lsw_framework_components][96]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.js
+// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.js
 // @code.start: LswPageDatabases API | @$section: Vue.js (v2) Components » LswPageDatabases API » LswPageDatabases API
 Vue.component("LswPageDatabases", {
   template: `<div>
@@ -50719,11 +50732,11 @@ Vue.component("LswPageDatabases", {
 });
 // @code.end: LswPageDatabases API
 
-// @vuebundler[Lsw_framework_components][96]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.css
+// @vuebundler[Lsw_framework_components][95]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-databases/page-databases.css
 
-// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.html
+// @vuebundler[Lsw_framework_components][96]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.html
 
-// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.js
+// @vuebundler[Lsw_framework_components][96]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.js
 // @code.start: LswPageRows API | @$section: Vue.js (v2) Components » LswPageRows API » LswPageRows API
 Vue.component("LswPageRows", {
   template: `<div>
@@ -50830,11 +50843,11 @@ Vue.component("LswPageRows", {
 });
 // @code.end: LswPageRows API
 
-// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.css
+// @vuebundler[Lsw_framework_components][96]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-rows/page-rows.css
 
-// @vuebundler[Lsw_framework_components][98]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.html
+// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.html
 
-// @vuebundler[Lsw_framework_components][98]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.js
+// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.js
 // @code.start: LswPageRow API | @$section: Vue.js (v2) Components » LswPageRow API » LswPageRow API
 Vue.component("LswPageRow", {
   template: `<div>
@@ -50995,11 +51008,11 @@ Vue.component("LswPageRow", {
 });
 // @code.end: LswPageRow API
 
-// @vuebundler[Lsw_framework_components][98]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.css
+// @vuebundler[Lsw_framework_components][97]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-row/page-row.css
 
-// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.html
+// @vuebundler[Lsw_framework_components][98]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.html
 
-// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.js
+// @vuebundler[Lsw_framework_components][98]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.js
 // @code.start: LswPageSchema API | @$section: Vue.js (v2) Components » LswPageSchema API » LswPageSchema API
 Vue.component("LswPageSchema", {
   template: `<div></div>`,
@@ -51021,11 +51034,11 @@ Vue.component("LswPageSchema", {
 });
 // @code.end: LswPageSchema API
 
-// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.css
+// @vuebundler[Lsw_framework_components][98]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-schema/page-schema.css
 
-// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.html
+// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.html
 
-// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.js
+// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.js
 // @code.start: LswPageTables API | @$section: Vue.js (v2) Components » LswPageTables API » LswPageTables API
 Vue.component("LswPageTables", {
   template: `<div class="page_tables page">
@@ -51155,11 +51168,11 @@ Vue.component("LswPageTables", {
 });
 // @code.end: LswPageTables API
 
-// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.css
+// @vuebundler[Lsw_framework_components][99]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-database-ui/page-tables/page-tables.css
 
-// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.html
+// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.html
 
-// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.js
+// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.js
 // @code.start: LswFilesystemExplorer API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemExplorer component
 Vue.component("LswFilesystemExplorer", {
   name: "LswFilesystemExplorer",
@@ -51534,7 +51547,7 @@ Vue.component("LswFilesystemExplorer", {
           Button_to_execute_javascript: {
             if (this.current_node.endsWith(".js")) {
               rightButtonsOnFile.push({
-                text: "⚡️",
+                text: "⚡️ js",
                 classes: "danger_button",
                 click: () => this.processToExecuteFile(),
               });
@@ -51543,7 +51556,7 @@ Vue.component("LswFilesystemExplorer", {
           Button_to_compile_markdown_to_html: {
             if (this.current_node.endsWith(".md")) {
               rightButtonsOnFile.push({
-                text: "🔩",
+                text: "🔩 md",
                 classes: "",
                 click: () => this.processToCompileMarkdown(),
               });
@@ -51552,9 +51565,18 @@ Vue.component("LswFilesystemExplorer", {
           Button_to_compile_pegjs_to_js: {
             if (this.current_node.endsWith(".pegjs")) {
               rightButtonsOnFile.push({
-                text: "🔩",
+                text: "🔩 pegjs",
                 classes: "",
                 click: () => this.processToCompilePegjs(),
+              });
+            }
+          }
+          Button_to_compile_natyscript_to_json: {
+            if (this.current_node.endsWith(".nsc")) {
+              rightButtonsOnFile.push({
+                text: "🔩 nsc",
+                classes: "",
+                click: () => this.processToCompileNatyscript(),
               });
             }
           }
@@ -51894,6 +51916,15 @@ Vue.component("LswFilesystemExplorer", {
         this.$lsw.toasts.showError(error, false, true);
       }
     },
+    async processToCompileNatyscript() {
+      this.$trace("lsw-filesystem.explorer.methods.processToCompileNatyscript");
+      const currentFile = this.current_node;
+      const natyscriptContent = this.$refs.editor.getContents();
+      const jsonData = NatyScriptParser.parse(natyscriptContent);
+      const jsonContent = JSON.stringify(jsonData, null, 2);
+      const jsonFile = currentFile.replace(/\.nsc$/g, ".json")
+      this.$lsw.fs.write_file(jsonFile, jsonContent);
+    },
     async processToCompilePegjs() {
       this.$trace("lsw-filesystem.explorer.methods.processToCompilePegjs");
       const currentFile = this.current_node;
@@ -52164,11 +52195,11 @@ Vue.component("LswFilesystemExplorer", {
 });
 // @code.end: LswFilesystemExplorer API
 
-// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.css
+// @vuebundler[Lsw_framework_components][100]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-explorer/lsw-filesystem-explorer.css
 
-// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.html
+// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.html
 
-// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.js
+// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.js
 // @code.start: LswFilesystemButtonsPanel API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemButtonsPanel component
 Vue.component("LswFilesystemButtonsPanel", {
   name: "LswFilesystemButtonsPanel",
@@ -52218,11 +52249,11 @@ Vue.component("LswFilesystemButtonsPanel", {
 });
 // @code.end: LswFilesystemButtonsPanel API
 
-// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.css
+// @vuebundler[Lsw_framework_components][101]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-buttons-panel/lsw-filesystem-buttons-panel.css
 
-// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.html
+// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.html
 
-// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.js
+// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.js
 // @code.start: LswFilesystemEditor API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemEditor component
 Vue.component("LswFilesystemEditor", {
   name: "LswFilesystemEditor",
@@ -52377,11 +52408,11 @@ Vue.component("LswFilesystemEditor", {
 });
 // @code.end: LswFilesystemEditor API
 
-// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.css
+// @vuebundler[Lsw_framework_components][102]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-editor/lsw-filesystem-editor.css
 
-// @vuebundler[Lsw_framework_components][104]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.html
+// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.html
 
-// @vuebundler[Lsw_framework_components][104]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.js
+// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.js
 // @code.start: LswFilesystemTreeviewer API | @$section: Vue.js (v2) Components » Lsw Filesystem Explorer API » LswFilesystemTreeviewer component
 Vue.component("LswFilesystemTreeviewer", {
   name: "LswFilesystemTreeviewer",
@@ -52565,11 +52596,11 @@ Vue.component("LswFilesystemTreeviewer", {
 });
 // @code.end: LswFilesystemTreeviewer API
 
-// @vuebundler[Lsw_framework_components][104]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.css
+// @vuebundler[Lsw_framework_components][103]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-filesystem-explorer/lsw-filesystem-treeviewer/lsw-filesystem-treeviewer.css
 
-// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.html
+// @vuebundler[Lsw_framework_components][104]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.html
 
-// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.js
+// @vuebundler[Lsw_framework_components][104]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.js
 // @code.start: LswWikiLibros API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiLibros component
 Vue.component("LswWikiLibros", {
   name: "LswWikiLibros",
@@ -52740,11 +52771,11 @@ Vue.component("LswWikiLibros", {
 });
 // @code.end: LswWikiLibros API
 
-// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.css
+// @vuebundler[Lsw_framework_components][104]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libros/lsw-wiki-libros.css
 
-// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.html
+// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.html
 
-// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.js
+// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.js
 // @code.start: LswWikiLibroViewer API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiLibroViewer component
 Vue.component("LswWikiLibroViewer", {
   name: "LswWikiLibroViewer",
@@ -52859,11 +52890,11 @@ Vue.component("LswWikiLibroViewer", {
 });
 // @code.end: LswWikiLibroViewer API
 
-// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.css
+// @vuebundler[Lsw_framework_components][105]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-libro-viewer/lsw-wiki-libro-viewer.css
 
-// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.html
+// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.html
 
-// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.js
+// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.js
 // @code.start: LswWikiArticulos API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiArticulos component
 Vue.component("LswWikiArticulos", {
   name: "LswWikiArticulos",
@@ -53212,11 +53243,11 @@ Vue.component("LswWikiArticulos", {
 });
 // @code.end: LswWikiArticulos API
 
-// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.css
+// @vuebundler[Lsw_framework_components][106]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulos/lsw-wiki-articulos.css
 
-// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.html
+// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.html
 
-// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.js
+// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.js
 // @code.start: LswWikiCategorias API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiCategorias component
 Vue.component("LswWikiCategorias", {
   name: "LswWikiCategorias",
@@ -53285,11 +53316,11 @@ Vue.component("LswWikiCategorias", {
 });
 // @code.end: LswWikiCategorias API
 
-// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.css
+// @vuebundler[Lsw_framework_components][107]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-categorias/lsw-wiki-categorias.css
 
-// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.html
+// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.html
 
-// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.js
+// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.js
 // @code.start: LswWikiArticuloViewer API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiArticuloViewer component
 Vue.component("LswWikiArticuloViewer", {
   name: "LswWikiArticuloViewer",
@@ -53367,11 +53398,11 @@ Vue.component("LswWikiArticuloViewer", {
 });
 // @code.end: LswWikiArticuloViewer API
 
-// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.css
+// @vuebundler[Lsw_framework_components][108]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-articulo-viewer/lsw-wiki-articulo-viewer.css
 
-// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.html
+// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.html
 
-// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.js
+// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.js
 // @code.start: LswWikiRevistas API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiRevistas component
 Vue.component("LswWikiRevistas", {
   name: "LswWikiRevistas",
@@ -53405,11 +53436,11 @@ Vue.component("LswWikiRevistas", {
 });
 // @code.end: LswWikiRevistas API
 
-// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.css
+// @vuebundler[Lsw_framework_components][109]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-revistas/lsw-wiki-revistas.css
 
-// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.html
+// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.html
 
-// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.js
+// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.js
 // @code.start: LswWikiTree API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiTree component
 Vue.component("LswWikiTree", {
   name: "LswWikiTree",
@@ -53471,11 +53502,11 @@ Vue.component("LswWikiTree", {
 });
 // @code.end: LswWikiTree API
 
-// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.css
+// @vuebundler[Lsw_framework_components][110]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-tree/lsw-wiki-tree.css
 
-// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.html
+// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.html
 
-// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.js
+// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.js
 // @code.start: LswWikiTreenode API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWikiTreenode component
 Vue.component("LswWikiTreenode", {
   name: "LswWikiTreenode",
@@ -53520,11 +53551,11 @@ Vue.component("LswWikiTreenode", {
 });
 // @code.end: LswWikiTreenode API
 
-// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.css
+// @vuebundler[Lsw_framework_components][111]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-treenode/lsw-wiki-treenode.css
 
-// @vuebundler[Lsw_framework_components][113]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.html
+// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.html
 
-// @vuebundler[Lsw_framework_components][113]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.js
+// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.js
 // @code.start: LswWiki API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswWiki component
 Vue.component("LswWiki", {
   name: "LswWiki",
@@ -53705,9 +53736,9 @@ Vue.component("LswWiki", {
 });
 // @code.end: LswWiki API
 
-// @vuebundler[Lsw_framework_components][113]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.css
+// @vuebundler[Lsw_framework_components][112]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki/lsw-wiki.css
 
-// @vuebundler[Lsw_framework_components][114]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-utils/lsw-wiki-utils.js
+// @vuebundler[Lsw_framework_components][113]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-wiki/lsw-wiki-utils/lsw-wiki-utils.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -53759,9 +53790,9 @@ Vue.component("LswWiki", {
 
 });
 
-// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-factory/lsw-book-factory.html
+// @vuebundler[Lsw_framework_components][114]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-factory/lsw-book-factory.html
 
-// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-factory/lsw-book-factory.js
+// @vuebundler[Lsw_framework_components][114]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-factory/lsw-book-factory.js
 // @code.start: LswBookFactory API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswBookFactory component
 Vue.component("LswBookFactory", {
   template: `<div class="lsw_book_factory">
@@ -53873,11 +53904,11 @@ Vue.component("LswBookFactory", {
 });
 // @code.end: LswBookFactory API
 
-// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-factory/lsw-book-factory.css
+// @vuebundler[Lsw_framework_components][114]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-factory/lsw-book-factory.css
 
-// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-library/lsw-book-library.html
+// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-library/lsw-book-library.html
 
-// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-library/lsw-book-library.js
+// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-library/lsw-book-library.js
 // @code.start: LswBookLibrary API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswBookLibrary component
 Vue.component("LswBookLibrary", {
   template: `<div class="lsw_book_library">
@@ -53898,11 +53929,11 @@ Vue.component("LswBookLibrary", {
 });
 // @code.end: LswBookLibrary API
 
-// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-library/lsw-book-library.css
+// @vuebundler[Lsw_framework_components][115]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-book-library/lsw-book-library.css
 
-// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer.html
+// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer.html
 
-// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer.js
+// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer.js
 // @code.start: LswMarkdownViewer API | @$section: Vue.js (v2) Components » LswMarkdownViewer component
 Vue.component("LswMarkdownViewer", {
   template: `<div class="lsw_markdown_viewer">
@@ -53976,11 +54007,11 @@ Vue.component("LswMarkdownViewer", {
 });
 // @code.end: LswMarkdownViewer API
 
-// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer.css
+// @vuebundler[Lsw_framework_components][116]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer.css
 
-// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer.html
+// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer.html
 
-// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer.js
+// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer.js
 // @code.start: LswMicrodataExplorer API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswMicrodataExplorer component
 Vue.component("LswMicrodataExplorer", {
   template: `<div class="lsw_microdata_explorer">
@@ -54001,11 +54032,11 @@ Vue.component("LswMicrodataExplorer", {
 });
 // @code.end: LswMicrodataExplorer API
 
-// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer.css
+// @vuebundler[Lsw_framework_components][117]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer.css
 
-// @vuebundler[Lsw_framework_components][119]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.html
+// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.html
 
-// @vuebundler[Lsw_framework_components][119]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.js
+// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.js
 // @code.start: LswClockwatcher API | @$section: Vue.js (v2) Components » Lsw Windows API » LswClockwatcher component
 // Change this component at your convenience:
 Vue.component("LswClockwatcher", {
@@ -54070,9 +54101,9 @@ Vue.component("LswClockwatcher", {
 });
 // @code.end: LswClockwatcher API
 
-// @vuebundler[Lsw_framework_components][119]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.css
+// @vuebundler[Lsw_framework_components][118]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.css
 
-// @vuebundler[Lsw_framework_components][120]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-api.js
+// @vuebundler[Lsw_framework_components][119]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -54477,9 +54508,9 @@ Vue.component("LswClockwatcher", {
 
 });
 
-// @vuebundler[Lsw_framework_components][121]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.html
+// @vuebundler[Lsw_framework_components][120]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.html
 
-// @vuebundler[Lsw_framework_components][121]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.js
+// @vuebundler[Lsw_framework_components][120]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.js
 // @code.start: LswGoalsViewer API | @$section: Vue.js (v2) Components » LswGoalsViewer component
 Vue.component("LswGoalsViewer", {
   template: `<div class="lsw_goals_viewer">
@@ -54991,11 +55022,11 @@ Vue.component("LswGoalsViewer", {
 });
 // @code.end: LswGoalsViewer API
 
-// @vuebundler[Lsw_framework_components][121]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.css
+// @vuebundler[Lsw_framework_components][120]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-viewer/lsw-goals-viewer.css
 
-// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.html
+// @vuebundler[Lsw_framework_components][121]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.html
 
-// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.js
+// @vuebundler[Lsw_framework_components][121]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.js
 // @code.start: LswGoalsRecordsViewer API | @$section: Vue.js (v2) Components » LswGoalsRecordsViewer component
 Vue.component("LswGoalsRecordsViewer", {
   template: `<div class="lsw_goals_records_viewer">
@@ -55191,11 +55222,11 @@ Vue.component("LswGoalsRecordsViewer", {
 });
 // @code.end: LswGoalsRecordsViewer API
 
-// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.css
+// @vuebundler[Lsw_framework_components][121]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-goals-records-viewer/lsw-goals-records-viewer.css
 
-// @vuebundler[Lsw_framework_components][123]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.html
+// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.html
 
-// @vuebundler[Lsw_framework_components][123]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.js
+// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.js
 // @code.start: LswBinDirectory API | @$section: Vue.js (v2) Components » LswBinDirectory component
 Vue.component("LswBinDirectory", {
   template: `<div class="lsw_bin_directory">
@@ -55375,11 +55406,11 @@ Vue.component("LswBinDirectory", {
 });
 // @code.end: LswBinDirectory API
 
-// @vuebundler[Lsw_framework_components][123]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.css
+// @vuebundler[Lsw_framework_components][122]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bin-directory/lsw-bin-directory.css
 
-// @vuebundler[Lsw_framework_components][124]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.html
+// @vuebundler[Lsw_framework_components][123]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.html
 
-// @vuebundler[Lsw_framework_components][124]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.js
+// @vuebundler[Lsw_framework_components][123]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.js
 // @code.start: LswEventTracker API | @$section: Vue.js (v2) Components » LswEventTracker component
 Vue.component("LswEventTracker", {
   template: `<div class="lsw_event_tracker">
@@ -55685,11 +55716,11 @@ Vue.component("LswEventTracker", {
 });
 // @code.end: LswEventTracker API
 
-// @vuebundler[Lsw_framework_components][124]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.css
+// @vuebundler[Lsw_framework_components][123]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-event-tracker/lsw-event-tracker.css
 
-// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.html
+// @vuebundler[Lsw_framework_components][124]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.html
 
-// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.js
+// @vuebundler[Lsw_framework_components][124]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.js
 // @code.start: LswSearchReplacer API | @$section: Vue.js (v2) Components » LswSearchReplacer component
 Vue.component("LswSearchReplacer", {
   template: `<div class="lsw_search_replacer">
@@ -55835,11 +55866,11 @@ Vue.component("LswSearchReplacer", {
 });
 // @code.end: LswSearchReplacer API
 
-// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.css
+// @vuebundler[Lsw_framework_components][124]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-search-replacer/lsw-search-replacer.css
 
-// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.html
+// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.html
 
-// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.js
+// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.js
 // @code.start: LswAgenda API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgenda API » LswAgenda component
 Vue.component("LswAgenda", {
   name: "LswAgenda",
@@ -56224,11 +56255,11 @@ Vue.component("LswAgenda", {
 // @code.end: LswAgenda API
 
 
-// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.css
+// @vuebundler[Lsw_framework_components][125]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/lsw-agenda/lsw-agenda.css
 
-// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.html
+// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.html
 
-// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.js
+// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.js
 // @code.start: LswAgendaAccionAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaAccionAdd API » LswAgendaAccionAdd component
 Vue.component("LswAgendaAccionAdd", {
   template: `<div class="LswAgendaAccionAdd" style="padding-top: 4px;">
@@ -56268,11 +56299,11 @@ Vue.component("LswAgendaAccionAdd", {
 });
 // @code.end: LswAgendaAccionAdd API
 
-// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.css
+// @vuebundler[Lsw_framework_components][126]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-add/lsw-agenda-accion-add.css
 
-// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.html
+// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.html
 
-// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.js
+// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.js
 // @code.start: LswAgendaAccionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaAccionSearch API » LswAgendaAccionSearch component
 Vue.component("LswAgendaAccionSearch", {
   template: `<div class="LswAgendaAccionSearch pad_top_1">
@@ -56311,11 +56342,11 @@ Vue.component("LswAgendaAccionSearch", {
 });
 // @code.end: LswAgendaAccionSearch API
 
-// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.css
+// @vuebundler[Lsw_framework_components][127]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-accion-search/lsw-agenda-accion-search.css
 
-// @vuebundler[Lsw_framework_components][129]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.html
+// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.html
 
-// @vuebundler[Lsw_framework_components][129]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.js
+// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.js
 // @code.start: LswAgendaAccionesViewer API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaAccionesViewer API » LswAgendaAccionesViewer component
 Vue.component("LswAgendaAccionesViewer", {
   name: "LswAgendaAccionesViewer",
@@ -57200,11 +57231,11 @@ Vue.component("LswAgendaAccionesViewer", {
 });
 // @code.end: LswAgendaAccionesViewer API
 
-// @vuebundler[Lsw_framework_components][129]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.css
+// @vuebundler[Lsw_framework_components][128]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-acciones-viewer/lsw-agenda-acciones-viewer.css
 
-// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.html
+// @vuebundler[Lsw_framework_components][129]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.html
 
-// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.js
+// @vuebundler[Lsw_framework_components][129]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.js
 // @code.start: LswAgendaBreadcrumb API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaBreadcrumb API » LswAgendaBreadcrumb component
 Vue.component("LswAgendaBreadcrumb", {
   name: "LswAgendaBreadcrumb",
@@ -57275,11 +57306,11 @@ Vue.component("LswAgendaBreadcrumb", {
 });
 // @code.end: LswAgendaBreadcrumb API
 
-// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.css
+// @vuebundler[Lsw_framework_components][129]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-breadcrumb/lsw-agenda-breadcrumb.css
 
-// @vuebundler[Lsw_framework_components][131]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.html
+// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.html
 
-// @vuebundler[Lsw_framework_components][131]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.js
+// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.js
 // @code.start: LswAgendaConceptoAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaConceptoAdd API » LswAgendaConceptoAdd component
 Vue.component("LswAgendaConceptoAdd", {
   template: `<div class="LswAgendaConceptoAdd">
@@ -57319,11 +57350,11 @@ Vue.component("LswAgendaConceptoAdd", {
 });
 // @code.end: LswAgendaConceptoAdd API
 
-// @vuebundler[Lsw_framework_components][131]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.css
+// @vuebundler[Lsw_framework_components][130]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-add/lsw-agenda-concepto-add.css
 
-// @vuebundler[Lsw_framework_components][132]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.html
+// @vuebundler[Lsw_framework_components][131]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.html
 
-// @vuebundler[Lsw_framework_components][132]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.js
+// @vuebundler[Lsw_framework_components][131]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.js
 // @code.start: LswAgendaConceptoSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaConceptoSearch API » LswAgendaConceptoSearch component
 Vue.component("LswAgendaConceptoSearch", {
   template: `<div class="LswAgendaConceptoSearch pad_top_1">
@@ -57362,11 +57393,11 @@ Vue.component("LswAgendaConceptoSearch", {
 });
 // @code.end: LswAgendaConceptoSearch API
 
-// @vuebundler[Lsw_framework_components][132]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.css
+// @vuebundler[Lsw_framework_components][131]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-concepto-search/lsw-agenda-concepto-search.css
 
-// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.html
+// @vuebundler[Lsw_framework_components][132]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.html
 
-// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.js
+// @vuebundler[Lsw_framework_components][132]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.js
 // @code.start: LswAgendaEventoSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaEventoSearch API » LswAgendaEventoSearch component
 Vue.component("LswAgendaEventoSearch", {
   template: `<div class="LswAgendaEventoSearch">
@@ -57389,11 +57420,11 @@ Vue.component("LswAgendaEventoSearch", {
 });
 // @code.end: LswAgendaEventoSearch API
 
-// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.css
+// @vuebundler[Lsw_framework_components][132]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-evento-search/lsw-agenda-evento-search.css
 
-// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.html
+// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.html
 
-// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.js
+// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.js
 // @code.start: LswAgendaForm API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaForm API » LswAgendaForm component
 Vue.component("LswAgendaForm", {
   template: `<div>
@@ -57453,11 +57484,11 @@ Vue.component("LswAgendaForm", {
 });
 // @code.end: LswAgendaForm API
 
-// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.css
+// @vuebundler[Lsw_framework_components][133]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-form/lsw-agenda-form.css
 
-// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.html
+// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.html
 
-// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.js
+// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.js
 // @code.start: LswAgendaImpresionAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaImpresionAdd API » LswAgendaImpresionAdd component
 Vue.component("LswAgendaImpresionAdd", {
   template: `<div class="LswAgendaImpresionAdd">
@@ -57480,11 +57511,11 @@ Vue.component("LswAgendaImpresionAdd", {
 });
 // @code.end: LswAgendaImpresionAdd API
 
-// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.css
+// @vuebundler[Lsw_framework_components][134]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-add/lsw-agenda-impresion-add.css
 
-// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.html
+// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.html
 
-// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.js
+// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.js
 // @code.start: LswAgendaImpresionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaImpresionSearch API » LswAgendaImpresionSearch component
 Vue.component("LswAgendaImpresionSearch", {
   template: `<div class="LswAgendaImpresionSearch">
@@ -57507,11 +57538,11 @@ Vue.component("LswAgendaImpresionSearch", {
 });
 // @code.end: LswAgendaImpresionSearch API
 
-// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.css
+// @vuebundler[Lsw_framework_components][135]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-impresion-search/lsw-agenda-impresion-search.css
 
-// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.html
+// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.html
 
-// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.js
+// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.js
 // @code.start: LswAgendaInfraccionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaInfraccionSearch API » LswAgendaInfraccionSearch component
 Vue.component("LswAgendaInfraccionSearch", {
   template: `<div class="LswAgendaInfraccionSearch">
@@ -57534,11 +57565,11 @@ Vue.component("LswAgendaInfraccionSearch", {
 });
 // @code.end: LswAgendaInfraccionSearch API
 
-// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.css
+// @vuebundler[Lsw_framework_components][136]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-infraccion-search/lsw-agenda-infraccion-search.css
 
-// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.html
+// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.html
 
-// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.js
+// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.js
 // @code.start: LswAgendaLimitadorAdd API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorAdd API » LswAgendaLimitadorAdd component
 Vue.component("LswAgendaLimitadorAdd", {
   template: `<div class="LswAgendaLimitadorAdd">
@@ -57578,11 +57609,11 @@ Vue.component("LswAgendaLimitadorAdd", {
 });
 // @code.end: LswAgendaLimitadorAdd API
 
-// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.css
+// @vuebundler[Lsw_framework_components][137]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-add/lsw-agenda-limitador-add.css
 
-// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.html
+// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.html
 
-// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.js
+// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.js
 // @code.start: LswAgendaLimitadorSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorSearch API » LswAgendaLimitadorSearch component
 Vue.component("LswAgendaLimitadorSearch", {
   template: `<div class="LswAgendaLimitadorSearch">
@@ -57615,11 +57646,11 @@ Vue.component("LswAgendaLimitadorSearch", {
 });
 // @code.end: LswAgendaLimitadorSearch API
 
-// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.css
+// @vuebundler[Lsw_framework_components][138]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-search/lsw-agenda-limitador-search.css
 
-// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.html
+// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.html
 
-// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.js
+// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.js
 // @code.start: LswAgendaLimitadorViewer API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaLimitadorViewer API » LswAgendaLimitadorViewer component
 Vue.component("LswAgendaLimitadorViewer", {
   template: `<div class="LswAgendaLimitadorViewer">
@@ -57685,11 +57716,11 @@ Vue.component("LswAgendaLimitadorViewer", {
 });
 // @code.end: LswAgendaLimitadorViewer API
 
-// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.css
+// @vuebundler[Lsw_framework_components][139]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-limitador-viewer/lsw-agenda-limitador-viewer.css
 
-// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.html
+// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.html
 
-// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.js
+// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.js
 // @code.start: LswAgendaPostimpresionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaPostimpresionSearch API » LswAgendaPostimpresionSearch component
 Vue.component("LswAgendaPostimpresionSearch", {
   template: `<div class="LswAgendaPostimpresionSearch">
@@ -57712,11 +57743,11 @@ Vue.component("LswAgendaPostimpresionSearch", {
 });
 // @code.end: LswAgendaPostimpresionSearch API
 
-// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.css
+// @vuebundler[Lsw_framework_components][140]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-postimpresion-search/lsw-agenda-postimpresion-search.css
 
-// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.html
+// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.html
 
-// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.js
+// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.js
 // @code.start: LswAgendaPropagacionSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaPropagacionSearch API » LswAgendaPropagacionSearch component
 Vue.component("LswAgendaPropagacionSearch", {
   template: `<div class="LswAgendaPropagacionSearch">
@@ -57739,11 +57770,11 @@ Vue.component("LswAgendaPropagacionSearch", {
 });
 // @code.end: LswAgendaPropagacionSearch API
 
-// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.css
+// @vuebundler[Lsw_framework_components][141]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagacion-search/lsw-agenda-propagacion-search.css
 
-// @vuebundler[Lsw_framework_components][143]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.html
+// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.html
 
-// @vuebundler[Lsw_framework_components][143]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.js
+// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.js
 // @code.start: LswAgendaPropagadorSearch API | @$section: Vue.js (v2) Components » LswAgenda API » LswAgendaPropagadorSearch API » LswAgendaPropagadorSearch component
 Vue.component("LswAgendaPropagadorSearch", {
   template: `<div class="LswAgendaPropagadorSearch">
@@ -57766,11 +57797,11 @@ Vue.component("LswAgendaPropagadorSearch", {
 });
 // @code.end: LswAgendaPropagadorSearch API
 
-// @vuebundler[Lsw_framework_components][143]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.css
+// @vuebundler[Lsw_framework_components][142]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-agenda/components/lsw-agenda-propagador-search/lsw-agenda-propagador-search.css
 
-// @vuebundler[Lsw_framework_components][144]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.html
+// @vuebundler[Lsw_framework_components][143]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.html
 
-// @vuebundler[Lsw_framework_components][144]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.js
+// @vuebundler[Lsw_framework_components][143]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.js
 // @code.start: LswConductometria API | @$section: Vue.js (v2) Components » LswAgenda API » LswConductometria API » LswConductometria component
 Vue.component("LswConductometria", {
   template: `<div class="LswConductometria">
@@ -57904,9 +57935,9 @@ Vue.component("LswConductometria", {
 });
 // @code.end: LswConductometria API
 
-// @vuebundler[Lsw_framework_components][144]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.css
+// @vuebundler[Lsw_framework_components][143]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.css
 
-// @vuebundler[Lsw_framework_components][145]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.api.js
+// @vuebundler[Lsw_framework_components][144]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria/lsw-conductometria.api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -58412,9 +58443,9 @@ Vue.component("LswConductometria", {
 
 });
 
-// @vuebundler[Lsw_framework_components][146]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.html
+// @vuebundler[Lsw_framework_components][145]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.html
 
-// @vuebundler[Lsw_framework_components][146]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.js
+// @vuebundler[Lsw_framework_components][145]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.js
 // @code.start: LswConductometriaReport API | @$section: Vue.js (v2) Components » LswConductometriaReport API » LswConductometriaReport API » LswConductometriaReport component
 Vue.component("LswConductometriaReport", {
   name: "LswConductometriaReport",
@@ -58547,9 +58578,9 @@ Vue.component("LswConductometriaReport", {
 // @code.end: LswConductometriaReport API
 
 
-// @vuebundler[Lsw_framework_components][146]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.css
+// @vuebundler[Lsw_framework_components][145]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.css
 
-// @vuebundler[Lsw_framework_components][147]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.api.js
+// @vuebundler[Lsw_framework_components][146]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-conductometria-report/lsw-conductometria-report.api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -58608,7 +58639,7 @@ Vue.component("LswConductometriaReport", {
 
 });
 
-// @vuebundler[Lsw_framework_components][148]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/api/api.js
+// @vuebundler[Lsw_framework_components][147]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/api/api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -58685,9 +58716,9 @@ Vue.component("LswConductometriaReport", {
 
 });
 
-// @vuebundler[Lsw_framework_components][149]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.html
+// @vuebundler[Lsw_framework_components][148]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.html
 
-// @vuebundler[Lsw_framework_components][149]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.js
+// @vuebundler[Lsw_framework_components][148]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.js
 // @code.start: LswFormBuilder API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswFormBuilder component
 Vue.component("LswFormBuilder", {
   template: `<div class="lsw-form-builder">
@@ -58877,11 +58908,11 @@ Vue.component("LswFormBuilder", {
 });
 // @code.end: LswFormBuilder API
 
-// @vuebundler[Lsw_framework_components][149]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.css
+// @vuebundler[Lsw_framework_components][148]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-form-builder/lsw-form-builder.css
 
-// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.html
+// @vuebundler[Lsw_framework_components][149]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.html
 
-// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.js
+// @vuebundler[Lsw_framework_components][149]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.js
 Vue.component("LswFormtype", {
   template: `<div class="lsw-formtype">
     <component
@@ -58929,11 +58960,11 @@ Vue.component("LswFormtype", {
   }
 });
 
-// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.css
+// @vuebundler[Lsw_framework_components][149]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/lsw-formtype.css
 
-// @vuebundler[Lsw_framework_components][151]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.html
+// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.html
 
-// @vuebundler[Lsw_framework_components][151]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.js
+// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.js
 // @code.start: LswControlLabel API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswControlLabel component
 Vue.component("LswControlLabel", {
   template: `<div class="lsw_control_label">
@@ -59043,11 +59074,11 @@ Vue.component("LswControlLabel", {
 });
 // @code.end: LswControlLabel API
 
-// @vuebundler[Lsw_framework_components][151]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.css
+// @vuebundler[Lsw_framework_components][150]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-label/lsw-control-label.css
 
-// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.html
+// @vuebundler[Lsw_framework_components][151]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.html
 
-// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.js
+// @vuebundler[Lsw_framework_components][151]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.js
 // @code.start: LswControlError API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswControlError component
 Vue.component("LswControlError", {
   template: `<div class="lsw_control_error">
@@ -59090,11 +59121,11 @@ Vue.component("LswControlError", {
 });
 // @code.end: LswControlError API
 
-// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.css
+// @vuebundler[Lsw_framework_components][151]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/partials/lsw-control-error/lsw-control-error.css
 
-// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.html
+// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.html
 
-// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.js
+// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.js
 // @code.start: LswTextControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswTextControl component
 Vue.component("LswTextControl", {
   template: `<div class="lsw_text_control lsw_formtype lsw_form_control">
@@ -59183,11 +59214,11 @@ Vue.component("LswTextControl", {
 });
 // @code.end: LswTextControl API
 
-// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.css
+// @vuebundler[Lsw_framework_components][152]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-text-control/lsw-text-control.css
 
-// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.html
+// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.html
 
-// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.js
+// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.js
 // @code.start: LswLongTextControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswLongTextControl component
 Vue.component("LswLongTextControl", {
   template: `<div class="lsw_long_text_control lsw_formtype lsw_form_control">
@@ -59257,11 +59288,11 @@ Vue.component("LswLongTextControl", {
 });
 // @code.end: LswLongTextControl API
 
-// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.css
+// @vuebundler[Lsw_framework_components][153]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-long-text-control/lsw-long-text-control.css
 
-// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.html
+// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.html
 
-// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.js
+// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.js
 // @code.start: LswDateControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswDateControl component
 Vue.component("LswDateControl", {
   template: `<div class="lsw_date_control lsw_formtype lsw_form_control">
@@ -59372,11 +59403,11 @@ Vue.component("LswDateControl", {
 });
 // @code.end: LswDateControl API
 
-// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.css
+// @vuebundler[Lsw_framework_components][154]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-date-control/lsw-date-control.css
 
-// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.html
+// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.html
 
-// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.js
+// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.js
 // @code.start: LswDurationControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswDurationControl component
 Vue.component("LswDurationControl", {
   template: `<div class="lsw_duration_control lsw_formtype lsw_form_control">
@@ -59498,11 +59529,11 @@ Vue.component("LswDurationControl", {
 });
 // @code.end: LswDurationControl API
 
-// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.css
+// @vuebundler[Lsw_framework_components][155]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-duration-control/lsw-duration-control.css
 
-// @vuebundler[Lsw_framework_components][157]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.html
+// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.html
 
-// @vuebundler[Lsw_framework_components][157]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.js
+// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.js
 // @code.start: LswNumberControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswNumberControl component
 Vue.component("LswNumberControl", {
   template: `<div class="lsw_number_control">
@@ -59530,11 +59561,11 @@ Vue.component("LswNumberControl", {
 });
 // @code.end: LswNumberControl API
 
-// @vuebundler[Lsw_framework_components][157]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.css
+// @vuebundler[Lsw_framework_components][156]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.css
 
-// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.html
+// @vuebundler[Lsw_framework_components][157]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.html
 
-// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.js
+// @vuebundler[Lsw_framework_components][157]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.js
 // @code.start: LswOptionsControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswOptionsControl component
 Vue.component("LswOptionsControl", {
   template: `<div class="lsw_options_control lsw_formtype lsw_form_control" keep-alive="true">
@@ -59604,11 +59635,11 @@ Vue.component("LswOptionsControl", {
 });
 // @code.end: LswOptionsControl API
 
-// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.css
+// @vuebundler[Lsw_framework_components][157]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-options-control/lsw-options-control.css
 
-// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.html
+// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.html
 
-// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.js
+// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.js
 // @code.start: LswSourceCodeControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswSourceCodeControl component
 Vue.component("LswSourceCodeControl", {
   template: `<div class="lsw_source_code_control lsw_formtype lsw_form_control">
@@ -59715,11 +59746,11 @@ Vue.component("LswSourceCodeControl", {
 });
 // @code.end: LswSourceCodeControl API
 
-// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.css
+// @vuebundler[Lsw_framework_components][158]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-source-code-control/lsw-source-code-control.css
 
-// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.html
+// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.html
 
-// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.js
+// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.js
 // @code.start: LswRefObjectControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefObjectControl component
 Vue.component("LswRefObjectControl", {
   template: `<div class="lsw_ref_object_control lsw_formtype lsw_form_control">
@@ -59843,11 +59874,11 @@ Vue.component("LswRefObjectControl", {
 });
 // @code.end: LswRefObjectControl API
 
-// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.css
+// @vuebundler[Lsw_framework_components][159]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-control/lsw-ref-object-control.css
 
-// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-by-label-control/lsw-ref-object-by-label-control.html
+// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-by-label-control/lsw-ref-object-by-label-control.html
 
-// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-by-label-control/lsw-ref-object-by-label-control.js
+// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-by-label-control/lsw-ref-object-by-label-control.js
 // @code.start: LswRefObjectByLabelControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefObjectByLabelControl component
 Vue.component("LswRefObjectByLabelControl", {
   template: `<div class="lsw_ref_object_by_label_control lsw_formtype lsw_form_control">
@@ -59970,11 +60001,11 @@ Vue.component("LswRefObjectByLabelControl", {
 });
 // @code.end: LswRefObjectByLabelControl API
 
-// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-by-label-control/lsw-ref-object-by-label-control.css
+// @vuebundler[Lsw_framework_components][160]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-object-by-label-control/lsw-ref-object-by-label-control.css
 
-// @vuebundler[Lsw_framework_components][162]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.html
+// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.html
 
-// @vuebundler[Lsw_framework_components][162]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.js
+// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.js
 // @code.start: LswRefListControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefListControl component
 Vue.component("LswRefListControl", {
   template: `<div class="lsw_ref_list_control lsw_formtype lsw_form_control">
@@ -60089,11 +60120,11 @@ Vue.component("LswRefListControl", {
 });
 // @code.end: LswRefListControl API
 
-// @vuebundler[Lsw_framework_components][162]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.css
+// @vuebundler[Lsw_framework_components][161]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-list-control/lsw-ref-list-control.css
 
-// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.html
+// @vuebundler[Lsw_framework_components][162]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.html
 
-// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.js
+// @vuebundler[Lsw_framework_components][162]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.js
 // @code.start: LswRefRelationControl API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswRefRelationControl component
 Vue.component("LswRefRelationControl", {
   template: `<div class="lsw_ref_relation_control">
@@ -60140,11 +60171,11 @@ Vue.component("LswRefRelationControl", {
 });
 // @code.end: LswRefRelationControl API
 
-// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.css
+// @vuebundler[Lsw_framework_components][162]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-ref-relation-control/lsw-ref-relation-control.css
 
-// @vuebundler[Lsw_framework_components][164]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.html
+// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.html
 
-// @vuebundler[Lsw_framework_components][164]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.js
+// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.js
 // @code.start: LswSchemaBasedForm API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswSchemaBasedForm component
 Vue.component("LswSchemaBasedForm", {
   template: `<div class="lsw_schema_form">
@@ -60611,11 +60642,11 @@ Vue.component("LswSchemaBasedForm", {
 });
 // @code.end: LswSchemaBasedForm API
 
-// @vuebundler[Lsw_framework_components][164]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.css
+// @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-schema-based-form/lsw-schema-based-form.css
 
-// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.html
+// @vuebundler[Lsw_framework_components][164]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.html
 
-// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.js
+// @vuebundler[Lsw_framework_components][164]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.js
 // @code.start: LswBarsGraphBar API | @$section: Vue.js (v2) Components » LswBarsGraphBar component
 Vue.component("LswBarsGraphBar", {
   template: `<div class="lsw_bars_graph_bar">
@@ -60669,11 +60700,11 @@ Vue.component("LswBarsGraphBar", {
 });
 // @code.end: LswBarsGraphBar API
 
-// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.css
+// @vuebundler[Lsw_framework_components][164]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/components/lsw-bars-graph-bar/lsw-bars-graph-bar.css
 
-// @vuebundler[Lsw_framework_components][166]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.html
+// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.html
 
-// @vuebundler[Lsw_framework_components][166]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.js
+// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.js
 // @code.start: LswBarsGraph API | @$section: Vue.js (v2) Components » LswBarsGraph component
 Vue.component("LswBarsGraph", {
   template: `<div class="lsw_bars_graph">
@@ -60799,9 +60830,9 @@ Vue.component("LswBarsGraph", {
 });
 // @code.end: LswBarsGraph API
 
-// @vuebundler[Lsw_framework_components][166]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.css
+// @vuebundler[Lsw_framework_components][165]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.css
 
-// @vuebundler[Lsw_framework_components][167]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.api.js
+// @vuebundler[Lsw_framework_components][166]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-bars-graph/lsw-bars-graph.api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -60850,9 +60881,9 @@ Vue.component("LswBarsGraph", {
 
 });
 
-// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.html
+// @vuebundler[Lsw_framework_components][167]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.html
 
-// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.js
+// @vuebundler[Lsw_framework_components][167]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.js
 // @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component
 Vue.component("LswNotes", {
   template: `<div class="lsw_notes pad_0 pad_top_0">
@@ -60968,11 +60999,11 @@ Vue.component("LswNotes", {
 });
 // @code.end: LswNotes API
 
-// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.css
+// @vuebundler[Lsw_framework_components][167]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-notes/lsw-notes.css
 
-// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.html
+// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.html
 
-// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.js
+// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.js
 // @code.start: LswConfigurationsPage API | @$section: Vue.js (v2) Components » LswConfigurationsPage component
 // Change this component at your convenience:
 Vue.component("LswConfigurationsPage", {
@@ -61545,11 +61576,11 @@ Vue.component("LswConfigurationsPage", {
 });
 // @code.end: LswConfigurationsPage API
 
-// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.css
+// @vuebundler[Lsw_framework_components][168]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-configurations-page/lsw-configurations-page.css
 
-// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.html
+// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.html
 
-// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.js
+// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.js
 // @code.start: LswAutomensajesViewer API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAutomensajesViewer API » LswAutomensajesViewer component
 Vue.component("LswAutomensajesViewer", {
   template: `<div class="lsw_automensajes_viewer">
@@ -61688,11 +61719,11 @@ Vue.component("LswAutomensajesViewer", {
 });
 // @code.end: LswAutomensajesViewer API
 
-// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.css
+// @vuebundler[Lsw_framework_components][169]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-automensajes-viewer/lsw-automensajes-viewer.css
 
-// @vuebundler[Lsw_framework_components][171]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.html
+// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.html
 
-// @vuebundler[Lsw_framework_components][171]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.js
+// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.js
 // @code.start: LswAppsViewerButton API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAppsViewerButton API » LswAppsViewerButton component
 Vue.component("LswAppsViewerButton", {
   template: `<div class="lsw_apps_viewer_button">
@@ -61759,11 +61790,11 @@ Vue.component("LswAppsViewerButton", {
 });
 // @code.end: LswAppsViewerButton API
 
-// @vuebundler[Lsw_framework_components][171]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.css
+// @vuebundler[Lsw_framework_components][170]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-button/lsw-apps-viewer-button.css
 
-// @vuebundler[Lsw_framework_components][172]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.html
+// @vuebundler[Lsw_framework_components][171]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.html
 
-// @vuebundler[Lsw_framework_components][172]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.js
+// @vuebundler[Lsw_framework_components][171]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.js
 // @code.start: LswAppsViewerPanel API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswAppsViewer API » LswAppsViewerPanel component
 Vue.component("LswAppsViewerPanel", {
   template: `<div class="lsw_apps_viewer_panel">
@@ -62126,9 +62157,9 @@ Vue.component("LswAppsViewerPanel", {
 });
 // @code.end: LswAppsViewerPanel API
 
-// @vuebundler[Lsw_framework_components][172]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.css
+// @vuebundler[Lsw_framework_components][171]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-apps-viewer-panel/lsw-apps-viewer-panel.css
 
-// @vuebundler[Lsw_framework_components][173]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/protolang/protolang.js
+// @vuebundler[Lsw_framework_components][172]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/protolang/protolang.js
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -64038,9 +64069,9 @@ Vue.component("LswAppsViewerPanel", {
   };
 })(globalThis);
 
-// @vuebundler[Lsw_framework_components][174]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.html
+// @vuebundler[Lsw_framework_components][173]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.html
 
-// @vuebundler[Lsw_framework_components][174]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.js
+// @vuebundler[Lsw_framework_components][173]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.js
 // @code.start: LswProtolangEditor API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswProtolangEditor API » LswProtolangEditor component
 Vue.component("LswProtolangEditor", {
   template: `<div class="lsw_protolang_editor">
@@ -64126,11 +64157,11 @@ Vue.component("LswProtolangEditor", {
 });
 // @code.end: LswProtolangEditor API
 
-// @vuebundler[Lsw_framework_components][174]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.css
+// @vuebundler[Lsw_framework_components][173]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-protolang-editor/lsw-protolang-editor.css
 
-// @vuebundler[Lsw_framework_components][175]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.html
+// @vuebundler[Lsw_framework_components][174]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.html
 
-// @vuebundler[Lsw_framework_components][175]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.js
+// @vuebundler[Lsw_framework_components][174]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.js
 // @code.start: LswSpontaneousFormAccion API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormAccion API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormAccion", {
   template: `<div class="lsw_spontaneos_form_accion">
@@ -64154,11 +64185,11 @@ Vue.component("LswSpontaneousFormAccion", {
 });
 // @code.end: LswSpontaneousFormAccion API
 
-// @vuebundler[Lsw_framework_components][175]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.css
+// @vuebundler[Lsw_framework_components][174]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-accion/lsw-spontaneous-form-accion.css
 
-// @vuebundler[Lsw_framework_components][176]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.html
+// @vuebundler[Lsw_framework_components][175]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.html
 
-// @vuebundler[Lsw_framework_components][176]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.js
+// @vuebundler[Lsw_framework_components][175]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.js
 // @code.start: LswSpontaneousFormArticulo API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormArticulo API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormArticulo", {
   template: `<div class="lsw_spontaneos_form_nota pad_1">
@@ -64249,11 +64280,11 @@ Vue.component("LswSpontaneousFormArticulo", {
 });
 // @code.end: LswSpontaneousFormArticulo API
 
-// @vuebundler[Lsw_framework_components][176]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.css
+// @vuebundler[Lsw_framework_components][175]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-articulo/lsw-spontaneous-form-articulo.css
 
-// @vuebundler[Lsw_framework_components][177]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.html
+// @vuebundler[Lsw_framework_components][176]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.html
 
-// @vuebundler[Lsw_framework_components][177]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.js
+// @vuebundler[Lsw_framework_components][176]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.js
 // @code.start: LswSpontaneousFormLista API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormLista API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormLista", {
   template: `<div class="lsw_spontaneos_form_lista">
@@ -64277,11 +64308,11 @@ Vue.component("LswSpontaneousFormLista", {
 });
 // @code.end: LswSpontaneousFormLista API
 
-// @vuebundler[Lsw_framework_components][177]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.css
+// @vuebundler[Lsw_framework_components][176]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-lista/lsw-spontaneous-form-lista.css
 
-// @vuebundler[Lsw_framework_components][178]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.html
+// @vuebundler[Lsw_framework_components][177]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.html
 
-// @vuebundler[Lsw_framework_components][178]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.js
+// @vuebundler[Lsw_framework_components][177]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.js
 // @code.start: LswSpontaneousFormNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormNota API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormNota", {
   template: `<div class="lsw_spontaneos_form_nota pad_1">
@@ -64356,11 +64387,11 @@ Vue.component("LswSpontaneousFormNota", {
 });
 // @code.end: LswSpontaneousFormNota API
 
-// @vuebundler[Lsw_framework_components][178]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.css
+// @vuebundler[Lsw_framework_components][177]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-nota/lsw-spontaneous-form-nota.css
 
-// @vuebundler[Lsw_framework_components][179]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.html
+// @vuebundler[Lsw_framework_components][178]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.html
 
-// @vuebundler[Lsw_framework_components][179]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.js
+// @vuebundler[Lsw_framework_components][178]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.js
 // @code.start: LswSpontaneousFormRecordatorio API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousFormRecordatorio API » LswSpontaneousFormAccion component
 Vue.component("LswSpontaneousFormRecordatorio", {
   template: `<div class="lsw_spontaneos_form_recordatorio">
@@ -64384,11 +64415,11 @@ Vue.component("LswSpontaneousFormRecordatorio", {
 });
 // @code.end: LswSpontaneousFormRecordatorio API
 
-// @vuebundler[Lsw_framework_components][179]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.css
+// @vuebundler[Lsw_framework_components][178]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-form-recordatorio/lsw-spontaneous-form-recordatorio.css
 
-// @vuebundler[Lsw_framework_components][180]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.html
+// @vuebundler[Lsw_framework_components][179]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.html
 
-// @vuebundler[Lsw_framework_components][180]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.js
+// @vuebundler[Lsw_framework_components][179]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.js
 // @code.start: LswSpontaneousTableAccion API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableAccion API » LswSpontaneousTableAccion component
 Vue.component("LswSpontaneousTableAccion", {
   template: `<div class="lsw_spontaneos_table_accion">
@@ -64412,11 +64443,11 @@ Vue.component("LswSpontaneousTableAccion", {
 });
 // @code.end: LswSpontaneousTableAccion API
 
-// @vuebundler[Lsw_framework_components][180]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.css
+// @vuebundler[Lsw_framework_components][179]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-accion/lsw-spontaneous-table-accion.css
 
-// @vuebundler[Lsw_framework_components][181]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.html
+// @vuebundler[Lsw_framework_components][180]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.html
 
-// @vuebundler[Lsw_framework_components][181]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.js
+// @vuebundler[Lsw_framework_components][180]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.js
 // @code.start: LswSpontaneousTableArticulo API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableArticulo API » LswSpontaneousTableArticulo component
 Vue.component("LswSpontaneousTableArticulo", {
   template: `<div class="lsw_spontaneos_table_articulo">
@@ -64440,11 +64471,11 @@ Vue.component("LswSpontaneousTableArticulo", {
 });
 // @code.end: LswSpontaneousTableArticulo API
 
-// @vuebundler[Lsw_framework_components][181]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.css
+// @vuebundler[Lsw_framework_components][180]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-articulo/lsw-spontaneous-table-articulo.css
 
-// @vuebundler[Lsw_framework_components][182]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.html
+// @vuebundler[Lsw_framework_components][181]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.html
 
-// @vuebundler[Lsw_framework_components][182]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.js
+// @vuebundler[Lsw_framework_components][181]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.js
 // @code.start: LswSpontaneousTableLista API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableLista API » LswSpontaneousTableLista component
 Vue.component("LswSpontaneousTableLista", {
   template: `<div class="lsw_spontaneos_table_lista">
@@ -64468,11 +64499,11 @@ Vue.component("LswSpontaneousTableLista", {
 });
 // @code.end: LswSpontaneousTableLista API
 
-// @vuebundler[Lsw_framework_components][182]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.css
+// @vuebundler[Lsw_framework_components][181]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-lista/lsw-spontaneous-table-lista.css
 
-// @vuebundler[Lsw_framework_components][183]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.html
+// @vuebundler[Lsw_framework_components][182]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.html
 
-// @vuebundler[Lsw_framework_components][183]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.js
+// @vuebundler[Lsw_framework_components][182]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.js
 // @code.start: LswSpontaneousTableNota API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableNota API » LswSpontaneousTableNota component
 Vue.component("LswSpontaneousTableNota", {
   template: `<div class="lsw_spontaneos_table_nota">
@@ -64840,11 +64871,11 @@ Vue.component("LswSpontaneousTableNota", {
 });
 // @code.end: LswSpontaneousTableNota API
 
-// @vuebundler[Lsw_framework_components][183]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.css
+// @vuebundler[Lsw_framework_components][182]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-nota/lsw-spontaneous-table-nota.css
 
-// @vuebundler[Lsw_framework_components][184]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.html
+// @vuebundler[Lsw_framework_components][183]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.html
 
-// @vuebundler[Lsw_framework_components][184]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.js
+// @vuebundler[Lsw_framework_components][183]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.js
 // @code.start: LswSpontaneousTableRecordatorio API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswSpontaneousTableRecordatorio API » LswSpontaneousTableRecordatorio component
 Vue.component("LswSpontaneousTableRecordatorio", {
   template: `<div class="lsw_spontaneos_table_recordatorio">
@@ -64868,11 +64899,11 @@ Vue.component("LswSpontaneousTableRecordatorio", {
 });
 // @code.end: LswSpontaneousTableRecordatorio API
 
-// @vuebundler[Lsw_framework_components][184]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.css
+// @vuebundler[Lsw_framework_components][183]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-spontaneous-table-recordatorio/lsw-spontaneous-table-recordatorio.css
 
-// @vuebundler[Lsw_framework_components][185]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.html
+// @vuebundler[Lsw_framework_components][184]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.html
 
-// @vuebundler[Lsw_framework_components][185]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.js
+// @vuebundler[Lsw_framework_components][184]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.js
 // @code.start: LswFastDateControl API | @$section: Módulo org.allnulled.lsw-conductometria » Vue.js (v2) Components » LswFastDateControl API » LswFastDateControl component
 Vue.component("LswFastDatetimeControl", {
   template: `<div class="lsw_fast_datetime_control">
@@ -64956,11 +64987,11 @@ Vue.component("LswFastDatetimeControl", {
 });
 // @code.end: LswFastDateControl API
 
-// @vuebundler[Lsw_framework_components][185]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.css
+// @vuebundler[Lsw_framework_components][184]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-fast-datetime-control/lsw-fast-datetime-control.css
 
-// @vuebundler[Lsw_framework_components][186]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-inline-tags-picker/lsw-inline-tags-picker.html
+// @vuebundler[Lsw_framework_components][185]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-inline-tags-picker/lsw-inline-tags-picker.html
 
-// @vuebundler[Lsw_framework_components][186]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-inline-tags-picker/lsw-inline-tags-picker.js
+// @vuebundler[Lsw_framework_components][185]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-inline-tags-picker/lsw-inline-tags-picker.js
 // @code.start: LswInlineTagsPicker API | @$section: Vue.js (v2) Components » LswInlineTagsPicker component
 Vue.component("LswInlineTagsPicker", {
   template: `<div class="lsw_inline_tags_picker">
@@ -65041,9 +65072,9 @@ Vue.component("LswInlineTagsPicker", {
 });
 // @code.end: LswInlineTagsPicker API
 
-// @vuebundler[Lsw_framework_components][186]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-inline-tags-picker/lsw-inline-tags-picker.css
+// @vuebundler[Lsw_framework_components][185]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-inline-tags-picker/lsw-inline-tags-picker.css
 
-// @vuebundler[Lsw_framework_components][187]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.api.js
+// @vuebundler[Lsw_framework_components][186]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.api.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -65193,9 +65224,9 @@ Vue.component("LswInlineTagsPicker", {
 
 });
 
-// @vuebundler[Lsw_framework_components][188]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.html
+// @vuebundler[Lsw_framework_components][187]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.html
 
-// @vuebundler[Lsw_framework_components][188]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.js
+// @vuebundler[Lsw_framework_components][187]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.js
 // @code.start: LswJsInspector API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswJsInspector component
 (() => {
   const emptyOutput = {};
@@ -65617,9 +65648,9 @@ Vue.component("LswInlineTagsPicker", {
 })();
 // @code.end: LswJsInspector API
 
-// @vuebundler[Lsw_framework_components][188]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.css
+// @vuebundler[Lsw_framework_components][187]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-inspector/lsw-js-inspector.css
 
-// @vuebundler[Lsw_framework_components][189]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/weeklang/weeklang.bundled.js
+// @vuebundler[Lsw_framework_components][188]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/weeklang/weeklang.bundled.js
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -67765,9 +67796,9 @@ Vue.component("LswInlineTagsPicker", {
 
 });
 
-// @vuebundler[Lsw_framework_components][190]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.html
+// @vuebundler[Lsw_framework_components][189]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.html
 
-// @vuebundler[Lsw_framework_components][190]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.js
+// @vuebundler[Lsw_framework_components][189]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.js
 // @code.start: LswWeekPlanner API | @$section: Vue.js (v2) Components » Lsw Week Planner API » LswWeekPlanner component
 Vue.component("LswWeekPlanner", {
   template: `<div class="lsw_week_planner">
@@ -67802,9 +67833,9 @@ Vue.component("LswWeekPlanner", {
 });
 // @code.end: LswWeekPlanner API
 
-// @vuebundler[Lsw_framework_components][190]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.css
+// @vuebundler[Lsw_framework_components][189]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-week-planner/lsw-week-planner.css
 
-// @vuebundler[Lsw_framework_components][191]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/mermoid/mermoid.bundled.js
+// @vuebundler[Lsw_framework_components][190]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-languages/mermoid/mermoid.bundled.js
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -69360,9 +69391,9 @@ Vue.component("LswWeekPlanner", {
 
 
 
-// @vuebundler[Lsw_framework_components][192]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.html
+// @vuebundler[Lsw_framework_components][191]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.html
 
-// @vuebundler[Lsw_framework_components][192]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.js
+// @vuebundler[Lsw_framework_components][191]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.js
 // @code.start: LswMermoidViewer API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswMermoidViewer component
 Vue.component("LswMermoidViewer", {
   template: `<div class="lsw_mermoid_viewer">
@@ -69400,11 +69431,11 @@ Vue.component("LswMermoidViewer", {
 });
 // @code.end: LswMermoidViewer API
 
-// @vuebundler[Lsw_framework_components][192]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.css
+// @vuebundler[Lsw_framework_components][191]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer.css
 
-// @vuebundler[Lsw_framework_components][193]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.html
+// @vuebundler[Lsw_framework_components][192]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.html
 
-// @vuebundler[Lsw_framework_components][193]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.js
+// @vuebundler[Lsw_framework_components][192]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.js
 // @code.start: LswPegjsTester API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswPegjsTester component
 Vue.component("LswPegjsTester", {
   template: `<div class="lsw_pegjs_tester">
@@ -69547,20 +69578,17 @@ Vue.component("LswPegjsTester", {
 });
 // @code.end: LswPegjsTester API
 
-// @vuebundler[Lsw_framework_components][193]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.css
+// @vuebundler[Lsw_framework_components][192]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester.css
 
-// @vuebundler[Lsw_framework_components][194]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.html
+// @vuebundler[Lsw_framework_components][193]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.html
 
-// @vuebundler[Lsw_framework_components][194]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.js
+// @vuebundler[Lsw_framework_components][193]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.js
 // @code.start: LswNuevaFeature API | @$section: Vue.js (v2) Components » LswNuevaFeature component
 Vue.component("LswNuevaFeature", {
   template: `<div class="lsw_nueva_feature">
     <lsw-typical-title>✨ Nueva feature en construcción</lsw-typical-title>
     <div class="pad_vertical_2">🚸 Esta sección está reservada para el desarrollo</div>
-    <button class="supermini width_100" v-on:click="runTest">Compilar NatyScript</button>
-    <textarea class="width_100" style="min-height: 200px;" v-model="input" v-on:keydown.ctrl.enter="runTest" spellcheck="false"></textarea>
-    <pre class="" v-if="error" v-on:click="clearError">{{ error }}</pre>
-    <pre class="small_font" v-if="output">{{ output }}</pre>
+    <lsw-naty-script-editor />
     <!--lsw-volatile-database-visualizer
         v-if="datos"
         :initial-data="datos"
@@ -69568,50 +69596,27 @@ Vue.component("LswNuevaFeature", {
     <!--lsw-keyboard-1 initial-text="Esto es una frase\nEsto es otra\nY esto otra." /-->
     <!--lsw-sqlite-console /-->
     <!--lsw-sqlite-explorer /-->
-
 </div>`,
   props: {},
   data() {
     this.$trace("lsw-nueva-feature.data");
     
     return {
-      input: `Dios > dice { ok }`,
-      output: false,
-      error: false,
-      errorSummary: false,
+      
     };
   },
   methods: {
-    async runTest() {
-      try {
-        this.output = NatyScriptParser.parse(this.input);
-        this.clearError();
-      } catch (error) {
-        console.error(error);
-        this.error = error;
-      }
-    },
-    clearError() {
-      this.error = false;
-    },
-    async load() {
-
-    }
+    
   },
   computed: {
     
   },
   watch: {
-    error(error) {
-      if(error.expected) {
-        error.expected = LswUtils.uniquizeArray(error.expected.map(sugg => sugg.description));
-      }
-    }
+    
   },
   async mounted() {
     try {
       this.$trace("lsw-nueva-feature.mounted");
-      this.load();
     } catch (error) {
       console.log(error);
     }
@@ -69619,11 +69624,11 @@ Vue.component("LswNuevaFeature", {
 });
 // @code.end: LswNuevaFeature API
 
-// @vuebundler[Lsw_framework_components][194]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.css
+// @vuebundler[Lsw_framework_components][193]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-nueva-feature/lsw-nueva-feature.css
 
-// @vuebundler[Lsw_framework_components][195]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-error-box/lsw-error-box.html
+// @vuebundler[Lsw_framework_components][194]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-error-box/lsw-error-box.html
 
-// @vuebundler[Lsw_framework_components][195]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-error-box/lsw-error-box.js
+// @vuebundler[Lsw_framework_components][194]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-error-box/lsw-error-box.js
 // @code.start: LswErrorBox API | @$section: Vue.js (v2) Components » LswErrorBox component
 Vue.component("LswErrorBox", {
   template: `<div class="">
@@ -69726,11 +69731,11 @@ Vue.component("LswErrorBox", {
 });
 // @code.end: LswErrorBox API
 
-// @vuebundler[Lsw_framework_components][195]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-error-box/lsw-error-box.css
+// @vuebundler[Lsw_framework_components][194]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-error-box/lsw-error-box.css
 
-// @vuebundler[Lsw_framework_components][196]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-syntax-error-viewer/lsw-syntax-error-viewer.html
+// @vuebundler[Lsw_framework_components][195]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-syntax-error-viewer/lsw-syntax-error-viewer.html
 
-// @vuebundler[Lsw_framework_components][196]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-syntax-error-viewer/lsw-syntax-error-viewer.js
+// @vuebundler[Lsw_framework_components][195]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-syntax-error-viewer/lsw-syntax-error-viewer.js
 // @code.start: LswSyntaxErrorViewer API | @$section: Vue.js (v2) Components » Lsw Formtypes API » LswSyntaxErrorViewer component
 Vue.component("LswSyntaxErrorViewer", {
   template: `<div class="lsw_error_viewer">
@@ -69795,11 +69800,11 @@ Vue.component("LswSyntaxErrorViewer", {
 });
 // @code.end: LswSyntaxErrorViewer API
 
-// @vuebundler[Lsw_framework_components][196]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-syntax-error-viewer/lsw-syntax-error-viewer.css
+// @vuebundler[Lsw_framework_components][195]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-syntax-error-viewer/lsw-syntax-error-viewer.css
 
-// @vuebundler[Lsw_framework_components][197]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.html
+// @vuebundler[Lsw_framework_components][196]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.html
 
-// @vuebundler[Lsw_framework_components][197]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.js
+// @vuebundler[Lsw_framework_components][196]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.js
 // @code.start: LswTestsPage API | @$section: Vue.js (v2) Components » Lsw Unit Test Page » LswTestsPage component
 Vue.component("LswTestsPage", {
   template: `<div class="lsw_tests_page">
@@ -69868,11 +69873,11 @@ Vue.component("LswTestsPage", {
 });
 // @code.end: LswTestsPage API
 
-// @vuebundler[Lsw_framework_components][197]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.css
+// @vuebundler[Lsw_framework_components][196]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tests-page/lsw-tests-page.css
 
-// @vuebundler[Lsw_framework_components][198]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer.html
+// @vuebundler[Lsw_framework_components][197]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer.html
 
-// @vuebundler[Lsw_framework_components][198]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer.js
+// @vuebundler[Lsw_framework_components][197]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer.js
 // @code.start: LswTesterViewer API | @$section: Vue.js (v2) Components » Lsw Unit Test Page » LswTesterViewer component
 const LswTesterViewerUtils = {};
 LswTesterViewerUtils.getEventSourceId = function(eventData) {
@@ -70212,11 +70217,11 @@ Vue.component("LswTesterViewer", {
 });
 // @code.end: LswTesterViewer API
 
-// @vuebundler[Lsw_framework_components][198]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer.css
+// @vuebundler[Lsw_framework_components][197]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer.css
 
-// @vuebundler[Lsw_framework_components][199]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer.html
+// @vuebundler[Lsw_framework_components][198]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer.html
 
-// @vuebundler[Lsw_framework_components][199]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer.js
+// @vuebundler[Lsw_framework_components][198]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer.js
 // @code.start: LswTesterModuleViewer API | @$section: Vue.js (v2) Components » Lsw Unit Test Page » LswTesterModuleViewer component
 window.asserters = [];
 Vue.component("LswTesterModuleViewer", {
@@ -70299,11 +70304,11 @@ Vue.component("LswTesterModuleViewer", {
 });
 // @code.end: LswTesterModuleViewer API
 
-// @vuebundler[Lsw_framework_components][199]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer.css
+// @vuebundler[Lsw_framework_components][198]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer.css
 
-// @vuebundler[Lsw_framework_components][200]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.html
+// @vuebundler[Lsw_framework_components][199]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.html
 
-// @vuebundler[Lsw_framework_components][200]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.js
+// @vuebundler[Lsw_framework_components][199]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.js
 // @code.start: LswJsViewer API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswJsViewer component
 Vue.component("LswJsViewer", {
   template: `<div class="lsw_js_viewer">
@@ -70371,9 +70376,9 @@ Vue.component("LswJsViewer", {
 });
 // @code.end: LswJsViewer API
 
-// @vuebundler[Lsw_framework_components][200]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.css
+// @vuebundler[Lsw_framework_components][199]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer.css
 
-// @vuebundler[Lsw_framework_components][201]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-android/lsw-android.js
+// @vuebundler[Lsw_framework_components][200]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-android/lsw-android.js
 (function (factory) {
   const mod = factory();
   if (typeof window !== 'undefined') {
@@ -70433,6 +70438,63 @@ Vue.component("LswJsViewer", {
   return LswAndroid;
 
 });
+
+// @vuebundler[Lsw_framework_components][201]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-naty-script/editor/lsw-naty-script-editor.html
+
+// @vuebundler[Lsw_framework_components][201]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-naty-script/editor/lsw-naty-script-editor.js
+// @code.start: LswNatyScriptEditor API | @$section: Vue.js (v2) Components » Lsw Wiki API » LswNatyScriptEditor component
+Vue.component("LswNatyScriptEditor", {
+  template: `<div class="lsw_naty_script_editor">
+    <button class="supermini width_100" v-on:click="runTest">Compilar NatyScript</button>
+    <textarea class="width_100" style="min-height: 200px;" v-model="input" v-on:keydown.ctrl.enter="runTest" spellcheck="false"></textarea>
+    <pre class="" v-if="error" v-on:click="clearError">{{ error }}</pre>
+    <pre class="small_font" v-if="output">{{ output }}</pre>
+</div>`,
+  props: {},
+  data() {
+    this.$trace("lsw-naty-script-editor.data");
+    return {
+      input: `Dios > dice { ok }`,
+      output: false,
+      error: false,
+      errorSummary: false,
+    };
+  },
+  methods: {
+    async runTest() {
+      try {
+        this.output = NatyScriptParser.parse(this.input);
+        this.clearError();
+      } catch (error) {
+        console.error(error);
+        this.error = error;
+      }
+    },
+    clearError() {
+      this.error = false;
+    },
+    async load() {
+
+    }
+  },
+  watch: {
+    error(error) {
+      if(error.expected) {
+        error.expected = LswUtils.uniquizeArray(error.expected.map(sugg => sugg.description));
+      }
+    }
+  },
+  mounted() {
+    this.$trace("lsw-naty-script-editor.mounted");
+    this.load();
+  },
+  unmount() {
+    this.$trace("lsw-naty-script-editor.unmount");
+  }
+});
+// @code.end: LswNatyScriptEditor API
+
+// @vuebundler[Lsw_framework_components][201]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-naty-script/editor/lsw-naty-script-editor.css
 
 // @vuebundler[Lsw_framework_components][202]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/apis/lsw-proxies/Accion.js
 $proxifier.define("org.allnulled.lsw-conductometria.Accion", {
@@ -71938,9 +72000,9 @@ rel correr
             <div class="mobile_off_panel_cell" v-on:click="goToFilesystem">
                 <div class="mobile_off_panel_button">📂</div>
             </div>
-            <div class="mobile_off_panel_cell" v-on:click="goToVolatileDatabaseUi">
+            <!--div class="mobile_off_panel_cell" v-on:click="goToVolatileDatabaseUi">
                 <div class="mobile_off_panel_button">♨️</div>
-            </div>
+            </div-->
             <div class="mobile_off_panel_cell" v-on:click="goToEnciclopedia">
                 <div class="mobile_off_panel_button">🔬</div>
             </div>

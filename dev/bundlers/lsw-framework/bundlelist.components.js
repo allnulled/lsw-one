@@ -177,7 +177,6 @@ module.exports = Instrumenter.instrumentSet([
   // NATY-SCRIPT:
   `${basepath}/lsw-framework/src/components/lsw-naty-script/naty-script.api.js`,
   `${basepath}/lsw-framework/src/components/lsw-naty-script/naty-script-parser.js`,
-  `${basepath}/lsw-framework/src/components/lsw-naty-script/lsw-naty-script.js`,
   // CONSOLE HOOKER:
   `${basepath}/lsw-framework/src/components/lsw-console-hooker/console-hooker-api.js`,
   `${basepath}/lsw-framework/src/components/lsw-console-hooker/console-hooker`,
@@ -317,6 +316,8 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer`,
   // ANDROID API:
   `${basepath}/lsw-framework/src/apis/lsw-android/lsw-android.js`,
+  // NATYSCRIPT-EDITOR:
+  `${basepath}/lsw-framework/src/components/lsw-naty-script/editor/lsw-naty-script-editor`,
   // DATABASE PROXIES:
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Accion.js`,
   `${basepath}/lsw-framework/src/apis/lsw-proxies/Banco_de_datos_principal.js`,

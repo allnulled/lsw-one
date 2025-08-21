@@ -3,26 +3,22 @@
     "tipo0": "oración",
     "sujeto": {
       "tipo1": "sujeto",
-      "nombre": "La realidad",
-      "complementos": null
+      "nombre": "La realidad"
     },
     "predicado": {
       "tipo1": "predicado",
-      "verbo": "es",
-      "complementos": null
+      "verbo": "es"
     }
   },
   {
     "tipo0": "oración",
     "sujeto": {
       "tipo1": "sujeto",
-      "nombre": "La realidad",
-      "complementos": null
+      "nombre": "La realidad"
     },
     "predicado": {
       "tipo1": "predicado",
-      "verbo": "realiza",
-      "complementos": null
+      "verbo": "realiza"
     }
   },
   {
@@ -34,8 +30,7 @@
         {
           "tipo0": "conjunto nominal",
           "tipo1": "sujeto",
-          "nombre": "mágica",
-          "complementos": null
+          "nombre": "mágica"
         }
       ]
     ]
@@ -60,19 +55,16 @@
                     {
                       "tipo0": "conjunto nominal",
                       "tipo1": "sujeto",
-                      "nombre": "otras",
-                      "complementos": null
+                      "nombre": "otras"
                     }
                   ]
                 ]
               }
-            ],
-            "complementos": null
+            ]
           },
           "predicado": {
             "tipo1": "predicado",
-            "verbo": "realiza",
-            "complementos": null
+            "verbo": "realiza"
           }
         }
       ]
@@ -82,8 +74,7 @@
     "tipo0": "oración",
     "sujeto": {
       "tipo1": "sujeto",
-      "nombre": "La realidad",
-      "complementos": null
+      "nombre": "La realidad"
     },
     "predicado": {
       "tipo1": "predicado",
@@ -103,8 +94,7 @@
                     {
                       "tipo0": "conjunto nominal",
                       "tipo1": "sujeto",
-                      "nombre": "un Dios",
-                      "complementos": null
+                      "nombre": "un Dios"
                     }
                   ]
                 ]
@@ -125,14 +115,12 @@
                           {
                             "tipo0": "conjunto nominal",
                             "tipo1": "sujeto",
-                            "nombre": "una abstracción",
-                            "complementos": null
+                            "nombre": "una abstracción"
                           }
                         ]
                       ]
                     }
-                  ],
-                  "complementos": null
+                  ]
                 }
               ]
             ]
@@ -155,11 +143,9 @@
               {
                 "tipo0": "conjunto nominal",
                 "tipo1": "sujeto",
-                "nombre": "abstracta",
-                "complementos": null
+                "nombre": "abstracta"
               }
-            ],
-            "complementos": null
+            ]
           },
           "predicado": {
             "tipo1": "predicado",
@@ -169,8 +155,7 @@
                 {
                   "tipo0": "conjunto nominal",
                   "tipo1": "sujeto",
-                  "nombre": "fractales",
-                  "complementos": null
+                  "nombre": "fractales"
                 }
               ]
             ]
@@ -194,8 +179,7 @@
               {
                 "tipo0": "conjunto nominal",
                 "tipo1": "sujeto",
-                "nombre": "falsa",
-                "complementos": null
+                "nombre": "falsa"
               }
             ]
           ]
@@ -209,13 +193,17 @@
               {
                 "tipo0": "conjunto nominal",
                 "tipo1": "sujeto",
-                "nombre": "cierta",
-                "complementos": null
+                "nombre": "cierta"
               }
             ]
           ]
         }
       ]
     ]
+  },
+  {
+    "tipo0": "conjunto nominal",
+    "tipo1": "sujeto",
+    "nombre": ""
   }
 ]

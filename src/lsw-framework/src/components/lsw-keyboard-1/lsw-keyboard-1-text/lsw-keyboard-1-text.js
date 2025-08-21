@@ -95,6 +95,8 @@
     },
 
   };
+  let cursorLine = 0;
+  let cursorColumn = 0;
   Vue.component("LswKeyboard1Text", {
     template: $template,
     props: {
@@ -117,6 +119,8 @@
         cursorStart: 0,
         cursorEnd: 0,
         cursorPosition: 0,
+        cursorLine: 0,
+        cursorColumn: 0,
       };
     },
     methods: {
@@ -161,6 +165,36 @@
         } else {
           this.cursorPosition = this.cursorStart;
         }
+        HOOKS_PARA_CADA_MOVIMIENTO_DEL_CURSOR_POR_EL_TEXTO: {
+          this.synchronizeCursorPath();
+        }
+      },
+      synchronizeCursorPath() {
+        this.$trace("lsw-keyboard-1-text.methods.synchronizeCursorPath");
+        let currentPos = 0;
+        Iterating_text:
+        for(let lineIndex=0; lineIndex<this.textMatrix.length; lineIndex++) {
+          const line = this.textMatrix[lineIndex];
+          const finalLinePos = currentPos + (line.length);
+          if(finalLinePos > this.cursorPosition) {
+            for(let columnIndex=0; columnIndex<line.length; columnIndex++) {
+              const cell = line[columnIndex];
+              if(cell.pos === this.cursorPosition) {
+                this.cursorLine = lineIndex;
+                this.cursorColumn = columnIndex;
+                break Iterating_text;
+              }
+            }
+          } else if(finalLinePos === this.cursorPosition) {
+            this.cursorLine = lineIndex;
+            this.cursorColumn = line.length;
+            break Iterating_text;
+          } else {
+            currentPos = finalLinePos;
+          }
+          currentPos++;
+        }
+        
       },
       setFocusToKeyboard() {
         this.$trace("lsw-keyboard-1-text.methods.setFocusToKeyboard");
@@ -199,6 +233,19 @@
         const line = parseInt(currentKey.getAttribute("data-cursor-line"));
         const ch = parseInt(currentKey.getAttribute("data-cursor-character"));
         return { pos, line, ch };
+      },
+      setCursorPath(lineIndex, columnIndex) {
+        this.$trace("lsw-keyboard-1-text.methods.setCursorPath");
+        cursorLine = lineIndex;
+        cursorColumn = columnIndex;
+        return true;
+      },
+      getCursorPath() {
+        this.$trace("lsw-keyboard-1-text.methods.getCursorPath");
+        return {
+          line: cursorLine,
+          column: cursorColumn
+        }
       },
       moveCursorVertically(movement) {
         this.$trace("lsw-keyboard-1-text.methods.moveCursorVertically");
@@ -530,12 +577,18 @@
           if (isBackspace) {
             const { pos } = this.getCursorPosition();
             const newPos = pos - 1;
+            if(newPos < 0) {
+              return;
+            }
             this.currentText = this.currentText.slice(0, newPos) + this.currentText.slice(pos);
             this.synchronizeMatrixFromText();
             this.setSelectedPosition(newPos, newPos, newPos);
           } else {
             const { pos } = this.getCursorPosition();
             const newPos = pos;
+            if(newPos >= this.currentText.length) {
+              return;
+            }
             this.currentText = this.currentText.slice(0, newPos) + this.currentText.slice(newPos + 1);
             this.synchronizeMatrixFromText();
             this.setSelectedPosition(newPos, newPos, newPos);

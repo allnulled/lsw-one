@@ -11,9 +11,9 @@
         v-show="(selectedContext === 'agenda') && (selectedAction === 'calendario')">
         <div class="">
             <lsw-agenda-acciones-viewer
-                ref="calendario"
                 :agenda="this"
-                :initial-date="selectedDate" ref="agenda_acciones_viewer"
+                :initial-date="selectedDate"
+                ref="calendario"
             />
         </div>
     </div>

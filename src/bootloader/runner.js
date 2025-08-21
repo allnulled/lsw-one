@@ -16,13 +16,15 @@
     Work_relocation: {
       try {
         Inject_kernel_bootjs: {
-          await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
+          // await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile("/kernel/boot.js");
         }
         Inject_kernel_android_bootjs: {
           if(typeof cordova === "undefined") {
             break Inject_kernel_android_bootjs;
           }
-          await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile(`/kernel/volatile-database/${LswVolatileDatabase.global.$storageId}/triggers.js`);
+          await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile(`/kernel/volatile-database/${
+            LswVolatileDatabase.global.$storageId
+          }/triggers.js`);
         }
         Start_most_concurred_toolkits: {
           await LswVolatileDatabase.global.loadDatabase();

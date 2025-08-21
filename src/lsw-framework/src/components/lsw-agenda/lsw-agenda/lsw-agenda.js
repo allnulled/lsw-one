@@ -273,8 +273,8 @@ Vue.component("LswAgenda", {
     },
     async refreshTasks() {
       this.$trace("lsw-agenda.methods.refreshTasks");
-      if (this.$refs.agenda_acciones_viewer) {
-        this.$refs.agenda_acciones_viewer.changeDate(new Date(this.selectedDate));
+      if (this.$refs.calendario) {
+        this.$refs.calendario.changeDate(new Date(this.selectedDate));
       }
     },
     async synchronizeAlarms() {
@@ -294,13 +294,14 @@ Vue.component("LswAgenda", {
             "file://assets/sounds/alarm.submarine.wav",
           ])
           try {
+            LswUtils.debug(allAlarms);
             for (let index = 0; index < allAlarms.length; index++) {
               const accion = allAlarms[index];
               const id = index + 1;
               const notificationCallback = LswRandomizer.getRandomItem(this.possibleNotifiers);
               const text = notificationCallback(accion);
-              this.$window.cordova.plugins.notification.local.cancel(id);
-              this.$window.cordova.plugins.notification.local.schedule({
+              await this.$window.cordova.plugins.notification.local.cancel(id);
+              await this.$window.cordova.plugins.notification.local.schedule({
                 id,
                 title: `${accion.en_concepto} * ${accion.tiene_inicio} @${accion.tiene_inicio}`,
                 text: text,

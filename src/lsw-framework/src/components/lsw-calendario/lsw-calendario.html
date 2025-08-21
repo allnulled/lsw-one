@@ -1,5 +1,11 @@
 <div class="Component LswCalendario">
 
+  <lsw-typical-title class="margin_bottom_1" :buttons="[{
+    event: openNewTaskDialog,
+    text: '➕'
+  }]">
+    📆 Calendario:
+  </lsw-typical-title>
   <div class="flex_row align_self_start">
     <div class="flex_1">
       <div class="visor_de_calendario">
@@ -156,7 +162,7 @@
           v-for="rightButton, rightButtonIndex in rightButtons"
           v-bind:key="'right-button-' + rightButtonIndex">
           <button
-            class="supermini width_100 boton_derecha_de_calendario"
+            class="width_100 boton_derecha_de_calendario"
             v-on:click="rightButton.event">
             {{ rightButton.text }}
           </button>

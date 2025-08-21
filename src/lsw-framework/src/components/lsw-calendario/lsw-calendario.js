@@ -27,6 +27,23 @@ Vue.component("LswCalendario", {
     try {
       this.$trace("lsw-calendario.data");
       const hoy = new Date();
+      const rightButtons = [];
+      if(this.accionesViewer) {
+        rightButtons.push({
+          text: "➕",
+          event: this.openNewTaskDialog
+        });
+      }
+      if(this.accionesViewer) {
+        rightButtons.push({
+          text: "🎲",
+          event: this.openDayRandomizer
+        });
+      }
+      rightButtons.push({
+        text: "🔎",
+        event: this.openTimeLocator
+      });
       return {
         es_carga_inicial: true,
         valor_inicial_adaptado: this.adaptar_valor_inicial(this.valorInicial),
@@ -42,16 +59,7 @@ Vue.component("LswCalendario", {
         dia_actual: hoy.getDate(),
         mes_actual: hoy.getMonth(),
         anio_actual: hoy.getFullYear(),
-        rightButtons: [{
-          text: "🔎",
-          event: this.openTimeLocator
-        }].concat(!this.accionesViewer ? [] : [{
-          text: "➕",
-          event: this.openNewTaskDialog
-        }, {
-          text: "🎲",
-          event: this.openDayRandomizer
-        }])
+        rightButtons,
       };
     } catch (error) {
       console.log(error);

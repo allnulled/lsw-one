@@ -10,6 +10,7 @@ Vue.component("LswKeyboard1", {
   data() {
     this.$trace("lsw-keyboard-1.data");
     return {
+      hasFocus: false,
       isShowingText: true,
       teclasPresionadas: [],
       teclado: [
@@ -146,6 +147,14 @@ Vue.component("LswKeyboard1", {
       if(pos !== -1) {
         this.teclasPresionadas.splice(pos, 1);
       }
+    },
+    notifyFocus() {
+      this.$trace("lsw-keyboard-1.methods.notifyFocus");
+      this.hasFocus = true;
+    },
+    notifyBlur() {
+      this.$trace("lsw-keyboard-1.methods.notifyBlur");
+      this.hasFocus = false;
     },
     dispatchKeyPress(keyId, event) {
       this.$trace("lsw-keyboard-1.methods.dispatchKeyPress");

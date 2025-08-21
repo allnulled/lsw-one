@@ -1,0 +1,221 @@
+[
+  {
+    "tipo0": "oración",
+    "sujeto": {
+      "tipo1": "sujeto",
+      "nombre": "La realidad",
+      "complementos": null
+    },
+    "predicado": {
+      "tipo1": "predicado",
+      "verbo": "es",
+      "complementos": null
+    }
+  },
+  {
+    "tipo0": "oración",
+    "sujeto": {
+      "tipo1": "sujeto",
+      "nombre": "La realidad",
+      "complementos": null
+    },
+    "predicado": {
+      "tipo1": "predicado",
+      "verbo": "realiza",
+      "complementos": null
+    }
+  },
+  {
+    "tipo0": "conjunto nominal",
+    "tipo1": "sujeto",
+    "nombre": "La realidad",
+    "complementos": [
+      [
+        {
+          "tipo0": "conjunto nominal",
+          "tipo1": "sujeto",
+          "nombre": "mágica",
+          "complementos": null
+        }
+      ]
+    ]
+  },
+  {
+    "tipo0": "conjunto nominal",
+    "tipo1": "sujeto",
+    "nombre": "La realidad",
+    "complementos": [
+      [
+        {
+          "tipo0": "oración",
+          "sujeto": {
+            "tipo1": "sujeto",
+            "nombre": [
+              {
+                "tipo0": "conjunto nominal",
+                "tipo1": "sujeto",
+                "nombre": "mágica",
+                "complementos": [
+                  [
+                    {
+                      "tipo0": "conjunto nominal",
+                      "tipo1": "sujeto",
+                      "nombre": "otras",
+                      "complementos": null
+                    }
+                  ]
+                ]
+              }
+            ],
+            "complementos": null
+          },
+          "predicado": {
+            "tipo1": "predicado",
+            "verbo": "realiza",
+            "complementos": null
+          }
+        }
+      ]
+    ]
+  },
+  {
+    "tipo0": "oración",
+    "sujeto": {
+      "tipo1": "sujeto",
+      "nombre": "La realidad",
+      "complementos": null
+    },
+    "predicado": {
+      "tipo1": "predicado",
+      "verbo": "se compone de",
+      "complementos": [
+        [
+          {
+            "tipo0": "conjunto verbal",
+            "tipo1": "predicado",
+            "verbo": [
+              {
+                "tipo0": "conjunto nominal",
+                "tipo1": "sujeto",
+                "nombre": "un yo",
+                "complementos": [
+                  [
+                    {
+                      "tipo0": "conjunto nominal",
+                      "tipo1": "sujeto",
+                      "nombre": "un Dios",
+                      "complementos": null
+                    }
+                  ]
+                ]
+              }
+            ],
+            "complementos": [
+              [
+                {
+                  "tipo0": "conjunto verbal",
+                  "tipo1": "predicado",
+                  "verbo": [
+                    {
+                      "tipo0": "conjunto nominal",
+                      "tipo1": "sujeto",
+                      "nombre": "una materialidad",
+                      "complementos": [
+                        [
+                          {
+                            "tipo0": "conjunto nominal",
+                            "tipo1": "sujeto",
+                            "nombre": "una abstracción",
+                            "complementos": null
+                          }
+                        ]
+                      ]
+                    }
+                  ],
+                  "complementos": null
+                }
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "tipo0": "conjunto nominal",
+    "tipo1": "sujeto",
+    "nombre": "La realidad",
+    "complementos": [
+      [
+        {
+          "tipo0": "oración",
+          "sujeto": {
+            "tipo1": "sujeto",
+            "nombre": [
+              {
+                "tipo0": "conjunto nominal",
+                "tipo1": "sujeto",
+                "nombre": "abstracta",
+                "complementos": null
+              }
+            ],
+            "complementos": null
+          },
+          "predicado": {
+            "tipo1": "predicado",
+            "verbo": "conforma",
+            "complementos": [
+              [
+                {
+                  "tipo0": "conjunto nominal",
+                  "tipo1": "sujeto",
+                  "nombre": "fractales",
+                  "complementos": null
+                }
+              ]
+            ]
+          }
+        }
+      ]
+    ]
+  },
+  {
+    "tipo0": "conjunto nominal",
+    "tipo1": "sujeto",
+    "nombre": "La realidad",
+    "complementos": [
+      [
+        {
+          "tipo0": "conjunto verbal",
+          "tipo1": "predicado",
+          "verbo": "no es",
+          "complementos": [
+            [
+              {
+                "tipo0": "conjunto nominal",
+                "tipo1": "sujeto",
+                "nombre": "falsa",
+                "complementos": null
+              }
+            ]
+          ]
+        },
+        {
+          "tipo0": "conjunto verbal",
+          "tipo1": "predicado",
+          "verbo": "es",
+          "complementos": [
+            [
+              {
+                "tipo0": "conjunto nominal",
+                "tipo1": "sujeto",
+                "nombre": "cierta",
+                "complementos": null
+              }
+            ]
+          ]
+        }
+      ]
+    ]
+  }
+]

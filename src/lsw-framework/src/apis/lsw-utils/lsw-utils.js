@@ -704,10 +704,11 @@
     window.navigator.clipboard.writeText(texto);
   };
 
+  LswUtils.debug = (...args) => Vue.prototype.$lsw.toasts.collapse(...args);
 
   Global_injection: {
     window.kk = (...args) => Object.keys(...args);
-    window.dd = (...args) => Vue.prototype.$lsw.toasts.view(...args);
+    window.dd = (...args) => Vue.prototype.$lsw.toasts.collapse(...args);
     window.ddd = (...args) => Vue.prototype.$lsw.toasts.collapse(...args);
   }
 

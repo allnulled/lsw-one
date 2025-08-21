@@ -6,6 +6,8 @@
     <div class="keyboard_layer_1"
         v-on:keydown="pressKey"
         v-on:keyup="releaseKey"
+        v-on:focus="notifyFocus"
+        v-on:blur="notifyBlur"
         ref="keyboardMainElement"
         tabindex="0">
         <div class="vertically">

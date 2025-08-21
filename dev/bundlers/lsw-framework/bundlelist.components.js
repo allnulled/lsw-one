@@ -174,6 +174,10 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-windows/lsw-windows-pivot-button/lsw-windows-pivot-button`,
   // TOASTS:
   `${basepath}/lsw-framework/src/components/lsw-toasts/lsw-toasts`,
+  // NATY-SCRIPT:
+  `${basepath}/lsw-framework/src/components/lsw-naty-script/naty-script.api.js`,
+  `${basepath}/lsw-framework/src/components/lsw-naty-script/naty-script-parser.js`,
+  `${basepath}/lsw-framework/src/components/lsw-naty-script/lsw-naty-script.js`,
   // CONSOLE HOOKER:
   `${basepath}/lsw-framework/src/components/lsw-console-hooker/console-hooker-api.js`,
   `${basepath}/lsw-framework/src/components/lsw-console-hooker/console-hooker`,

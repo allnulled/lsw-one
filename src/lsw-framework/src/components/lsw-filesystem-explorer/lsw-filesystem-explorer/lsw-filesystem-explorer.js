@@ -808,15 +808,24 @@ Vue.component("LswFilesystemExplorer", {
             <div class="flex_row centered pad_top_1">
               <div class="flex_100"></div>
               <div class="flex_1 pad_left_1">
-                <button class="supermini danger_button" v-on:click="accept">Aceptar</button>
+                <button class="supermini danger_button" v-on:click="() => accept(value)">
+                  Aceptar
+                </button>
               </div>
               <div class="flex_1 pad_left_1">
-                <button class="supermini " v-on:click="cancel">Cancelar</button>
+                <button class="supermini " v-on:click="cancel">
+                  Cancelar
+                </button>
               </div>
             </div>
           </div>`,
-        factory: { data: { value: filename } },
+        factory: {
+          data: {
+            value: filename
+          }
+        },
       });
+      LswUtils.debug(confirmation);
       if (typeof confirmation !== "string") return;
       const filecontents = this.current_node_contents;
       LswUtils.downloadFile(filename, filecontents);

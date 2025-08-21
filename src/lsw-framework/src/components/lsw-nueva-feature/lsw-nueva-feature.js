@@ -6,18 +6,39 @@ Vue.component("LswNuevaFeature", {
     this.$trace("lsw-nueva-feature.data");
     
     return {
-      datos: false,
+      input: `Dios > dice { ok }`,
+      output: false,
+      error: false,
+      errorSummary: false,
     };
   },
   methods: {
     async runTest() {
-      
+      try {
+        this.output = NatyScriptParser.parse(this.input);
+        this.clearError();
+      } catch (error) {
+        console.error(error);
+        this.error = error;
+      }
+    },
+    clearError() {
+      this.error = false;
     },
     async load() {
-      
+
     }
   },
-  watch: {},
+  computed: {
+    
+  },
+  watch: {
+    error(error) {
+      if(error.expected) {
+        error.expected = LswUtils.uniquizeArray(error.expected.map(sugg => sugg.description));
+      }
+    }
+  },
   async mounted() {
     try {
       this.$trace("lsw-nueva-feature.mounted");

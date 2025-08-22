@@ -56175,15 +56175,15 @@ Vue.component("LswAgenda", {
     async synchronizeAlarms() {
       this.$trace("lsw-agenda.methods.synchronizeAlarms");
       Cordova_injection: {
-        if (typeof this.$window.cordova === "undefined") {
-          LswUtils.debug(1);
+        if (typeof this.$window.cordova !== "undefined") {
+          // LswUtils.debug(1);
           const dateToday = new Date();
-          LswUtils.debug(2);
+          // LswUtils.debug(2);
           const allAlarms = await this.$lsw.database.selectMany("Accion", accion => {
             const dateAccion = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
             return LswTimer.utils.areSameDayDates(dateToday, dateAccion);
           });
-          LswUtils.debug(3);
+          // LswUtils.debug(3);
           const soundFile = LswRandomizer.getRandomItem([
             "file://assets/sounds/alarm.busca.wav",
             "file://assets/sounds/alarm.clock-light.wav",
@@ -56191,21 +56191,21 @@ Vue.component("LswAgenda", {
             "file://assets/sounds/alarm.heavy.wav",
             "file://assets/sounds/alarm.submarine.wav",
           ]);
-          LswUtils.debug(4);
+          // LswUtils.debug(4);
           try {
-            LswUtils.debug(5);
-            LswUtils.debug(allAlarms);
+            // LswUtils.debug(5);
+            // LswUtils.debug(allAlarms);
             for (let index = 0; index < allAlarms.length; index++) {
-              LswUtils.debug(6 + ":" + index);
+              // LswUtils.debug(6 + ":" + index);
               const accion = allAlarms[index];
-              LswUtils.debug(7 + ":" + index);
+              // LswUtils.debug(7 + ":" + index);
               const id = index + 1;
               const notificationCallback = LswRandomizer.getRandomItem(this.possibleNotifiers);
-              LswUtils.debug(8 + ":" + index);
+              // LswUtils.debug(8 + ":" + index);
               const text = notificationCallback(accion);
-              LswUtils.debug(9 + ":" + index);
+              // LswUtils.debug(9 + ":" + index);
               await this.$window.cordova.plugins.notification.local.cancel(id);
-              LswUtils.debug(10 + ":" + index);
+              // LswUtils.debug(10 + ":" + index);
               await this.$window.cordova.plugins.notification.local.schedule({
                 id,
                 title: `${accion.en_concepto} * ${accion.tiene_inicio} @${accion.tiene_inicio}`,
@@ -56218,14 +56218,14 @@ Vue.component("LswAgenda", {
                 lockscreen: true,
                 sound: soundFile
               });
-              LswUtils.debug(11 + ":" + index);
+              // LswUtils.debug(11 + ":" + index);
             }
             this.$lsw.toasts.send({
               title: "Alarmas sincronizadas",
               text: `Unas ${allAlarms.length} alarmas fueron sincronizadas con el dispositivo`
             });
           } catch (error) {
-            LswUtils.debug(100);
+            // LswUtils.debug(100);
             this.$lsw.toasts.showError(error);
           }
         }

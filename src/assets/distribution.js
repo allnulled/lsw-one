@@ -36393,13 +36393,29 @@ return Store;
   };
 
   LswUtils.downloadFile = function (filename, filecontent) {
-    const blob = new Blob([filecontent], { type: "text/plain" });
-    const enlace = document.createElement("a");
-    enlace.href = URL.createObjectURL(blob);
-    enlace.download = filename;
-    document.body.appendChild(enlace);
-    enlace.click();
-    document.body.removeChild(enlace);
+    if (typeof window.cordova !== "undefined") {
+      LswUtils.debug(`Descargando fichero ${filename} (${filecontent.length}B) en entorno de Cordova app`);
+      const rutaFinal = cordova.file.externalRootDirectory + 'Download/';
+      LswUtils.debug(`Descargando en ruta final: ${rutaFinal}${filename}`);
+      window.resolveLocalFileSystemURL(rutaFinal, function (dir) {
+        dir.getFile(filename, { create: true }, function (file) {
+          file.createWriter(function (fileWriter) {
+            const blob = new Blob([filecontent], { type: "text/plain" });
+            fileWriter.write(blob);
+            LswUtils.debug(`Descarga efectuada con éxito en la carpeta convencional de descargas: ${rutaFinal}${filename}`);
+          }, LswUtils.debug);
+        });
+      }, LswUtils.debug);
+    } else {
+      LswUtils.debug(`Descargando fichero ${filename} (${filecontent.length}B) en entorno web`);
+      const blob = new Blob([filecontent], { type: "text/plain" });
+      const enlace = document.createElement("a");
+      enlace.href = URL.createObjectURL(blob);
+      enlace.download = filename;
+      document.body.appendChild(enlace);
+      enlace.click();
+      document.body.removeChild(enlace);
+    }
   };
 
   LswUtils.extractPropertiesFrom = function (base, props = [], voidedProps = [], overridings = {}) {
@@ -52030,6 +52046,7 @@ Vue.component("LswFilesystemExplorer", {
     async processToDownloadFile() {
       this.$trace("lsw-filesystem.explorer.methods.processToDownloadFile");
       const filename = this.current_node.replace(this.current_node_basedir, "");
+      LswUtils.debug(filename);
       const confirmation = await this.$lsw.dialogs.open({
         title: "Descargar fichero",
         template: `

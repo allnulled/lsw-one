@@ -816,6 +816,7 @@ Vue.component("LswFilesystemExplorer", {
     async processToDownloadFile() {
       this.$trace("lsw-filesystem.explorer.methods.processToDownloadFile");
       const filename = this.current_node.replace(this.current_node_basedir, "");
+      LswUtils.debug(filename);
       const confirmation = await this.$lsw.dialogs.open({
         title: "Descargar fichero",
         template: `

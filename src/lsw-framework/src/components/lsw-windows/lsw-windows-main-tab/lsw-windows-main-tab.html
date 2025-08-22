@@ -49,7 +49,7 @@
                     v-else>
                     <div v-for="dialog, dialogIndex, dialogCounter in $lsw.dialogs.opened"
                         v-bind:key="'dialog-' + dialogIndex">
-                        <div class="flex_row centered pad_bottom_1">
+                        <div class="flex_row centered">
                             <div class="flex_100">
                                 <button class="supermini width_100 text_align_left"
                                     v-on:click="() => viewer.selectDialog(dialogIndex)">

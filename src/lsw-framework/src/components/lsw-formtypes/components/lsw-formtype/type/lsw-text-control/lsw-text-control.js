@@ -19,6 +19,8 @@ Vue.component("LswTextControl", {
       uuid: LswRandomizer.getRandomString(5),
       value,
       isEditable: true,
+      submitError: false,
+      validateError: false,
     };
   },
   methods: {

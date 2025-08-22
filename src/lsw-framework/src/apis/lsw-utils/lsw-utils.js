@@ -704,12 +704,12 @@
     window.navigator.clipboard.writeText(texto);
   };
 
-  LswUtils.debug = (...args) => Vue.prototype.$lsw.toasts.collapse(...args);
+  LswUtils.debug = (...args) => LswDebugger.global.debug(...args);
 
   Global_injection: {
     window.kk = (...args) => Object.keys(...args);
-    window.dd = (...args) => Vue.prototype.$lsw.toasts.collapse(...args);
-    window.ddd = (...args) => Vue.prototype.$lsw.toasts.collapse(...args);
+    window.dd = (...args) => LswDebugger.global.debug(...args);
+    window.ddd = (...args) => LswDebugger.global.debug(...args);
   }
 
   // @code.end: LswUtils

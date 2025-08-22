@@ -18,7 +18,8 @@
                     spellcheck="false"
                     ref="textInput" />
             </div>
-            <lsw-control-error />
+            <lsw-control-error :error="submitError" v-if="submitError" />
+            <lsw-control-error :error="validateError" v-if="validateError" />
         </div>
     </div>
 </div>

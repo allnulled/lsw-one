@@ -36560,12 +36560,12 @@ return Store;
     window.navigator.clipboard.writeText(texto);
   };
 
-  LswUtils.debug = (...args) => Vue.prototype.$lsw.toasts.collapse(...args);
+  LswUtils.debug = (...args) => LswDebugger.global.debug(...args);
 
   Global_injection: {
     window.kk = (...args) => Object.keys(...args);
-    window.dd = (...args) => Vue.prototype.$lsw.toasts.collapse(...args);
-    window.ddd = (...args) => Vue.prototype.$lsw.toasts.collapse(...args);
+    window.dd = (...args) => LswDebugger.global.debug(...args);
+    window.ddd = (...args) => LswDebugger.global.debug(...args);
   }
 
   // @code.end: LswUtils
@@ -40561,11 +40561,13 @@ LswLauncher.global.register("enciclopedia", "🔬 Enciclopedia", (launchable) =>
 LswLauncher.global.register("nuevo-artículo", "🔬➕ Nuevo artículo", (launchable) => LswLauncher.openDialog('<lsw-spontaneous-form-articulo />', launchable.name));
 LswLauncher.global.register("inspector-de-js", "🪲 Inspector de JS", (launchable) => LswLauncher.openDialog('<lsw-js-inspector />', launchable.name));
 LswLauncher.global.register("consola-de-js", "💻 Consola de JS", () => LswConsoleHooker.toggleConsole());
-LswLauncher.global.register("datos-volátiles", "♨️ Datos volátiles", (launchable) => LswLauncher.openDialog('<lsw-volatile-database-visualizer>', launchable.name));
+// LswLauncher.global.register("datos-volátiles", "♨️ Datos volátiles", (launchable) => LswLauncher.openDialog('<lsw-volatile-database-visualizer>', launchable.name));
 LswLauncher.global.register("tests-de-aplicación", "✅ Tests de aplicación", (launchable) => LswLauncher.openDialog('<lsw-tests-page />', launchable.name));
 LswLauncher.global.register("emojis-picker", "🐱 Emojis", (launchable) => LswLauncher.openDialog('<lsw-emojis-picker />', launchable.name));
 LswLauncher.global.register("configuraciones", "🔧 Configuraciones", (launchable) => LswLauncher.openDialog('<lsw-configurations-page />', launchable.name));
 LswLauncher.global.register("naty-script", "🧶 NatyScript editor", (launchable) => LswLauncher.openDialog('<lsw-naty-script-editor />', launchable.name));
+LswLauncher.global.register("trackeables", "📹 Trackeables", (launchable) => LswLauncher.openDialog('<lsw-event-tracker />', launchable.name));
+
 LswLauncher.global.register("nueva-feature", "✨ Nueva feature", (launchable) => LswLauncher.openDialog('<lsw-nueva-feature />', launchable.name));
 LswLauncher.global.register("example-of-app", "🏅 Example of app", (launchable) => LswLauncher.openDialog('<lsw-example-of-app />', launchable.name));
 
@@ -43415,7 +43417,7 @@ Vue.component("LswCalendario", {
 
   <lsw-typical-title class="margin_bottom_1" :buttons="[{
     event: openNewTaskDialog,
-    text: '➕'
+    text: '➕🐾'
   }]">
     📆 Calendario:
   </lsw-typical-title>
@@ -43615,7 +43617,7 @@ Vue.component("LswCalendario", {
       const rightButtons = [];
       if(this.accionesViewer) {
         rightButtons.push({
-          text: "➕",
+          text: "➕🐾",
           event: this.openNewTaskDialog
         });
       }
@@ -48090,7 +48092,7 @@ Vue.component("LswWindowsMainTab", {
                     v-else>
                     <div v-for="dialog, dialogIndex, dialogCounter in \$lsw.dialogs.opened"
                         v-bind:key="'dialog-' + dialogIndex">
-                        <div class="flex_row centered pad_bottom_1">
+                        <div class="flex_row centered">
                             <div class="flex_100">
                                 <button class="supermini width_100 text_align_left"
                                     v-on:click="() => viewer.selectDialog(dialogIndex)">
@@ -56151,26 +56153,36 @@ Vue.component("LswAgenda", {
       this.$trace("lsw-agenda.methods.synchronizeAlarms");
       Cordova_injection: {
         if (typeof this.$window.cordova === "undefined") {
+          LswUtils.debug(1);
           const dateToday = new Date();
+          LswUtils.debug(2);
           const allAlarms = await this.$lsw.database.selectMany("Accion", accion => {
             const dateAccion = LswTimer.utils.fromDatestringToDate(accion.tiene_inicio);
             return LswTimer.utils.areSameDayDates(dateToday, dateAccion);
           });
+          LswUtils.debug(3);
           const soundFile = LswRandomizer.getRandomItem([
             "file://assets/sounds/alarm.busca.wav",
             "file://assets/sounds/alarm.clock-light.wav",
             "file://assets/sounds/alarm.facility-breach.wav",
             "file://assets/sounds/alarm.heavy.wav",
             "file://assets/sounds/alarm.submarine.wav",
-          ])
+          ]);
+          LswUtils.debug(4);
           try {
+            LswUtils.debug(5);
             LswUtils.debug(allAlarms);
             for (let index = 0; index < allAlarms.length; index++) {
+              LswUtils.debug(6 + ":" + index);
               const accion = allAlarms[index];
+              LswUtils.debug(7 + ":" + index);
               const id = index + 1;
               const notificationCallback = LswRandomizer.getRandomItem(this.possibleNotifiers);
+              LswUtils.debug(8 + ":" + index);
               const text = notificationCallback(accion);
+              LswUtils.debug(9 + ":" + index);
               await this.$window.cordova.plugins.notification.local.cancel(id);
+              LswUtils.debug(10 + ":" + index);
               await this.$window.cordova.plugins.notification.local.schedule({
                 id,
                 title: `${accion.en_concepto} * ${accion.tiene_inicio} @${accion.tiene_inicio}`,
@@ -56183,12 +56195,14 @@ Vue.component("LswAgenda", {
                 lockscreen: true,
                 sound: soundFile
               });
+              LswUtils.debug(11 + ":" + index);
             }
             this.$lsw.toasts.send({
               title: "Alarmas sincronizadas",
               text: `Unas ${allAlarms.length} alarmas fueron sincronizadas con el dispositivo`
             });
           } catch (error) {
+            LswUtils.debug(100);
             this.$lsw.toasts.showError(error);
           }
         }
@@ -56354,17 +56368,15 @@ Vue.component("LswAgendaAccionesViewer", {
             v-if="selectedDate">
             <div class="flex_row centered">
                 <div class="flex_1 margin_right_1">
-                    <button class="supermini padded_vertically_1"
+                    <button class="remarked_button"
                         v-on:click="openNewRowDialog"
-                        :class="{activated: selectedForm === 'new'}">➕</button>
+                        :class="{activated: selectedForm === 'new'}">➕🐾</button>
                 </div>
-                <div class="flex_100 align_self_stretch selected_date_on_tasks_viewer">
-                    <div class="pad_1 text_align_center">
-                        {{ getDateIcon(selectedDate) }} {{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }} {{ getDateIcon(selectedDate) }}
-                    </div>
+                <div class="flex_100 text_align_center selected_date_on_tasks_viewer">
+                    {{ getDateIcon(selectedDate) }} {{ \$lsw.timer.utils.formatDateToSpanish(selectedDate, true) }} {{ getDateIcon(selectedDate) }}
                 </div>
                 <div class="flex_1 pad_left_1 nowrap">
-                    <button class="supermini"
+                    <button class=""
                         :class="{activated:isShowingRandomizer}"
                         v-on:click="toggleRandomizer">🎲</button>
                     <div class="hidden_menu"
@@ -56946,7 +56958,7 @@ Vue.component("LswAgendaAccionesViewer", {
                     <lsw-text-control ref="hora_final" :settings="{name:'hora_final',initialValue:'24'}" :skip-label="true" />
                 </div>
             </div>
-            <div v-if="error">
+            <div class="box_error_layout" v-if="error">
                 <hr/>
                 <div class="box_error_container error_is_affecting_field" v-on:click="() => setError(false)">
                     <div class="box_error_content">{{ error.name }}: {{ error.message }}</div>
@@ -59125,7 +59137,8 @@ Vue.component("LswTextControl", {
                     spellcheck="false"
                     ref="textInput" />
             </div>
-            <lsw-control-error />
+            <lsw-control-error :error="submitError" v-if="submitError" />
+            <lsw-control-error :error="validateError" v-if="validateError" />
         </div>
     </div>
 </div>`,
@@ -59147,6 +59160,8 @@ Vue.component("LswTextControl", {
       uuid: LswRandomizer.getRandomString(5),
       value,
       isEditable: true,
+      submitError: false,
+      validateError: false,
     };
   },
   methods: {
@@ -59436,7 +59451,8 @@ Vue.component("LswDurationControl", {
                 <div class="duration_control_option" v-on:click="() => setValue('7h')">7h</div>
                 <div class="duration_control_option" v-on:click="() => setValue('8h')">8h</div>
             </div>
-            <lsw-control-error />
+            <lsw-control-error :error="submitError" v-if="submitError" />
+            <lsw-control-error :error="validateError" v-if="validateError" />
         </div>
     </div>
 </div>`,
@@ -61570,7 +61586,9 @@ Vue.component("LswAutomensajesViewer", {
                     📟
                 </button>
             </div>
-            <div class="flex_100 automensaje_block position_relative" :style="{ fontSize: selectedFontsize + 'px' }" v-on:click="refreshAutomessaging">
+            <div class="flex_100 automensaje_block position_relative"
+                :style="{ fontSize: selectedFontsize + 'px' }"
+                v-on:click="refreshAutomessaging">
                 <div class="position_absolute_fixed flex_row centered">
                     <div class="flex_1" v-if="selectedAutomensaje">
                         {{ selectedAutomensaje }}
@@ -61584,7 +61602,7 @@ Vue.component("LswAutomensajesViewer", {
                 <button
                     class="main_topbar_button rounded superbig"
                     id="the_picas_button"
-                    v-on:click="() => selectApplication('calendario')">
+                    v-on:click="() => LswLauncher.global.start('calendario')">
                     📆
                 </button>
             </div>
@@ -64984,8 +65002,9 @@ Vue.component("LswInlineTagsPicker", {
                 v-on:click="digestSearch">🔎</button>
         </div>
     </div>
-    <div class="white_space_normal inline_tags_picker_selectables">
-        <template v-for="row, rowIndex in fromData">
+    
+    <div class="white_space_normal inline_tags_picker_selectables margin_top_1 pad_bottom_1" v-if="isLoaded">
+        <template v-for="row, rowIndex in digestedData">
             <div class="display_inline_block pad_top_1 pad_right_1"
                 v-bind:key="'row_' + rowIndex">
                 <button class="supermini"
@@ -65013,6 +65032,7 @@ Vue.component("LswInlineTagsPicker", {
   data() {
     this.$trace("lsw-inline-tags-picker.data");
     return {
+      isLoaded: false,
       fromData: this.from,
       digestedData: [],
       searchText: "",
@@ -65022,13 +65042,15 @@ Vue.component("LswInlineTagsPicker", {
   methods: {
     digestSearch() {
       this.$trace("lsw-inline-tags-picker.methods.digestSearch");
+      this.isLoaded = false;
       if (this.searchText.trim() === "") {
         this.digestedData = this.fromData;
-        return;
+      } else {
+        this.digestedData = this.fromData.filter(row => {
+          return JSON.stringify(row).toLowerCase().indexOf(this.searchText.toLowerCase()) !== -1;
+        });
       }
-      this.digestedData = this.fromData.filter(row => {
-        return JSON.stringify(row).toLowerCase().indexOf(this.searchText.toLowerCase()) !== -1;
-      });
+      this.isLoaded = true;
     },
     selectRow(row) {
       this.$trace("lsw-inline-tags-picker.methods.selectRow");
@@ -65042,6 +65064,7 @@ Vue.component("LswInlineTagsPicker", {
   async mounted() {
     try {
       this.$trace("lsw-inline-tags-picker.mounted");
+      this.digestSearch();
     } catch (error) {
       console.log(error);
     }
@@ -71957,9 +71980,9 @@ rel correr
     template: `<div class="app app_component position_relative">
     <lsw-automensajes-viewer ref="desktop" />
     <div class="home_bottom_panel">
-        <button class="" v-on:click="goToEventTracker">📹</button>
-        <button class="" v-on:click="goToAddArticulo">+🔬</button>
-        <button class="" v-on:click="goToAddNota">+💬</button>
+        <button class="" v-on:click="() => LswLauncher.global.start('trackeables')">📹</button>
+        <button class="" v-on:click="() => LswLauncher.global.start('nuevo-artículo')">+🔬</button>
+        <button class="" v-on:click="() => LswLauncher.global.start('nueva-nota')">+💬</button>
         <!--button class="" v-on:click="goToCalendario">📅</button>
         <button class="" v-on:click="goToAddArticulo">+ 🔬</button>
         <button class="" v-on:click="goToAddRecordatorio">+ 🪧</button-->
@@ -71971,19 +71994,19 @@ rel correr
     <div class="home_mobile_off_panel_container">
         <div class="home_mobile_off_panel">
             <!--div class="mobile_off_panel_cell" v-on:click="clickPicas">✴️</div-->
-            <div class="mobile_off_panel_cell" v-on:click="goToEventTracker">
+            <div class="mobile_off_panel_cell" v-on:click="() => LswLauncher.global.start('trackeables')">
                 <div class="mobile_off_panel_button">📹</div>
             </div>
-            <div class="mobile_off_panel_cell" v-on:click="goToFilesystem">
+            <div class="mobile_off_panel_cell" v-on:click="() => LswLauncher.global.start('sistema-de-ficheros')">
                 <div class="mobile_off_panel_button">📂</div>
             </div>
-            <!--div class="mobile_off_panel_cell" v-on:click="goToVolatileDatabaseUi">
-                <div class="mobile_off_panel_button">♨️</div>
-            </div-->
-            <div class="mobile_off_panel_cell" v-on:click="goToEnciclopedia">
+            <div class="mobile_off_panel_cell" v-on:click="goToHomepage">
+                <div class="mobile_off_panel_button">📟</div>
+            </div>
+            <div class="mobile_off_panel_cell" v-on:click="() => LswLauncher.global.start('enciclopedia')">
                 <div class="mobile_off_panel_button">🔬</div>
             </div>
-            <div class="mobile_off_panel_cell" v-on:click="goToNotas">
+            <div class="mobile_off_panel_cell" v-on:click="() => LswLauncher.global.start('notas')">
                 <div class="mobile_off_panel_button">💬</div>
             </div>
         </div>

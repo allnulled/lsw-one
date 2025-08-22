@@ -988,6 +988,15 @@ pre.codeblock {
     border-color: red;
 }
 
+.remarked_button {
+    background-color: rgba(65, 141, 6, 0.6);
+}
+
+.remarked_button:hover {
+    background-color: rgba(44, 220, 9, 0.8);
+    border-color: rgb(38, 255, 0);
+}
+
 .as_card {
     border: 1px solid #333;
     border-radius: 2pt;

@@ -18,6 +18,7 @@ Vue.component("LswInlineTagsPicker", {
   data() {
     this.$trace("lsw-inline-tags-picker.data");
     return {
+      isLoaded: false,
       fromData: this.from,
       digestedData: [],
       searchText: "",
@@ -27,13 +28,15 @@ Vue.component("LswInlineTagsPicker", {
   methods: {
     digestSearch() {
       this.$trace("lsw-inline-tags-picker.methods.digestSearch");
+      this.isLoaded = false;
       if (this.searchText.trim() === "") {
         this.digestedData = this.fromData;
-        return;
+      } else {
+        this.digestedData = this.fromData.filter(row => {
+          return JSON.stringify(row).toLowerCase().indexOf(this.searchText.toLowerCase()) !== -1;
+        });
       }
-      this.digestedData = this.fromData.filter(row => {
-        return JSON.stringify(row).toLowerCase().indexOf(this.searchText.toLowerCase()) !== -1;
-      });
+      this.isLoaded = true;
     },
     selectRow(row) {
       this.$trace("lsw-inline-tags-picker.methods.selectRow");
@@ -47,6 +50,7 @@ Vue.component("LswInlineTagsPicker", {
   async mounted() {
     try {
       this.$trace("lsw-inline-tags-picker.mounted");
+      this.digestSearch();
     } catch (error) {
       console.log(error);
     }

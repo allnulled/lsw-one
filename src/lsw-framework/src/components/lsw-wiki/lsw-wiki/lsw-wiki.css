@@ -4,6 +4,7 @@
     --wiki_articulos_color_borde_2: rgb(0, 0, 0);
     --wiki_articulos_color_borde_2: rgba(0, 0, 0, 0.6);
     --wiki_articulos_color_fondo: rgba(33, 240, 10, 0.3);
+    --wiki_articulos_color_fondo_activado: rgba(33, 240, 10, 0.6);
     --wiki_articulos_color_letra: rgb(0, 0, 0);
     --wiki_articulos_detalles_color_fondo: rgba(255, 255, 255, 0.7);
 
@@ -69,7 +70,9 @@
     cursor: pointer;
 }
 
-.item_articulo.activated {}
+.item_articulo.activated {
+    background-color: var(--wiki_articulos_color_fondo_activado);
+}
 
 .celda_articulo {
     padding: 2px;

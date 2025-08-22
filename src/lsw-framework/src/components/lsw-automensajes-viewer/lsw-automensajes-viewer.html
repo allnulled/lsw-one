@@ -8,7 +8,9 @@
                     📟
                 </button>
             </div>
-            <div class="flex_100 automensaje_block position_relative" :style="{ fontSize: selectedFontsize + 'px' }" v-on:click="refreshAutomessaging">
+            <div class="flex_100 automensaje_block position_relative"
+                :style="{ fontSize: selectedFontsize + 'px' }"
+                v-on:click="refreshAutomessaging">
                 <div class="position_absolute_fixed flex_row centered">
                     <div class="flex_1" v-if="selectedAutomensaje">
                         {{ selectedAutomensaje }}
@@ -22,7 +24,7 @@
                 <button
                     class="main_topbar_button rounded superbig"
                     id="the_picas_button"
-                    v-on:click="() => selectApplication('calendario')">
+                    v-on:click="() => LswLauncher.global.start('calendario')">
                     📆
                 </button>
             </div>

@@ -11,8 +11,9 @@
                 v-on:click="digestSearch">🔎</button>
         </div>
     </div>
-    <div class="white_space_normal inline_tags_picker_selectables">
-        <template v-for="row, rowIndex in fromData">
+    
+    <div class="white_space_normal inline_tags_picker_selectables margin_top_1 pad_bottom_1" v-if="isLoaded">
+        <template v-for="row, rowIndex in digestedData">
             <div class="display_inline_block pad_top_1 pad_right_1"
                 v-bind:key="'row_' + rowIndex">
                 <button class="supermini"

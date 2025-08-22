@@ -47,7 +47,8 @@
                 <div class="duration_control_option" v-on:click="() => setValue('7h')">7h</div>
                 <div class="duration_control_option" v-on:click="() => setValue('8h')">8h</div>
             </div>
-            <lsw-control-error />
+            <lsw-control-error :error="submitError" v-if="submitError" />
+            <lsw-control-error :error="validateError" v-if="validateError" />
         </div>
     </div>
 </div>

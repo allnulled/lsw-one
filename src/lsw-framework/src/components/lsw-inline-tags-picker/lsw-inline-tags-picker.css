@@ -1,7 +1,7 @@
 .lsw_inline_tags_picker {}
 
 .inline_tags_picker_selectables {
-    max-height: 200px;
+    height: 200px;
     overflow: scroll;
     resize: vertical;
     border: 1px solid #CCC;

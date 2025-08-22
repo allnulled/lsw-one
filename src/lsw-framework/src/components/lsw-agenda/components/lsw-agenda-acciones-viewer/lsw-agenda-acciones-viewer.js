@@ -356,7 +356,7 @@ Vue.component("LswAgendaAccionesViewer", {
                     <lsw-text-control ref="hora_final" :settings="{name:'hora_final',initialValue:'24'}" :skip-label="true" />
                 </div>
             </div>
-            <div v-if="error">
+            <div class="box_error_layout" v-if="error">
                 <hr/>
                 <div class="box_error_container error_is_affecting_field" v-on:click="() => setError(false)">
                     <div class="box_error_content">{{ error.name }}: {{ error.message }}</div>

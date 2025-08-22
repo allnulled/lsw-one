@@ -25,17 +25,15 @@
             v-if="selectedDate">
             <div class="flex_row centered">
                 <div class="flex_1 margin_right_1">
-                    <button class="supermini padded_vertically_1"
+                    <button class="remarked_button"
                         v-on:click="openNewRowDialog"
-                        :class="{activated: selectedForm === 'new'}">➕</button>
+                        :class="{activated: selectedForm === 'new'}">➕🐾</button>
                 </div>
-                <div class="flex_100 align_self_stretch selected_date_on_tasks_viewer">
-                    <div class="pad_1 text_align_center">
-                        {{ getDateIcon(selectedDate) }} {{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }} {{ getDateIcon(selectedDate) }}
-                    </div>
+                <div class="flex_100 text_align_center selected_date_on_tasks_viewer">
+                    {{ getDateIcon(selectedDate) }} {{ $lsw.timer.utils.formatDateToSpanish(selectedDate, true) }} {{ getDateIcon(selectedDate) }}
                 </div>
                 <div class="flex_1 pad_left_1 nowrap">
-                    <button class="supermini"
+                    <button class=""
                         :class="{activated:isShowingRandomizer}"
                         v-on:click="toggleRandomizer">🎲</button>
                     <div class="hidden_menu"

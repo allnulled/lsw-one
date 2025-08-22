@@ -30,7 +30,7 @@ Vue.component("LswCalendario", {
       const rightButtons = [];
       if(this.accionesViewer) {
         rightButtons.push({
-          text: "➕",
+          text: "➕🐾",
           event: this.openNewTaskDialog
         });
       }

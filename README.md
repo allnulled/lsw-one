@@ -17,7 +17,9 @@ Complemento personal de software.
 
 - web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android: *los links expiran en 1 semana*
-   - última versión: [https://limewire.com/d/R4vqC#s1heaZPuDp](https://limewire.com/d/R4vqC#s1heaZPuDp)
+   - última versión: [https://limewire.com/d/Y8iZy#1iCxTFggyH](https://limewire.com/d/Y8iZy#1iCxTFggyH)
+   - versión del 22 de agosto de 2025: [https://limewire.com/d/Y8iZy#1iCxTFggyH](https://limewire.com/d/Y8iZy#1iCxTFggyH)
+   - aquí me ingresan 40 días en un manicomio y consigo dejar el tabaco y los porros.
    - versión del 2 de julio de 2025: [https://limewire.com/d/R4vqC#s1heaZPuDp](https://limewire.com/d/R4vqC#s1heaZPuDp)
    - versión del 25 de junio de 2025: [https://limewire.com/d/jyjQJ#QgUFVCdVNy](https://limewire.com/d/jyjQJ#QgUFVCdVNy)
    - versión del 23 de junio de 2025: [https://limewire.com/d/2lIZi#0CCQvtNDxZ](https://limewire.com/d/2lIZi#0CCQvtNDxZ)
@@ -53,7 +55,6 @@ Las aplicaciones que vienen por defecto son:
 - ✅ Tests de aplicación (⚠️: en construcción todavía 🏗)
 - 🔧 Configuraciones
 - ✨ Nueva feature (⚠️: reservado para desarrollo)
-- 🏅 Example of app (⚠️: también reservado para desarrollo)
 
 ### Trucos
 

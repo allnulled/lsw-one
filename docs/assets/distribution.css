@@ -1782,7 +1782,7 @@ table.filesystem_treeviewer_table > tbody > tr > td:nth-child(2) {
 }
 
 .articulo_categorias_box {
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     text-shadow: 0 0 1px black;
     font-style: italic;
     font-size: 10px;

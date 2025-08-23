@@ -52987,6 +52987,9 @@ Vue.component("LswWikiArticulos", {
                     <button class="supermini margin_left_1"
                         v-on:click="() => editArticulo(articulo)">↗️</button>
                 </div>
+                <div class="articulo_categorias_box" v-if="articulo.tiene_categorias">
+                    <div>🧲 {{ articulo.tiene_categorias }}</div>
+                </div>
                 <div class="pad_top_1"
                     v-if="openedArticulos.indexOf(articulo.id) !== -1">
                     <div class="position_relative">
@@ -53006,9 +53009,6 @@ Vue.component("LswWikiArticulos", {
                             <div v-html="marked.parse(articulo.tiene_contenido)"></div>
                         </div>
                     </div>
-                </div>
-                <div class="articulo_categorias_box" v-if="articulo.tiene_categorias">
-                    <div>🧲 {{ articulo.tiene_categorias }}</div>
                 </div>
             </div>
         </template>
@@ -53117,7 +53117,7 @@ Vue.component("LswWikiArticulos", {
       this.$trace("lsw-wiki-articulos.methods.editArticulo");
       const articulosComponent = this;
       await this.$lsw.dialogs.open({
-        title: "Editar artículo",
+        title: "🔬 Editar artículo",
         template: `
           <div>
             <lsw-schema-based-form
@@ -60920,39 +60920,48 @@ Vue.component("LswBarsGraph", {
 // @code.start: LswNotes API | @$section: Vue.js (v2) Components » Lsw SchemaBasedForm API » LswNotes component
 Vue.component("LswNotes", {
   template: `<div class="lsw_notes pad_0 pad_top_0">
-    <template v-if="allNotes && allNotes.length">
-        <div class="lista_articulos"
+    <lsw-typical-title :buttons="notasButtons">💬 Notas</lsw-typical-title>
+    <div v-if="allNotes && allNotes.length"
+        class="pad_top_1">
+        <div class=""
             v-if="isLoaded">
             <template v-for="articulo, articuloIndex in allNotes">
-                <div class="item_articulo"
+                <div class=""
                     :class="{activated: openedNotes.indexOf(articulo.id) !== -1}"
-                    v-on:click="() => toggleNote(articulo.id)"
                     v-bind:key="'articulo_de_wiki_' + articulo.id">
-                    <div class="flex_column">
-                        <div class="flex_1 flex_row">
-                            <div class="celda_articulo flex_1">
-                                {{ articuloIndex + 1 }}.
-                            </div>
-                            <div class="celda_articulo flex_100">
-                                {{ articulo.tiene_titulo }}
-                            </div>
-                            <div class="celda_articulo flex_1">
-                                {{ articulo.tiene_contenido?.length }}B
+                    <div class="pad_bottom_1">
+                        <div class="flex_row">
+                            <button class="width_100 text_align_left supermini list_button flex_100 flex_row"
+                                v-on:click="() => toggleNote(articulo.id)">
+                                <div class="flex_1">
+                                    {{ articuloIndex + 1 }}.
+                                </div>
+                                <div class="flex_100">
+                                    {{ articulo.tiene_titulo }}
+                                </div>
+                                <div class="flex_1 smallest_font">
+                                    {{ articulo.tiene_contenido?.length }}B
+                                </div>
+                            </button>
+                            <div class="flex_1 pad_left_1">
+                                <button class="supermini"
+                                    v-on:click="() => editNote(articulo)">↗️</button>
                             </div>
                         </div>
-                        <div class="flex_1"
-                            class="articulo_detalles"
+                        <div class="articulo_categorias_box" v-if="articulo.tiene_categorias">
+                            <div>🧲 {{ articulo.tiene_categorias }}</div>
+                        </div>
+                        <div class="pad_top_1"
                             v-if="openedNotes.indexOf(articulo.id) !== -1">
-                            <div class="celda_articulo">
-                                {{ articulo.tiene_contenido }}
+                            <div class="texto_markdown">
+                                <lsw-markdown-viewer :source="articulo.tiene_contenido" />
                             </div>
                         </div>
                     </div>
                 </div>
             </template>
-
         </div>
-    </template>
+    </div>
     <div class="pad_1"
         v-else>No hay notas actualmente.</div>
 </div>`,
@@ -60976,6 +60985,12 @@ Vue.component("LswNotes", {
       isLoaded: false,
       allNotes: false,
       openedNotes: [],
+      notasButtons: [{
+        text: "➕",
+        event: () => {
+          this.openAddNoteDialog();
+        }
+      }],
       currentError: this.error,
     };
   },
@@ -61006,6 +61021,60 @@ Vue.component("LswNotes", {
       });
       this.allNotes = notesSorted;
       this.isLoaded = true;
+    },
+    editNote(nota) {
+      this.$trace("lsw-notes.methods.editNote");
+      this.$lsw.dialogs.open({
+        title: '💬 Editar nota',
+        template: `
+          <div>
+            <lsw-schema-based-form
+              :show-breadcrumb="false"
+              :on-submit="(value) => submitCallback(value)"
+              :on-delete-row="deleteCallback"
+              :model="{
+                  connection: $lsw.database,
+                  databaseId: 'lsw_default_database',
+                  tableId: 'Nota',
+                  rowId: notaId,
+              }"
+            />
+          </div>
+        `,
+        factory: {
+          data: { notaId: nota.id },
+          methods: {
+            async submitCallback(value) {
+              this.$trace("Dialogs.EditarArticulo.methods.submitCallback");
+              try {
+                await this.$lsw.database.update("Articulo", this.notaId, value);
+                await this.$lsw.toasts.send({
+                  title: "Artículo actualizado correctamente",
+                  text: "El artículo ha sido actualizado con éxito."
+                });
+                this.close();
+                notasComponent.loadArticulos();
+              } catch (error) {
+                console.log(error);
+                await this.$lsw.toasts.send({
+                  title: "Error al actualizar artículo",
+                  text: "No se pudo actualizar el artículo por un error: " + error.message,
+                  background: "red",
+                });
+              }
+            },
+            async deleteCallback() {
+              this.$trace("Dialogs.EditarArticulo.methods.deleteCallback");
+              this.close();
+              notasComponent.loadArticulos();
+              await this.$lsw.toasts.send({
+                title: "Artículo eliminado correctamente",
+                text: "El artículo se eliminó con éxito.",
+              });
+            }
+          }
+        }
+      });
     },
     async openAddNoteDialog() {
       this.$trace("lsw-notes.methods.openAddNoteDialog");
@@ -69628,7 +69697,9 @@ Vue.component("LswNuevaFeature", {
   template: `<div class="lsw_nueva_feature">
     <lsw-typical-title>✨ Nueva feature en construcción</lsw-typical-title>
     <div class="pad_vertical_2">🚸 Esta sección está reservada para el desarrollo</div>
-    <lsw-naty-script-editor />
+    <lsw-notes />
+    <lsw-wiki-articulos />
+    <!--lsw-naty-script-editor /-->
     <!--lsw-volatile-database-visualizer
         v-if="datos"
         :initial-data="datos"

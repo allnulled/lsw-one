@@ -105,7 +105,7 @@ Vue.component("LswWikiArticulos", {
       this.$trace("lsw-wiki-articulos.methods.editArticulo");
       const articulosComponent = this;
       await this.$lsw.dialogs.open({
-        title: "Editar artículo",
+        title: "🔬 Editar artículo",
         template: `
           <div>
             <lsw-schema-based-form

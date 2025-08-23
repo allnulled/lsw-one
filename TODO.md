@@ -1,4 +1,4 @@
 # TODOs
 
-- [ ] Quitar todo lo de SQLite
-  - [ ] piénsalo bien pero en principio, sí.
+- [ ] Corregir Notas a estilos como Artículos.
+- [ ] Botón para exportar NatyScript

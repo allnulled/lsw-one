@@ -21,6 +21,12 @@ Vue.component("LswNotes", {
       isLoaded: false,
       allNotes: false,
       openedNotes: [],
+      notasButtons: [{
+        text: "➕",
+        event: () => {
+          this.openAddNoteDialog();
+        }
+      }],
       currentError: this.error,
     };
   },
@@ -51,6 +57,60 @@ Vue.component("LswNotes", {
       });
       this.allNotes = notesSorted;
       this.isLoaded = true;
+    },
+    editNote(nota) {
+      this.$trace("lsw-notes.methods.editNote");
+      this.$lsw.dialogs.open({
+        title: '💬 Editar nota',
+        template: `
+          <div>
+            <lsw-schema-based-form
+              :show-breadcrumb="false"
+              :on-submit="(value) => submitCallback(value)"
+              :on-delete-row="deleteCallback"
+              :model="{
+                  connection: $lsw.database,
+                  databaseId: 'lsw_default_database',
+                  tableId: 'Nota',
+                  rowId: notaId,
+              }"
+            />
+          </div>
+        `,
+        factory: {
+          data: { notaId: nota.id },
+          methods: {
+            async submitCallback(value) {
+              this.$trace("Dialogs.EditarArticulo.methods.submitCallback");
+              try {
+                await this.$lsw.database.update("Articulo", this.notaId, value);
+                await this.$lsw.toasts.send({
+                  title: "Artículo actualizado correctamente",
+                  text: "El artículo ha sido actualizado con éxito."
+                });
+                this.close();
+                notasComponent.loadArticulos();
+              } catch (error) {
+                console.log(error);
+                await this.$lsw.toasts.send({
+                  title: "Error al actualizar artículo",
+                  text: "No se pudo actualizar el artículo por un error: " + error.message,
+                  background: "red",
+                });
+              }
+            },
+            async deleteCallback() {
+              this.$trace("Dialogs.EditarArticulo.methods.deleteCallback");
+              this.close();
+              notasComponent.loadArticulos();
+              await this.$lsw.toasts.send({
+                title: "Artículo eliminado correctamente",
+                text: "El artículo se eliminó con éxito.",
+              });
+            }
+          }
+        }
+      });
     },
     async openAddNoteDialog() {
       this.$trace("lsw-notes.methods.openAddNoteDialog");

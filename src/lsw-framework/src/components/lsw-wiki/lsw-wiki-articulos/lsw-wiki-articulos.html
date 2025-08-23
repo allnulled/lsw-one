@@ -68,6 +68,9 @@
                     <button class="supermini margin_left_1"
                         v-on:click="() => editArticulo(articulo)">↗️</button>
                 </div>
+                <div class="articulo_categorias_box" v-if="articulo.tiene_categorias">
+                    <div>🧲 {{ articulo.tiene_categorias }}</div>
+                </div>
                 <div class="pad_top_1"
                     v-if="openedArticulos.indexOf(articulo.id) !== -1">
                     <div class="position_relative">
@@ -87,9 +90,6 @@
                             <div v-html="marked.parse(articulo.tiene_contenido)"></div>
                         </div>
                     </div>
-                </div>
-                <div class="articulo_categorias_box" v-if="articulo.tiene_categorias">
-                    <div>🧲 {{ articulo.tiene_categorias }}</div>
                 </div>
             </div>
         </template>

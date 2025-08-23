@@ -60925,36 +60925,51 @@ Vue.component("LswNotes", {
         class="pad_top_1">
         <div class=""
             v-if="isLoaded">
-            <template v-for="articulo, articuloIndex in allNotes">
+            <template v-for="nota, notaIndex in allNotes">
                 <div class=""
-                    :class="{activated: openedNotes.indexOf(articulo.id) !== -1}"
-                    v-bind:key="'articulo_de_wiki_' + articulo.id">
+                    :class="{activated: openedNotes.indexOf(nota.id) !== -1}"
+                    v-bind:key="'nota_de_wiki_' + nota.id">
                     <div class="pad_bottom_1">
                         <div class="flex_row">
                             <button class="width_100 text_align_left supermini list_button flex_100 flex_row"
-                                v-on:click="() => toggleNote(articulo.id)">
+                                v-on:click="() => toggleNote(nota.id)">
                                 <div class="flex_1">
-                                    {{ articuloIndex + 1 }}.
+                                    {{ notaIndex + 1 }}.
                                 </div>
                                 <div class="flex_100">
-                                    {{ articulo.tiene_titulo }}
+                                    {{ nota.tiene_titulo }}
                                 </div>
                                 <div class="flex_1 smallest_font">
-                                    {{ articulo.tiene_contenido?.length }}B
+                                    {{ nota.tiene_contenido?.length }}B
                                 </div>
                             </button>
                             <div class="flex_1 pad_left_1">
                                 <button class="supermini"
-                                    v-on:click="() => editNote(articulo)">↗️</button>
+                                    v-on:click="() => editNote(nota)">↗️</button>
                             </div>
                         </div>
-                        <div class="articulo_categorias_box" v-if="articulo.tiene_categorias">
-                            <div>🧲 {{ articulo.tiene_categorias }}</div>
+                        <div class="articulo_categorias_box" v-if="nota.tiene_categorias">
+                            <div>🧲 {{ nota.tiene_categorias }}</div>
                         </div>
                         <div class="pad_top_1"
-                            v-if="openedNotes.indexOf(articulo.id) !== -1">
-                            <div class="texto_markdown">
-                                <lsw-markdown-viewer :source="articulo.tiene_contenido" />
+                            v-if="openedNotes.indexOf(nota.id) !== -1">
+                            <div class="texto_markdown position_relative">
+                                <lsw-markdown-viewer :source="nota.tiene_contenido" />
+                                <div class="position_absolute top_0 right_0 flex_row centered pad_right_1" style="padding-top: 2px;">
+                                    <div class="flex_100"></div>
+                                    <!--div class="flex_1">
+                                        <button class="supermini"
+                                        v-on:click="() => moveNoteToArticulo(nota)">➡️🔬</button>
+                                    </div-->
+                                    <div class="flex_1 pad_left_1">
+                                        <button class="supermini"
+                                        v-on:click="() => deleteNote(nota)">❌</button>
+                                    </div>
+                                    <div class="flex_1 pad_left_1">
+                                        <button class="supermini"
+                                            v-on:click="() => editNote(nota)">✏️</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -60990,6 +61005,11 @@ Vue.component("LswNotes", {
         event: () => {
           this.openAddNoteDialog();
         }
+      }, {
+        text: "🛜",
+        event: () => {
+          this.loadNotes();
+        }
       }],
       currentError: this.error,
     };
@@ -61024,6 +61044,7 @@ Vue.component("LswNotes", {
     },
     editNote(nota) {
       this.$trace("lsw-notes.methods.editNote");
+      const notasComponent = this;
       this.$lsw.dialogs.open({
         title: '💬 Editar nota',
         template: `
@@ -61047,13 +61068,13 @@ Vue.component("LswNotes", {
             async submitCallback(value) {
               this.$trace("Dialogs.EditarArticulo.methods.submitCallback");
               try {
-                await this.$lsw.database.update("Articulo", this.notaId, value);
+                await this.$lsw.database.update("Nota", this.notaId, value);
                 await this.$lsw.toasts.send({
-                  title: "Artículo actualizado correctamente",
-                  text: "El artículo ha sido actualizado con éxito."
+                  title: "Nota actualizada correctamente",
+                  text: "La nota ha sido actualizado con éxito."
                 });
                 this.close();
-                notasComponent.loadArticulos();
+                notasComponent.loadNotes();
               } catch (error) {
                 console.log(error);
                 await this.$lsw.toasts.send({
@@ -61065,16 +61086,50 @@ Vue.component("LswNotes", {
             },
             async deleteCallback() {
               this.$trace("Dialogs.EditarArticulo.methods.deleteCallback");
+              await this.$lsw.database.delete("Nota", this.notaId);
               this.close();
-              notasComponent.loadArticulos();
+              notasComponent.loadNotes();
               await this.$lsw.toasts.send({
-                title: "Artículo eliminado correctamente",
-                text: "El artículo se eliminó con éxito.",
+                title: "Nota eliminado correctamente",
+                text: "La nota se eliminó con éxito.",
               });
             }
           }
         }
       });
+    },
+    async deleteNote(nota) {
+      this.$trace("lsw-notes.methods.deleteNote");
+      const confirmation = await this.$lsw.dialogs.open({
+        title: "Eliminar nota",
+        template: `
+          <div>
+            <p>¿Estás seguro de eliminar esta nota?</p>
+            <pre>{{ JSON.stringify(nota, null, 2) }}</pre>
+            <hr />
+            <div class="flex_row">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            value: true,
+            nota: nota,
+          }
+        }
+      });
+      if(confirmation !== true) {
+        return;
+      }
+      await this.$lsw.database.delete("Nota", nota.id);
+      await this.loadNotes();
     },
     async openAddNoteDialog() {
       this.$trace("lsw-notes.methods.openAddNoteDialog");

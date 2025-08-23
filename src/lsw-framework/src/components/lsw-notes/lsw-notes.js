@@ -26,6 +26,11 @@ Vue.component("LswNotes", {
         event: () => {
           this.openAddNoteDialog();
         }
+      }, {
+        text: "🛜",
+        event: () => {
+          this.loadNotes();
+        }
       }],
       currentError: this.error,
     };
@@ -60,6 +65,7 @@ Vue.component("LswNotes", {
     },
     editNote(nota) {
       this.$trace("lsw-notes.methods.editNote");
+      const notasComponent = this;
       this.$lsw.dialogs.open({
         title: '💬 Editar nota',
         template: `
@@ -83,13 +89,13 @@ Vue.component("LswNotes", {
             async submitCallback(value) {
               this.$trace("Dialogs.EditarArticulo.methods.submitCallback");
               try {
-                await this.$lsw.database.update("Articulo", this.notaId, value);
+                await this.$lsw.database.update("Nota", this.notaId, value);
                 await this.$lsw.toasts.send({
-                  title: "Artículo actualizado correctamente",
-                  text: "El artículo ha sido actualizado con éxito."
+                  title: "Nota actualizada correctamente",
+                  text: "La nota ha sido actualizado con éxito."
                 });
                 this.close();
-                notasComponent.loadArticulos();
+                notasComponent.loadNotes();
               } catch (error) {
                 console.log(error);
                 await this.$lsw.toasts.send({
@@ -101,16 +107,50 @@ Vue.component("LswNotes", {
             },
             async deleteCallback() {
               this.$trace("Dialogs.EditarArticulo.methods.deleteCallback");
+              await this.$lsw.database.delete("Nota", this.notaId);
               this.close();
-              notasComponent.loadArticulos();
+              notasComponent.loadNotes();
               await this.$lsw.toasts.send({
-                title: "Artículo eliminado correctamente",
-                text: "El artículo se eliminó con éxito.",
+                title: "Nota eliminado correctamente",
+                text: "La nota se eliminó con éxito.",
               });
             }
           }
         }
       });
+    },
+    async deleteNote(nota) {
+      this.$trace("lsw-notes.methods.deleteNote");
+      const confirmation = await this.$lsw.dialogs.open({
+        title: "Eliminar nota",
+        template: `
+          <div>
+            <p>¿Estás seguro de eliminar esta nota?</p>
+            <pre>{{ JSON.stringify(nota, null, 2) }}</pre>
+            <hr />
+            <div class="flex_row">
+              <div class="flex_100"></div>
+              <div class="flex_1 pad_left_1">
+                <button class="" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            value: true,
+            nota: nota,
+          }
+        }
+      });
+      if(confirmation !== true) {
+        return;
+      }
+      await this.$lsw.database.delete("Nota", nota.id);
+      await this.loadNotes();
     },
     async openAddNoteDialog() {
       this.$trace("lsw-notes.methods.openAddNoteDialog");

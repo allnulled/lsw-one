@@ -4,7 +4,7 @@ Vue.component("LswVolatileDatabaseVisualizer", {
   props: {
     initialData: {
       type: [Array, Boolean],
-      required: true,
+      default: () => {},
     },
   },
   data() {

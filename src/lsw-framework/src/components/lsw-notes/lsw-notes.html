@@ -10,13 +10,16 @@
                     v-bind:key="'nota_de_wiki_' + nota.id">
                     <div class="pad_bottom_1">
                         <div class="flex_row">
-                            <button class="width_100 text_align_left supermini list_button flex_100 flex_row"
+                            <button class="width_100 text_align_left supermini list_button flex_100 flex_row centered"
                                 v-on:click="() => toggleNote(nota.id)">
                                 <div class="flex_1">
                                     {{ notaIndex + 1 }}.
                                 </div>
                                 <div class="flex_100">
                                     {{ nota.tiene_titulo }}
+                                </div>
+                                <div class="flex_1 smallest_font margin_right_1 pad_1" style="border: 1px solid black; border-radius: 2pt;" v-if="nota.tiene_estado">
+                                    {{ nota.tiene_estado.substr(0,3).toUpperCase() }}
                                 </div>
                                 <div class="flex_1 smallest_font">
                                     {{ nota.tiene_contenido?.length }}B

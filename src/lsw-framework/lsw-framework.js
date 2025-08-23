@@ -40571,7 +40571,7 @@ LswLauncher.global.register("base-de-datos", "📦 Base de datos", (launchable) 
 LswLauncher.global.register("sistema-de-ficheros", "📂 Sistema de ficheros", (launchable) => LswLauncher.openDialog('<lsw-filesystem-explorer />', launchable.name));
 LswLauncher.global.register("binarios", "💣 Binarios", (launchable) => LswLauncher.openDialog('<lsw-bin-directory />', launchable.name));
 LswLauncher.global.register("calendario", "📆 Calendario", (launchable) => LswLauncher.openDialog('<lsw-agenda />', launchable.name));
-LswLauncher.global.register("notas", "💬 Notas", (launchable) => LswLauncher.openDialog('<lsw-notes />', launchable.name));
+LswLauncher.global.register("notas", "💬 Notas", (launchable) => LswLauncher.openDialog('<lsw-spontaneous-table-nota />', launchable.name));
 LswLauncher.global.register("nueva-nota", "💬➕ Nueva nota", (launchable) => LswLauncher.openDialog('<lsw-spontaneous-form-nota />', launchable.name));
 LswLauncher.global.register("enciclopedia", "🔬 Enciclopedia", (launchable) => LswLauncher.openDialog('<lsw-wiki />', launchable.name));
 LswLauncher.global.register("nuevo-artículo", "🔬➕ Nuevo artículo", (launchable) => LswLauncher.openDialog('<lsw-spontaneous-form-articulo />', launchable.name));
@@ -47813,7 +47813,7 @@ Vue.component("LswVolatileDatabaseVisualizer", {
   props: {
     initialData: {
       type: [Array, Boolean],
-      required: true,
+      default: () => {},
     },
   },
   data() {
@@ -60908,13 +60908,16 @@ Vue.component("LswNotes", {
                     v-bind:key="'nota_de_wiki_' + nota.id">
                     <div class="pad_bottom_1">
                         <div class="flex_row">
-                            <button class="width_100 text_align_left supermini list_button flex_100 flex_row"
+                            <button class="width_100 text_align_left supermini list_button flex_100 flex_row centered"
                                 v-on:click="() => toggleNote(nota.id)">
                                 <div class="flex_1">
                                     {{ notaIndex + 1 }}.
                                 </div>
                                 <div class="flex_100">
                                     {{ nota.tiene_titulo }}
+                                </div>
+                                <div class="flex_1 smallest_font margin_right_1 pad_1" style="border: 1px solid black; border-radius: 2pt;" v-if="nota.tiene_estado">
+                                    {{ nota.tiene_estado.substr(0,3).toUpperCase() }}
                                 </div>
                                 <div class="flex_1 smallest_font">
                                     {{ nota.tiene_contenido?.length }}B
@@ -61011,10 +61014,23 @@ Vue.component("LswNotes", {
       this.isLoaded = false;
       const notes = await this.$lsw.database.selectMany("Nota");
       const notesSorted = notes.sort((n1, n2) => {
-        const d1 = LswTimer.utils.getDateFromMomentoText(n1.tiene_fecha);
-        const d2 = LswTimer.utils.getDateFromMomentoText(n2.tiene_fecha);
-        if(d1 >= d2) return -1;
-        return 1;
+        Segun_urgencia: {
+          const e1 = n1.tiene_estado === 'urgente';
+          const e2 = n2.tiene_estado === 'urgente';
+          if(e1 && e2) {
+            // @OK
+          } else if(e1) {
+            return -1;
+          } else if(e2) {
+            return 1;
+          }
+        }
+        Segun_fecha: {
+          const d1 = LswTimer.utils.getDateFromMomentoText(n1.tiene_fecha);
+          const d2 = LswTimer.utils.getDateFromMomentoText(n2.tiene_fecha);
+          if(d1 >= d2) return -1;
+          return 1;
+        }
       });
       this.allNotes = notesSorted;
       this.isLoaded = true;
@@ -61055,8 +61071,8 @@ Vue.component("LswNotes", {
               } catch (error) {
                 console.log(error);
                 await this.$lsw.toasts.send({
-                  title: "Error al actualizar artículo",
-                  text: "No se pudo actualizar el artículo por un error: " + error.message,
+                  title: "Error al actualizar nota",
+                  text: "No se pudo actualizar la nota por un error: " + error.message,
                   background: "red",
                 });
               }
@@ -61067,7 +61083,7 @@ Vue.component("LswNotes", {
               this.close();
               notasComponent.loadNotes();
               await this.$lsw.toasts.send({
-                title: "Nota eliminado correctamente",
+                title: "Nota eliminada correctamente",
                 text: "La nota se eliminó con éxito.",
               });
             }
@@ -61110,7 +61126,45 @@ Vue.component("LswNotes", {
     },
     async openAddNoteDialog() {
       this.$trace("lsw-notes.methods.openAddNoteDialog");
-      const response = await LswUtils.openAddNoteDialog();
+      const notasComponent = this;
+      const response = await this.$lsw.dialogs.open({
+        title: 'Insertando nota',
+        template: `
+          <lsw-schema-based-form
+            :show-breadcrumb="false"
+            :on-submit="(value) => submitCallback(value)"
+            :model="{
+                connection: $lsw.database,
+                databaseId: 'lsw_default_database',
+                tableId: 'Nota',
+                rowId: -1,
+            }"
+          />
+        `,
+        factory: {
+          methods: {
+            async submitCallback(value) {
+              this.$trace("Dialogs.EditarArticulo.methods.submitCallback");
+              try {
+                await this.$lsw.database.insert("Nota", value);
+                await this.$lsw.toasts.send({
+                  title: "Nota insertada correctamente",
+                  text: "La nota ha sido insertada con éxito."
+                });
+                this.close();
+                notasComponent.loadNotes();
+              } catch (error) {
+                console.log(error);
+                await this.$lsw.toasts.send({
+                  title: "Error al insertar nota",
+                  text: "No se pudo actualizar el nota por un error: " + error.message,
+                  background: "red",
+                });
+              }
+            },
+          }
+        }
+      })
       if(typeof response !== "object") {
         return;
       }
@@ -64654,6 +64708,18 @@ Vue.component("LswSpontaneousTableNota", {
             </div>
         </div>
     </div>
+    <div class="pad_top_1 flex_row centered">
+        <div class="flex_100">
+            <input class="width_100" type="text"
+                placeholder="Buscar en notas"
+                v-model="searchText"
+                v-on:keypress.enter="loadNotes"
+            />
+        </div>
+        <div class="flex_1 pad_left_1">
+            <button class="" v-on:click="loadNotes">🔎</button>
+        </div>
+    </div>
     <div class="pad_top_1">
         <div class="flex_row centered">
             <div class="flex_1">
@@ -64723,7 +64789,7 @@ Vue.component("LswSpontaneousTableNota", {
                     </div>
                 </div>
             </div>
-            <div class="flex_row centered pad_top_1">
+            <div class="flex_row centered pad_top_1 pad_bottom_1">
                 <div class="flex_1">
                     <button class="supermini"
                         v-on:click="goToFirstPage">⏪</button>
@@ -64769,6 +64835,7 @@ Vue.component("LswSpontaneousTableNota", {
       currentPage: 0,
       totalPages: 0,
       currentItemsPerPage: 100,
+      searchText: '',
       selectedNotas: [],
     };
   },
@@ -64809,7 +64876,12 @@ Vue.component("LswSpontaneousTableNota", {
     async loadNotes() {
       this.$trace("lsw-spontaneous-table-nota.methods.loadNotes");
       const allNotas = await this.$lsw.database.selectMany("Nota");
-      const sortedNotas = allNotas.sort((n1, n2) => {
+      const sortedNotas = allNotas.filter(nota => {
+        if(this.searchText === '') {
+          return true;
+        }
+        return JSON.stringify(nota).toLowerCase().indexOf(this.searchText.toLowerCase()) !== -1;
+      }).sort((n1, n2) => {
         Ordena_por_urgencia: {
           const estado1 = n1.tiene_estado;
           const estado2 = n2.tiene_estado;
@@ -69729,13 +69801,10 @@ Vue.component("LswNuevaFeature", {
   template: `<div class="lsw_nueva_feature">
     <lsw-typical-title>✨ Nueva feature en construcción</lsw-typical-title>
     <div class="pad_vertical_2">🚸 Esta sección está reservada para el desarrollo</div>
-    <lsw-notes />
-    <lsw-wiki-articulos />
+    <!--lsw-spontaneous-table-nota />
+    <lsw-wiki-articulos /-->
     <!--lsw-naty-script-editor /-->
-    <!--lsw-volatile-database-visualizer
-        v-if="datos"
-        :initial-data="datos"
-    /-->
+    <lsw-volatile-database-visualizer />
     <!--lsw-keyboard-1 initial-text="Esto es una frase\nEsto es otra\nY esto otra." /-->
     <!--lsw-sqlite-console /-->
     <!--lsw-sqlite-explorer /-->

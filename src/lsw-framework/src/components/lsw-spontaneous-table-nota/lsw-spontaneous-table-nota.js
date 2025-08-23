@@ -10,6 +10,7 @@ Vue.component("LswSpontaneousTableNota", {
       currentPage: 0,
       totalPages: 0,
       currentItemsPerPage: 100,
+      searchText: '',
       selectedNotas: [],
     };
   },
@@ -50,7 +51,12 @@ Vue.component("LswSpontaneousTableNota", {
     async loadNotes() {
       this.$trace("lsw-spontaneous-table-nota.methods.loadNotes");
       const allNotas = await this.$lsw.database.selectMany("Nota");
-      const sortedNotas = allNotas.sort((n1, n2) => {
+      const sortedNotas = allNotas.filter(nota => {
+        if(this.searchText === '') {
+          return true;
+        }
+        return JSON.stringify(nota).toLowerCase().indexOf(this.searchText.toLowerCase()) !== -1;
+      }).sort((n1, n2) => {
         Ordena_por_urgencia: {
           const estado1 = n1.tiene_estado;
           const estado2 = n2.tiene_estado;

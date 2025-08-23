@@ -55,10 +55,23 @@ Vue.component("LswNotes", {
       this.isLoaded = false;
       const notes = await this.$lsw.database.selectMany("Nota");
       const notesSorted = notes.sort((n1, n2) => {
-        const d1 = LswTimer.utils.getDateFromMomentoText(n1.tiene_fecha);
-        const d2 = LswTimer.utils.getDateFromMomentoText(n2.tiene_fecha);
-        if(d1 >= d2) return -1;
-        return 1;
+        Segun_urgencia: {
+          const e1 = n1.tiene_estado === 'urgente';
+          const e2 = n2.tiene_estado === 'urgente';
+          if(e1 && e2) {
+            // @OK
+          } else if(e1) {
+            return -1;
+          } else if(e2) {
+            return 1;
+          }
+        }
+        Segun_fecha: {
+          const d1 = LswTimer.utils.getDateFromMomentoText(n1.tiene_fecha);
+          const d2 = LswTimer.utils.getDateFromMomentoText(n2.tiene_fecha);
+          if(d1 >= d2) return -1;
+          return 1;
+        }
       });
       this.allNotes = notesSorted;
       this.isLoaded = true;
@@ -99,8 +112,8 @@ Vue.component("LswNotes", {
               } catch (error) {
                 console.log(error);
                 await this.$lsw.toasts.send({
-                  title: "Error al actualizar artículo",
-                  text: "No se pudo actualizar el artículo por un error: " + error.message,
+                  title: "Error al actualizar nota",
+                  text: "No se pudo actualizar la nota por un error: " + error.message,
                   background: "red",
                 });
               }
@@ -111,7 +124,7 @@ Vue.component("LswNotes", {
               this.close();
               notasComponent.loadNotes();
               await this.$lsw.toasts.send({
-                title: "Nota eliminado correctamente",
+                title: "Nota eliminada correctamente",
                 text: "La nota se eliminó con éxito.",
               });
             }
@@ -154,7 +167,45 @@ Vue.component("LswNotes", {
     },
     async openAddNoteDialog() {
       this.$trace("lsw-notes.methods.openAddNoteDialog");
-      const response = await LswUtils.openAddNoteDialog();
+      const notasComponent = this;
+      const response = await this.$lsw.dialogs.open({
+        title: 'Insertando nota',
+        template: `
+          <lsw-schema-based-form
+            :show-breadcrumb="false"
+            :on-submit="(value) => submitCallback(value)"
+            :model="{
+                connection: $lsw.database,
+                databaseId: 'lsw_default_database',
+                tableId: 'Nota',
+                rowId: -1,
+            }"
+          />
+        `,
+        factory: {
+          methods: {
+            async submitCallback(value) {
+              this.$trace("Dialogs.EditarArticulo.methods.submitCallback");
+              try {
+                await this.$lsw.database.insert("Nota", value);
+                await this.$lsw.toasts.send({
+                  title: "Nota insertada correctamente",
+                  text: "La nota ha sido insertada con éxito."
+                });
+                this.close();
+                notasComponent.loadNotes();
+              } catch (error) {
+                console.log(error);
+                await this.$lsw.toasts.send({
+                  title: "Error al insertar nota",
+                  text: "No se pudo actualizar el nota por un error: " + error.message,
+                  background: "red",
+                });
+              }
+            },
+          }
+        }
+      })
       if(typeof response !== "object") {
         return;
       }

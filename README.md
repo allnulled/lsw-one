@@ -17,9 +17,10 @@ Complemento personal de software.
 
 - web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android: *los links expiran en 1 semana*
-   - última versión: [https://limewire.com/d/ayytL#oz9f6h4BAV](https://limewire.com/d/ayytL#oz9f6h4BAV)
+   - última versión: [https://limewire.com/d/cyvMF#Hp15acrB2i](https://limewire.com/d/cyvMF#Hp15acrB2i)
+   - versión del 23 de agosto de 2025: [https://limewire.com/d/cyvMF#Hp15acrB2i](https://limewire.com/d/cyvMF#Hp15acrB2i)
    - versión del 22 de agosto de 2025: [https://limewire.com/d/ayytL#oz9f6h4BAV](https://limewire.com/d/ayytL#oz9f6h4BAV)
-   - aquí me ingresan 40 días en un manicomio y consigo dejar el tabaco y los porros.
+   - aquí me ingresan 40 días en un manicomio.
    - versión del 2 de julio de 2025: [https://limewire.com/d/R4vqC#s1heaZPuDp](https://limewire.com/d/R4vqC#s1heaZPuDp)
    - versión del 25 de junio de 2025: [https://limewire.com/d/jyjQJ#QgUFVCdVNy](https://limewire.com/d/jyjQJ#QgUFVCdVNy)
    - versión del 23 de junio de 2025: [https://limewire.com/d/2lIZi#0CCQvtNDxZ](https://limewire.com/d/2lIZi#0CCQvtNDxZ)

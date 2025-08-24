@@ -17,8 +17,14 @@ Complemento personal de software.
 
 - web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android: *los links expiran en 1 semana*
-   - última versión: [https://limewire.com/d/cyvMF#Hp15acrB2i](https://limewire.com/d/cyvMF#Hp15acrB2i)
-   - versión del 23 de agosto de 2025: [https://limewire.com/d/cyvMF#Hp15acrB2i](https://limewire.com/d/cyvMF#Hp15acrB2i)
+   - última versión: [https://upload.app/download/lsw-one/com.allnulled.LswOne/9335ec14a628fd3287bf3a7d5f7a5f0805050f26b702e102870af192b11e7faf](https://upload.app/download/lsw-one/com.allnulled.LswOne/9335ec14a628fd3287bf3a7d5f7a5f0805050f26b702e102870af192b11e7faf)
+   - versión del 24 de agosto de 2025: [https://upload.app/download/lsw-one/com.allnulled.LswOne/9335ec14a628fd3287bf3a7d5f7a5f0805050f26b702e102870af192b11e7faf](https://upload.app/download/lsw-one/com.allnulled.LswOne/9335ec14a628fd3287bf3a7d5f7a5f0805050f26b702e102870af192b11e7faf)
+   - aquí cambiamos de proveedor porque limewire ha dejado de subir los ficheros deliberadamente. 
+     - nos gusta menos el nuevo proveedor porque se especializa en ficheros APK
+     - por lo cual puede inyectarles cualquier cosa
+     - pero seguimos subiendo igual la última versión
+     - que además, sería la primera que da una BD y, además, implementa un buscador de aplicaciones decente en la página de procesos, que era un punto bastante clave
+   - versión del 23 de agosto de 2025: [https://limewire.com/d/ZQez4#tFuJg4EXp4](https://limewire.com/d/ZQez4#tFuJg4EXp4)
    - versión del 22 de agosto de 2025: [https://limewire.com/d/ayytL#oz9f6h4BAV](https://limewire.com/d/ayytL#oz9f6h4BAV)
    - aquí me ingresan 40 días en un manicomio.
    - versión del 2 de julio de 2025: [https://limewire.com/d/R4vqC#s1heaZPuDp](https://limewire.com/d/R4vqC#s1heaZPuDp)
@@ -53,7 +59,7 @@ Las aplicaciones que vienen por defecto son:
 - 🔬➕ Nuevo artículo
 - 🪲 Inspector de JS
 - 💻 Consola de JS
-- ✅ Tests de aplicación (⚠️: en construcción todavía 🏗)
+- ✅ Tests de aplicación
 - 🔧 Configuraciones
 - ✨ Nueva feature (⚠️: reservado para desarrollo)
 

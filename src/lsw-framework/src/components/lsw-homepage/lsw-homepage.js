@@ -66,6 +66,10 @@ Vue.component("LswHomepage", {
     appsThrower: {
       type: Object,
       required: true,
+    },
+    onOpenApplicationEvent: {
+      type: Function,
+      default: () => {},
     }
   },
   data() {
@@ -159,6 +163,7 @@ Vue.component("LswHomepage", {
         title: "Yendo a: " + appId,
       });
       this.appsThrower.selectApplication(appId);
+      this.onOpenApplicationEvent();
     }
   },
   watch: {},

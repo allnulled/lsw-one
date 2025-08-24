@@ -6,14 +6,6 @@
       "fromUrl": "assets/tests/cases/framework/lsw.can-find-all-globals.js"
     },
     {
-      "id": "lsw.test.framework.lsw-volatile-database.can-crud",
-      "fromUrl": "assets/tests/cases/framework/lsw-volatile-database.can-crud.js"
-    },
-    {
-      "id": "lsw.test.framework.lsw-volatile-database.can-load",
-      "fromUrl": "assets/tests/cases/framework/lsw-volatile-database.can-load.js"
-    },
-    {
       "id": "lsw.test.app.start-your-test-here",
       "fromUrl": "assets/tests/cases/app/start-your-test-here.js"
     }

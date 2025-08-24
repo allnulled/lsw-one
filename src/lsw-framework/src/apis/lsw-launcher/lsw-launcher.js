@@ -11,6 +11,8 @@
   }
 })(function () {
   
+  // @code.start: LswLauncher class | @section: Lsw Launcher API » LswLauncher class
+
   class LswLauncher {
 
     static openDialog(template, title = "Diálogo del launcher", otros = {}) {
@@ -48,5 +50,7 @@
   LswLauncher.global = new LswLauncher();
 
   return LswLauncher;
+
+  // @code.end: LswLauncher class
 
 });

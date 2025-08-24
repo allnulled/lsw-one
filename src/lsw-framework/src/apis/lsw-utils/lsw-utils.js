@@ -513,6 +513,13 @@
     }
   };
 
+  LswUtils.subtextualize = function(text, maxLength = 30) {
+    if(text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + "...";
+  };
+
   LswUtils.downloadFile = function (filename, filecontent) {
     if (typeof window.cordova !== "undefined") {
       LswUtils.debug(`Descargando fichero ${filename} (${filecontent.length}B) en entorno de Cordova app`);

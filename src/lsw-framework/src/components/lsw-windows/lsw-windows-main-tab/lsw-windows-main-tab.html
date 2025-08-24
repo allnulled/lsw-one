@@ -7,16 +7,40 @@
                 <div>Procesos</div>
             </div>
             <div class="dialog_topbar_buttons">
-                <button class="mini"
+                <button class=""
                     style="white-space: nowrap;flex: 1;"
                     v-on:click="showConsole">💻</button>
-                <button class="mini"
+                <button class=""
                     v-on:click="viewer.toggleState">❌</button>
             </div>
         </div>
         <div class="dialog_body">
             <div class="main_tab_topbar">
-                <button class="mini main_tab_topbar_button"
+                <button class=""
+                    v-on:click="toggleApps">📟 Aplicaciones 📟</button>
+                <div class="hidden_menu"
+                    v-if="isShowingApps">
+                    <div class="hidden_menu_fixed_layer"
+                        v-on:click="toggleApps"></div>
+                    <div class="hidden_menu_box"
+                        style="max-width: 100%; left: auto; right: 0px; padding: 0px; padding-top:4px;">
+                        <div class="hidden_menu_items flex_column">
+                            <div class="title">
+                                <div class="flex_100 pad_left_1 pad_right_1">
+                                    Las apps instaladas:
+                                </div>
+                                <div class="flex_1">
+                                    <button class="supermini"
+                                        v-on:click="toggleApps">❌</button>
+                                </div>
+                            </div>
+                            <div style="white-space: wrap;">
+                                <lsw-homepage :on-open-application-event="() => { toggleApps(); }" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--button class="mini main_tab_topbar_button"
                     v-on:click="openAgenda">📆</button>
                 <button class="mini main_tab_topbar_button"
                     v-on:click="openWiki">🔬</button>
@@ -24,11 +48,10 @@
                     v-on:click="openRest">📦</button>
                 <button class="mini main_tab_topbar_button"
                     v-on:click="openFilesystem">📂</button>
-                <!--button class="mini main_tab_topbar_button" v-on:click="openAutomessages">📫</button-->
                 <button class="mini main_tab_topbar_button"
                     v-on:click="openNoteUploader">💬</button>
                 <button class="mini main_tab_topbar_button"
-                    v-on:click="openConfigurationsPage">🔧</button>
+                    v-on:click="openConfigurationsPage">🔧</button-->
             </div>
             <div class="pad_normal">
                 <div class="typical_title_1">
@@ -48,7 +71,8 @@
                 <div class="pad_normal"
                     v-else>
                     <div v-for="dialog, dialogIndex, dialogCounter in $lsw.dialogs.opened"
-                        v-bind:key="'dialog-' + dialogIndex">
+                        v-bind:key="'dialog-' + dialogIndex"
+                        class="pad_bottom_1">
                         <div class="flex_row centered">
                             <div class="flex_100">
                                 <button class="supermini width_100 text_align_left"
@@ -63,7 +87,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="pad_normal pad_top_0" v-if="false">
+                <div class="pad_normal pad_top_0"
+                    v-if="false">
                     <lsw-homepage :apps-thrower="this" />
                 </div>
             </div>

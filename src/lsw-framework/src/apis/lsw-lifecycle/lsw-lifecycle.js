@@ -12,6 +12,7 @@
 })(function () {
 
   // @code.start: LswLifecycle class | @section: Lsw LswLifecycle API » LswLifecycle class
+
   const cycle = LswCycler.from({
 
     steps: [
@@ -288,8 +289,9 @@
     },
 
   }, "*");
-  // @code.end: LswLifecycle class
 
   return cycle;
+  
+  // @code.end: LswLifecycle class
 
 });

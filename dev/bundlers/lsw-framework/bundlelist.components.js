@@ -111,8 +111,6 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/apis/lsw-backuper/lsw-backuper.js`,
   // LSW TYPER:
   `${basepath}/lsw-framework/src/apis/lsw-typer/lsw-typer.js`,
-  // LSW MICRODATA BANK:
-  `${basepath}/lsw-framework/src/apis/lsw-microdata-bank/lsw-microdata-bank.js`,
   // LSW BOOKS:
   `${basepath}/lsw-framework/src/apis/lsw-books/lsw-books.js`,
   // LSW DATABASE-UI:
@@ -163,11 +161,11 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-data-printer-report/lsw-data-printer-report`,
   // DIALOGS:
   `${basepath}/lsw-framework/src/components/lsw-dialogs/lsw-dialogs`,
-  // LSW VOLATILE DATABASE:
-  `${basepath}/lsw-framework/src/components/lsw-volatile-database-visualizer/volatile-row.parser.js`,
-  `${basepath}/lsw-framework/src/components/lsw-volatile-database-visualizer/lsw-volatile-database.api.js`,
-  `${basepath}/lsw-framework/src/components/lsw-volatile-database-visualizer/lsw-volatile-database-visualizer`,
-  `${basepath}/lsw-framework/src/components/lsw-volatile-database-visualizer/lsw-volatile-database-row-editor/lsw-volatile-database-row-editor`,
+  // LOADING BAR:
+  `${basepath}/lsw-framework/src/components/lsw-loading-bar/lsw-loading-bar`,
+  // VOLATILE DATABASE:
+  `${basepath}/lsw-framework/src/components/lsw-volatile-db/lsw-volatile-db.js`,
+  `${basepath}/lsw-framework/src/components/lsw-volatile-db/components/lsw-volatile-ui/lsw-volatile-ui`,
   // WINDOWS AND PROCESSES:
   `${basepath}/lsw-framework/src/components/lsw-windows/lsw-windows-main-tab/lsw-windows-main-tab`,
   `${basepath}/lsw-framework/src/components/lsw-windows/lsw-windows-viewer/lsw-windows-viewer`,

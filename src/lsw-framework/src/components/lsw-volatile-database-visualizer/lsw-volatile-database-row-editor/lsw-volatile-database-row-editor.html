@@ -1,9 +1,0 @@
-<div class="lsw_volatile_database_row_editor">
-    <lsw-typical-title :buttons="volatileDbTableButtons">Inyección volátil</lsw-typical-title>
-    <div class="pad_top_1" v-if="isLoaded">
-        <lsw-filesystem-editor
-            ref="editor"
-            :filecontents="rowRepresentation"
-        />
-    </div>
-</div>

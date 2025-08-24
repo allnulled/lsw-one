@@ -22,12 +22,9 @@
           if(typeof cordova === "undefined") {
             break Inject_kernel_android_bootjs;
           }
-          await Vue.prototype.$lsw.fs.evaluateAsJavascriptFile(`/kernel/volatile-database/${
-            LswVolatileDatabase.global.$storageId
-          }/triggers.js`);
         }
         Start_most_concurred_toolkits: {
-          await LswVolatileDatabase.global.loadDatabase();
+          
         }
         Inject_development_point: {
           if(window.location.href.startsWith("http://")) {

@@ -3,7 +3,7 @@ Vue.component("LswTypicalTitle", {
   template: $template,
   props: {
     buttons: {
-      type: Array,
+      type: [Array, Boolean],
       default: () => []
     }
   },

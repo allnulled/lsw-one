@@ -100,7 +100,7 @@
         }
         return output.join("\n");
       } else if(typeof listOrItem === "object") {
-        return marked.parse(listOrItem[prop]);
+        return LswMarkdown.global.parse(listOrItem[prop]);
       }
       throw new Error("Required parameter 1 «listOrItem» to be an array or an object on «LswBooks.toMarkdown»");
     }

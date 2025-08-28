@@ -101,8 +101,8 @@
             v-if="isLoading">
             Por favor, aguarde hasta recuperar los datos.
         </div>
-        <div v-if="(!isLoading) && selectedDateTasksSorted && selectedDateTasksSorted.length">
-            <template v-for="accion, accionIndex in selectedDateTasksSorted">
+        <div class="tasks_area" v-if="(!isLoading) && selectedDateTasksSorted && selectedDateTasksSorted.length">
+            <div v-for="accion, accionIndex in selectedDateTasksSorted">
                 <div class="hour_task_block"
                     v-if="accion.tiene_estado === 'trackeada'">
                     <div class="accion_row flex_row centered"
@@ -198,7 +198,7 @@
                                 v-if="accion.tiene_parametros">
                                 <div class="clave">Parámetros: </div>
                                 <div class="valor texto_markdown sin_decorar"
-                                    v-html="marked.parse(accion.tiene_parametros)"></div>
+                                    v-html="LswMarkdown.global.parse(accion.tiene_parametros)"></div>
                             </div>
                             <div class="campo"
                                 v-if="accion.tiene_comentarios">
@@ -215,25 +215,32 @@
                         </div>
                     </div>
                 </div>
-            </template>
+            </div>
+            <!--div class="pad_top_1">
+                <button class="remarked_button width_100 supermini"
+                    v-on:click="openNewRowDialog">➕🐾</button>
+            </div-->
         </div>
         <div class="no_tasks_message small_font"
             v-else>
-            <span>
-                <span>🌵 No hay tareas para </span>
+            <div class="notificacion_de_peligro">
+                <div>☢️ <b>Empty Task Stack Attack</b> ☢️</div>
                 <template v-if="selectedSorterMoment">
-                    <span v-if="selectedSorterStrategy === 'antes'">
-                        antes de <b>las {{ LswTimer.utils.fromDateToHour(selectedSorterMoment) }}</b> en
-                    </span>
-                    <span v-else-if="selectedSorterStrategy === 'despues'">
-                        después de <b>las {{ LswTimer.utils.fromDateToHour(selectedSorterMoment) }}</b> en
-                    </span>
+                    <div v-if="selectedSorterStrategy === 'antes'">
+                        ...para antes de <b>las {{ LswTimer.utils.fromDateToHour(selectedSorterMoment) }}</b>...
+                    </div>
+                    <div v-else-if="selectedSorterStrategy === 'despues'">
+                        ...para después de <b>las {{ LswTimer.utils.fromDateToHour(selectedSorterMoment) }}</b>...
+                    </div>
                 </template>
-                <span>
-                    el <b>día {{ LswTimer.utils.fromDateToDatestring(selectedDate, true) }}</b>.
-                </span>
-                <span> 🌵</span>
-            </span>
+                <div>
+                    ...en el <b>día {{ LswTimer.utils.fromDateToDatestring(selectedDate, true) }}</b>.
+                </div>
+            </div>
+        </div>
+        <div class="pad_top_1">
+            <button class="remarked_button width_100 supermini"
+                v-on:click="openNewRowDialog">➕🐾</button>
         </div>
     </div>
 

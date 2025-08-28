@@ -27,7 +27,10 @@
           
         }
         Inject_development_point: {
+          await LswDomIrruptor.abrirHomepage();
           if(window.location.href.startsWith("http://")) {
+            // return;
+            // @DONE: en desarrollo:
             // await LswDomIrruptor.abrirBinarios();
             // await LswDomIrruptor.abrirTareasPosterioresDeNavegacionRapida();
             // await LswDomIrruptor.abrirRecords();
@@ -36,15 +39,12 @@
             // await LswDomIrruptor.abrirJsInspector();
             // await LswDomIrruptor.abrirHomepage();
             // await LswDomIrruptor.abrirConfiguraciones();
-            // await LswDomIrruptor.abrirTestsDeAplicacion();
             // await LswDomIrruptor.abrirBaseDeDatos();
             // await LswDomIrruptor.abrirBaseDeDatosPorTabla("Accion");
             // await LswDomIrruptor.abrirBaseDeDatosPorNuevoDatoDeTabla("Accion");
-            /*
-            await LswDomIrruptor.arrancarTestsDeAplicacion();
-            //*/
             // await LswDomIrruptor.abrirWeekPlanner();
-            await LswDomIrruptor.abrirNuevaFeature();
+            // await LswDomIrruptor.abrirNuevaFeature();
+            // await LswDomIrruptor.arrancarTestsDeAplicacion();
           }
         }
       } catch (error) {

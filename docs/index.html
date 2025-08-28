@@ -228,21 +228,21 @@
                     "https://images.unsplash.com/photo-1484589065579-248aad0d8b13",
                     "https://images.unsplash.com/photo-1567095761054-7a02e69e5c43",
                 ].concat(allOfflineImages);
-                window.LSW_BACKGROUND_IMAGES = [];
+                window.LswBackgroundImages = [];
                 window.addBackgroundImages = function (someUrls = []) {
                     for (let index = 0; index < someUrls.length; index++) {
                         const image = someUrls[index];
-                        const pos = window.LSW_BACKGROUND_IMAGES.indexOf(image);
+                        const pos = window.LswBackgroundImages.indexOf(image);
                         if (pos === -1) {
-                            window.LSW_BACKGROUND_IMAGES.push(image);
+                            window.LswBackgroundImages.push(image);
                         }
                     }
                 };
-                window.LSW_BACKGROUND_CONFIGURED_PROMISE = (function () {
+                window.LswBackgroundConfiguredPromise = (function () {
                     return new Promise((resolve, reject) => {
                         window.addEventListener("load", async function () {
                             const hasInternet = await hasInternetPromise;
-                            window.LSW_HAS_INTERNET = hasInternet;
+                            window.LswHasInternet = hasInternet;
                             window.addBackgroundImages(hasInternet ? allOnlineImages : allOfflineImages);
                             let currentImageIndex = 0;
                             let backgroundImage = document.body.querySelector("#lsw_background_main_image");
@@ -254,12 +254,12 @@
                                     return;
                                 }
                                 currentImageIndex++;
-                                if (currentImageIndex >= window.LSW_BACKGROUND_IMAGES.length) {
+                                if (currentImageIndex >= window.LswBackgroundImages.length) {
                                     currentImageIndex = 0;
                                 }
-                                // const currentImage = LSW_BACKGROUND_IMAGES[currentImageIndex];
+                                // const currentImage = LswBackgroundImages[currentImageIndex];
                                 const srcImage = backgroundImage.getAttribute("src");
-                                const currentImage = getRandomItemFromList(window.LSW_BACKGROUND_IMAGES.filter(image => image !== srcImage));
+                                const currentImage = getRandomItemFromList(window.LswBackgroundImages.filter(image => image !== srcImage));
                                 backgroundImage.setAttribute("src", currentImage);
                             };
                             setInterval(changeBackgroundImage, 1000 * 60 * 5);

@@ -2,28 +2,28 @@
 
 Complemento personal de software.
 
-- Links del proyecto
-- Aplicaciones
-- Trucos
-- Ficheros útiles
-- Flujos ocultos o no intuitivos
-- Flujo funcional básico
-- Extras de interés
-- Variables del editor en entorno normal
-- Variables del editor en entorno android
+# Índice
 
+- [Lsw-one](#lsw-one)
+- [Índice](#índice)
+    - [Links del proyecto](#links-del-proyecto)
+    - [Aplicaciones](#aplicaciones)
+    - [Trucos](#trucos)
+    - [Ficheros útiles](#ficheros-útiles)
+    - [Flujos ocultos o no intuitivos](#flujos-ocultos-o-no-intuitivos)
+    - [Flujo funcional básico](#flujo-funcional-básico)
+    - [Extras de interés](#extras-de-interés)
+    - [Variables del editor en entorno normal](#variables-del-editor-en-entorno-normal)
+    - [Variables del editor en entorno android](#variables-del-editor-en-entorno-android)
+      - [Trucos de la app móvil en Android](#trucos-de-la-app-móvil-en-android)
 
 ### Links del proyecto
 
-- web: [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
+- web:
+   - [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android: *los links expiran en 1 semana*
-   - última versión: [https://upload.app/download/lsw-one/com.allnulled.LswOne/9335ec14a628fd3287bf3a7d5f7a5f0805050f26b702e102870af192b11e7faf](https://upload.app/download/lsw-one/com.allnulled.LswOne/9335ec14a628fd3287bf3a7d5f7a5f0805050f26b702e102870af192b11e7faf)
-   - versión del 24 de agosto de 2025: [https://upload.app/download/lsw-one/com.allnulled.LswOne/9335ec14a628fd3287bf3a7d5f7a5f0805050f26b702e102870af192b11e7faf](https://upload.app/download/lsw-one/com.allnulled.LswOne/9335ec14a628fd3287bf3a7d5f7a5f0805050f26b702e102870af192b11e7faf)
-   - aquí cambiamos de proveedor porque limewire ha dejado de subir los ficheros deliberadamente. 
-     - nos gusta menos el nuevo proveedor porque se especializa en ficheros APK
-     - por lo cual puede inyectarles cualquier cosa
-     - pero seguimos subiendo igual la última versión
-     - que además, sería la primera que da una BD y, además, implementa un buscador de aplicaciones decente en la página de procesos, que era un punto bastante clave
+   - última versión: [https://limewire.com/d/vIb3d#O2gDqJu6ct](https://limewire.com/d/vIb3d#O2gDqJu6ct)
+   - versión del 28 de agosto de 2025: [https://limewire.com/d/vIb3d#O2gDqJu6ct](https://limewire.com/d/vIb3d#O2gDqJu6ct)
    - versión del 23 de agosto de 2025: [https://limewire.com/d/ZQez4#tFuJg4EXp4](https://limewire.com/d/ZQez4#tFuJg4EXp4)
    - versión del 22 de agosto de 2025: [https://limewire.com/d/ayytL#oz9f6h4BAV](https://limewire.com/d/ayytL#oz9f6h4BAV)
    - aquí me ingresan 40 días en un manicomio.
@@ -44,24 +44,84 @@ Complemento personal de software.
 
 Las aplicaciones que vienen por defecto son:
 
-- 📦 Base de datos
+- 🕓 Ahora - para gestionar las actividades del día
+   - ⬅️🕓➡️ En todo el día
+   - ⬅️🕓 Antes
+   - 🕓➡️ Después
+- 📦 Base de datos - para manejar los fatos básicos del sistema
+   - 📦 Acción
+   - 📦 Concepto
+   - 📦 Nota
+   - 📦 Articulo
 - 📂 Sistema de ficheros
+   - ℹ️ Un sistema de ficheros totalmente virtual basado en [`IndexedDB`](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
+   - ℹ️ Soporta ficheros:
+      - 🧾 *.js
+      - 🧾 *.css
+      - 🧾 *.html
+      - 🧾 *.pegjs
+      - 🧾 *.md
+         - con soporte para LaTeX
+            - En misma línea con `$ latex $`
+            - En múltiples líneas con `$$` y `$$`
+   - 📄 `/kernel/agenda/randomizables.env`
+      - ℹ️ Lista los elementos para inflar **randomly** el día
+   - 📄 `/kernel/apps/{nombre de app}/load.js`
+      - ℹ️ Apps personalizadas
+   - 📄 `/kernel/bin/{nombre de binario}.js`
+      - ℹ️ Binarios rápidos personalizados
+      - ℹ️ Son igual que las apps pero se acceden desde la app «💣 Binarios» solamente
+   - 📄 `/kernel/components/{nombre de componente}/{nombre de componente}.{html, js, css}`
+      - ℹ️ Componentes Vue2 que quieres cargar automáticamente
+   - 📄 `/kernel/goals/goals.week`
+      - ℹ️ Script tipo WeekLang para:
+         - Sintaxis `req`: requisitos de la semana
+         - Sintaxis `set`: planes de la semana
+         - el *pegjs* está en:
+            - [`./src/lsw-framework/src/apis/lsw-languages/weeklang/weeklang.pegjs`](./src/lsw-framework/src/apis/lsw-languages/weeklang/weeklang.pegjs)
+         - el *ejemplo básico* está en:
+            - [`./src/lsw-framework/src/apis/lsw-languages/weeklang/test/input/example.week`](./src/lsw-framework/src/apis/lsw-languages/weeklang/test/input/example.week)
 - 💣 Binarios
-- 📆 Calendario con:
-   - 📊 Reportes
-   - 🔮 Conductometría
-   - 🏁 Objetivos y hábitos
-- ⬅️🕔 Tareas anteriores
-- 🕔➡️ Tareas posteriores
+   - ℹ️ Como apps pero sin ensuciar el escritorio
+- 📆 Calendario
+   - 📊 Reportes - para visualizar reportes personalizados
+   - 🔮 Conductometría - para propagaciones conceptuales (en desarrollo y experimental)
+   - 🏁 Objetivos y hábitos - para visualizar los estados de ciertas actividades
 - 💬 Notas
+   - ℹ️ Para consultar tus notas rápidas
+   - ℹ️ Puedes priorizar urgentes
 - 💬➕ Nueva nota
+   - ℹ️ Para crear notas rápidas
+   - ℹ️ Soporta Markdown y LaTeX
 - 🔬 Enciclopedia
+   - ℹ️ Puedes hacer libros, categorías y artículos
 - 🔬➕ Nuevo artículo
+   - ℹ️ Para crear artículos rápidamente
+   - ℹ️ Soporta Markdown y LaTeX
 - 🪲 Inspector de JS
+   - ℹ️ Para inspeccionar cómodamente JS en vivo
 - 💻 Consola de JS
+   - ℹ️ Basada en [`eruda`](https://github.com/liriliri/eruda)
+- ♨️ Datos volátiles
+   - ℹ️ Para tener una base de datos
+   - ℹ️ Orientada a datos desestructurados
+   - ℹ️ Solo soporta strings como tipo de dato
+   - ℹ️ Máxima flexibilidad para crear tablas y filas
 - ✅ Tests de aplicación
+   - ℹ️ Tiene los tests principales de la aplicación
+   - ⚠️ Orientada a desarrollo
+   - ℹ️ En activo
+   - ℹ️ Permite comprobar la salud de la aplicación
+- 🐱 Emojis
+   - ℹ️ Para recuperar emojis rápidamente
 - 🔧 Configuraciones
-- ✨ Nueva feature (⚠️: reservado para desarrollo)
+   - ℹ️ Permite acceder a ciertas configuraciones de la aplicación
+- 📹 Trackeables
+   - ℹ️ Captura frecuencia de eventos de la realidad
+   - ℹ️ Monitoriza y persiste tu circunstancia
+- ✨ Nueva feature 
+   - ⚠️ Orientada a desarrollo
+   - ℹ️ En activo siempre
 
 ### Trucos
 
@@ -69,7 +129,7 @@ La aplicación es bastante intuitiva considero, así que paso a explicar directa
 
 ### Ficheros útiles
 
-En el filesystem virtual de la app puedes configurar:
+En el **📂 Sistema de ficheros** virtual de la app puedes configurar:
 
 - [/kernel/boot.js](#):
    - Para el evento de inicio automático.
@@ -167,6 +227,14 @@ LswDebugger.global.debug("porque se autoexpiran")
 
 
 ### Variables del editor en entorno android
+
+En la versión de la *aplicación móvil* (solo Android) se carga:
+
+  - [`cordova`](https://github.com/apache/cordova-js) accedible como variable global
+  - [`rhino`](https://github.com/mozilla/rhino)
+  - [`plugin-cordova-rhino`](https://github.com/mozilla/rhino)
+
+#### Trucos de la app móvil en Android
 
 Para invocar JavaScript en entorno `android/rhino` tienes los ganchos finales:
 

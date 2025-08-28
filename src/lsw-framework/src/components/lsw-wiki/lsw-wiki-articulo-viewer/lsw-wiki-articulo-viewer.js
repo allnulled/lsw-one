@@ -32,9 +32,9 @@ Vue.component("LswWikiArticuloViewer", {
         if(matchedRows.length === 0) {
           throw new Error(`Articulo no encontrado por «${this.articuloId}»`);
         } else if(matchedRows.length === 1) {
-          this.markdownContent = marked.parse(matchedRows[0].tiene_contenido);
+          this.markdownContent = LswMarkdown.global.parse(matchedRows[0].tiene_contenido);
         } else {
-          this.markdownContent = matchedRows.map(row => marked.parse(row.tiene_contenido)).join("\n\n----\n\n");
+          this.markdownContent = matchedRows.map(row => LswMarkdown.global.parse(row.tiene_contenido)).join("\n\n----\n\n");
         }
         this.selectedArticulos = matchedRows;
       } catch (error) {

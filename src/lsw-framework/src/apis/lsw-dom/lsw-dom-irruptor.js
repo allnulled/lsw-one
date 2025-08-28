@@ -152,10 +152,11 @@
     static async arrancarTestsDeAplicacion() {
       await this.abrirTestsDeAplicacion();
       Abrir_tests: {
-        await LswDom.waitForMilliseconds(200);
-        LswDom.querySelectorFirst("button", "🧪").click();
-        await LswDom.waitForMilliseconds(200);
-        LswDom.querySelectorFirst("button", "🧪 ▶️").click();
+        await LswDomIrruptor.abrirTestsDeAplicacion();
+        await LswUtils.waitForMilliseconds(1000);
+        await LswDom.querySelectorFirst("button", "🧪 ↗️").click();
+        await LswUtils.waitForMilliseconds(1000);
+        await LswDom.querySelectorFirst("button", "▶️ Iniciar tests").click();
       }
     }
 

@@ -1,10 +1,14 @@
 <div class="lsw_volatile_ui">
     <lsw-typical-title :buttons="tablesPageButtons">
-        Volatile DB UI
+        ♨️ Base de datos volátil ♨️
     </lsw-typical-title>
     <div v-if="currentPage === 'tables'"
         class="">
         <lsw-loading-bar v-if="!isMetadataLoaded" />
+        <div v-else-if="allTables.length === 0"
+            class="pad_1">
+            🌵 No hay tablas actualmente 🌵
+        </div>
         <div class="tables_list"
             v-else>
             <div class="flex_row centered"

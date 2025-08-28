@@ -76,7 +76,7 @@
                     v-if="selectedNotas.indexOf(nota.id) !== -1">
                     <div class="position_relative">
                         <div class="texto_markdown"
-                            v-html="$window.marked.parse(nota.tiene_contenido)"
+                            v-html="$window.LswMarkdown.global.parse(nota.tiene_contenido)"
                             style="font-size: 11px;"></div>
                         <div class="position_absolute top_0 right_0 pad_right_1 pad_top_1">
                             <div class="flex_row centered">

@@ -3,7 +3,8 @@
         <div class="flex_100">
             <slot></slot>
         </div>
-        <div class="flex_1 pad_left_1" v-if="(!Array.isArray(buttons)) || (buttons.length === 0)">
+        <template v-if="(!Array.isArray(buttons))"></template>
+        <div class="flex_1 pad_left_1" v-else-if="(buttons.length === 0)">
             <button class="supermini visibility_hidden">
                 !
             </button>

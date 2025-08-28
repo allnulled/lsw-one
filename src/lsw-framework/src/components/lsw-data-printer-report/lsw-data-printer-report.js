@@ -124,7 +124,7 @@ Vue.component("LswDataPrinterReport", {
     },
     inputMarkdown() {
       this.$trace("lsw-data-printer-report.computed.inputMarkdown");
-      return marked.parse(this.input);
+      return LswMarkdown.global.parse(this.input);
     },
     inputPlain() {
       this.$trace("lsw-data-printer-report.computed.inputPlain");

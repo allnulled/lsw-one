@@ -80,7 +80,7 @@ Vue.component("LswGoalsViewer", {
         this.isLoadingGoals = true;
         const filepath = "/kernel/goals/todos/" + goal.concept + ".md";
         const filecontent = await this.$lsw.fs.read_file(filepath);
-        const parsedContent = marked.parse(filecontent);
+        const parsedContent = LswMarkdown.global.parse(filecontent);
         this.specifiedGoals[goal.concept] = `<div class="markdown_texto">${parsedContent}</div>`;
         return parsedContent;
       } catch (error) {

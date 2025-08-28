@@ -27,3 +27,12 @@
     min-height: 40px;
     padding-top: 12px;
 }
+.tasks_area {
+    min-height: 140px;
+}
+.notificacion_de_peligro {
+    min-height: 85px;
+    text-align: center;
+    padding-top: 10px;
+    font-size: 12px;
+}

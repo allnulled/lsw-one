@@ -218,14 +218,36 @@ LswConstants.global.define("/kernel/goals/goals.week", `
 *-*:
 
 * {
-  req actividad física >3h !10
-  req actividad intelectual >3h !10
-  req aprender algo > 1h !10
-  req crear algo > 2h !10
+  req programar >6h !10
+  req correr >1h !10
+  req bici > 1h !10
+  req pesas > 1h !10
+  req estiramientos > 30min !10
+}
+
+lun {
+
+}
+
+mar {
+
+}
+
+mie {
+
+}
+
+jue {
+
+}
+
+vie {
+
 }
 
 sab {
-  set 22:00 = puesta de sol
+  set 06:00 = desayunar con ajo
+  set 22:00 = ver puesta de sol
 }
 
 dom {

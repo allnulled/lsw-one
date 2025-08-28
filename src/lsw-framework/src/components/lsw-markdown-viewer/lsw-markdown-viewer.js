@@ -41,7 +41,7 @@ Vue.component("LswMarkdownViewer", {
       }
       Render_markdown: {
           try {
-            sourceTransformed = await marked.parse(sourceTransformed);
+            sourceTransformed = await LswMarkdown.global.parse(sourceTransformed);
           } catch (error) {
             console.log(error);
             this.parsingMarkdownError = error;

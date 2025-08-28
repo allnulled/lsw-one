@@ -11,18 +11,6 @@
   }
 })(function () {
 
-  /**
-   * 
-   * 
-   * @$section: Lsw Circuiter API » LswCircuiter class
-
-   * @type: class
-   * @extends: Object
-   * @vendor: lsw
-   * @namespace: LswCircuiter
-   * @source code: La clase está definida así:
-   * 
-   */
   // @code.start: LswCircuiter class | @$section: Lsw Circuiter API » LswCircuiter class
   class AsyncCircuit {
 

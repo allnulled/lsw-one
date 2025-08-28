@@ -14,7 +14,7 @@
   // @code.start: LswTests API | @$section: LswTests API » LswTests classes and functions
   
   // Example of usage:
-  /* 
+  //* 
   LswTestRegistry.collect("Lsw Fifth Test", async function (test) {
     test("can wait 1 second", async function () {
       await new Promise((resolve, reject) => {

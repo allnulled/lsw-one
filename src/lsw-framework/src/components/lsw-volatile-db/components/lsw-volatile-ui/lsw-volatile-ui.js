@@ -180,9 +180,40 @@ Vue.component("LswVolatileUi", {
       LswVolatileDB.global.data[table].delete(rowId);
       this.loadData();
     },
-    deleteTable(table) {
+    async deleteTable(tableId) {
       this.$trace("lsw-volatile-ui.methods.deleteTable");
-      delete LswVolatileDB.global.data[table];
+      const confirmation = await this.$lsw.dialogs.open({
+        title: `Eliminando tabla`,
+        template: `
+          <div>
+            <div class="pad_1">
+              <div class="pad_vertical_1">¿Seguro que quieres eliminar tabla «{{ tableId }}»?</div>
+              <div class="pad_vertical_1">Tiene «{{ rowsLength }}» filas dentro.</div>
+            </div>
+            <hr/>
+            <div class="flex_row centered">
+              <div class="flex_100"></div>
+              <div class="flex_1">
+                <button class="danger_button" v-on:click="accept">Aceptar</button>
+              </div>
+              <div class="flex_1 pad_left_1">
+                <button class="" v-on:click="cancel">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        factory: {
+          data: {
+            tableId,
+            rowsLength: Object.keys(LswVolatileDB.global.data[tableId].data).length,
+            value: true,
+          }
+        }
+      });
+      if(confirmation !== true) {
+        return;
+      }
+      delete LswVolatileDB.global.data[tableId];
       LswVolatileDB.global.persist();
       this.loadMetadata();
     },

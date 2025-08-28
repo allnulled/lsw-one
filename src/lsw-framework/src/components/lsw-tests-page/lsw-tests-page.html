@@ -7,18 +7,13 @@
             <div class="flex_row centered">
                 <div class="flex_100">🪖 Cobertura de código</div>
                 <div class="flex_1">
-                    <button class="supermini" v-on:click="() => selectedSection = 'tests'">🧪</button>
+                    <button class="supermini" v-on:click="() => selectedSection = 'tester'">🧪 ↗️</button>
                 </div>
             </div>
         </div>
     </div>
-    <div v-show="selectedSection === 'tests'">
-        <template v-if="choosenTester">
-            <lsw-tester-viewer :tester="choosenTester" :tests-page="this" />
-        </template>
-        <template v-else>
-            ⏳ Un momento: el realizador de pruebas está en curso... ⏳
-        </template>
+    <div v-show="selectedSection === 'tester'">
+        <lsw-test-context-viewer :tests-page="this" />
     </div>
     <div v-show="selectedSection === 'coverage'">
         <lsw-coverage-viewer />

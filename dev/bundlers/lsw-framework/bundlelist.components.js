@@ -27,6 +27,14 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/others/socket.io-client/socket.io-client.js`,
   // MARKED.JS:
   `${basepath}/assets/lib/marked/marked.js`,
+  // KATEX:
+  `${basepath}/assets/lib/katex/katex.js`,
+  `${basepath}/assets/lib/katex/katex.css`,
+  `${basepath}/assets/lib/katex/marked-katex-extension.js`,
+  // MERMAID:
+  `${basepath}/assets/lib/mermaid/mermaid.js`,
+  // `${basepath}/assets/lib/mermaid/mermaid.min.js`,
+  `${basepath}/assets/lib/mermaid/mermaid.initializer.js`,
   // LSW INITIALIZATION
   `${basepath}/bootloader/initialization.js`,
   // IMPORTER:
@@ -37,6 +45,10 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/apis/lsw-reloader/reloadable.js`,
   // LSW ENSURER:
   `${basepath}/lsw-framework/src/apis/lsw-ensurer/ensure.js`,
+  // LSW ASSERTER:
+  `${basepath}/lsw-framework/src/apis/lsw-asserter/lsw-asserter.js`,
+  // LSW TEST CONTEXT:
+  `${basepath}/lsw-framework/src/apis/lsw-test-context/lsw-test-context.js`,
   // LSW CONSTANTS:
   `${basepath}/lsw-framework/src/apis/lsw-constants/lsw-constants.js`,
   `${basepath}/lsw-framework/src/apis/lsw-constants/global-constants.js`,
@@ -113,6 +125,8 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/apis/lsw-typer/lsw-typer.js`,
   // LSW BOOKS:
   `${basepath}/lsw-framework/src/apis/lsw-books/lsw-books.js`,
+  // LSW MARKDOWN:
+  `${basepath}/lsw-framework/src/apis/lsw-markdown/lsw-markdown.js`,
   // LSW DATABASE-UI:
   `${basepath}/lsw-framework/src/components/lsw-database-ui/database-adapter/LswDatabaseAdapter.js`,
   // LAUNCHER:
@@ -206,8 +220,6 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-book-library/lsw-book-library`,
   // MARKDOWN VIEWER:
   `${basepath}/lsw-framework/src/components/lsw-markdown-viewer/lsw-markdown-viewer`,
-  // MICRODATA BANK EXPLORER:
-  `${basepath}/lsw-framework/src/components/lsw-microdata-explorer/lsw-microdata-explorer`,
   // CLOCKWATCHER:
   `${basepath}/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher`,
   // GOALS VIEWER:
@@ -296,9 +308,8 @@ module.exports = Instrumenter.instrumentSet([
   // WEEK PLANNER:
   `${basepath}/lsw-framework/src/apis/lsw-languages/weeklang/weeklang.bundled.js`,
   `${basepath}/lsw-framework/src/components/lsw-week-planner/lsw-week-planner`,
-  // MERMOID:
-  `${basepath}/lsw-framework/src/apis/lsw-languages/mermoid/mermoid.bundled.js`,
-  `${basepath}/lsw-framework/src/components/lsw-mermoid-viewer/lsw-mermoid-viewer`,
+  // MERMAID COMPONENT:
+  `${basepath}/lsw-framework/src/components/lsw-mermaid-viewer/lsw-mermaid-viewer`,
   // PEGJS TESTER:
   `${basepath}/lsw-framework/src/components/lsw-pegjs-tester/lsw-pegjs-tester`,
   // NUEVA FEATURE:
@@ -310,6 +321,7 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-tests-page/lsw-tests-page`,
   `${basepath}/lsw-framework/src/components/lsw-tester-viewer/lsw-tester-viewer`,
   `${basepath}/lsw-framework/src/components/lsw-tester-module-viewer/lsw-tester-module-viewer`,
+  `${basepath}/lsw-framework/src/components/lsw-test-context-viewer/lsw-test-context-viewer`,
   // JS VIEWER:
   `${basepath}/lsw-framework/src/components/lsw-js-viewer/lsw-js-viewer`,
   // ANDROID API:

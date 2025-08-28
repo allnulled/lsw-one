@@ -31,6 +31,7 @@
             throw new Error(`Cannot create table «${tableId}» because it already exists on «LswVolatileDB.classes.DatabaseInterface.createTable»`);
           }
           this.data[tableId] = new LswVolatileDB.classes.DatabaseTableInterface(tableId, this, initialData);
+          this.persist();
         }
         getData() {
           const data = {};

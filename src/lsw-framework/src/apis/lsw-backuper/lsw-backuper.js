@@ -11,6 +11,8 @@
   }
 })(function () {
   
+  // @code.start: LswBackuper class | @$section: Lsw Backuper API » LswBackuper class
+
   const LswBackuper = class {
 
     static create(...args) {
@@ -59,5 +61,6 @@
   };
 
   return LswBackuper;
+  // @code.end: LswBackuper class
 
 });

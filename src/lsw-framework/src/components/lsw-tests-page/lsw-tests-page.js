@@ -6,7 +6,7 @@ Vue.component("LswTestsPage", {
   },
   data() {
     return {
-      selectedSection: "coverage",
+      selectedSection: "coverage", // also: "tester", "coverage"
       initializationError: false,
       choosenTester: false,
     };

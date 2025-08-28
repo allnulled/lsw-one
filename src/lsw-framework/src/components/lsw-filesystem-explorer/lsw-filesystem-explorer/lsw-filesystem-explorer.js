@@ -453,6 +453,11 @@ Vue.component("LswFilesystemExplorer", {
                 text: "🌈",
                 click: () => this.openCodeViewerForHtml()
               });
+            } else if (this.current_node.endsWith(".mmd")) {
+              bottomButtonsOnFile.push({
+                text: "🌈",
+                click: () => this.openCodeViewerForMermaid()
+              });
             }
           }
           Button_to_view_html: {
@@ -659,12 +664,30 @@ Vue.component("LswFilesystemExplorer", {
             code: this.$refs.editor.getContents(),
           }
         },
-      })
+      });
+    },
+    async openCodeViewerForMermaid() {
+      this.$trace("lsw-filesystem.explorer.methods.openCodeViewerForMermaid");
+      this.$lsw.dialogs.open({
+        title: "Visualizando código HTML",
+        template: `
+          <div class="pad_1">
+            <div class="">{{ file }}:</div>
+            <hr />
+            <lsw-mermaid-viewer :initial-source="code" initial-page="visualizador" />
+          </div>`,
+        factory: {
+          data: {
+            file: this.current_node,
+            code: this.$refs.editor.getContents(),
+          }
+        },
+      });
     },
     async processToCompileMarkdown() {
       this.$trace("lsw-filesystem.explorer.methods.processToCompileMarkdown");
       const mdContent = this.$refs.editor.getContents();
-      const htmlContent = marked.parse(mdContent);
+      const htmlContent = LswMarkdown.global.parse(mdContent);
       const fileoutput = await this.$lsw.dialogs.open({
         title: "Compilar markdown a html",
         template: `
@@ -864,7 +887,7 @@ Vue.component("LswFilesystemExplorer", {
     processToViewMarkdown() {
       this.$trace("lsw-filesystem.explorer.methods.processToCompilePegjs");
       const mdContent = this.$refs.editor.getContents();
-      const htmlContent = marked.parse(mdContent);
+      const htmlContent = LswMarkdown.global.parse(mdContent);
       return this.$lsw.dialogs.open({
         title: "Ver markdown en vivo",
         template: `

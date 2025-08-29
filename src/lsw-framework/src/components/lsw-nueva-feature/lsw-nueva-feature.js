@@ -4,9 +4,8 @@ Vue.component("LswNuevaFeature", {
   props: {},
   data() {
     this.$trace("lsw-nueva-feature.data");
-    
     return {
-      
+
     };
   },
   methods: {

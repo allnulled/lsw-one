@@ -97,61 +97,13 @@
             </div>
           </div>
 
-          <div class="pad_bottom_1">
-            <div class="flex_row centered">
-              <div class="flex_1">
-                <button class="supermini"
-                  v-on:click="() => setHora(0)">⏪</button>
-              </div>
-              <div class="flex_1 pad_horizontal_1">
-                <button class="supermini"
-                  v-on:click="() => increaseHora(-1)">➖</button>
-              </div>
-              <div class="flex_100">
-                {{ LswUtils.padStart(hora_actual, 2, '0') }}
-              </div>
-              <div class="flex_1">
-                <button class="supermini"
-                  v-on:click="() => askHora()">💉</button>
-              </div>
-              <div class="flex_1 pad_horizontal_1">
-                <button class="supermini"
-                  v-on:click="() => increaseHora(1)">➕</button>
-              </div>
-              <div class="flex_1">
-                <button class="supermini"
-                  v-on:click="() => setHora(23)">⏩</button>
-              </div>
-            </div>
-          </div>
+          <lsw-clocktime-picker :on-change="(clocktime) => {
+            $window.console.log('triggerChange', fecha_seleccionada);
+            fecha_seleccionada.setHours(clocktime.hour);
+            fecha_seleccionada.setMinutes(clocktime.minute);
+            fecha_seleccionada = new Date(fecha_seleccionada);
+          }" />
 
-          <div class="">
-            <div class="flex_row centered">
-              <div class="flex_1">
-                <button class="supermini"
-                  v-on:click="() => setMinuto(0)">⏪</button>
-              </div>
-              <div class="flex_1 pad_horizontal_1">
-                <button class="supermini"
-                  v-on:click="() => increaseMinuto(-1)">➖</button>
-              </div>
-              <div class="flex_100">
-                {{ LswUtils.padStart(minuto_actual, 2, '0') }}
-              </div>
-              <div class="flex_1">
-                <button class="supermini"
-                  v-on:click="() => askMinuto()">💉</button>
-              </div>
-              <div class="flex_1 pad_horizontal_1">
-                <button class="supermini"
-                  v-on:click="() => increaseMinuto(1)">➕</button>
-              </div>
-              <div class="flex_1">
-                <button class="supermini"
-                  v-on:click="() => setMinuto(59)">⏩</button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -43,8 +43,8 @@
             // await LswDomIrruptor.abrirBaseDeDatosPorTabla("Accion");
             // await LswDomIrruptor.abrirBaseDeDatosPorNuevoDatoDeTabla("Accion");
             // await LswDomIrruptor.abrirWeekPlanner();
-            // await LswDomIrruptor.abrirNuevaFeature();
             // await LswDomIrruptor.arrancarTestsDeAplicacion();
+            await LswDomIrruptor.abrirNuevaFeature();
           }
         }
       } catch (error) {

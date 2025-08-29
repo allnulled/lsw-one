@@ -62,7 +62,7 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-tester.js`,
   // `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-test-registry.js`,
   // `${basepath}/lsw-framework/src/apis/lsw-tester/lsw-tests.js`,
-  
+  `${basepath}/lsw-framework/src/components/new-canvas-experiment-1/new-canvas-experiment-1`,
   // LSW DOM:
   `${basepath}/lsw-framework/src/apis/lsw-dom/lsw-dom.js`,
   `${basepath}/lsw-framework/src/apis/lsw-dom/lsw-dom-irruptor.js`,
@@ -160,6 +160,8 @@ module.exports = Instrumenter.instrumentSet([
   `${basepath}/lsw-framework/src/components/lsw-js-file-coverage-viewer/lsw-js-file-coverage-viewer`,
   // EMOJIS PICKER:
   `${basepath}/lsw-framework/src/components/lsw-emojis-picker/lsw-emojis-picker`,
+  // CLOCKTIME PICKER:
+  `${basepath}/lsw-framework/src/components/lsw-clocktime-picker/lsw-clocktime-picker`,
   // CALENDARIO:
   `${basepath}/lsw-framework/src/components/lsw-calendario/lsw-calendario`,
   // TABLE:

@@ -1760,6 +1760,27 @@
             "$output": "index.html"
           }
         ],
+        "Vue.js (v2) Components » Lsw Clocktime Picker API » LswClocktimePicker component": [
+          {
+            "$file": "/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clocktime-picker/lsw-clocktime-picker.js",
+            "$location": {
+              "start": {
+                "offset": 0,
+                "line": 1,
+                "column": 1
+              },
+              "end": {
+                "offset": 133,
+                "line": 2,
+                "column": 1
+              }
+            },
+            "$section": "Vue.js (v2) Components » Lsw Clocktime Picker API » LswClocktimePicker component",
+            "$code": "// Change this component at your convenience:\nVue.component(\"LswClocktimePicker\", {\n  template: $template,\n  props: {\n    onChange: {\n      type: Function,\n      default: () => { },\n    }\n  },\n  data() {\n    this.$trace(\"lsw-clocktime-picker.data\");\n    return {\n      isSelected: 'none',\n      hour_picked: \"00\",\n      minute_picked: \"00\",\n    };\n  },\n  methods: {\n    toggleSelection(part) {\n      this.$trace(\"lsw-clocktime-picker.methods.toggleSelection\");\n      if (this.isSelected === part) {\n        this.isSelected = \"none\";\n      } else {\n        this.isSelected = part;\n      }\n    },\n    selectHour(hour) {\n      this.$trace(\"lsw-clocktime-picker.methods.selectHour\");\n      this.hour_picked = hour;\n    },\n    selectMinute(minute) {\n      this.$trace(\"lsw-clocktime-picker.methods.selectMinute\");\n      this.minute_picked = minute;\n    },\n    increaseHour(increment = 1) {\n      this.$trace(\"lsw-clocktime-picker.methods.increaseHour\");\n      this.hour_picked = (\"\" + (parseInt(this.hour_picked) + increment)).padStart(2, \"0\");\n    },\n    async specifyHour() {\n      this.$trace(\"lsw-clocktime-picker.methods.specifyHour\");\n      const hours = await this.$lsw.dialogs.open({\n        title: \"Selecciona la hora exacta\",\n        template: `\n          <div class=\"pad_1\">\n            <input class=\"supermini width_100\" type=\"text\" placeholder=\"Pon la hora exacta aquí\" v-model=\"value\" />\n            <hr />\n            <div class=\"flex_row centered\">\n              <div class=\"flex_100\"></div>\n              <div class=\"flex_1\">\n                <button class=\"supermini\" v-on:click=\"accept\">Aceptar</button>\n              </div>\n              <div class=\"flex_1 pad_left_1\">\n                <button class=\"supermini\" v-on:click=\"cancel\">Cancelar</button>\n              </div>\n            </div>\n          </div>\n        `\n      });\n      if(hours === -1) return;\n      this.hour_picked = hours;\n    },\n    increaseMinute(increment = 1) {\n      this.$trace(\"lsw-clocktime-picker.methods.increaseMinute\");\n      this.minute_picked = (\"\" + (parseInt(this.minute_picked) + increment)).padStart(2, \"0\");\n    },\n    async specifyMinute() {\n      this.$trace(\"lsw-clocktime-picker.methods.specifyMinute\");\n      const minutes = await this.$lsw.dialogs.open({\n        title: \"Selecciona el minuto exacto\",\n        template: `\n          <div class=\"pad_1\">\n            <input class=\"supermini width_100\" type=\"text\" placeholder=\"Pon el minuto exacto aquí\" v-model=\"value\" />\n            <hr />\n            <div class=\"flex_row centered\">\n              <div class=\"flex_100\"></div>\n              <div class=\"flex_1\">\n                <button class=\"supermini\" v-on:click=\"accept\">Aceptar</button>\n              </div>\n              <div class=\"flex_1 pad_left_1\">\n                <button class=\"supermini\" v-on:click=\"cancel\">Cancelar</button>\n              </div>\n            </div>\n          </div>\n        `\n      });\n      if(minutes === -1) return;\n      this.minute_picked = minutes;\n    },\n    triggerChange() {\n      this.onChange({\n        hour: parseInt(this.hour_picked),\n        minute: parseInt(this.minute_picked)\n      });\n    }\n  },\n  watch: {\n    hour_picked() {\n      this.triggerChange();\n    },\n    minute_picked() {\n      this.triggerChange();\n    },\n  },\n  mounted() {\n    this.$trace(\"lsw-clocktime-picker.mounted\");\n  },\n  unmount() {\n    this.$trace(\"lsw-clocktime-picker.unmounted\");\n  }\n});\n",
+            "$code.label": "LswClocktimePicker API",
+            "$output": "index.html"
+          }
+        ],
         "Vue.js (v2) Components » Lsw Windows API » LswClockwatcher component": [
           {
             "$file": "/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-clockwatcher/lsw-clockwatcher.js",
@@ -2423,7 +2444,7 @@
               }
             },
             "$section": "Vue.js (v2) Components » LswNuevaFeature component",
-            "$code": "Vue.component(\"LswNuevaFeature\", {\n  template: $template,\n  props: {},\n  data() {\n    this.$trace(\"lsw-nueva-feature.data\");\n    \n    return {\n      \n    };\n  },\n  methods: {\n    \n  },\n  computed: {\n    \n  },\n  watch: {\n    \n  },\n  async mounted() {\n    try {\n      this.$trace(\"lsw-nueva-feature.mounted\");\n    } catch (error) {\n      console.log(error);\n    }\n  }\n});\n",
+            "$code": "Vue.component(\"LswNuevaFeature\", {\n  template: $template,\n  props: {},\n  data() {\n    this.$trace(\"lsw-nueva-feature.data\");\n    return {\n\n    };\n  },\n  methods: {\n    \n  },\n  computed: {\n    \n  },\n  watch: {\n    \n  },\n  async mounted() {\n    try {\n      this.$trace(\"lsw-nueva-feature.mounted\");\n    } catch (error) {\n      console.log(error);\n    }\n  }\n});\n",
             "$code.label": "LswNuevaFeature API",
             "$output": "index.html"
           }
@@ -3072,6 +3093,27 @@
             "$section": "Vue.js (v2) Components » Lsw Week Planner API » LswWeekPlanner component",
             "$code": "Vue.component(\"LswWeekPlanner\", {\n  template: $template,\n  props: {},\n  data() {\n    return {\n      scriptContent: \"\",\n      scriptOutput: \"\",\n    };\n  },\n  methods: {\n    parsear() {\n      try {\n        const ast = WeekLang.parse(this.scriptContent);\n        this.scriptOutput = JSON.stringify(ast, null, 2);\n      } catch (error) {\n        this.scriptOutput = JSON.stringify({\n          error: true,\n          name: error.name,\n          message: error.message,\n          stack: error.stack,\n        }, null, 2);\n      }\n    }\n  },\n  watch: {},\n  mounted() {\n    \n  }\n});\n",
             "$code.label": "LswWeekPlanner API",
+            "$output": "index.html"
+          }
+        ],
+        "Vue.js (v2) Components » NewCanvasExperiment1 component": [
+          {
+            "$file": "/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/new-canvas-experiment-1/new-canvas-experiment-1.js",
+            "$location": {
+              "start": {
+                "offset": 0,
+                "line": 1,
+                "column": 1
+              },
+              "end": {
+                "offset": 110,
+                "line": 2,
+                "column": 1
+              }
+            },
+            "$section": "Vue.js (v2) Components » NewCanvasExperiment1 component",
+            "$code": "(function () {\n\n  const Cc = {};\n  Cc.width = 250;\n  Cc.height = 250;\n  Cc.fuga = {\n    x: 125,\n    y: 125,\n  };\n\n  Vue.component(\"NewCanvasExperiment1\", {\n    template: $template,\n    props: {},\n    data() {\n      return {\n\n      };\n    },\n    methods: {\n      load() {\n        const canvas = this.$refs.canvas1;\n        const context = canvas.getContext(\"2d\");\n        // context.fillRect(Cc.fuga.x, Cc.fuga.y, 1, 1);\n        console.log(canvas.width / 2);\n        console.log(canvas.height / 2);\n        context.fillRect(canvas.width / 2, canvas.height / 2, 1, 1);\n      }\n    },\n    watch: {},\n    mounted() {\n      this.load();\n    }\n  });\n\n})();\n",
+            "$code.label": "NewCanvasExperiment1 API",
             "$output": "index.html"
           }
         ],

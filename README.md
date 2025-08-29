@@ -22,7 +22,8 @@ Complemento personal de software.
 - web:
    - [https://allnulled.github.io/lsw-one](https://allnulled.github.io/lsw-one)
 - android: *los links expiran en 1 semana*
-   - última versión: [https://limewire.com/d/vIb3d#O2gDqJu6ct](https://limewire.com/d/vIb3d#O2gDqJu6ct)
+   - última versión: [https://limewire.com/d/OSqUO#AenNtRUuv2](https://limewire.com/d/OSqUO#AenNtRUuv2)
+   - versión del 29 de agosto de 2025: [https://limewire.com/d/OSqUO#AenNtRUuv2](https://limewire.com/d/OSqUO#AenNtRUuv2)
    - versión del 28 de agosto de 2025: [https://limewire.com/d/vIb3d#O2gDqJu6ct](https://limewire.com/d/vIb3d#O2gDqJu6ct)
    - versión del 23 de agosto de 2025: [https://limewire.com/d/ZQez4#tFuJg4EXp4](https://limewire.com/d/ZQez4#tFuJg4EXp4)
    - versión del 22 de agosto de 2025: [https://limewire.com/d/ayytL#oz9f6h4BAV](https://limewire.com/d/ayytL#oz9f6h4BAV)

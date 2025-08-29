@@ -27,7 +27,6 @@ Complemento personal de software.
    - versión del 28 de agosto de 2025: [https://limewire.com/d/vIb3d#O2gDqJu6ct](https://limewire.com/d/vIb3d#O2gDqJu6ct)
    - versión del 23 de agosto de 2025: [https://limewire.com/d/ZQez4#tFuJg4EXp4](https://limewire.com/d/ZQez4#tFuJg4EXp4)
    - versión del 22 de agosto de 2025: [https://limewire.com/d/ayytL#oz9f6h4BAV](https://limewire.com/d/ayytL#oz9f6h4BAV)
-   - aquí me ingresan 40 días en un manicomio.
    - versión del 2 de julio de 2025: [https://limewire.com/d/R4vqC#s1heaZPuDp](https://limewire.com/d/R4vqC#s1heaZPuDp)
    - versión del 25 de junio de 2025: [https://limewire.com/d/jyjQJ#QgUFVCdVNy](https://limewire.com/d/jyjQJ#QgUFVCdVNy)
    - versión del 23 de junio de 2025: [https://limewire.com/d/2lIZi#0CCQvtNDxZ](https://limewire.com/d/2lIZi#0CCQvtNDxZ)

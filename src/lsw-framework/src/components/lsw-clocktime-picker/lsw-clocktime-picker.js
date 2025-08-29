@@ -6,14 +6,22 @@ Vue.component("LswClocktimePicker", {
     onChange: {
       type: Function,
       default: () => { },
+    },
+    initialHour: {
+      type: [String, Number],
+      default: () => "00"
+    },
+    initialMinute: {
+      type: [String, Number],
+      default: () => "00"
     }
   },
   data() {
     this.$trace("lsw-clocktime-picker.data");
     return {
       isSelected: 'none',
-      hour_picked: "00",
-      minute_picked: "00",
+      hour_picked: this.initialHour,
+      minute_picked: this.initialMinute,
     };
   },
   methods: {
@@ -35,6 +43,15 @@ Vue.component("LswClocktimePicker", {
     },
     increaseHour(increment = 1) {
       this.$trace("lsw-clocktime-picker.methods.increaseHour");
+      if(increment < 0) {
+        if(parseInt("" + this.hour_picked) === 0) {
+          return;
+        }
+      } else if(increment > 0) {
+        if(parseInt("" + this.hour_picked) === 23) {
+          return;
+        }
+      }
       this.hour_picked = ("" + (parseInt(this.hour_picked) + increment)).padStart(2, "0");
     },
     async specifyHour() {
@@ -62,6 +79,15 @@ Vue.component("LswClocktimePicker", {
     },
     increaseMinute(increment = 1) {
       this.$trace("lsw-clocktime-picker.methods.increaseMinute");
+      if(increment < 0) {
+        if(parseInt("" + this.minute_picked) === 0) {
+          return;
+        }
+      } else if(increment > 0) {
+        if(parseInt("" + this.minute_picked) === 59) {
+          return;
+        }
+      }
       this.minute_picked = ("" + (parseInt(this.minute_picked) + increment)).padStart(2, "0");
     },
     async specifyMinute() {

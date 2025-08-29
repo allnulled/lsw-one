@@ -123,7 +123,7 @@ button.iconized_button {
 .like_button.has_light_bg,
 button.has_light_bg {
     background-color: #65656587;
-    color: white;
+    color: black;
     border: 1px solid #3c3c3e;
 }
 

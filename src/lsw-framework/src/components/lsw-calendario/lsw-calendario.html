@@ -97,12 +97,16 @@
             </div>
           </div>
 
-          <lsw-clocktime-picker :on-change="(clocktime) => {
-            $window.console.log('triggerChange', fecha_seleccionada);
-            fecha_seleccionada.setHours(clocktime.hour);
-            fecha_seleccionada.setMinutes(clocktime.minute);
-            fecha_seleccionada = new Date(fecha_seleccionada);
-          }" />
+          <lsw-clocktime-picker
+            :initial-hour="fecha_seleccionada.getHours()"
+            :initial-minute="fecha_seleccionada.getMinutes()"
+            :on-change="(clocktime) => {
+              $window.console.log('triggerChange', fecha_seleccionada);
+              fecha_seleccionada.setHours(clocktime.hour);
+              fecha_seleccionada.setMinutes(clocktime.minute);
+              fecha_seleccionada = new Date(fecha_seleccionada);
+            }"
+          />
 
         </div>
       </div>

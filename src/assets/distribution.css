@@ -3255,6 +3255,7 @@ select.form_control {
     background-color: #FFF8;
 }
 
+
 /* @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.html*/
 
 /* @vuebundler[Lsw_framework_components][163]=/home/carlos/Escritorio/lsw-one/src/lsw-framework/src/components/lsw-formtypes/components/lsw-formtype/type/lsw-number-control/lsw-number-control.js*/
@@ -4349,7 +4350,7 @@ button.iconized_button {
 .like_button.has_light_bg,
 button.has_light_bg {
     background-color: #65656587;
-    color: white;
+    color: black;
     border: 1px solid #3c3c3e;
 }
 

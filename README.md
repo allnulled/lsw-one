@@ -2,6 +2,8 @@
 
 Complemento personal de software.
 
+DISCLAIMER: este proyecto se está continuando en la cuenta de [https://github.com/carlosjimenohernandez](https://github.com/carlosjimenohernandez). Disculpen las molestias.
+
 # Índice
 
 - [Lsw-one](#lsw-one)
